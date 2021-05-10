@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+h3#head{
+    color: #5B5B5B;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 60px;
+    margin-bottom: 46px;
+}
+h3#head_register{
+    color: #5B5B5B;
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 60px;
+    margin-bottom: 70px;
+}
+
+#date{
+    font-size: 21.9px !important;
+}
+
+.font{
+    font-family: 'Open Sans', sans-serif;
+}
