@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import kompas from "../../photos/kompas.png";
 import Logo from "./svg/logo";
 import "./auth.css";
+import url from "./../../url";
 
 const Login = ({ pos, val }) => {
+  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState("");
+  
+  async function Login() {
+    const path = url + "/auth/login";
+    await fetch(path, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        login: login,
+        password: password,
+      }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        localStorage.setItem("Bearer", data.token);
+        localStorage.setItem("Login", data.login);
+        window.alert("Logged sucessful");
+        // const createHistory = require("history").createBrowserHistory;
+        // createHistory().push("/resources");
+        // let pathUrl = window.location.href;
+        // window.location.href = pathUrl;
+      })
+      .catch((er) => null);
+  }
+
   return (
     <LoginContainer className="font" pos={pos}>
       <LeftSide></LeftSide>
@@ -13,10 +46,20 @@ const Login = ({ pos, val }) => {
         <Form>
           <h3 id="head">Witamy</h3>
           <Label htmlFor="login">Login</Label>
-          <Input type="text" name="login" id="login"></Input>
+          <Input
+            type="text"
+            name="login"
+            id="login"
+            onChange={(e) => setLogin(e.target.value)}
+          ></Input>
           <Label htmlFor="password">Password</Label>
-          <Input type="password" name="password" id="password"></Input>
-          <Apply>Zaloguj się</Apply>
+          <Input
+            type="password"
+            name="password"
+            id="password"
+            onChange={(e) => setPassword(e.target.value)}
+          ></Input>
+          <Apply onClick={(e) => Login()}>Zaloguj się</Apply>
           <OrDiv>lub</OrDiv>
           <CreateAccount onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
             Dołącz do nas
@@ -81,9 +124,11 @@ const Label = styled.label`
 `;
 
 const LoginContainer = styled.div`
-  transition: left 1s;
+  transition: transform 1.5s;
   top: 5vh;
-  left: ${({ pos }) => (pos === "yes" ? "-95vw" : "5vw")};
+  left: 5vw;
+  transform: ${({ pos }) =>
+    pos === "yes" ? "translateX(-150vw)" : "translateX(0vw)"};
   position: fixed;
   width: 90vw;
   height: 90vh;

@@ -34,8 +34,8 @@ const Register = ({ pos, val }) => {
               <Label htmlFor="password">Hasło</Label>
               <InputHalf
                 type="password"
-                name="password"
-                id="password"
+                name="passwordFirst"
+                id="passwordFirst"
               ></InputHalf>
             </InputContainer>
             <InputContainer>
@@ -137,9 +137,10 @@ const Label = styled.label`
 `;
 
 const LoginContainer = styled.div`
-  transition: left 1s;
+  transition: transform 1.5s;
+  left: 5vw; 
+  transform: ${({ pos }) => (pos === "yes" ? "translateX(0vw)" : "translateX(150vw)")};
   top: 5vh;
-  left: ${({ pos }) => (pos === "yes" ? "5vw" : "105vw")};
   position: fixed;
   width: 90vw;
   height: 90vh;
