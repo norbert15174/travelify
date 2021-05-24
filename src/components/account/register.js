@@ -148,7 +148,7 @@ const LoginContainer = styled.div`
   grid-template-columns: 54.66% 43.34%;
   grid-template-rows: 100%;
   background-color: #f2f7f2;
-  min-height: 700px;
+
   @media only screen and (max-width: 1020px) {
     grid-template-columns: 100%;
   }
@@ -169,13 +169,16 @@ const RightSide = styled.div`
   background-color: #f2f7f2;
   position: relative;
   @media only screen and (max-height: 800px) {
-    transform: scale(0.9);
+    transform: scale(0.8);
   }
   @media only screen and (max-width: 1220px) {
     transform: scale(0.8);
   }
   @media only screen and (max-width: 1020px) {
     transform: scale(1);
+  }
+  @media only screen and (max-width: 1020px) {
+    transform: scale(0.7);
   }
 `;
 

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import kompas from "../../photos/kompas.png";
 import Logo from "./svg/logo";
 import "./auth.css";
-import url from "./../../url";
+import url from "../../url";
 
 const Login = ({ pos, val }) => {
   const [password, setPassword] = useState("");
@@ -136,10 +136,10 @@ const LoginContainer = styled.div`
   grid-template-columns: 54.66% 43.34%;
   grid-template-rows: 100%;
   background-color: #f2f7f2;
-  min-height: 700px;
   @media only screen and (max-width: 1020px) {
     grid-template-columns: 100%;
   }
+
 `;
 const LeftSide = styled.div`
   height: 100%;
@@ -164,6 +164,9 @@ const RightSide = styled.div`
   }
   @media only screen and (max-width: 1020px) {
     transform: scale(1);
+  }
+  @media only screen and (max-width: 600px) {
+    transform: scale(0.6);
   }
 `;
 

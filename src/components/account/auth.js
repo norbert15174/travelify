@@ -1,6 +1,6 @@
 import React,{useState} from "react";
-import Login from "../account/login";
-import Register from "../account/register";
+import Login from "./Login";
+import Register from "./Register";
 import styled from "styled-components";
 
 const Auth = () => {
