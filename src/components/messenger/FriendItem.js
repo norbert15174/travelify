@@ -2,15 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import "./friends.css";
 import MessageIcon from "../account/svg/messageIcon";
-const FriendItem = () => {
+const FriendItem = ({user,click}) => {
   return (
-    <Container className="font">
+    <Container className="font" onClick={e => click(user.id)}>
       <Icon
-        src="https://storage.googleapis.com/telephoners/20210216_225118.jpg"
+        src={user.url}
         alt="User Photo"
       />
       <Name>
-          Norbert Faron
+          {user.name}
       </Name>
       <MessageIcon></MessageIcon>
     </Container>
@@ -42,7 +42,7 @@ const Container = styled.div`
 `;
 
 const Name = styled.div`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   position: relative;
   top: 18px;

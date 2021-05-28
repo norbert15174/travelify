@@ -23,7 +23,7 @@ const Menu = () => {
         <LogOut />
       </LogOutContainer>
     </Container>
-    {displayFriends === 'yes' ? <Friends></Friends> : null}
+    {displayFriends === 'yes' ? <Friends friendDisplay={setDisplayFriends} ></Friends> : null}
     </>
   );
 };

@@ -3,25 +3,24 @@ import styled from "styled-components";
 import "./friends.css";
 import Emoji from "../menu/svg/emoji";
 import Send from "../menu/svg/send";
+import Close from "../menu/svg/close";
 import SingleMessage from "./SingleMessage";
 
-const Message = () => {
+const Message = ({ user, click }) => {
   return (
     <Container>
       <TopMessageHeader>
-        <Icon
-          src="https://storage.googleapis.com/telephoners/20210216_225118.jpg"
-          alt="User Photo"
-        />
-        <Name>Norbert Faron</Name>
+        <Icon src={user.url} alt="User Photo" />
+        <Name>{user.name}</Name>
+        <CloseContainer onClick={e => click(-1)}>
+          <Close width="20px" height="20px"></Close>
+        </CloseContainer>
       </TopMessageHeader>
 
       <SendContainer>
-
-        <SingleMessage></SingleMessage>
-        <SingleMessage></SingleMessage>
-
-
+        <SingleMessage url={user.url}></SingleMessage>
+        <SingleMessage url={user.url} side="right"></SingleMessage>
+        <SingleMessage url={user.url}></SingleMessage>
       </SendContainer>
 
       <BottomPanel>
@@ -38,6 +37,13 @@ const Message = () => {
     </Container>
   );
 };
+
+const CloseContainer = styled.div`
+  left: calc(100% - 40px);
+  top: calc(18px);
+  position: absolute;
+  cursor: pointer;
+`;
 
 const SendContainer = styled.div`
   margin-top: 10px;
@@ -94,7 +100,7 @@ const Container = styled.div`
 const TopMessageHeader = styled.div`
   width: 100%;
   height: 55.68px;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   background-color: #0fa3b1;
   border-top-left-radius: 10px;
