@@ -56,7 +56,7 @@ const Friends = ({friendDisplay}) => {
       {
         id: 10,
         url: "https://scontent-frx5-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84688533_170842440872810_7559275468982059008_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=7206a8&_nc_ohc=2NRj79zkEqsAX8mhCsB&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-frx5-1.xx&tp=27&oh=58683eae14f3891d09a57a4a335efc88&oe=60D32D4E",
-        name: "Tchórzliwy Pies",
+        name: "Rokowska Maria",
       },
       {
         id: 11,

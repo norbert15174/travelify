@@ -129,7 +129,8 @@ const LoginContainer = styled.div`
   left: 5vw;
   transform: ${({ pos }) =>
     pos === "yes" ? "translateX(-150vw)" : "translateX(0vw)"};
-  position: fixed;
+  position: absolute;
+  min-height: 800px;
   width: 90vw;
   height: 90vh;
   display: grid;
@@ -138,6 +139,9 @@ const LoginContainer = styled.div`
   background-color: #f2f7f2;
   @media only screen and (max-width: 1020px) {
     grid-template-columns: 100%;
+  }
+  @media only screen and (max-width: 600px) {
+    min-height: 700px;
   }
 
 `;
@@ -156,7 +160,7 @@ const RightSide = styled.div`
   width: 100%;
   background-color: #f2f7f2;
   position: relative;
-  @media only screen and (max-height: 800px) {
+  /* @media only screen and (max-height: 800px) {
     transform: scale(0.9);
   }
   @media only screen and (max-width: 1220px) {
@@ -166,8 +170,8 @@ const RightSide = styled.div`
     transform: scale(1);
   }
   @media only screen and (max-width: 600px) {
-    transform: scale(0.6);
-  }
+    transform: scale(0.7);
+  } */
 `;
 
 const Form = styled.div`

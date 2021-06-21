@@ -26,7 +26,7 @@ h3#head_register{
 }
 @media only screen and (max-height: 800px) {
     h3#head_register{
-        margin-top: 0;
-        margin-bottom: 30px;
+        margin-top: 30px;
+        margin-bottom: 20px;
     }
 }
