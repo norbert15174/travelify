@@ -6,11 +6,11 @@ const FriendItem = ({user,click}) => {
   return (
     <Container className="font" onClick={e => click(user.id)}>
       <Icon
-        src={user.url}
+        src={user.profilePicture}
         alt="User Photo"
       />
       <Name>
-          {user.name}
+          {user.name + " " + user.lastName}
       </Name>
       <MessageIcon></MessageIcon>
     </Container>

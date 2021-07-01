@@ -10,17 +10,17 @@ const Message = ({ user, click }) => {
   return (
     <Container>
       <TopMessageHeader>
-        <Icon src={user.url} alt="User Photo" />
-        <Name>{user.name}</Name>
+        <Icon src={user.profilePicture} alt="User Photo" />
+        <Name>{user.name + " " + user.lastName}</Name>
         <CloseContainer onClick={e => click(-1)}>
           <Close width="20px" height="20px"></Close>
         </CloseContainer>
       </TopMessageHeader>
 
       <SendContainer>
-        <SingleMessage url={user.url}></SingleMessage>
-        <SingleMessage url={user.url} side="right"></SingleMessage>
-        <SingleMessage url={user.url}></SingleMessage>
+        <SingleMessage url={user.profilePicture}></SingleMessage>
+        <SingleMessage url={user.profilePicture} side="right"></SingleMessage>
+        <SingleMessage url={user.profilePicture}></SingleMessage>
       </SendContainer>
 
       <BottomPanel>

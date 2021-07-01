@@ -13,8 +13,8 @@ const LogOut = () => (
 <path d="M58.505 17V19.6461H68.8533V72.441H65.0275V23.4718H58.505V77L33.1466 72.441V64.9809V21.5685L58.505 17ZM53.84 49.0563C54.6924 49.0563 55.3835 48.1571 55.3835 47.0479C55.3835 45.9388 54.6924 45.0396 53.84 45.0396C52.9876 45.0396 52.2964 45.9388 52.2964 47.0479C52.2964 48.1571 52.9876 49.0563 53.84 49.0563Z" fill="#F2F7F2"/>
 </g>
 <defs>
-<filter id="filter0_d" x="0" y="0" width="102" height="102" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<filter id="filter0_d" x="0" y="0" width="102" height="102" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
 <feOffset dy="4"/>
 <feGaussianBlur stdDeviation="2"/>
