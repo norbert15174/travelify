@@ -5,12 +5,13 @@ import Menu from "./components/menu/Menu";
 function App() {
   return (
     <BrowserRouter>
-    
-    <Route exact path="/">
-      <Menu/>
-    </Route>
-    <Route exact path="/auth"><Auth/></Route>
-  </BrowserRouter>
+      <Route exact path="/">
+        <Menu/>
+      </Route>
+      <Route exact path="/auth">
+        <Auth/>
+      </Route>
+    </BrowserRouter>
   );
 }
 
