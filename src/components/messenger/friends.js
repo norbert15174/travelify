@@ -7,13 +7,9 @@ import Message from "./Message";
 import Close from "../menu/svg/close";
 import url from "../../url";
 
-const Friends = ({friendDisplay}) => {
-
-  
+const Friends = ({ friendDisplay }) => {
   const [display, setDisplay] = useState(-1);
   const [friends, setFriends] = useState([]);
-
-
 
   useEffect(() => {
     const path = url + "/friends";
@@ -21,7 +17,7 @@ const Friends = ({friendDisplay}) => {
       method: "get",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("Bearer")
+        Authorization: "Bearer " + localStorage.getItem("Bearer"),
       },
     })
       .then((response) => response.json())
@@ -29,44 +25,43 @@ const Friends = ({friendDisplay}) => {
         setFriends(response);
       })
       .catch((err) => console.log(err));
-    },[])
+  }, []);
 
   return (
     <>
       <Container className="font">
         <FriendsHeader>
           <FriendsHeaderText>Znajomi</FriendsHeaderText>
-          <CloseContainer onClick={e => friendDisplay("no")}>
-          <Close width="25px" height="25px"></Close>
-        </CloseContainer>
+          <CloseContainer onClick={(e) => friendDisplay("no")}>
+            <Close width="25px" height="25px"></Close>
+          </CloseContainer>
         </FriendsHeader>
         <SearchContainer>
           <SearchIcon></SearchIcon>
           <SearchInput type="text" placeholder="Szukaj"></SearchInput>
         </SearchContainer>
         <FriendsList className="scroll">
-          {friends ? 
-          friends.map((data) => (
-            <div key={data.id}>
-              <FriendItem user={data} click={setDisplay}></FriendItem>
-              {display === data.id ? <Message user={data} click={setDisplay}></Message> : null}
-            </div>
-          )) 
-          : null}
+          {friends
+            ? friends.map((data) => (
+                <div key={data.id}>
+                  <FriendItem user={data} click={setDisplay}></FriendItem>
+                  {display === data.id ? (
+                    <Message user={data} click={setDisplay}></Message>
+                  ) : null}
+                </div>
+              ))
+            : null}
         </FriendsList>
       </Container>
-      
     </>
   );
 };
 
 const CloseContainer = styled.div`
-
   left: calc(100% - 50px);
   top: calc(20px);
   position: absolute;
   cursor: pointer;
-
 `;
 
 const FriendsList = styled.div`
