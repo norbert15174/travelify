@@ -117,7 +117,7 @@ const AppInfo = styled.div`
         width: 80%
     }
     @media only screen and (max-width: 720px) {
-        width:
+        width: 50%
     }
 `;
 

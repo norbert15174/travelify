@@ -28,7 +28,7 @@ const options = {
 function MapComponent({ width, height }) {
 	const { isLoaded } = useJsApiLoader({
     	id: "google-map-script",
-    	googleMapsApiKey: "AIzaSyAmuFxH8-BkTtga78sjWMpHEnr3R1cAdS4", // HIDE IT!!!
+    	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY, // HIDE IT!!!
   	});
 
 	const [map, setMap] = useState(null);
