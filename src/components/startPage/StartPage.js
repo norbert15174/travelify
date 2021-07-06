@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import fakeMap from '../../assets/fakeMap.jpg';
 import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
+import MapComponent from '../googleMaps/Map';
 
 const StartPage = () => {
 
@@ -14,12 +14,13 @@ const StartPage = () => {
     }
 
     return (
-        <>
+        <Wrapper>
             <StyledHeader>
                 <StyledLogo/>
                 <StyledButton onClick={() => setRedirect('yes')}>Przejdź dalej</StyledButton>
-            </StyledHeader>
-            <MapWrapper src={fakeMap}/>
+            </StyledHeader>        
+            <MapComponent width={'100%'} height={'750px'}/>
+
             <StyledFooter>
                 <AppInfo>
                     <Line/>
@@ -30,9 +31,14 @@ const StartPage = () => {
                     </StyledParagraph>
                 </AppInfo>
             </StyledFooter>
-        </>
+        </Wrapper>
     )
 }
+
+const Wrapper = styled.div`
+    display: grid;
+    grid-template-rows: 140px 750px 1fr;
+`;
 
 const StyledParagraph = styled.p`
     font-weight: ${({theme}) => theme.fontWeight.light};
@@ -48,6 +54,12 @@ const StyledHeader = styled.div`
     height: 140px;
     background-color: ${({theme}) => theme.color.lightBackground};
     border-bottom: 1px solid #808080;
+    @media only screen and (max-width: 763px) {
+        grid-template-columns: 320px 1fr;
+    }
+    @media only screen and (max-width: 538px) {
+        grid-template-columns: 220px 1fr;
+    }
 `;
 
 const StyledLogo = styled.div`
@@ -59,6 +71,12 @@ const StyledLogo = styled.div`
     background-position: center;
     width: 400px;
     height: 124px;
+    @media only screen and (max-width: 763px) {
+        width: 300px;
+    }
+    @media only screen and (max-width: 538px) {
+        width: 200px;
+    }
 `;
 
 const StyledButton = styled(Button)`
@@ -67,11 +85,16 @@ const StyledButton = styled(Button)`
     height: 77px;
     margin-left: auto;
     margin-right: 30px;
-`;
-
-const MapWrapper = styled.img`
-    width: 100%;
-    height: 750px
+    @media only screen and (max-width: 763px) {
+        margin: 0 auto;
+        height: 55px;
+        width: 200px;
+        font-size: 32px;
+    }
+    @media only screen and (max-width: 538px) {
+        width: 150px;
+        font-size: 24px;
+    }
 `;
 
 const StyledFooter = styled.div`
@@ -79,6 +102,7 @@ const StyledFooter = styled.div`
     border-top: 1px solid #808080;
     background-color: ${({theme}) => theme.color.lightBackground};
     padding-bottom: 15px;
+   
 `;
 
 const Line = styled.div`
@@ -89,6 +113,12 @@ const AppInfo = styled.div`
     width: 960px;
     padding-top: 45px;
     margin: 0 auto;
+    @media only screen and (max-width: 1020px) {
+        width: 80%
+    }
+    @media only screen and (max-width: 720px) {
+        width: 50%
+    }
 `;
 
 
