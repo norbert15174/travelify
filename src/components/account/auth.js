@@ -1,12 +1,12 @@
-import React,{useState} from "react";
-import Login from "./Login";
-import Register from "./Register";
+import React, {useState} from "react";
+import Login from "./login";
+import Register from "./register";
 import styled from "styled-components";
 
 
 const Auth = () => {
 
-  const [value,setValue] = useState("no");
+  const [value, setValue] = useState("no");
 
   return (
     <Container>

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import MessagePanel from "./svg/messagePanel";
 import LogOut from "./svg/logOut";
-import User from "./User";
-import Friends from "../messenger/Friends";
+import User from "./user";
+import Friends from "../messenger/friends";
 
 const Menu = () => {
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import kompas from "../../photos/kompas.png";
+import kompas from "../../assets/kompas.png";
 import "./auth.css";
 import url from "../../url";
 
@@ -157,6 +157,8 @@ const InputContainerHalf = styled.div`
 const CreateAccount = styled.div`
   margin-top: 30px;
   font-size: 16px;
+  color: ${({theme}) => theme.color.greyFont};
+  font-weight: ${({theme}) => theme.fontWeight.bold};
   text-align: center;
   cursor: pointer;
 `;
@@ -164,11 +166,13 @@ const CreateAccount = styled.div`
 const OrDiv = styled.div`
   font-size: 24px;
   text-align: center;
+  color: ${({theme}) => theme.color.greyFont};
+  font-weight: ${({theme}) => theme.fontWeight.bold};
   margin-top: 32px;
   &:before {
     height: 1px;
     display: block;
-    background-color: #0fa3b1;
+    background-color: ${({theme}) => theme.color.darkTurquise};
     width: 80px;
     content: " ";
     position: relative;
@@ -179,7 +183,7 @@ const OrDiv = styled.div`
     text-align: center;
     height: 1px;
     display: block;
-    background-color: #0fa3b1;
+    background-color: ${({theme}) => theme.color.darkTurquise};
     width: 80px;
     content: " ";
     position: relative;
@@ -194,8 +198,8 @@ const OrDiv = styled.div`
 const Apply = styled.div`
   width: 200px;
   text-align: center;
-  background-color: #0fa3b1;
-  color: #f2f7f2;
+  background-color: ${({theme}) => theme.color.darkTurquise};
+  color: ${({theme}) => theme.color.lightBackground};
   font-size: 24px;
   border-radius: 30px;
   padding-top: 11px;
@@ -212,6 +216,8 @@ const Apply = styled.div`
 `;
 
 const Label = styled.label`
+  color: ${({theme}) => theme.color.greyFont};
+  font-weight: ${({theme}) => theme.fontWeight.bold};
   font-size: 18px;
   @media only screen and (max-width: 800px) {
     font-size: 15px;
@@ -232,7 +238,7 @@ const LoginContainer = styled.div`
   display: grid;
   grid-template-columns: 54.66% 43.34%;
   grid-template-rows: 100%;
-  background-color: #f2f7f2;
+  background-color: ${({theme}) => theme.color.lightBackground};
 
   @media only screen and (max-width: 1020px) {
     grid-template-columns: 100%;
@@ -255,7 +261,7 @@ const LeftSide = styled.div`
 `;
 const RightSide = styled.div`
   width: 100%;
-  background-color: #f2f7f2;
+  background-color: ${({theme}) => theme.color.lightBackground};
   position: relative;
 
   @media only screen and (max-width: 1220px) {
@@ -289,9 +295,9 @@ const Input = styled.input`
   font-size: 24px;
   outline: none;
   border: none;
-  border-bottom: 2px solid #0fa3b1;
+  border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
   margin-bottom: 20px;
-  background-color: #f2f7f2;
+  background-color: ${({theme}) => theme.color.lightBackground};
   margin-top: 10px;
   @media only screen and (max-width: 800px) {
     margin-top: 5px;
@@ -305,18 +311,18 @@ const InputHalf = styled.input`
   font-size: 24px;
   outline: none;
   border: none;
-  border-bottom: 2px solid #0fa3b1;
+  border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
   margin-bottom: 20px;
   margin-top: 10px;
-  background-color: #f2f7f2;
+  background-color: ${({theme}) => theme.color.lightBackground};
   @media only screen and (max-width: 800px) {
     width: 95%;
     font-size: 16px;
     outline: none;
     border: none;
-    border-bottom: 2px solid #0fa3b1;
+    border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
     margin-bottom: 5px;
-    background-color: #f2f7f2;
+    background-color: ${({theme}) => theme.color.lightBackground};
     margin-top: 10px;
   }
 `;
