@@ -2,7 +2,7 @@ export const FriendsListArray = {
     list: [
       {
         id: 1,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Robert Żaak",
         title: "Podróż w nieznane",
         position: {
@@ -12,7 +12,7 @@ export const FriendsListArray = {
       },
       {
         id: 2,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Mikołaj Telec",
         title: "Podróż w nieznane",
         position: {
@@ -22,7 +22,7 @@ export const FriendsListArray = {
       },
       {
         id: 3,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Justyna Socała",
         title: "Podróż w nieznane",
         position: {
@@ -32,7 +32,7 @@ export const FriendsListArray = {
       },
       {
         id: 4,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Weronika Kubińska",
         title: "Podróż w nieznane",
         position: {
@@ -42,7 +42,7 @@ export const FriendsListArray = {
       },
       {
         id: 5,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Natalia Fabia",
         title: "Podróż w nieznane",
         position: {
@@ -52,7 +52,7 @@ export const FriendsListArray = {
       },
       {
         id: 6,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Michał Czarnik",
         title: "Podróż w nieznane",
         position: {
@@ -62,7 +62,7 @@ export const FriendsListArray = {
       },
       {
         id: 7,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Radosław Sajdak",
         title: "Podróż w nieznane",
         position: {
@@ -72,7 +72,7 @@ export const FriendsListArray = {
       },
       {
         id: 8,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Kamil Faron",
         title: "Podróż w nieznane",
         position: {
@@ -82,7 +82,7 @@ export const FriendsListArray = {
       },
       {
         id: 9,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Łukasz Faron",
         title: "Podróż w nieznane",
         position: {
@@ -92,7 +92,7 @@ export const FriendsListArray = {
       },
       {
         id: 10,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Rokowska Maria",
         title: "Podróż w nieznane",
         position: {
@@ -102,7 +102,7 @@ export const FriendsListArray = {
       },
       {
         id: 11,
-        url: "https://pobierak.jeja.pl/avatars/3/f/d/522606_square.jpg?c=1565604736",
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
         name: "Wojewodzic Mariola",
         title: "Podróż w nieznane",
         position: {
