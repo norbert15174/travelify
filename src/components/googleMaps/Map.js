@@ -9,7 +9,6 @@ import { indyStyle } from "./MapStyle";
 import { FriendsListArray as users } from "./data";
 import MarkerInfo from "./MarkerInfo";
 
-
 // map coordinates
 const center = {
   lat: 0,
@@ -40,17 +39,13 @@ function MapComponent({ width, height }) {
 	}, []);
 
 	const onMarkerLoad = (markerr) => {
-		console.log("marker: ", markerr);
-		setMarker(markerr);
-		console.log(marker)
-		console.log(map);
+		//console.log("marker: ", markerr);
 		//setMarker(markerr.anchorPoint);
 		//console.log(marker);
 	};
 
 	const onUnmount = useCallback(function callback(map) {
 		setMap(null);
-		
 	}, []);
 
 	return isLoaded ? (
