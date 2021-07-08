@@ -6,9 +6,11 @@ const MarkerInfo = ({name, url, title}) => {
 
     const [redirect, setRedirect] = useState('no');
 
+    // TODO specific album, not login and register screen
     if (redirect === "yes") {
         return <Redirect to={{pathname: '/auth'}}/>
     }
+
     return (
         <Wrapper>
             <StyledPhoto src={url} alt="profilePhoto"/>
@@ -20,6 +22,7 @@ const MarkerInfo = ({name, url, title}) => {
             </InnerWrapper>
         </Wrapper>
     );
+
 }
 
 const Wrapper = styled.div`

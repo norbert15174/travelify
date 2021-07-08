@@ -32,7 +32,7 @@ const Friends = ({ friendDisplay }) => {
       <Container className="font">
         <FriendsHeader>
           <FriendsHeaderText>Znajomi</FriendsHeaderText>
-          <CloseContainer onClick={(e) => friendDisplay("no")}>
+          <CloseContainer onClick={(e) => friendDisplay("")}>
             <Close width="25px" height="25px"></Close>
           </CloseContainer>
         </FriendsHeader>
@@ -114,7 +114,8 @@ const FriendsHeaderText = styled.p`
   height: 100%;
   margin: 0;
   position: relative;
-  top: 16px;
+  font-size: 30px;
+  top: 15px;
   left: 12px;
 `;
 
