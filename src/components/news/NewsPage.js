@@ -4,6 +4,8 @@ import AlbumPost from "./AlbumPost";
 import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
+import japonia1 from "./Japonia.jpg";
+import japonia2 from "./japonia2.jpg";
 
 const types = {
     friends: "friends",
@@ -12,7 +14,7 @@ const types = {
 
 const NewsPage = () => {
 
-    const [newsType, setNewsType] = useState("");
+    const [newsType, setNewsType] = useState(types.friends);
 
     return (
         <Container>
@@ -39,7 +41,30 @@ const NewsPage = () => {
                     </NewsOption>
                 </NewsSwitch>
             </NewsNavigation>
-            <AlbumPost/>
+            {
+                newsType === types.friends && ( 
+                    <>
+                        <AlbumPost url={japonia1}/>
+                        <AlbumPost url={japonia1}/>
+                        <AlbumPost url={japonia1}/>
+                        <AlbumPost url={japonia1}/>
+                        <AlbumPost url={japonia1}/>
+                        <AlbumPost url={japonia1}/>
+                    </>
+                )
+            }
+            {
+                newsType === types.community && ( 
+                    <>
+                        <AlbumPost url={japonia2}/>
+                        <AlbumPost url={japonia2}/>
+                        <AlbumPost url={japonia2}/>
+                        <AlbumPost url={japonia2}/>
+                        <AlbumPost url={japonia2}/>
+                        <AlbumPost url={japonia2}/>
+                    </>
+                )
+            }
         </Container>
     );
     
