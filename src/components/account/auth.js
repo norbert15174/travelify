@@ -21,7 +21,6 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   min-height: 850px;
-  background-color: #0fa3b1;
   position: absolute;
   left: 0;
   top: 0;

@@ -54,12 +54,10 @@ const Menu = () => {
 							<ButtonIcon icon={searchIcon}/>
 						</Link>
 					</li>
-					<li>
-						<Link to={routes.news}>
-							<ButtonIcon icon={logoutIcon}/>
-						</Link>
-					</li>
         		</ButtonList>
+				<Link to={routes.news}>
+					<Logout icon={logoutIcon}/>
+				</Link>
       		</Container>
 
 			{
@@ -91,10 +89,15 @@ const Container = styled.div`
 
 const ButtonList = styled.ul`
   	list-style: none;
+	margin-bottom: auto;
 `;
 
 const UserProfileContainer = styled.div`
   	cursor: pointer;
+`;
+
+const Logout = styled(ButtonIcon)`
+	margin-top: auto;
 `;
 
 export default Menu;
