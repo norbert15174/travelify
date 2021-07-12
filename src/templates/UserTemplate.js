@@ -20,6 +20,9 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
+    @media only screen and (max-width: 720px) {
+        width: 100%; 
+    }
 `;
 
 export default UserTemplate;

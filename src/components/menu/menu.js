@@ -12,14 +12,23 @@ import searchIcon from "./svg/searchIcon.svg";
 import logoutIcon from "./svg/logoutIcon.svg";
 import groupsIcon from "./svg/groupsIcon.svg";
 import messageIcon from "./svg/messageIcon.svg";
+import expandIcon from "./svg/expandIcon.svg";
 
 const Menu = () => {
 	
 	const [menuToExpand, setMenuToExpand] = useState("");
-	
+	const [isVisible, toggleVisibility] = useState(true);
+
+	const toggleMenuBar = () => {
+		setMenuToExpand("");
+		toggleVisibility(!isVisible);
+		return true;
+	}
+
+
   	return (
     	<>
-      		<Container>
+      		<Container isVisible={isVisible}>
         		<ButtonList>
           			<li>
 						<Link to={routes.user}>
@@ -60,12 +69,14 @@ const Menu = () => {
 				</Link>
       		</Container>
 
+			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()}/>
+			
 			{
 				menuToExpand === "friends" ? (<Friends friendDisplay={setMenuToExpand}/>) : null
 			}
 
 			{
-				menuToExpand === "notifications" ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
+				menuToExpand === "notifications"  ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
 			}
 	
     	</>
@@ -85,90 +96,47 @@ const Container = styled.div`
 	align-items: center;
 	position: fixed;
 	border-left: solid 1px ${({ theme }) => theme.color.greyFont};
+	@media only screen and (max-width: 720px) {
+        visibility: ${({isVisible}) => isVisible ? "" : "hidden"};
+		z-index: 1;
+		overflow-y: scroll;
+    }
+`;
+
+const VisibilityButton = styled(ButtonIcon)`
+	display: none;
+	@media only screen and (max-width: 720px) {
+        display: block;
+		position: fixed;
+		width: 40px;
+		height: 40px;
+		top: 0;
+		right: ${({isVisible}) => isVisible ? "102px" : "25px"};
+		transform: ${({isVisible}) => isVisible ? "rotate(180deg)" : "rotate(0deg)"};
+		background-color: transparent;
+		z-index: 10000;
+    }
 `;
 
 const ButtonList = styled.ul`
   	list-style: none;
 	margin-bottom: auto;
+	@media only screen and (max-width: 720px) {
+        margin-bottom: 0;
+    }
 `;
 
 const UserProfileContainer = styled.div`
   	cursor: pointer;
 `;
 
+
 const Logout = styled(ButtonIcon)`
 	margin-top: auto;
+	@media only screen and (max-width: 720px) {
+		margin-top: 0;
+	}
 `;
 
 export default Menu;
 
-/*
-
-const Menu = () => {
-	
-	const [menuToExpand, setMenuToExpand] = useState("");
-	const [pageToDisplay, setPageToDisplay] = useState(routes.news); // news page is a default value
-
-  	return (
-    	<>
-      		<Container>
-        		<ButtonList>
-          			<li>
-						<UserProfileContainer onClick={() => setPageToDisplay(routes.user)}>
-							<User/>
-						</UserProfileContainer>	
-          			</li>
-          			<li>
-            			<ButtonIcon icon={notificationIcon} onClick={() => menuToExpand === "notifications" ? setMenuToExpand("") : setMenuToExpand("notifications")}/>
-          			</li>
-          			<li>
-						<ButtonIcon icon={newsIcon} onClick={() => setPageToDisplay(routes.news)}/>
-					</li>
-					<li>
-						<ButtonIcon icon={messageIcon} onClick={() => menuToExpand === "friends" ? setMenuToExpand("") : setMenuToExpand("friends")}/>
-					</li>
-					<li>
-						<ButtonIcon icon={albumsIcon} onClick={() => setPageToDisplay(routes.albums)}/>
-					</li>
-					<li>
-						<ButtonIcon icon={groupsIcon} onClick={() => setPageToDisplay(routes.groups)}/>
-					</li>
-					<li>
-						<ButtonIcon icon={searchIcon} onClick={() => setPageToDisplay(routes.search)}/>
-					</li>
-					<li>
-						<ButtonIcon icon={logoutIcon} onClick={() => setPageToDisplay(routes.news)}/>
-					</li>
-        		</ButtonList>
-      		</Container>
-
-			{(() => {
-				switch (pageToDisplay) {
-					case routes.user:
-						return <h1>Panel użytkownika</h1>;
-					case routes.news:
-						return <h1>Aktualności</h1>;
-					case routes.albums:
-						return <h1>Albumy</h1>;
-					case routes.groups:
-						return <h1>Grupy</h1>
-					case routes.search:
-						return <h1>Wyszukiwarka</h1>
-					default:
-						return <h1>Aktualności</h1>;
-				}
-			})()}
-
-			{
-				menuToExpand === "friends" ? (<Friends friendDisplay={setMenuToExpand}/>) : null
-			}
-			
-			{
-				menuToExpand === "notifications" ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
-			}
-
-			
-    	</>
-  	);
-};
-*/

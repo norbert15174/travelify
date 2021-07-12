@@ -4,8 +4,8 @@ import AlbumPost from "./AlbumPost";
 import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
-import japonia1 from "./Japonia.jpg";
-import japonia2 from "./japonia2.jpg";
+import { FriendsListArray as news } from "./data";
+import noResultsIcon from "./svg/noResultsIcon.svg";
 
 const types = {
     friends: "friends",
@@ -14,15 +14,39 @@ const types = {
 
 const NewsPage = () => {
 
+    // same data for both types (for now...)
     const [newsType, setNewsType] = useState(types.friends);
+    
+    // search field content
+    const [searchContent, setSearchContent] = useState("");
+    const [foundNews, setFoundNews] = useState([]);
 
+    // search only by album title and author name
+    const handleSearchBarChange = (e) => {
+        setSearchContent(e.target.value);
+        setFoundNews(news.list.filter((item) => {
+            return item.title.toLowerCase().includes(searchContent.toLowerCase()) || 
+                item.name.toLowerCase().includes(searchContent.toLowerCase());
+        }));
+    };
+
+    
     return (
         <Container>
             <StyledHeader>
                 <StyledHeading>Aktualności</StyledHeading>
             </StyledHeader>
             <NewsNavigation>
-                <Search type="text" search placeholder="Szukaj"/>
+                <Search 
+                    autoComplete="off"
+                    name="search"
+                    id="search" 
+                    type="text" 
+                    search 
+                    placeholder="Szukaj"
+                    value={searchContent}
+                    onChange={handleSearchBarChange}
+                />
                 <Line/>
                 <NewsSwitch>
                     <NewsOption 
@@ -43,26 +67,44 @@ const NewsPage = () => {
             </NewsNavigation>
             {
                 newsType === types.friends && ( 
-                    <>
-                        <AlbumPost url={japonia1}/>
-                        <AlbumPost url={japonia1}/>
-                        <AlbumPost url={japonia1}/>
-                        <AlbumPost url={japonia1}/>
-                        <AlbumPost url={japonia1}/>
-                        <AlbumPost url={japonia1}/>
-                    </>
+                    (
+                        searchContent.length !== 0 && foundNews.length !== 0
+                        ?
+                        foundNews.map((news) => 
+                            <AlbumPost news={news}/>
+                        )
+                        : null
+                    ) || (
+                        news.list.length !== 0 && searchContent.length === 0
+                        ? 
+                        news.list.map((news) => 
+                            <AlbumPost news={news}/>
+                        )
+                        : null
+                    ) || (
+                        <NoResults></NoResults>
+                    )
                 )
             }
             {
                 newsType === types.community && ( 
-                    <>
-                        <AlbumPost url={japonia2}/>
-                        <AlbumPost url={japonia2}/>
-                        <AlbumPost url={japonia2}/>
-                        <AlbumPost url={japonia2}/>
-                        <AlbumPost url={japonia2}/>
-                        <AlbumPost url={japonia2}/>
-                    </>
+                    (
+                        searchContent.length !== 0 && foundNews.length !== 0
+                        ?
+                        foundNews.map((news) => 
+                            <AlbumPost news={news}/>
+                        )
+                        : null
+                    ) || (
+                        news.list.length !== 0 && searchContent.length === 0
+                        ? 
+                        news.list.map((news) => 
+                            <AlbumPost news={news}/>
+                        )
+                        : null
+                    ) || (
+                        <NoResults></NoResults>
+                    )   
                 )
             }
         </Container>
@@ -76,18 +118,27 @@ const Container = styled.div`
     display: grid;
     grid-auto-rows: auto;
     grid-row-gap: 15px;
+    @media only screen and (max-width: 720px) {
+        width: 80vw;
+    }
 `;
 
 const StyledHeader = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground}; 
     height: 80px;
     border-radius: 0px 0px 15px 15px;
+    @media only screen and (max-width: 720px) {
+        height: 55px;
+    }
 `;
 
 const StyledHeading = styled.h1`
     font-size: 48px;
     margin: 10px auto 10px 25px;
     color: ${({theme}) => theme.color.greyFont};
+    @media only screen and (max-width: 720px) {
+        font-size: 32px;
+    }
 `;
 
 const NewsNavigation = styled.div`
@@ -97,25 +148,38 @@ const NewsNavigation = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    @media only screen and (max-width: 720px) {
+        height: 180px;
+    }
 `;
 
 const Search = styled(Input)`
     width: 35vw;
     margin: 30px auto 0 auto;
+    @media only screen and (max-width: 720px) {
+        width: 50%;
+    }
 `;
 
 const Line = styled.div`
     border: 1px solid ${({theme}) => theme.color.darkTurquise};
     width: 42vw;
     margin: 25px auto 0 auto;
+    @media only screen and (max-width: 720px) {
+        width: 80%;
+    }
+    
 `;
 
 const NewsSwitch = styled.div`
     margin: 25px auto 0 auto;
-    font-size: 34px;
+    font-size: 24px;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 5vw;
+    @media only screen and (max-width: 720px) {
+        font-size: 16px;
+    }
 `;
 
 const NewsOption = styled.div`
@@ -132,8 +196,21 @@ const NewsOption = styled.div`
     background-position: 10% 50%;
     background-repeat: no-repeat;
     cursor: pointer;
+    @media only screen and (max-width: 720px) {
+        background-size: 24px;
+        padding: 5px 5px 5px 50px;
+    }
 `;
 
+const NoResults = styled.div`
+    height: 50vh;
+    background: url(${() => noResultsIcon});
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+    border-radius: 15px;
+    background-color: ${({theme}) => theme.color.lightBackground};
+`;
 
 
 export default NewsPage;
