@@ -71,14 +71,14 @@ const NewsPage = () => {
                         searchContent.length !== 0 && foundNews.length !== 0
                         ?
                         foundNews.map((news) => 
-                            <AlbumPost news={news}/>
+                            <AlbumPost key={news.id} news={news}/>
                         )
                         : null
                     ) || (
                         news.list.length !== 0 && searchContent.length === 0
                         ? 
                         news.list.map((news) => 
-                            <AlbumPost news={news}/>
+                            <AlbumPost key={news.id} news={news}/>
                         )
                         : null
                     ) || (
@@ -206,7 +206,7 @@ const NoResults = styled.div`
     height: 50vh;
     background: url(${() => noResultsIcon});
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: 80%;
     background-position: center;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};

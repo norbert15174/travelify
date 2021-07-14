@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { routes } from "../../miscellanous/Routes";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import User from "./User";
+import User from "./UserPhoto";
 import Friends from "../messenger/Friends";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import newsIcon from "./svg/newsIcon.svg";
@@ -22,7 +22,6 @@ const Menu = () => {
 	const toggleMenuBar = () => {
 		setMenuToExpand("");
 		toggleVisibility(!isVisible);
-		return true;
 	}
 
 

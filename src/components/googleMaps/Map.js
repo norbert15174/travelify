@@ -37,10 +37,12 @@ function Map({ width, height }) {
 	
 	const onMarkerLoad = (marker) => {
 		console.log("Marker: ", marker);
+		console.log(map);
 	};
 	
 	const onUnmount = useCallback(function callback(map) {
 		setMap(null);
+		
 	}, []);
 
 	return isLoaded ? (		
