@@ -4,7 +4,7 @@ import aboutIcon from "./assets/aboutIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
 
-const Info = ({birthplace, about, interests, visitedCountries}) => (
+const InfoSection = ({birthplace, about, interests, visitedCountries}) => (
     <Container>
         <Header>
             <h1>Informacje o użytkowniku</h1>
@@ -51,6 +51,14 @@ const Container = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground};
     padding: 20px 25px;
     font-size: 17px;
+    margin-bottom: 15px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 12px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+        padding: 15px 20px;
+    }
 `;
 
 const Header = styled.div`
@@ -70,12 +78,27 @@ const Title = styled.div`
     align-items: center;
     margin-top: 20px;
     color: ${({theme}) => theme.color.greyFont};
+    @media only screen and (max-width: 1080px) {
+        margin-top: 15px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin-top: 10px;
+    }
 `;
 
 const Icon = styled.img`
     width: 30px;
     height: 30px;
     margin-right: 15px;
+    @media only screen and (max-width: 1080px) {
+        width: 25px;
+        height: 25px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px; 
+    }
 `;
 
 const Text = styled.p`
@@ -83,14 +106,30 @@ const Text = styled.p`
     margin-left: 48px;
     margin-top: 10px;
     color: #000;
+    @media only screen and (max-width: 1080px) {
+        font-size: 12px;
+        margin-left: 40px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+        margin-top: 5px;
+        margin-left: 30px;
+    }
+    
 `;
 
 const VisitedCountries = styled.div`
     margin-left: 48px;
-    margin-top: 5px;
+    margin-top: 2px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    @media only screen and (max-width: 1080px) {
+        margin-left: 40px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin-left: 30px;
+    }
 `;
 
 const Country = styled.div`
@@ -105,7 +144,16 @@ const Country = styled.div`
     margin-right: 10px;
     padding: 5px 15px;
     flex-shrink: 1;
+    @media only screen and (max-width: 1080px) {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+        padding: 5px 5px;
+        margin-top: 5px;
+    }
 `;
 
 
-export default Info;
+export default InfoSection;

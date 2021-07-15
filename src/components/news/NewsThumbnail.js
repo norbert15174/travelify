@@ -1,19 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-const AlbumThumbnail = ({title, localization, description, image}) => (
+const NewsThumbnail = ({news}) => (
     <>  
         <Container>
-            <MainPhoto src={image} alt="albumMainPhoto"/>
+            <MainPhoto src={news.image} alt="albumMainPhoto"/>
             <Info>
                 {/* Album owner name and avatar */}
                 <Text>
                     <InfoHeader>
-                        <Title>{title}</Title>
-                        <Localization>{localization}</Localization>
+                        <Title>{news.title}</Title>
+                        <Localization>{news.localization}</Localization>
                     </InfoHeader>
                     <Description>
-                        {description}
+                        {news.description}
                     </Description>
                 </Text>
             </Info>
@@ -70,18 +70,18 @@ const Localization = styled.h2`
 const Description = styled.p`
     margin-top: 20px;
     font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 10;
     @media only screen and (max-width: 1020px) {
         font-size: 10px;
         margin-top: 5px;
     }
     @media only screen and (max-width: 890px) {
         font-size: 8px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 6; 
-
+        -webkit-line-clamp: 6;
     }
     @media only screen and (max-width: 530px) {
         font-size: 5px;
@@ -89,4 +89,4 @@ const Description = styled.p`
     }
 `;
 
-export default AlbumThumbnail;
+export default NewsThumbnail;

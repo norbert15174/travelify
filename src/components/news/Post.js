@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import AlbumThumbnail from "../albums/AlbumThumbnail";
+import NewsThumbnail from "./NewsThumbnail";
 
 
-const AlbumPost = ({news}) => (
+const Post = ({news}) => (
     <Container>
         <Header>
             <ProfilePhoto src={"https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x"} alt="profilePhoto"/>
             <h1>{news.name}</h1>
         </Header>
-        <AlbumThumbnail title={news.title} localization={news.localization} description={news.description} image={news.image}/> 
+        <NewsThumbnail news={news}/> 
     </Container>
 );
 
@@ -57,4 +57,4 @@ const ProfilePhoto = styled.img`
 `;
 
 
-export default AlbumPost;
+export default Post;

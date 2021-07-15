@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import AlbumPost from "./AlbumPost";
+import Post from "./Post";
 import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
@@ -71,18 +71,18 @@ const NewsPage = () => {
                         searchContent.length !== 0 && foundNews.length !== 0
                         ?
                         foundNews.map((news) => 
-                            <AlbumPost key={news.id} news={news}/>
+                            <Post key={news.id} news={news}/>
                         )
                         : null
                     ) || (
                         news.list.length !== 0 && searchContent.length === 0
                         ? 
                         news.list.map((news) => 
-                            <AlbumPost key={news.id} news={news}/>
+                            <Post key={news.id} news={news}/>
                         )
                         : null
                     ) || (
-                        <NoResults></NoResults>
+                        <NoResults/>
                     )
                 )
             }
@@ -92,18 +92,18 @@ const NewsPage = () => {
                         searchContent.length !== 0 && foundNews.length !== 0
                         ?
                         foundNews.map((news) => 
-                            <AlbumPost news={news}/>
+                            <Post news={news}/>
                         )
                         : null
                     ) || (
                         news.list.length !== 0 && searchContent.length === 0
                         ? 
                         news.list.map((news) => 
-                            <AlbumPost news={news}/>
+                            <Post news={news}/>
                         )
                         : null
                     ) || (
-                        <NoResults></NoResults>
+                        <NoResults/>
                     )   
                 )
             }
