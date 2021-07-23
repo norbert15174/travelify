@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import AlbumThumbnail from "./AlbumThumbnail"
 import FriendThumbnail from "./FriendThumbnail";
@@ -11,6 +11,8 @@ const GridSection = ({data, sectionType}) => {
     // search field content
     const [searchContent, setSearchContent] = useState("");
     const [found, setFound] = useState([]);
+    
+    const searchBarRef = useRef(null);
 
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
@@ -21,6 +23,12 @@ const GridSection = ({data, sectionType}) => {
                 : item.name.toLowerCase().includes(searchContent.toLowerCase())
         }));
     };
+
+    const resizeSearchBar = () => {
+        searchBarRef.current.focus();
+        if (searchBarRef.current.style.width === "25%") searchBarRef.current.style.width = "50%";
+        else searchBarRef.current.style.width = "25%";
+    }
 
     return (
         <Container>
@@ -39,6 +47,8 @@ const GridSection = ({data, sectionType}) => {
                 placeholder="Szukaj"
                 value={searchContent}
                 onChange={handleSearchBarChange}
+                onClick={resizeSearchBar}
+                ref={searchBarRef}
             />
             {
                 sectionType === "albums" 
@@ -46,19 +56,15 @@ const GridSection = ({data, sectionType}) => {
                 <AlbumGrid className="scroll">
                 {
                     ( 
-                        searchContent.length !== 0 && found.length !== 0
-                        ?
+                        searchContent.length !== 0 && found.length !== 0 ?
                         found.map((album) => 
-                            <AlbumThumbnail album={album}/>)
-                        :
-                        null
+                            <AlbumThumbnail album={album}/>
+                        ) : null
                     ) || (
-                        data.length !== 0 && searchContent.length === 0
-                        ?
+                        data.length !== 0 && searchContent.length === 0 ?
                         data.map((album) => 
-                            <AlbumThumbnail album={album}/>)
-                        :
-                        null
+                            <AlbumThumbnail album={album}/>
+                        ) : null
                     ) || (
                         <NoResults/>
                     )
@@ -68,26 +74,25 @@ const GridSection = ({data, sectionType}) => {
                 <FriendsGrid className="scroll">
                 {
                     ( 
-                        searchContent.length !== 0 && found.length !== 0
-                        ?
+                        searchContent.length !== 0 && found.length !== 0 ?
                         found.map((friend) => 
-                            <FriendThumbnail friend={friend}/>)
-                        :
-                        null
+                            <FriendThumbnail 
+                                friend={friend} 
+                            />
+                        ) : null
                     ) || (
-                        data.length !== 0 && searchContent.length === 0
-                        ?
+                        data.length !== 0 && searchContent.length === 0 ?
                         data.map((friend) => 
-                            <FriendThumbnail friend={friend}/>)
-                        :
-                        null
+                            <FriendThumbnail 
+                                friend={friend} 
+                            />
+                        ) : null
                     ) || (
                         <NoResults/>
                     )
                 }
                 </FriendsGrid>
             }
-            
         </Container>
     );
 
@@ -105,6 +110,7 @@ const Container = styled.div`
         font-size: 8px;
         padding: 15px 20px;
     }
+    
 `;
 
 const Header = styled.div`
@@ -119,30 +125,20 @@ const Line = styled.div`
 
 
 const Search = styled(Input)`
-    width: 490px;
+    width: 25%;
     margin: 20px 0 25px 30px;
-    @media only screen and (max-width: 1440px) {
-        width: 320px;
-    }
+    transition: width 0.5s ease-in;
     @media only screen and (max-width: 1080px) {
-        width: 480px;
         margin: 20px 0;
     }
     @media only screen and (max-width: 830px) {
-        width: 430px;
         margin: 15px 0;
         padding: 5px 5px 5px 35px;
     }
-    @media only screen and (max-width: 735px) {
-        width: 400px;
-    }
-    @media only screen and (max-width: 560px) {
-        width: 260px;
+    @media only screen and (max-width: 560px) {   
         font-size: 8px;
-    }
-    @media only screen and (max-width: 410px) {
-        width: 210px;
-    }
+        background-size: 14px;
+    } 
 `;
 
 const AlbumGrid = styled.div`
@@ -157,11 +153,25 @@ const AlbumGrid = styled.div`
         grid-template-columns: repeat(2, 380px);
     }
     @media only screen and (max-width: 1080px) {
-        grid-template-columns: none;
-        grid-column-gap: 5px;
+        grid-template-columns: 520px;
         grid-auto-rows: auto;
-        grid-gap: 25px;
+        grid-gap: 20px;
         margin-left: 0px;
+    }
+    @media only screen and (max-width: 1080px) {
+        grid-template-columns: 520px;
+    }
+    @media only screen and (max-width: 830px) {
+        grid-template-columns: 470px;
+    }
+    @media only screen and (max-width: 735px) {
+        grid-template-columns: 420px;
+    }
+    @media only screen and (max-width: 560px) {
+        grid-template-columns: 290px;
+    }
+    @media only screen and (max-width: 410px) {
+        grid-template-columns: 240px;
     }
 `;
 
@@ -169,11 +179,30 @@ const FriendsGrid = styled.div`
     display: grid;
     align-content: start;
     grid-template-columns: repeat(2, 550px);
-    grid-column-gap: 30px;
-    grid-row-gap: 30px;
+    grid-gap: 30px;
     margin-left: 30px;
-    max-height: 1000px;
+    max-height: 750px;
     overflow-y: scroll;
+    @media only screen and (max-width: 1440px) {
+        grid-template-columns: repeat(2, 380px);
+    }
+    @media only screen and (max-width: 1080px) {
+        margin-left: 0px;
+        grid-template-columns: repeat(2, 250px);
+        grid-gap: 20px;
+    }
+    @media only screen and (max-width: 830px) {
+        grid-template-columns: repeat(2, 230px);
+    }
+    @media only screen and (max-width: 735px) {
+        grid-template-columns: repeat(2, 205px);
+        grid-gap: 15px;
+    }
+    @media only screen and (max-width: 560px) {
+        grid-template-columns: 97%;
+        grid-auto-rows: auto;
+        grid-gap: 10px;
+    }
 `
 const NoResults = styled.div`
     height: 50vh;

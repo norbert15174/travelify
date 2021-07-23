@@ -11,8 +11,8 @@ const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", display, 
 
 
     return (
-        <Black>
-            <Container className="blur" ref={ref} display={display}>
+        <>
+        <Container className="blur" ref={ref} display={display}>
             <Text>
                 <p>{children}</p>
             </Text>
@@ -25,15 +25,10 @@ const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", display, 
                 </Button>
             </Buttons>
         </Container>
-        </Black>
-        
+        </>
     )
     
 };
-
-const Black = styled.div`
-    background-color: #000;
-`;
 
 const Container = styled.div`
     display: ${({display}) => display ? "flex" : "none"};
@@ -43,11 +38,11 @@ const Container = styled.div`
     width: 300px;
     top: 50%;
     left: 34%;
-    border: 10px solid ${({theme}) => theme.color.lightTurquise};
+    border: 2px solid ${({theme}) => theme.color.lightTurquise};
     padding: 15px 20px;
-    font-weight: ${({theme}) => theme.fontWeight.bold};
     border-radius: 10px;
-    
+    z-index: 10000;
+    box-shadow: 5px 5px 10px 0 ${({theme}) => theme.color.greyFont} ;
 `;
 
 const Text = styled.div`

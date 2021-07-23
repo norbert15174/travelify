@@ -39,7 +39,7 @@ const InfoSection = ({birthplace, about, interests, visitedCountries}) => (
             {
                 visitedCountries.length !== 0 ?
                 visitedCountries.map((countryName) => (
-                    <Country>{countryName}</Country>
+                    <Country icon={"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png"}>{countryName}</Country>
                 )) : <p>Brak informacji</p>
             }
         </VisitedCountries> 
@@ -138,20 +138,24 @@ const Country = styled.div`
     background-color: #E0E5E0;
     border-radius: 15px;
     color: #000;
+    background-image: url(${({icon}) => icon});
+    background-size: 20%;
+    background-position: 10% 50%;
+    background-repeat: no-repeat;
     font-size: 16px;
-    text-align: center;
     margin-top: 8px;
     margin-right: 10px;
-    padding: 5px 15px;
+    padding: 5px 10px 5px 30px;
     flex-shrink: 1;
     @media only screen and (max-width: 1080px) {
-        padding: 5px 10px;
+        padding: 5px 10px 5px 25px;
         font-size: 10px;
     }
     @media only screen and (max-width: 560px) {
         font-size: 8px;
         padding: 5px 5px;
         margin-top: 5px;
+        background-image: none;
     }
 `;
 

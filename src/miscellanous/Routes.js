@@ -3,6 +3,7 @@ export const routes = {
     auth: '/auth',
     menu: '/menu',
     user: '/user',
+    editProfile: '/user/editProfile',
     news: '/news',
     albums: '/albums',
     groups: '/groups',

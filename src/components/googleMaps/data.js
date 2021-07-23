@@ -8,7 +8,8 @@ export const FriendsListArray = {
         position: {
             lat: 44.79317,
             lng: -172.29861,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 2,
@@ -18,7 +19,8 @@ export const FriendsListArray = {
         position: {
             lat: -30.19849,
             lng: 97.01732,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 3,
@@ -28,7 +30,8 @@ export const FriendsListArray = {
         position: {
             lat: -27.90042,
             lng: 166.80589,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 4,
@@ -38,7 +41,8 @@ export const FriendsListArray = {
         position: {
             lat: 43.40122,
             lng: -96.94310,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 5,
@@ -48,7 +52,8 @@ export const FriendsListArray = {
         position: {
             lat: -38.13056,
             lng: -166.13536,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 6,
@@ -68,7 +73,8 @@ export const FriendsListArray = {
         position: {
             lat: 12.79213,
             lng: 8.82695,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 8,
@@ -78,7 +84,8 @@ export const FriendsListArray = {
         position: {
             lat: 25.78061,
             lng: -52.36021,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 9,
@@ -88,7 +95,7 @@ export const FriendsListArray = {
         position: {
             lat: -40.95499,
             lng: -52.26989,
-        }
+        },
       },
       {
         id: 10,
@@ -98,7 +105,8 @@ export const FriendsListArray = {
         position: {
             lat: 61.75656,
             lng: -64.14193,
-        }
+        },
+        country: "Germany",
       },
       {
         id: 11,
@@ -108,7 +116,8 @@ export const FriendsListArray = {
         position: {
             lat: 22.65712,
             lng: -96.94310,
-        }
+        },
+        country: "Germany",
       },
     ],
   };

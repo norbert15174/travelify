@@ -38,8 +38,13 @@ const InfoContainer = styled.div`
 `;
 
 const Text = styled.div`
-    padding: 10px 20px 10px 20px;
-    
+    padding: 10px 20px;
+    @media only screen and (max-width: 1440px) {
+        padding: 10px 15px;
+    }
+    @media only screen and (max-width: 560px) {
+        padding: 5px 10px;
+    }
 `;
 
 const Header = styled.div`
@@ -51,11 +56,35 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
+    @media only screen and (max-width: 1440px) {
+        font-size: 28px;
+    }
+    @media only screen and (max-width: 735px) {
+        font-size: 22px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 16px;
+    }
+    @media only screen and (max-width: 410px) {
+        font-size: 12px;
+    }
 `;
 
 const Localization = styled.h2`
     font-size: 18px;
     justify-self: end;
+    @media only screen and (max-width: 1440px) {
+        font-size: 16px;
+    }
+    @media only screen and (max-width: 735px) {
+        font-size: 14px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 12px;
+    }
+    @media only screen and (max-width: 410px) {
+        font-size: 8px;
+    }
 `;
 
 const Description = styled.p`
@@ -66,6 +95,22 @@ const Description = styled.p`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 6;
+    @media only screen and (max-width: 1440px) { 
+        margin-top: 10px;
+        -webkit-line-clamp: 5;
+    }
+    @media only screen and (max-width: 735px) {
+        font-size: 10px;
+        margin-top: 5px;
+        -webkit-line-clamp: 4;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+        margin-top: 3px;
+    }
+    @media only screen and (max-width: 410px) {
+        margin-top: 0px;
+    }
 `;
 
 export default AlbumThumbnail;

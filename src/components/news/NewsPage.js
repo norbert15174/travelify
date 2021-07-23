@@ -33,9 +33,9 @@ const NewsPage = () => {
     
     return (
         <Container>
-            <StyledHeader>
-                <StyledHeading>Aktualności</StyledHeading>
-            </StyledHeader>
+            <Header>
+                <Heading>Aktualności</Heading>
+            </Header>
             <NewsNavigation>
                 <Search 
                     autoComplete="off"
@@ -114,7 +114,8 @@ const NewsPage = () => {
 
 const Container = styled.div`
     width:  62.5vw;
-    margin: 0 auto 0 auto; 
+    margin: 0 auto;
+    margin-bottom: 15px; 
     display: grid;
     grid-auto-rows: auto;
     grid-row-gap: 15px;
@@ -123,7 +124,7 @@ const Container = styled.div`
     }
 `;
 
-const StyledHeader = styled.div`
+const Header = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground}; 
     height: 80px;
     border-radius: 0px 0px 15px 15px;
@@ -132,7 +133,7 @@ const StyledHeader = styled.div`
     }
 `;
 
-const StyledHeading = styled.h1`
+const Heading = styled.h1`
     font-size: 48px;
     margin: 10px auto 10px 25px;
     color: ${({theme}) => theme.color.greyFont};

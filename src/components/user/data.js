@@ -1,11 +1,13 @@
-import japonia1 from "./assets/Japonia.jpg";
-import japonia2 from "./assets/japonia2.jpg";
+import japonia1 from "../../assets/Japonia.jpg"
+import japonia2 from "../../assets/japonia2.jpg";
+import malePhoto from "../../assets/profileMale.png";
+import femalePhoto from "../../assets/profileFemale.png";
 
 export const FriendsListArray = {
     list: [
       {
         id: 1,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Robert Żaak",
         title: "Czarny",
         localization: "Japonia, Osaka",
@@ -16,7 +18,7 @@ export const FriendsListArray = {
       },
       {
         id: 2,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Mikołaj Telec",
         title: "Czerwony",
         localization: "Japonia, Osaka",
@@ -28,7 +30,7 @@ export const FriendsListArray = {
       },
       {
         id: 3,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: femalePhoto,
         name: "Justyna Socała",
         title: "Biały",
         localization: "Japonia, Osaka",
@@ -42,7 +44,7 @@ export const FriendsListArray = {
       },
       {
         id: 4,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: femalePhoto,
         name: "Weronika Kubińska",
         title: "Kolor",
         localization: "Japonia, Osaka",
@@ -52,7 +54,7 @@ export const FriendsListArray = {
       },
       {
         id: 5,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: femalePhoto,
         name: "Natalia Fabia",
         title: "Zielony",
         localization: "Japonia, Osaka",
@@ -63,7 +65,7 @@ export const FriendsListArray = {
     },
       {
         id: 6,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Michał Czarnik",
         title: "Czarny",
         localization: "Japonia, Osaka",
@@ -75,7 +77,7 @@ export const FriendsListArray = {
       
       {
         id: 7,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Radosław Sajdak",
         title: "Różowy",
         localization: "Japonia, Osaka",
@@ -86,7 +88,7 @@ export const FriendsListArray = {
     },
       {
         id: 8,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Kamil Faron",
         title: "Żółty",
         localization: "Japonia, Osaka",
@@ -98,7 +100,7 @@ export const FriendsListArray = {
     },
       {
         id: 9,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: malePhoto,
         name: "Łukasz Faron",
         title: "Turkusowy",
         localization: "Japonia, Osaka",
@@ -112,7 +114,7 @@ export const FriendsListArray = {
     },
       {
         id: 10,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: femalePhoto,
         name: "Rokowska Maria",
         title: "Szary",
         localization: "Japonia, Osaka",
@@ -126,7 +128,7 @@ export const FriendsListArray = {
     },
       {
         id: 11,
-        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        url: femalePhoto,
         name: "Wojewodzic Mariola",
         title: "Brązowy",
         localization: "Japonia, Osaka",

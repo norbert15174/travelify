@@ -5,6 +5,7 @@ import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
 import Map from '../googleMaps/Map';
 
+
 const StartPage = () => {
 
     const [redirect, setRedirect] = useState('no');

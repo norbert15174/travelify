@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
-import { FriendsListArray as users } from "./data";
+import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
-
+import { GetPlaceName } from "./Geocode";
 
 // initial map coordinates
 const center = {
@@ -21,28 +21,35 @@ const options = {
 };
 
 function Map({ width, height }) {
+
 	const { isLoaded } = useJsApiLoader({
     	id: "google-map-script",
     	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
   	});
 
 	const [map, setMap] = useState(null);
-	// const [marker, setMarker] = useState(null);
 	const [selected, setSelected] = useState(null);
 
 	const onMapLoad = useCallback(function callback(map) {
 		setMap(map);
 	}, []);
 
-	
+	// prints position and place name in console
+	const onMapClick = (place) => {
+		if (false) console.log(map);
+		console.log("lat: " + place.latLng.lat() + " lng: " + place.latLng.lng());
+		GetPlaceName({
+			lat: place.latLng.lat(), 
+			lng: place.latLng.lng()
+		});
+	}
+
 	const onMarkerLoad = (marker) => {
-		console.log("Marker: ", marker);
-		console.log(map);
+		console.log("Marker on map: ", marker);
 	};
 	
 	const onUnmount = useCallback(function callback(map) {
-		setMap(null);
-		
+		setMap(null);	
 	}, []);
 
 	return isLoaded ? (		
@@ -56,10 +63,13 @@ function Map({ width, height }) {
 			onLoad={onMapLoad}
 			onUnmount={onUnmount}
 			options={options}
+			onClick={(event) => {
+				onMapClick(event);
+			}}
 		>
 			<>
-				{users
-				? users.list.map((user) => (
+				{markers
+				? markers.list.map((user) => (
 					<Marker
 						key={user.id}
 						position={{
@@ -85,13 +95,14 @@ function Map({ width, height }) {
 							name={selected.name}
 							url={selected.url}
 							title={selected.title}
+							country={selected.country}
 						/>
 					</InfoWindow>
 					) : null}
 			</>
 		</GoogleMap>	
 	) : (
-		<h1>Loading...</h1>
+		<h1>Loading... or maybe not :D</h1>
 	);
 
 }

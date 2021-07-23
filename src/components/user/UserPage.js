@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Redirect } from "react-router-dom";
 import InfoSection from "./InfoSection";
 import GridSection from "./GridSection";
 import { FriendsListArray as albumData } from "./data";
@@ -18,7 +19,7 @@ const user = {
     unknown: "unknown"
 }
 
-const types = {
+const sections = {
     info: "info",
     albums: "albums",
     friends: "friends",  
@@ -41,17 +42,20 @@ const UserPage = () => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
-    const [ friendsActive, setFriendsActive ] = useState(false); 
+    const [ friendsActive, setFriendsActive ] = useState(false);
+    
+    // redirects to edit profile page
+    const [ redirect, setRedirect ] = useState(false);
 
     const sectionsToggle = (sectionName) => {
-        if (sectionName === types.albums) {
+        if (sectionName === sections.albums) {
             setAlbumsActive(true);
             setFriendsActive(false);
-        } else if ( sectionName === types.friends) {
+        } else if ( sectionName === sections.friends) {
             setAlbumsActive(false);
             setFriendsActive(true);
             setInfoActive(false);
-        } else if ( sectionName === types.info) {
+        } else if ( sectionName === sections.info) {
             if ( friendsActive ) {
                 setAlbumsActive(true);
                 setFriendsActive(false);
@@ -62,27 +66,31 @@ const UserPage = () => {
         }
     };
 
+    if (redirect) {
+        return <Redirect to={{pathname: "/user/editProfile"}}/>
+    }
+
     return (
         <>
             <Header>
                 <Images>
-                    <BackgroundImage src={profileBackground} alt="Profile background photo"/>
+                    <ProfileBackground src={profileBackground} alt="Profile background"/>
                     <ProfilePhoto src={profilePhoto} alt="Profile photo"/>
                 </Images> 
                 <Name>Jan Nowak</Name>
                 <Line/>
                 <Options>
-                    <Button onClick={() => sectionsToggle(types.info)}>Informacje o użytkowniku</Button>
-                    <Button onClick={() => sectionsToggle(types.albums)}>Albumy</Button>
-                    <Button onClick={() => sectionsToggle(types.friends)}>Znajomi</Button>
+                    <Button onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
+                    <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
+                    <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
                     {
-                        user.type === "logged" && <TypeSpecifiedButton icon={editIcon}>Edytuj profil</TypeSpecifiedButton>
+                        user.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                     }
                     {
-                        user.type === "friend" && <TypeSpecifiedButton icon={friendsIcon}>Znajomi</TypeSpecifiedButton>
+                        user.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
                     }
                     {
-                        user.type === "unknown" && <TypeSpecifiedButton icon={addFriendIcon}>Dodaj</TypeSpecifiedButton>
+                        user.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
                     }
                 </Options>
             </Header>
@@ -91,10 +99,10 @@ const UserPage = () => {
                     infoActive && <InfoSection birthplace={infoData.birthplace} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
                 }
                 {
-                    albumsActive && <GridSection sectionType={types.albums} data={albumData.list}/>
+                    albumsActive && <GridSection sectionType={sections.albums} data={albumData.list}/>
                 }
                 {
-                    friendsActive && <GridSection sectionType={types.friends} data={albumData.list}/>
+                    friendsActive && <GridSection sectionType={sections.friends} data={albumData.list}/>
                 }
             </Container>
         </>
@@ -116,14 +124,14 @@ const Header = styled.div`
     @media only screen and (max-width: 735px) {
         height: 250px;
     }
-    min-width: 305px;
+    min-width: 360px;
 `;
 
 const Images = styled.div`
     position: relative;
 `;
 
-const BackgroundImage = styled.img`
+const ProfileBackground = styled.img`
     height: 250px;
     width: 1300px;
     display: block;
@@ -221,7 +229,7 @@ const Options = styled.div`
     margin: 0 auto;
     margin-top: 5px;
     display: grid;
-    grid-template-columns: 195px repeat(2, 100px) 1fr;
+    grid-template-columns: 250px repeat(2, 100px) 1fr;
     align-items: baseline;
     font-size: 18px;
     color: ${({theme}) => theme.color.greyFont};
@@ -230,13 +238,13 @@ const Options = styled.div`
         width: 900px;
     }
     @media only screen and (max-width: 1080px) {
-        grid-template-columns: 140px repeat(2, 100px) 1fr;
+        grid-template-columns: 180px repeat(2, 100px) 1fr;
         width: 600px;
         font-size: 14px;
     }
     @media only screen and (max-width: 830px) {
         width: 550px;
-        grid-template-columns: repeat(3, 80px) 1fr;
+        grid-template-columns: 130px repeat(2, 80px) 1fr;
         font-size: 10px;
         margin-top: 2px;
     }
@@ -269,7 +277,7 @@ const Button = styled.div`
 `;
 
 
-const TypeSpecifiedButton = styled(ButtonIcon)`
+const UserButton = styled(ButtonIcon)`
     width: 160px;
     height: 39px;
     border-radius: 5px;
@@ -321,8 +329,10 @@ const Container = styled.div`
     }
     @media only screen and (max-width: 410px) {
         width: 300px;
+        margin: 0 auto;
     }
     min-width: 300px;
+    margin-bottom: 15px;
 `;
 
 export default UserPage;

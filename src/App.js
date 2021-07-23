@@ -7,6 +7,7 @@ import StartPage from "./components/startPage/StartPage";
 import Auth from "./components/account/auth";
 import News from "./views/News";
 import User from "./views/User";
+import EditProfile from "./components/editProfile/EditProfile";
 import Groups from "./views/Groups";
 import Albums from "./views/Albums";
 import Search from "./views/Search";
@@ -20,6 +21,7 @@ function App() {
           <Route exact path={routes.auth} component={Auth}/>   
           <Route exact path={routes.news} component={News}/>
           <Route exact path={routes.user} component={User}/>
+          <Route path={routes.editProfile} component={EditProfile}/>
           <Route exact path={routes.search} component={Search}/>
           <Route exact path={routes.albums} component={Albums}/>
           <Route exact path={routes.groups} component={Groups}/>
