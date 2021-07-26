@@ -8,12 +8,15 @@ import changePasswordIcon from "./assets/changePasswordIcon.svg";
 import descriptionIcon from "./assets/descriptionIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import countriesIcon from "./assets/countriesIcon.svg";
+import deleteAccountIcon from "./assets/deleteAccountIcon.svg";
 import ProfilePhoto from "./ProfilePhoto";
 import ProfileBackground from "./ProfileBackground";
 import PersonalInfoForm from "./PersonalInfoForm";
 import PasswordForm from "./PasswordForm";
 import DescriptionForm from "./DescriptionForm";
 import CountriesForm from "./CountriesForm";
+import DeleteAccountForm from "./DeleteAccount";
+
 
 const EditProfile = () => {
 
@@ -38,41 +41,48 @@ const EditProfile = () => {
                     <ProfilePhoto/>
                     <ProfileBackground/>
                 </Images>
-                <PersonalInfo>
+                <SectionContainer>
                     <Header>
                         <Icon src={personalInfoIcon}/>
                         <h1>Dane użytkownika</h1>
                     </Header>
                     <PersonalInfoForm/>
-                </PersonalInfo>
-                <Password>
+                </SectionContainer>
+                <SectionContainer>
                     <Header>
                         <Icon src={changePasswordIcon}/>
                         <h1>Zmiana hasła</h1>
                     </Header>
                     <PasswordForm/>
-                </Password>
-                <Description>
+                </SectionContainer>
+                <SectionContainer>
                     <Header>
                         <Icon src={descriptionIcon}/>
                         <h1>Opis użytkownika</h1>
                     </Header>
                     <DescriptionForm type="description"/>
-                </Description>
-                <Interests>
+                </SectionContainer>
+                <SectionContainer>
                     <Header>
                         <Icon src={interestsIcon}/>
-                        <h1>Opis użytkownika</h1>
+                        <h1>Zainteresowania</h1>
                     </Header>
                     <DescriptionForm type="about"/>
-                </Interests>
-                <Countries>
+                </SectionContainer>
+                <SectionContainer>
                     <Header>
                         <Icon src={countriesIcon}/>
                         <h1>Odwiedzone kraje</h1>
                     </Header>
                     <CountriesForm/>
-                </Countries>
+                </SectionContainer>
+                <SectionContainer>
+                    <Header>
+                        <Icon src={deleteAccountIcon}/>
+                        <h1>Usuń konto</h1>
+                    </Header>
+                    <DeleteAccountForm/>
+                </SectionContainer>
             </Container>
         </UserTemplate>   
     );
@@ -85,6 +95,7 @@ const Container = styled.div`
     grid-template-rows: repeat(7, auto);
     grid-row-gap: 15px;
     min-width: 388px;
+    margin-bottom: 15px;
 `;
 
 const PageHeader = styled.div`
@@ -221,72 +232,11 @@ const Icon = styled.img`
     }
 `;
 
-const PersonalInfo = styled.div`
+const SectionContainer = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground};
     border-radius: 15px;
     padding: 20px 40px;
     grid-template-rows: repeat(2, auto);
-    @media only screen and (max-width: 1440px) {
-        padding: 20px;
-    }
-    @media only screen and (max-width: 870px) {
-        padding: 15px;
-    }
-    @media only screen and (max-width: 560px) {
-        padding: 10px;
-    }
-`;
-
-const Password = styled.div`
-    background-color: ${({theme}) => theme.color.lightBackground};
-    padding: 20px 40px;
-    border-radius: 15px;
-    @media only screen and (max-width: 1440px) {
-        padding: 20px;
-    }
-    @media only screen and (max-width: 870px) {
-        padding: 15px;
-    }
-    @media only screen and (max-width: 560px) {
-        padding: 10px;
-    }
-`;
-
-const Description = styled.div`
-    background-color: ${({theme}) => theme.color.lightBackground};
-    padding: 20px 40px;
-    border-radius: 15px;
-    @media only screen and (max-width: 1440px) {
-        padding: 20px 20px;
-    }
-    @media only screen and (max-width: 870px) {
-        padding: 15px;
-    }
-    @media only screen and (max-width: 560px) {
-        padding: 10px;
-    }
-`;
-
-const Interests = styled.div`
-    background-color: ${({theme}) => theme.color.lightBackground};
-    padding: 20px 40px;
-    border-radius: 15px;
-    @media only screen and (max-width: 1440px) {
-        padding: 20px;
-    }
-    @media only screen and (max-width: 870px) {
-        padding: 15px;
-    }
-    @media only screen and (max-width: 560px) {
-        padding: 10px;
-    }
-`;
-
-const Countries = styled.div`
-    background-color: ${({theme}) => theme.color.lightBackground};
-    padding: 20px 40px;
-    border-radius: 15px;
-    margin-bottom: 15px;
     @media only screen and (max-width: 1440px) {
         padding: 20px;
     }

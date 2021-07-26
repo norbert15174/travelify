@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import styled, { keyframes } from "styled-components";
 import AlbumThumbnail from "./AlbumThumbnail"
 import FriendThumbnail from "./FriendThumbnail";
 import Input from "../trinkets/Input";
@@ -12,8 +12,6 @@ const GridSection = ({data, sectionType}) => {
     const [searchContent, setSearchContent] = useState("");
     const [found, setFound] = useState([]);
     
-    const searchBarRef = useRef(null);
-
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
         setSearchContent(e.target.value);
@@ -23,12 +21,6 @@ const GridSection = ({data, sectionType}) => {
                 : item.name.toLowerCase().includes(searchContent.toLowerCase())
         }));
     };
-
-    const resizeSearchBar = () => {
-        searchBarRef.current.focus();
-        if (searchBarRef.current.style.width === "25%") searchBarRef.current.style.width = "50%";
-        else searchBarRef.current.style.width = "25%";
-    }
 
     return (
         <Container>
@@ -47,8 +39,6 @@ const GridSection = ({data, sectionType}) => {
                 placeholder="Szukaj"
                 value={searchContent}
                 onChange={handleSearchBarChange}
-                onClick={resizeSearchBar}
-                ref={searchBarRef}
             />
             {
                 sectionType === "albums" 
@@ -110,7 +100,6 @@ const Container = styled.div`
         font-size: 8px;
         padding: 15px 20px;
     }
-    
 `;
 
 const Header = styled.div`
@@ -123,11 +112,23 @@ const Line = styled.div`
     border: 1px solid ${({theme}) => theme.color.darkTurquise};
 `;
 
+const animation = keyframes`
+    from {
+      width: 25%;
+    }
+    to {
+      width: 50%;
+    }
+`;
 
 const Search = styled(Input)`
     width: 25%;
     margin: 20px 0 25px 30px;
-    transition: width 0.5s ease-in;
+    &:focus {
+        animation: ${animation};
+        animation-duration: 0.25s;
+        animation-fill-mode: forwards;
+    }
     @media only screen and (max-width: 1080px) {
         margin: 20px 0;
     }

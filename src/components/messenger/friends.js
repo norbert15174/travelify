@@ -8,6 +8,7 @@ import Close from "../menu/svg/close";
 import url from "../../url";
 
 const Friends = ({ friendDisplay }) => {
+  
   const [display, setDisplay] = useState(-1);
   const [friends, setFriends] = useState([]);
 

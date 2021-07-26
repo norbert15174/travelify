@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Post from "./Post";
+import NewsSearch from "../trinkets/DropdownSearch";
 import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
@@ -14,39 +15,58 @@ const types = {
 
 const NewsPage = () => {
 
-    // same data for both types (for now...)
     const [newsType, setNewsType] = useState(types.friends);
-    
+        
+
+    // STARE SZUKANIE
     // search field content
     const [searchContent, setSearchContent] = useState("");
     const [foundNews, setFoundNews] = useState([]);
-
     // search only by album title and author name
     const handleSearchBarChange = (e) => {
         setSearchContent(e.target.value);
         setFoundNews(news.list.filter((item) => {
             return item.title.toLowerCase().includes(searchContent.toLowerCase()) || 
                 item.name.toLowerCase().includes(searchContent.toLowerCase());
-        }));
+        }));      
+        console.log(searchList)
     };
+    ////////
 
-    
+    const searchList = news.list.map((item) => {
+        return {
+            value: item.name,
+            label: item.name,
+            profilePhoto: item.url,
+            mainPhoto: item.image,
+            title: item.title,
+            place: item.localization,
+        }
+    })
+
     return (
         <Container>
             <Header>
                 <Heading>Aktualności</Heading>
             </Header>
             <NewsNavigation>
-                <Search 
-                    autoComplete="off"
-                    name="search"
-                    id="search" 
-                    type="text" 
-                    search 
-                    placeholder="Szukaj"
-                    value={searchContent}
-                    onChange={handleSearchBarChange}
-                />
+                {   
+                    /*
+                    stare wyszukiwanie
+                    <Search 
+                        autoComplete="off"
+                        name="search"
+                        id="search" 
+                        type="text" 
+                        search 
+                        placeholder="Szukaj"
+                        value={searchContent}
+                        onChange={handleSearchBarChange}
+                    />
+                    */
+                }
+                
+                <NewsSearch options={searchList}/>
                 <Line/>
                 <NewsSwitch>
                     <NewsOption 
@@ -143,7 +163,6 @@ const Heading = styled.h1`
 `;
 
 const NewsNavigation = styled.div`
-    height: 210px;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     display: flex;
@@ -169,11 +188,10 @@ const Line = styled.div`
     @media only screen and (max-width: 720px) {
         width: 80%;
     }
-    
 `;
 
 const NewsSwitch = styled.div`
-    margin: 25px auto 0 auto;
+    margin: 25px auto 30px auto;
     font-size: 24px;
     display: grid;
     grid-template-columns: repeat(2, auto);
