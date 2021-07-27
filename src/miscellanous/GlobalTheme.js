@@ -3,7 +3,10 @@ export const theme = {
         lightTurquise: "#12BFCE",
         darkTurquise: "#0FA3B1",
         lightBackground: "#F2F7F2",
-        greyFont: "#5B5B5B"
+        darkBackground: "#E0E5E0",
+        greyFont: "#5B5B5B",
+        appBackground: "#6ABCC3",
+        redAlert: "#FF3131",
     },
     fontWeight: {
         light: "400",

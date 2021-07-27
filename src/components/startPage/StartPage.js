@@ -3,7 +3,8 @@ import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
-import MapComponent from '../googleMaps/Map';
+import Map from '../googleMaps/Map';
+
 
 const StartPage = () => {
 
@@ -19,8 +20,7 @@ const StartPage = () => {
                 <StyledLogo/>
                 <StyledButton onClick={() => setRedirect('yes')}>Przejdź dalej</StyledButton>
             </StyledHeader>        
-            <MapComponent width={'100%'} height={'750px'}/>
-
+            <Map width={'100%'} height={'750px'}/>
             <StyledFooter>
                 <AppInfo>
                     <Line/>

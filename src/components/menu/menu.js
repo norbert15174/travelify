@@ -1,73 +1,141 @@
 import React, { useState } from "react";
+import { routes } from "../../miscellanous/Routes";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import MessagePanel from "./svg/messagePanel";
-import LogOut from "./svg/logOut";
-import User from "./user";
-import Friends from "../messenger/friends";
+import User from "./UserPhoto";
+import Friends from "../messenger/Friends";
+import ButtonIcon from "../trinkets/ButtonIcon";
+import newsIcon from "./svg/newsIcon.svg";
+import notificationIcon from "./svg/notificationIcon.svg";
+import albumsIcon from "./svg/albumsIcon.svg";
+import searchIcon from "./svg/searchIcon.svg";
+import logoutIcon from "./svg/logoutIcon.svg";
+import groupsIcon from "./svg/groupsIcon.svg";
+import messageIcon from "./svg/messageIcon.svg";
+import expandIcon from "./svg/expandIcon.svg";
 
 const Menu = () => {
+	
+	const [menuToExpand, setMenuToExpand] = useState("");
+	const [isVisible, toggleVisibility] = useState(true);
 
-  const [displayFriends,setDisplayFriends] = useState('no');
+	const toggleMenuBar = () => {
+		setMenuToExpand("");
+		toggleVisibility(!isVisible);
+	}
 
 
-  return (
-    <>
-    <Container>
-      <ProfileContainer>
-        <User />
-      </ProfileContainer>
-      <MessageContainer onClick={e => setDisplayFriends(displayFriends === 'yes' ? "no" : "yes")}>
-        <MessagePanel />
-      </MessageContainer>
-      <LogOutContainer>
-        <LogOut />
-      </LogOutContainer>
-    </Container>
-    {displayFriends === 'yes' ? <Friends friendDisplay={setDisplayFriends} ></Friends> : null}
-    </>
-  );
+  	return (
+    	<>
+      		<Container isVisible={isVisible}>
+        		<ButtonList>
+          			<li>
+						<Link to={routes.user}>
+							<UserProfileContainer>
+								<User/>
+							</UserProfileContainer>	
+						</Link>
+          			</li>
+          			<li>
+            			<ButtonIcon icon={notificationIcon} onClick={() => menuToExpand === "notifications" ? setMenuToExpand("") : setMenuToExpand("notifications")}/>
+          			</li>
+          			<li>
+						<Link to={routes.news}>
+							<ButtonIcon icon={newsIcon}/>
+						</Link>	
+					</li>
+					<li>
+						<ButtonIcon icon={messageIcon} onClick={() => menuToExpand === "friends" ? setMenuToExpand("") : setMenuToExpand("friends")}/>
+					</li>
+					<li>
+						<Link to={routes.albums}>
+							<ButtonIcon icon={albumsIcon}/>
+						</Link>
+					</li>
+					<li>
+						<Link to={routes.groups}>
+							<ButtonIcon icon={groupsIcon}/>
+						</Link>	
+					</li>
+					<li>
+						<Link to={routes.search}>
+							<ButtonIcon icon={searchIcon}/>
+						</Link>
+					</li>
+        		</ButtonList>
+				<Link to={routes.news}>
+					<Logout icon={logoutIcon}/>
+				</Link>
+      		</Container>
+
+			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()}/>
+			
+			{
+				menuToExpand === "friends" ? (<Friends friendDisplay={setMenuToExpand}/>) : null
+			}
+
+			{
+				menuToExpand === "notifications"  ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
+			}
+	
+    	</>
+  	);
 };
 
-const MessageContainer = styled.div`
-  transform: scale(0.8);
-  width: 105px;
-  height: 105px;
-  margin-left: 9px;
-  position: relative;
-  cursor: pointer;
-`;
-const ProfileContainer = styled.div`
-  transform: scale(0.8);
-  width: 112px;
-  height: 112px;
-  position: relative;
-  margin-left: 4px;
-  margin-top: 20px;
-`;
-
-const LogOutContainer = styled.div`
-  transform: scale(0.8);
-  width: 105px;
-  height: 105px;
-  margin-left: 9px;
-  top: calc(100% - 105px);
-  position: absolute;
-`;
-
 const Container = styled.div`
-  min-height: 600px;
-  width: 30vw;
-  height: 100vh;
-  background-color: #0fa3b1;
-  position: fixed;
-  top: 0;
-  right: 0;
-  transform: translateX(calc(30vw - 120px));
-  border-left: solid 1px black;
-  z-index: 500;
-  box-shadow: -1px 2px 17px -1px rgba(0,0,0,1);
--webkit-box-shadow: -1px 2px 17px -1px rgba(0,0,0,1);
--moz-box-shadow: -1px 2px 17px -1px rgba(0,0,0,1);
+	background-color: ${({ theme }) => theme.color.darkTurquise};
+	top: 0;
+	right: 0;
+	height: 100vh;
+	width: 120px;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	position: fixed;
+	border-left: solid 1px ${({ theme }) => theme.color.greyFont};
+	@media only screen and (max-width: 720px) {
+        visibility: ${({isVisible}) => isVisible ? "" : "hidden"};
+		z-index: 1;
+		overflow-y: scroll;
+    }
+`;
+
+const VisibilityButton = styled(ButtonIcon)`
+	display: none;
+	@media only screen and (max-width: 720px) {
+        display: block;
+		position: fixed;
+		width: 40px;
+		height: 40px;
+		top: 0;
+		right: ${({isVisible}) => isVisible ? "102px" : "25px"};
+		transform: ${({isVisible}) => isVisible ? "rotate(180deg)" : "rotate(0deg)"};
+		background-color: transparent;
+		z-index: 10000;
+    }
+`;
+
+const ButtonList = styled.ul`
+  	list-style: none;
+	margin-bottom: auto;
+	@media only screen and (max-width: 720px) {
+        margin-bottom: 0;
+    }
+`;
+
+const UserProfileContainer = styled.div`
+  	cursor: pointer;
+`;
+
+
+const Logout = styled(ButtonIcon)`
+	margin-top: auto;
+	@media only screen and (max-width: 720px) {
+		margin-top: 0;
+	}
 `;
 
 export default Menu;
+
