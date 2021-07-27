@@ -52,9 +52,30 @@ const EditButton = styled(ButtonIcon)`
     width: 45px;
     height: 45px;
     position: absolute;
+    background-position: center;
     left: 91%;
     top: 3%;
     margin: 0;
+    @media only screen and (max-width: 1425px) {
+        left: 89%;
+    }
+    @media only screen and (max-width: 1225px) {
+        left: 87%;
+    }
+    @media only screen and (max-width: 1025px) {
+        width: 30px;
+        height: 30px;
+    }
+    @media only screen and (max-width: 825px) {
+        left: 91%;
+    }
+    @media only screen and (max-width: 510px) {
+        left: 89%;
+    }
+    @media only screen and (max-width: 510px) {
+        width: 20px;
+        height: 20px;
+    }
 `;
 
 const SharingPerson = styled.div`
@@ -69,6 +90,19 @@ const SharingPerson = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 34px;
+    @media only screen and (max-width: 1625px) {
+        font-size: 30px;
+    }
+    @media only screen and (max-width: 1225px) {
+        font-size: 20px;
+    }
+    @media only screen and (max-width: 1025px) {
+       font-size: 16px;   
+    }
+    @media only screen and (max-width: 510px) {
+        font-size: 10px;
+        padding-right: 10px;
+    }
 `;
 
 const ProfilePhoto = styled.img`
@@ -78,6 +112,23 @@ const ProfilePhoto = styled.img`
     margin-left: 5px;
     margin-right: 10px;
     border: 2px solid ${({theme}) => theme.color.lightTurquise };
+    @media only screen and (max-width: 1625px) {
+        width: 50px;
+        height: 50px;    
+    }
+    @media only screen and (max-width: 1225px) {
+        width: 40px;
+        height: 40px;    
+    }
+    @media only screen and (max-width: 1025px) {
+        width: 30px;
+        height: 30px;   
+    }
+    @media only screen and (max-width: 510px) {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;   
+    }
 `;
 
 const Text = styled.div`
@@ -85,7 +136,7 @@ const Text = styled.div`
     @media only screen and (max-width: 1440px) {
         padding: 10px 15px;
     }
-    @media only screen and (max-width: 560px) {
+    @media only screen and (max-width: 510px) {
         padding: 5px 10px;
     }
 `;
@@ -102,13 +153,10 @@ const Title = styled.h1`
     @media only screen and (max-width: 1440px) {
         font-size: 28px;
     }
-    @media only screen and (max-width: 735px) {
+    @media only screen and (max-width: 1025px) {
         font-size: 22px;
     }
-    @media only screen and (max-width: 560px) {
-        font-size: 16px;
-    }
-    @media only screen and (max-width: 410px) {
+    @media only screen and (max-width: 510px) {
         font-size: 12px;
     }
 `;
@@ -119,13 +167,13 @@ const Localization = styled.h2`
     @media only screen and (max-width: 1440px) {
         font-size: 16px;
     }
+    @media only screen and (max-width: 1025px) {
+        font-size: 14px;
+    }
     @media only screen and (max-width: 735px) {
         font-size: 14px;
     }
-    @media only screen and (max-width: 560px) {
-        font-size: 12px;
-    }
-    @media only screen and (max-width: 410px) {
+    @media only screen and (max-width: 510px) {
         font-size: 8px;
     }
 `;
@@ -142,17 +190,15 @@ const Description = styled.p`
         margin-top: 10px;
         -webkit-line-clamp: 5;
     }
-    @media only screen and (max-width: 735px) {
+    @media only screen and (max-width: 1025px) {
         font-size: 10px;
         margin-top: 5px;
         -webkit-line-clamp: 4;
     }
-    @media only screen and (max-width: 560px) {
+    @media only screen and (max-width: 510px) {
         font-size: 8px;
-        margin-top: 3px;
-    }
-    @media only screen and (max-width: 410px) {
-        margin-top: 0px;
+        margin-top: 2.5px;
+        -webkit-line-clamp: 3;
     }
 `;
 

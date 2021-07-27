@@ -4,7 +4,7 @@ import aboutIcon from "./assets/aboutIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
 
-const InfoSection = ({birthplace, about, interests, visitedCountries}) => (
+const InfoSection = ({nationality, about, interests, visitedCountries}) => (
     <Container>
         <Header>
             <h1>Informacje o użytkowniku</h1>
@@ -15,7 +15,12 @@ const InfoSection = ({birthplace, about, interests, visitedCountries}) => (
             <h3>Pochodzenie</h3>
         </Title>
         <Text>
-            {birthplace !== undefined ? birthplace : <p>Brak informacji</p>}
+            <Country
+                key={nationality.id} 
+            >
+                <Flag src={nationality.url}/>
+                {nationality.country}
+            </Country>
         </Text>
         <Title>
             <Icon src={aboutIcon}/>
@@ -37,9 +42,15 @@ const InfoSection = ({birthplace, about, interests, visitedCountries}) => (
         </Title>
         <VisitedCountries>
             {
-                visitedCountries.length !== 0 ?
-                visitedCountries.map((countryName) => (
-                    <Country icon={"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png"}>{countryName}</Country>
+                visitedCountries.length !== 0 
+                ?
+                visitedCountries.map((country) => (
+                    <Country
+                        key={country.id} 
+                    >
+                        <Flag src={country.url}/>
+                        {country.country}
+                    </Country>
                 )) : <p>Brak informacji</p>
             }
         </VisitedCountries> 
@@ -101,7 +112,7 @@ const Icon = styled.img`
     }
 `;
 
-const Text = styled.p`
+const Text = styled.div`
     font-size: 16px;
     margin-left: 48px;
     margin-top: 10px;
@@ -133,31 +144,35 @@ const VisitedCountries = styled.div`
 `;
 
 const Country = styled.div`
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    max-width:max-content;
+    align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     background-color: #E0E5E0;
     border-radius: 15px;
     color: #000;
-    background-image: url(${({icon}) => icon});
-    background-size: 20%;
-    background-position: 10% 50%;
-    background-repeat: no-repeat;
     font-size: 16px;
-    margin-top: 8px;
+    margin-top: 5px;
     margin-right: 10px;
-    padding: 5px 10px 5px 30px;
+    padding: 5px 10px;
     flex-shrink: 1;
     @media only screen and (max-width: 1080px) {
-        padding: 5px 10px 5px 25px;
         font-size: 10px;
-    }
-    @media only screen and (max-width: 560px) {
-        font-size: 8px;
-        padding: 5px 5px;
-        margin-top: 5px;
-        background-image: none;
     }
 `;
 
+const Flag = styled.img`
+    width: 30px;
+    height: 20px;
+    margin-right: 5px;
+    @media only screen and (max-width: 1080px) {
+        width: 20px;
+        height: 10px;
+    }
+    @media only screen and (max-width: 410px) {
+       margin-right: 2.5px;
+    }
+`;
 
 export default InfoSection;

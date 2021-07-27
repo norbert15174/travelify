@@ -8,8 +8,8 @@ const DeleteAccountForm = () => {
     return (
         <>
             <WarningMessage>
-                <p>Usunięcie konta poskutkuje wymazaniem wszystkich z naszych baz danych. Dalsze korzystanie z aplikacji nie będzie możliwe.</p>
-                <p>Pamiętaj, że czynność ta jest nieodwracalna!</p>
+                <p>Usuniętego konta nie da się odzyskać !</p>
+                <p>Profil, albumy i zdjęcia zostaną trwale usunięte.</p>
             </WarningMessage>
             <DeleteButton>Usuń konto</DeleteButton>
         </> 

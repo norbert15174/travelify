@@ -148,10 +148,8 @@ const Album = styled.img`
 
 const ValueContainer = styled.div`
     display: flex;
-    padding-right: 5px;
     flex-direction: row;
     align-items: center;
-
 `;
 
 const Title = styled.h1`

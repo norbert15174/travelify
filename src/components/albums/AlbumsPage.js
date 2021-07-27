@@ -15,7 +15,7 @@ const types = {
 
 const AlbumsPage = () => {
 
-     const [albumsType, setAlbumsType] = useState(types.public);
+    const [albumsType, setAlbumsType] = useState(types.public);
 
     const searchList = albums.list.map((item) => {
         return {
@@ -65,13 +65,32 @@ const AlbumsPage = () => {
 
 }
 
+//  <AlbumSection sectionType={albumsType} data={albums}/>
+
 const Container = styled.div`
     display: grid;
     grid-template-rows: repeat(3, auto);
     grid-row-gap: 15px;
     width: 1500px;
     margin: 0 auto; 
-    min-width: 410px;
+    @media only screen and (max-width: 1635px) {
+        width: 1300px;
+    }
+    @media only screen and (max-width: 1425px) {
+        width: 1100px;
+    }
+    @media only screen and (max-width: 1225px) {
+        width: 900px;
+    }
+    @media only screen and (max-width: 1025px) {
+        width: 700px;
+    }
+    @media only screen and (max-width: 825px) {
+        width: 500px;
+    }
+    @media only screen and (max-width: 510px) {
+        width: 300px;
+    }
 `;
 
 const PageHeader = styled.div`
@@ -81,25 +100,30 @@ const PageHeader = styled.div`
     display: grid;
     grid-template-columns: repeat(2, auto);
     align-items: center;
+    @media only screen and (max-width: 870px) {
+        height: 70px;
+    }
+    @media only screen and (max-width: 735px) {
+        height: 60px;
+    }
+    @media only screen and (max-width: 510px) {
+        height: 40px;
+    }
 `;
 
 const Heading = styled.h1`
     font-size: 54px;
-    margin: 10px auto 10px 25px;
+    margin: auto auto auto 25px;
     color: ${({theme}) => theme.color.greyFont};
-    @media only screen and (max-width: 870px) {
+    @media only screen and (max-width: 825px) {
         font-size: 46px;
-    } 
+    }
     @media only screen and (max-width: 735px) {
         font-size: 40px;
-        margin: 5px auto 5px 25px;
     }
-    @media only screen and (max-width: 480px) {
-        font-size: 34px;
-    }
-    @media only screen and (max-width: 360px) {
+    @media only screen and (max-width: 510px) {
         font-size: 24px;
-        margin: 5px auto 5px 15px;
+        margin-left: 15px;
     }
 `;
 
@@ -115,6 +139,18 @@ const Line = styled.div`
     border: 1px solid ${({theme}) => theme.color.darkTurquise};
     width: 60%;
     margin: 25px auto 0 auto;
+    @media only screen and (max-width: 1430px) {
+        width: 70%
+    }
+    @media only screen and (max-width: 1220px) {
+        width: 85%;
+    }
+    @media only screen and (max-width: 825px) {
+        width: 80%;
+    }
+    @media only screen and (max-width: 510px) {
+        width: 85%;
+    }
 `;
 
 const AlbumsSwitch = styled.div`
@@ -123,6 +159,19 @@ const AlbumsSwitch = styled.div`
     display: grid;
     grid-template-columns: repeat(3, auto);
     grid-column-gap: 5vw;
+    @media only screen and (max-width: 1025px) {
+        font-size: 18px;
+        grid-column-gap: 2.5vw;
+    }
+    @media only screen and (max-width: 825px) {
+        font-size: 14px;
+        grid-column-gap: 1vw;
+    }
+    @media only screen and (max-width: 510px) {
+        margin: 20px auto;
+        grid-column-gap: 0.75vw;
+        font-size: 10px;
+    }
 `;
 
 const AlbumOption = styled.div`
@@ -139,9 +188,13 @@ const AlbumOption = styled.div`
     background-position: 10% 50%;
     background-repeat: no-repeat;
     cursor: pointer;
-    @media only screen and (max-width: 720px) {
-        background-size: 24px;
-        padding: 5px 5px 5px 50px;
+    @media only screen and (max-width: 825px) {
+        background-size: 28px;
+        padding: 10px 10px 10px 45px;
+    }
+    @media only screen and (max-width: 510px) {
+        background-size: 22px;
+        padding: 10px 10px 10px 35px;
     }
 `;
 

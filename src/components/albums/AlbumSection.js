@@ -58,6 +58,13 @@ const Container = styled.div`
     font-size: 17px;
     margin-bottom: 15px;
     padding: 20px 25px;
+    @media only screen and (max-width: 825px) {
+        font-size: 12px;
+        padding: 15px 20px;
+    }
+    @media only screen and (max-width: 510px) {
+        font-size: 8px;
+    }
 `;
 
 const Header = styled.div`
@@ -67,6 +74,9 @@ const Header = styled.div`
     flex-direction: row;
     align-items: center;
     height: 45px;
+    @media only screen and (max-width: 825px) {
+        height: 30px;
+    }
 `;
 
 const AddButton = styled(Button)`
@@ -79,11 +89,31 @@ const AddButton = styled(Button)`
     background-position: 90% 50%;
     background-size: 20px;
     padding-right: 30px;
+    @media only screen and (max-width: 1225px) {
+        font-size: 18px;
+        background-size: 15px;
+        padding-right: 15px;
+        width: 150px;
+    }
+    @media only screen and (max-width: 825px) {
+        font-size: 12px;
+        background-size: 10px;
+        width: 100px;
+        height: 30px;
+    }
+    @media only screen and (max-width: 510px) {
+        height: 20px;
+        width: 80px;
+        font-size: 8px;
+    }
 `;
 
 const Line = styled.div`
     margin-top: 10px;
     border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    @media only screen and (max-width: 510px) {
+        margin-top: 5px;
+    }
 `;
 
 const AlbumGrid = styled.div`
@@ -94,6 +124,28 @@ const AlbumGrid = styled.div`
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
+    @media only screen and (max-width: 1635px) {
+        grid-template-columns: repeat(2, 590px);
+    }
+    @media only screen and (max-width: 1425px) {
+        grid-template-columns: repeat(2, 490px);
+    }
+    @media only screen and (max-width: 1225px) {
+        grid-template-columns: repeat(2, 390px);
+    }
+    @media only screen and (max-width: 1025px) {
+        grid-template-columns: repeat(2, 290px);
+    }
+    @media only screen and (max-width: 825px) {
+        margin-top: 20px;
+        grid-template-columns: 420px;
+        grid-auto-rows: auto;
+    }
+    @media only screen and (max-width: 510px) {
+        grid-template-columns: 230px;
+        grid-gap: 20px;
+        margin-top: 10px;
+    }
 `;
 
 export default AlbumSection;

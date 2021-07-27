@@ -12,7 +12,7 @@ import friendsIcon from "./assets/friendsIcon.svg";
 import addFriendIcon from "./assets/addFriendIcon.svg";
 
 
-const user = {
+const types = {
     type: "logged",
     logged: "logged",
     friend: "friend",
@@ -26,7 +26,11 @@ const sections = {
 };
 
 const infoData = {
-    birthplace: "Poland",
+    nationality: {
+        id: 141,
+        country: "Poland",
+        url: "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
+    },
     about: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. 
         Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. 
         Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae.`,
@@ -35,10 +39,51 @@ const infoData = {
         Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. 
         Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien.`,
-    visitedCountries: ["Poland", "Ukraine", "Czech", "Slovakia", "Germany", "Belarus", "Lithuania", "Latvia"],
+    visitedCountries: [
+        {
+            id: 141,
+            country: "Poland",
+            url: "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
+        }, 
+        {
+            id: 184,
+            country: "Ukraine",
+            url: "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Ukraine.svg",
+        },
+        {
+            id: 46,
+            country: "Czech Republic",
+            url: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg",
+        },   
+        {
+            id: 159,
+            country: "Slovakia",
+            url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Flag_of_Slovakia.svg",
+        }, 
+        {
+            id: 65,
+            country: "Germany",
+            url: "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg",
+        },
+        {
+            id: 17,
+            country: "Belarus",
+            url: "https://upload.wikimedia.org/wikipedia/commons/8/85/Flag_of_Belarus.svg",
+        },     
+        {
+            id: 102,
+            country: "Lithuania",
+            url: "https://upload.wikimedia.org/wikipedia/commons/1/11/Flag_of_Lithuania.svg",
+        },   
+        {
+            id: 96,
+            country: "Latvia",
+            url: "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Latvia.svg",
+        }
+    ],
 }
 
-const UserPage = () => {
+const UserPage = ({user, albums}) => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
@@ -84,19 +129,19 @@ const UserPage = () => {
                     <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
                     <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
                     {
-                        user.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
+                        types.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                     }
                     {
-                        user.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
+                        types.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
                     }
                     {
-                        user.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
+                        types.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
                     }
                 </Options>
             </Header>
             <Container>
                 {
-                    infoActive && <InfoSection birthplace={infoData.birthplace} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
+                    infoActive && <InfoSection nationality={infoData.nationality} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
                 }
                 {
                     albumsActive && <GridSection sectionType={sections.albums} data={albumData.list}/>

@@ -133,10 +133,6 @@ const Heading = styled.h1`
     @media only screen and (max-width: 480px) {
         font-size: 34px;
     }
-    @media only screen and (max-width: 360px) {
-        font-size: 24px;
-        margin: 5px auto 5px 15px;
-    }
 `;
 
 const GoBackButton = styled(Button)`
