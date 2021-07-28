@@ -182,7 +182,7 @@ const Search = styled(Input)`
 `;
 
 const Line = styled.div`
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
     width: 42vw;
     margin: 25px auto 0 auto;
     @media only screen and (max-width: 720px) {

@@ -11,6 +11,7 @@ import EditProfile from "./components/editProfile/EditProfile";
 import Groups from "./views/Groups";
 import Albums from "./views/Albums";
 import Search from "./views/Search";
+import AlbumDetails from "./views/AlbumDetails";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route exact path={routes.editProfile} component={EditProfile}/>
           <Route exact path={routes.search} component={Search}/>
           <Route exact path={routes.albums} component={Albums}/>
+          <Route path={routes.album} component={AlbumDetails}/>
           <Route exact path={routes.groups} component={Groups}/>
         </Switch>
       </BrowserRouter>

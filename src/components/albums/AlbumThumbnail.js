@@ -3,30 +3,31 @@ import styled from "styled-components";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import editIcon from "./assets/editIcon.svg";
 
-const AlbumThumbnail = ({album, shared}) => (
-    <>  
-        <Container>
-            <MainPhoto src={album.image} alt="albumMainPhoto"/>
-            { !shared && <EditButton icon={editIcon}/> }
-            { shared && 
-                <SharingPerson>
-                    <ProfilePhoto src={album.url}/>
-                    <h3>{album.name}</h3>
-                </SharingPerson> 
-            }
-            <InfoContainer>
-                <Text>
-                    <Header>
-                        <Title>{album.title}</Title>
-                        <Localization>{album.localization}</Localization>
-                    </Header>
-                    <Description>
-                        {album.description}
-                    </Description>
-                </Text>
-            </InfoContainer>
-        </Container>
-    </>
+// onClick => set states redirect to album
+
+const AlbumThumbnail = ({album, shared, redirectTo}) => (
+    <Container onClick={redirectTo}>
+        <MainPhoto src={album.image} alt="albumMainPhoto"/>
+        { !shared && <EditButton icon={editIcon}/> }
+        { shared && 
+            <SharingPerson>
+                <ProfilePhoto src={album.url}/>
+                <h3>{album.name}</h3>
+            </SharingPerson> 
+        }
+        <InfoContainer>
+            <Text>
+                <Header>
+                    <Title>{album.title}</Title>
+                    <Localization>{album.localization}</Localization>
+                </Header>
+                <Description>
+                    {album.description}
+                </Description>
+            </Text>
+        </InfoContainer>
+    </Container>
+
 );
 
 const Container = styled.div`
@@ -37,6 +38,7 @@ const Container = styled.div`
 const MainPhoto = styled.img`
     width: 100%;
     height: 100%;
+    object-fit: cover;
 `;
 
 const InfoContainer = styled.div`
@@ -70,9 +72,7 @@ const EditButton = styled(ButtonIcon)`
         left: 91%;
     }
     @media only screen and (max-width: 510px) {
-        left: 89%;
-    }
-    @media only screen and (max-width: 510px) {
+        left: 90%;
         width: 20px;
         height: 20px;
     }
@@ -133,7 +133,7 @@ const ProfilePhoto = styled.img`
 
 const Text = styled.div`
     padding: 10px 20px;
-    @media only screen and (max-width: 1440px) {
+    @media only screen and (max-width: 1425px) {
         padding: 10px 15px;
     }
     @media only screen and (max-width: 510px) {
@@ -150,7 +150,7 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
-    @media only screen and (max-width: 1440px) {
+    @media only screen and (max-width: 1425px) {
         font-size: 28px;
     }
     @media only screen and (max-width: 1025px) {
@@ -164,7 +164,7 @@ const Title = styled.h1`
 const Localization = styled.h2`
     font-size: 18px;
     justify-self: end;
-    @media only screen and (max-width: 1440px) {
+    @media only screen and (max-width: 1425px) {
         font-size: 16px;
     }
     @media only screen and (max-width: 1025px) {
@@ -186,7 +186,7 @@ const Description = styled.p`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 6;
-    @media only screen and (max-width: 1440px) { 
+    @media only screen and (max-width: 1425px) { 
         margin-top: 10px;
         -webkit-line-clamp: 5;
     }

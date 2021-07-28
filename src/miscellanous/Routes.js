@@ -6,6 +6,7 @@ export const routes = {
     editProfile: '/user/editProfile',
     news: '/news',
     albums: '/albums',
+    album: "/album/:id",
     groups: '/groups',
     search: '/search',
   };

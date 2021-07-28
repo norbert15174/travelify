@@ -79,7 +79,7 @@ const Header = styled.div`
 
 const Line = styled.div`
     margin-top: 10px;
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
 
 `;
 

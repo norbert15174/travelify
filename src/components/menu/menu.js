@@ -83,6 +83,8 @@ const Menu = () => {
 };
 
 const Container = styled.div`
+	//filter: blur(8px);
+    //-webkit-filter: blur(8px);
 	background-color: ${({ theme }) => theme.color.darkTurquise};
 	top: 0;
 	right: 0;
