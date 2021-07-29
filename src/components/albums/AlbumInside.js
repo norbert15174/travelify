@@ -13,13 +13,14 @@ import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
 import profilePhoto from "./assets/profilePhoto.png";
 import { FriendsListArray as photos } from "./data";
+import { routes } from "../../miscellanous/Routes";
 
 const types = {
     albumType: "private", // public, private
     visibility: "owner", // owner, shared, unknown
 }
 
-const AlbumInside = () => {
+const AlbumInside = ({albumId}) => {
 
     // map options
     const options = {
@@ -29,10 +30,20 @@ const AlbumInside = () => {
         minZoom: 2, 
     };
 
-    const [ redirect, setRedirect ] = useState(false);
-    
-    if (redirect) {
-        return <Redirect to={{pathname: `/albums`}}/>
+    const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
+    const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
+       active: false,
+       albumId: null,
+    })
+
+    // goes back to albums screen
+    if (redirectToAlbums) {
+        return <Redirect to={{pathname: routes.albums}}/>
+    }
+
+    // goes to album edit screen
+    if (redirectToAlbumsCreator.active) {
+        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "edition", albumId: redirectToAlbumsCreator.albumId}}}/>
     }
 
     return (
@@ -40,7 +51,7 @@ const AlbumInside = () => {
             <Details>
                 <Header>
                     <h1>Wycieczka do Japonii, Sierpień 2018</h1>
-                    <GoBackButton onClick={() => setRedirect(true)}>Wróć</GoBackButton>
+                    <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
                     <Localization>
                         <Icon src={localizationIcon}/>
                         <h3>
@@ -79,7 +90,7 @@ const AlbumInside = () => {
                         </AlbumInfo>
                         <Buttons>
                             { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon}>Udostępnij</TypeSpecifiedButton> }
-                            { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon}>Edytuj album</TypeSpecifiedButton> }
+                            { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
                         </Buttons>
                     </Footer>
                 </div>
@@ -88,6 +99,8 @@ const AlbumInside = () => {
         </Container>
     );
 }
+
+// setRedirectToAlbumsCreator({active: true, albumId: 1}
 
 const Container = styled.div`
     display: grid;

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import closeIcon from "./assets/closeIcon.svg";
-import CountrySelector from "./CountrySelect";
+import CountrySelect from "../trinkets/Select";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import addIcon from "./assets/addIcon.svg";
-import ErrorMessage from "./ErrorMessage";
+import StatusMessage from "../trinkets/StatusMessage";
 
 const options = [
     { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
@@ -26,8 +26,9 @@ const CountriesForm = () => {
     const [ errorMessage, setErrorMessage ] = useState("");
 
     const addCountry = () => {
+        console.log(selectedCountries);
         selectedCountries.map((selectedCountry) => {
-            setErrorMessage([]);
+            setErrorMessage("");
             // SUPER AWESOME METHOD OF FINDING IF COUNTRY ISN'T ALREADY ADDED
             if (Array.from(country).find((element) => element.name === selectedCountry.value)) { 
                 setErrorMessage("Kraj, który próbowałeś dodać jest już dodany.");
@@ -36,6 +37,7 @@ const CountriesForm = () => {
             setCountry((prevState) => [...prevState,{name: selectedCountry.value, icon: selectedCountry.icon}]);
             return "";
         })
+        console.log(country);
         setSelectedCountries([]);
     };
 
@@ -47,14 +49,14 @@ const CountriesForm = () => {
     return (
         <Container>
             <AddSection>
-                <CountrySelector isMulti={true} options={options} value={selectedCountries} setState={setSelectedCountries}/>
-                <Add icon={addIcon} onClick={addCountry}/>
+                <CountrySelect type="country" isMulti={true} options={options} value={selectedCountries} setState={setSelectedCountries}/>
+                <AddButton icon={addIcon} onClick={addCountry}/>
             </AddSection>
-            {errorMessage.length !== 0 && selectedCountries && <StyledErrorMessage>{errorMessage}</StyledErrorMessage>}
+            {errorMessage.length !== 0 && selectedCountries && <ErrorMessage type="error">{errorMessage}</ErrorMessage>}
             <h3>Aktualnie dodane:</h3>
             <VisitedCountries>
                 {
-                    country.length !== 0 &&
+                    country.length !== 0 ?
                     (
                         country.map((country) => (
                             <Country icon={country.icon} key={country.name}>
@@ -62,7 +64,7 @@ const CountriesForm = () => {
                                 <DeleteIcon onClick={() => deleteCountry(country.name)} src={closeIcon}/>
                             </Country>
                         ))
-                    )
+                    ) : <Placeholder>Wybierz kraj, który odwiedziłeś...</Placeholder>
                 }                
             </VisitedCountries>
         </Container>
@@ -136,7 +138,7 @@ const AddSection = styled.div`
     align-items: center;
 `;
 
-const Add = styled(ButtonIcon)`
+const AddButton = styled(ButtonIcon)`
     width: 35px;
     height: 35px;
     border-radius: 25%;
@@ -145,7 +147,7 @@ const Add = styled(ButtonIcon)`
     background-size: 50%;
 `;
 
-const StyledErrorMessage = styled(ErrorMessage)`
+const ErrorMessage = styled(StatusMessage)`
     padding: 5px;
     text-align: center;
     min-width: 235px;
@@ -153,6 +155,11 @@ const StyledErrorMessage = styled(ErrorMessage)`
     @media only screen and (max-width: 870px) {
         font-size: 8px;
     }
+`;
+
+const Placeholder = styled.p`
+    font-size: 12px;
+    opacity: 0.8;
 `;
 
 export default CountriesForm;

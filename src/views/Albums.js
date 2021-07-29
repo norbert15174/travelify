@@ -4,10 +4,16 @@ import AlbumsPage from "../components/albums/AlbumsPage";
 
 // UserTemplate adds Menu sidebar
 
-const Albums = () => (
-    <UserTemplate>
-        <AlbumsPage/>
-    </UserTemplate>
-);
+const Albums = () => {
+
+    // here will be albums data fetching
+
+    return (
+        <UserTemplate>
+            <AlbumsPage/>
+        </UserTemplate>
+    );
+    
+};
 
 export default Albums;

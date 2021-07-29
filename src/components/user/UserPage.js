@@ -10,7 +10,7 @@ import ButtonIcon from "../trinkets/ButtonIcon";
 import editIcon from "./assets/editIcon.svg";
 import friendsIcon from "./assets/friendsIcon.svg";
 import addFriendIcon from "./assets/addFriendIcon.svg";
-
+import { routes } from "../../miscellanous/Routes";
 
 const types = {
     type: "logged",
@@ -112,7 +112,7 @@ const UserPage = ({user, albums}) => {
     };
 
     if (redirect) {
-        return <Redirect to={{pathname: "/user/editProfile"}}/>
+        return <Redirect to={{pathname: routes.editProfile}}/>
     }
 
     return (

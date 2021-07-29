@@ -26,9 +26,6 @@ const Input = styled.input`
             font-size: 10px;
         }
     }
-    @media only screen and (max-width: 480px) {
-        
-    }
 `;
 
 export default Input;

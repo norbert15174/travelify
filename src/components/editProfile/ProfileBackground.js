@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Submit from "./Submit";
-import Cancel from "./Cancel";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
 import "./fileUpload.css"
 import profileBackground from "./assets/profileBackground.png";
-import ErrorMessage from "./ErrorMessage";
+import StatusMessage from "../trinkets/StatusMessage";
 
 const ProfileBackground = () => {
 
@@ -125,7 +125,7 @@ const Buttons = styled.div`
     margin-top: 20px;
 `;
 
-const StyledErrorMessage = styled(ErrorMessage)`
+const StyledErrorMessage = styled(StatusMessage)`
     font-size: 12px;
     text-align: center;
     padding: 5px 10px;

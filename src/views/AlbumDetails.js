@@ -1,28 +1,29 @@
-import React, { Component} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from "react-router-dom";
 import UserTemplate from '../templates/UserTemplate';
 import AlbumInside from "../components/albums/AlbumInside";
 
-// AlbumDetails is a view for album inside
+const AlbumDetails = () => {
 
-class AlbumDetails extends Component {
+    const [ albumId, setAlbumId ] = useState(null);
+    const location = useLocation();
 
-    componentDidMount() {
+    useEffect(() => {
+        // checking if album will be edited or created
+        if (location.state !== undefined) {
+            setAlbumId(location.state.albumId);
+        }
         
-        // możnaby przekazywać id albumów itd w ten sposób
 
-        console.log(this.props.location.state.albumId);
-        
-    }
+    }, [albumId, location.state]);
 
-    render() {
+    // I'm passing albumId
+    return (
+        <UserTemplate>
+            <AlbumInside albumId={albumId}/>
+        </UserTemplate>
+    );
 
-        return (
-            <UserTemplate>
-                <AlbumInside/>
-            </UserTemplate>
-        );
-    }
-
-};
+}
 
 export default AlbumDetails;

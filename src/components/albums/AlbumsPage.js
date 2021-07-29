@@ -17,6 +17,7 @@ const AlbumsPage = () => {
 
     const [albumsType, setAlbumsType] = useState(types.public);
 
+    // album title, mainPhoto, place, ID WILL ALSO BE NEEDED 
     const searchList = albums.list.map((item) => {
         return {
             value: item.title,

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import profilePhoto from "./assets/profilePhoto.png";
-import Submit from "./Submit";
-import Cancel from "./Cancel";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
 import "./fileUpload.css"
-import ErrorMessage from "./ErrorMessage";
+import StatusMessage from "../trinkets/StatusMessage";
 
 const ProfilePhoto = () => {
 
@@ -56,7 +56,7 @@ const ProfilePhoto = () => {
             <Photo src={profilePhoto} alt="Profile photo"/> 
             <Input>
                 <input className="file__upload" id="fileInput" type="file" name="Profile" onChange={(e) => onChangeHandler(e)}/>
-                { errorMessage && <StyledErrorMessage>{errorMessage}</StyledErrorMessage> }
+                { errorMessage && <ErrorMessage type="error">{errorMessage}</ErrorMessage> }
             </Input>
             <Buttons>
                 <Submit disabled={sizeError !== true && typeError !== true && data === undefined} onClick={() => null}>Zapisz</Submit> 
@@ -126,7 +126,7 @@ const Input = styled.div`
     align-items: baseline;
 `;
 
-const StyledErrorMessage = styled(ErrorMessage)`
+const ErrorMessage  = styled(StatusMessage)`
     font-size: 12px;
     text-align: center;
     padding: 5px 10px;

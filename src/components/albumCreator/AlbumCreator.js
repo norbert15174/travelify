@@ -1,29 +1,64 @@
-import React, { useState } from "react";
-import UserTemplate from "../../templates/UserTemplate";
-import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Redirect, useLocation } from "react-router-dom";
 import Button from "../trinkets/Button";
-import personalInfoIcon from "./assets/personalInfoIcon.svg";
-import changePasswordIcon from "./assets/changePasswordIcon.svg";
-import descriptionIcon from "./assets/descriptionIcon.svg";
-import interestsIcon from "./assets/interestsIcon.svg";
-import countriesIcon from "./assets/countriesIcon.svg";
-import deleteAccountIcon from "./assets/deleteAccountIcon.svg";
-import ProfilePhoto from "./ProfilePhoto";
-import ProfileBackground from "./ProfileBackground";
-import PersonalInfoForm from "./PersonalInfoForm";
-import PasswordForm from "./PasswordForm";
-import DescriptionForm from "./DescriptionForm";
-import CountriesForm from "./CountriesForm";
-import DeleteAccountForm from "./DeleteAccount";
+import UserTemplate from "../../templates/UserTemplate";
 import { routes } from "../../miscellanous/Routes";
+import infoIcon from "./assets/infoIcon.svg";
+import localizationIcon from "./assets/localizationIcon.svg";
+import photoIcon from "./assets/photoIcon.svg";
+import BasicInfo from "./BasicInfo";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
 
-const EditProfile = () => {
+// component for creating and editing albums
+const creatorType = {
+    creation: "creation",
+    edition: "edition",
+}
 
-    const [ redirect, setRedirect ] = useState(false);
+const AlbumCreator = () => {
 
-    if (redirect) {
-        return <Redirect to={{pathname: routes.user}}/>
+    const [ type, setType ] = useState("");
+    const [ albumId, setAlbumId ] = useState(null);
+
+    // BasicInfo submitted data, used at album creation, at editing it won't be used
+    const [ basicInfo, setBasicInfo ] = useState({
+        name: "",
+        description: "",
+        visibility: "",
+        shared: [],
+    })
+    
+    // hook for retrieving passed props at Redirect
+    const location = useLocation();
+
+    useEffect(() => {
+
+        // checking if album will be edited or created, setting albumId
+        setType(location.state.creatorType);
+        if (creatorType.edition === type) {
+            setAlbumId(location.state.albumId);
+        }
+        console.log("creatorType: " + type + " albumId: " + albumId);
+
+    }, [albumId, type, location.state.creatorType, location.state.albumId]);
+    
+    const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
+    const [ redirectBackToAlbum, setRedirectBackToAlbum ] = useState(false);
+
+    if (redirectToAlbums) {
+        return <Redirect to={{pathname: routes.albums}}/>
+    }
+
+    if (redirectBackToAlbum) {
+        return <Redirect to={{pathname: `album/${albumId}`}}/>
+    }
+
+    const formHandler = () => {
+        
+        console.log(basicInfo);
+        
     }
 
     return (
@@ -31,68 +66,49 @@ const EditProfile = () => {
             <Container>
                 <PageHeader>
                     <Heading>
-                        Edytuj profil
+                        { type === creatorType.creation ? "Stwórz album" : "Edytuj album" }
                     </Heading>
-                    <GoBackButton onClick={() => setRedirect(true)}>
+                    <GoBackButton onClick={() => {
+                        if ( type === "creation") {
+                            setRedirectToAlbums(true);
+                        } else if ( type === "edition" ) {
+                            setRedirectBackToAlbum(true);
+                        }
+                    }}>
                         Wróć
                     </GoBackButton>
                 </PageHeader>
-                <Images>
-                    <ProfilePhoto/>
-                    <ProfileBackground/>
-                </Images>
                 <SectionContainer>
                     <Header>
-                        <Icon src={personalInfoIcon}/>
-                        <h1>Dane użytkownika</h1>
+                        <Icon src={infoIcon}/>
+                        <h1>Podstawowe informacje</h1>
                     </Header>
-                    <PersonalInfoForm/>
+                    <BasicInfo creatorType={type} setForm={setBasicInfo}/>
                 </SectionContainer>
                 <SectionContainer>
                     <Header>
-                        <Icon src={changePasswordIcon}/>
-                        <h1>Zmiana hasła</h1>
+                        <Icon src={localizationIcon}/>
+                        <h1>Lokalizacja</h1>
                     </Header>
-                    <PasswordForm/>
                 </SectionContainer>
                 <SectionContainer>
                     <Header>
-                        <Icon src={descriptionIcon}/>
-                        <h1>Opis użytkownika</h1>
+                        <Icon src={photoIcon}/>
+                        <h1>Zdjęcia</h1>
                     </Header>
-                    <DescriptionForm type="description"/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={interestsIcon}/>
-                        <h1>Zainteresowania</h1>
-                    </Header>
-                    <DescriptionForm type="about"/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={countriesIcon}/>
-                        <h1>Odwiedzone kraje</h1>
-                    </Header>
-                    <CountriesForm/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={deleteAccountIcon}/>
-                        <h1>Usuń konto</h1>
-                    </Header>
-                    <DeleteAccountForm/>
+                    <Submit type="submit" onClick={formHandler}>Zapisz</Submit>
                 </SectionContainer>
             </Container>
-        </UserTemplate>   
+        </UserTemplate>
     );
+
 }
 
 const Container = styled.div`
     width:  95%;
     margin: 0 auto; 
     display: grid;
-    grid-template-rows: repeat(7, auto);
+    grid-auto-rows: auto;
     grid-row-gap: 15px;
     min-width: 388px;
     margin-bottom: 15px;
@@ -165,33 +181,6 @@ const GoBackButton = styled(Button)`
     }
 `;
 
-const Images = styled.div`
-    background-color: ${({theme}) => theme.color.lightBackground};
-    border-radius: 15px;
-    display: grid;
-    grid-template-columns: 40% 1fr;
-    grid-template-rows: auto;
-    grid-column-gap: 70px;
-    padding: 20px 40px;
-    @media only screen and (max-width: 1080px) {
-        grid-column-gap: 60px;
-    } 
-    @media only screen and (max-width: 870px) {
-        grid-column-gap: 50px;
-        padding: 15px;
-    } 
-    @media only screen and (max-width: 735px) {
-        grid-column-gap: 40px;
-    }
-    @media only screen and (max-width: 560px) {
-        padding: 10px;
-        grid-column-gap: 30px;
-    }
-    @media only screen and (max-width: 410px) {
-        grid-column-gap: 15px;
-    }
-`;
-
 const Header = styled.div`
     color: ${({theme}) => theme.color.greyFont};
     font-size: 24px;
@@ -244,4 +233,4 @@ const SectionContainer = styled.div`
     }
 `;
 
-export default EditProfile;
+export default AlbumCreator;

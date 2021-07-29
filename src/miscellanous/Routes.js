@@ -7,6 +7,7 @@ export const routes = {
     news: '/news',
     albums: '/albums',
     album: "/album/:id",
+    albumCreator: "/albumCreator",
     groups: '/groups',
     search: '/search',
   };

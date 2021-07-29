@@ -4,17 +4,26 @@ import styled from "styled-components";
 import Button from "../trinkets/Button";
 import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
+import { routes } from "../../miscellanous/Routes";
 import "./scrollbar.css";
 
 const AlbumSection = ({ sectionType, data }) => {
 
-    const [ redirect, setRedirect ] = useState({
+    // data for album thumbnails should be passed from above
+
+    const [ redirectToAlbum, setRedirectToAlbum ] = useState({
         active: false, 
         albumId: "",
     });
-    
-    if (redirect.active) {
-        return <Redirect to={{pathname: `album/${redirect.albumId}`, state: {albumId: redirect.albumId}}}/>
+    const [ redirectToCreator, setRedirectToCreator ] = useState(false);
+
+    if (redirectToAlbum.active) {
+        return <Redirect to={{pathname: `album/${redirectToAlbum.albumId}`, state: {albumId: redirectToAlbum.albumId}}}/>
+    }
+
+    // tworzenie albumu
+    if (redirectToCreator) {
+        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
     }
 
     return ( 
@@ -30,7 +39,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     sectionType === "shared" && <h1>Udostępnione dla ciebie</h1>
                 }
                 { 
-                    sectionType !== "shared" && <AddButton>Stwórz album</AddButton> 
+                    sectionType !== "shared" && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton> 
                 }
             </Header>
             <Line/>
@@ -42,7 +51,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     <AlbumThumbnail
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                         })}
@@ -56,7 +65,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     <AlbumThumbnail
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                          })}
@@ -71,7 +80,7 @@ const AlbumSection = ({ sectionType, data }) => {
                         shared={true}
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                         })}

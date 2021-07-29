@@ -12,6 +12,7 @@ import Groups from "./views/Groups";
 import Albums from "./views/Albums";
 import Search from "./views/Search";
 import AlbumDetails from "./views/AlbumDetails";
+import AlbumCreator from "./components/albumCreator/AlbumCreator";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route exact path={routes.search} component={Search}/>
           <Route exact path={routes.albums} component={Albums}/>
           <Route path={routes.album} component={AlbumDetails}/>
+          <Route exact path={routes.albumCreator} component={AlbumCreator}/>
           <Route exact path={routes.groups} component={Groups}/>
         </Switch>
       </BrowserRouter>
