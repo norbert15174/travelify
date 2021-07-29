@@ -27,9 +27,9 @@ const PasswordForm = () => {
             errors.newPassword = "Wymagane!";
         } else if ( values.newPassword === values.actualPassword ) {
             errors.newPassword = "Nowe hasło nie może być takie samo jak stare!"
+        } else if ( !(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])([a-zA-Z0-9!@#$%^&*]{8,})$/).test(values.newPassword) ) {
+            errors.newPassword = "Hasło powinno składać się z minimum 8 znaków (1 cyfra, 1 duża litera oraz 1 znak specjalny)!"
         }
-
-        // pattern na hasło
 
         if (!values.repeatPassword) {
             errors.repeatPassword = "Wymagane!"
@@ -71,6 +71,7 @@ const PasswordForm = () => {
                         value={formik.values.actualPassword} 
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur} 
+                        minLength={8}
                         maxLength={30}
                         placeholder="Hasło powinno składać się z ..."
                     />
@@ -86,6 +87,7 @@ const PasswordForm = () => {
                         value={formik.values.newPassword} 
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur} 
+                        minLength={8}
                         maxLength={30}
                     />
                 </Label>

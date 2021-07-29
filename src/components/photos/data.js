@@ -16,10 +16,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
       },
       {
         id: 2,
@@ -34,10 +30,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia2,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
       },
       {
         id: 3,
@@ -52,10 +44,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
       },
       {
         id: 4,
@@ -70,10 +58,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia2,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
       },
       {
         id: 5,
@@ -88,10 +72,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       {
         id: 6,
@@ -118,10 +98,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia2,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       
       {
@@ -137,10 +113,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       {
         id: 8,
@@ -155,10 +127,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia2,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       {
         id: 9,
@@ -173,10 +141,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       {
         id: 10,
@@ -191,10 +155,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia2,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
       {
         id: 11,
@@ -209,10 +169,6 @@ export const FriendsListArray = {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
-        position: {
-          lat: 34.693419963767134,
-          lng:  135.50148570719475,
-        }
     },
     ],
   };

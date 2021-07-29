@@ -5,7 +5,7 @@ import AlbumSearch from "../trinkets/DropdownSearch";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import privateAlbumIcon from "./assets/privateAlbumIcon.svg";
 import sharedAlbumIcon from "./assets/sharedAlbumIcon.svg";
-import AlbumSection from "./AlbumSection";
+import AlbumGrid from "./AlbumGrid";
 
 const types = {
     public: "public",
@@ -59,7 +59,7 @@ const AlbumsPage = () => {
                     </AlbumOption>
                 </AlbumsSwitch>
             </AlbumsNavigation>
-            <AlbumSection sectionType={albumsType} data={albums}/>
+            <AlbumGrid sectionType={albumsType} data={albums}/>
         </Container>
     );
 
@@ -136,7 +136,7 @@ const AlbumsNavigation = styled.div`
 `;
 
 const Line = styled.div`
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
     width: 60%;
     margin: 25px auto 0 auto;
     @media only screen and (max-width: 1430px) {

@@ -15,6 +15,8 @@ const UserTemplate = ({children}) => (
 );
 
 const Container = styled.div`
+    //filter: blur(8px);
+    //-webkit-filter: blur(8px);
     width: calc(100% - 120px); // 120px => Menu sidebar width;
     display: flex;
     flex-direction: column;
@@ -23,6 +25,7 @@ const Container = styled.div`
     @media only screen and (max-width: 720px) {
         width: 100%; 
     }
+    min-width: 360px;
 `;
 
 export default UserTemplate;

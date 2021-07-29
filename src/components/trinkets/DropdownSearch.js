@@ -75,21 +75,21 @@ const CustomStyles = {
     }),
     menuList: (provided) => ({
         ...provided,
-       "::-webkit-scrollbar": {
-            width: "10px",
-       },
-       "::-webkit-scrollbar-track": {
-            background: "#E0E5E0",
-       },
-       "::-webkit-scrollbar-thumb": {
-            background: "#888",
-            borderRadius: "25px",
-       },
-       "::-webkit-scrollbar-thumb:hover": {
-            background: "#555"
-       },
-       borderRadius: 4,
-       border: "1px solid #0FA3B1",
+        "::-webkit-scrollbar": {
+                width: "10px",
+        },
+        "::-webkit-scrollbar-track": {
+                background: "#E0E5E0",
+        },
+        "::-webkit-scrollbar-thumb": {
+                background: "#888",
+                borderRadius: "25px",
+        },
+        "::-webkit-scrollbar-thumb:hover": {
+                background: "#555"
+        },
+        borderRadius: 4,
+        border: "1px solid #0FA3B1",
         "&:hover": {
             border: "1px solid #0FA3B1",
         },
@@ -109,6 +109,7 @@ const DropdownSearch = ({options, onChange, onBlur, value}) => {
             isSearchable 
             isClearable
             placeholder="Szukaj..."
+            noOptionsMessage={() => "Brak wyników :("}
             onChange={onChange}
             onBlur={onBlur}
             value={value}
@@ -128,6 +129,7 @@ const StyledSelect = styled(Select)`
 const Album = styled.img`
     width: 120px;
     height: 120px;
+    object-fit: cover;
     border-radius: 5px;
     @media only screen and (max-width: 1110px) {
         width: 100px;

@@ -1,26 +1,18 @@
 import React, { useState, useCallback } from "react";
+import styled from "styled-components";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
 import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
 import { GetPlaceName } from "./Geocode";
 
-// initial map coordinates
-const center = {
-  lat: 0,
-  lng: 0,
-};
+function Map({ width, height, options, initialCoordinates, type }) {
 
-const options = {
-  disableDefaultUI: true, // disables little yellow guy and satellite view
-  zoomControl: true, // enables zoom in/out tool
-  gestureHandling: "cooperative", // "none" < "cooperative" < "greedy"
-  styles: indyStyle,
-  minZoom: 2, 
-  maxZoom: 3,
-};
-
-function Map({ width, height }) {
+	const mapOptions = {
+		options,
+		styles: indyStyle,
+		minZoom: 2, 
+	}
 
 	const { isLoaded } = useJsApiLoader({
     	id: "google-map-script",
@@ -34,7 +26,7 @@ function Map({ width, height }) {
 		setMap(map);
 	}, []);
 
-	// prints position and place name in console
+	// not available when watching AlbumInside
 	const onMapClick = (place) => {
 		if (false) console.log(map);
 		console.log("lat: " + place.latLng.lat() + " lng: " + place.latLng.lng());
@@ -45,7 +37,7 @@ function Map({ width, height }) {
 	}
 
 	const onMarkerLoad = (marker) => {
-		console.log("Marker on map: ", marker);
+		console.log("Marker placed on map: ", marker);
 	};
 	
 	const onUnmount = useCallback(function callback(map) {
@@ -58,32 +50,28 @@ function Map({ width, height }) {
 				width: width,
 				height: height,
 			}}
-			center={center}
-			zoom={2}
+			center={initialCoordinates}
+			zoom={type === "AlbumInside" ? 5 : 2}
 			onLoad={onMapLoad}
 			onUnmount={onUnmount}
-			options={options}
-			onClick={(event) => {
+			options={mapOptions}
+			onClick={type === "StartPage" && ((event) => {
 				onMapClick(event);
-			}}
+			})}
 		>
 			<>
-				{markers
-				? markers.list.map((user) => (
+				{markers && type === "StartPage" ? markers.list.map((user) => (
 					<Marker
 						key={user.id}
 						position={{
 							lat: user.position.lat,
 							lng: user.position.lng,
 						}}
-						onClick={() => {
-							setSelected(user);
-						}}
+						onClick={() => setSelected(user)}
 						onLoad={onMarkerLoad}
 					/>
-					))
-				: null}
-				{selected ? (
+				)) : null}
+				{selected && type === "StartPage" ? (
 					<InfoWindow
 						position={{
 							lat: selected.position.lat + 3,
@@ -98,7 +86,32 @@ function Map({ width, height }) {
 							country={selected.country}
 						/>
 					</InfoWindow>
-					) : null}
+				) : null}
+				{type === "AlbumInside" &&
+					<Marker
+						position={{
+							lat: initialCoordinates.lat,
+							lng: initialCoordinates.lng,
+						}}
+						onClick={() => setSelected({name: "Japonia, Osaka", lat: initialCoordinates.lat, lng: initialCoordinates.lng })}
+						onLoad={onMarkerLoad}
+					/>}
+				{selected && type === "AlbumInside" ? (
+					<InfoWindow
+						position={{
+							lat: selected.lat,
+							lng: selected.lng,
+						}}
+						onCloseClick={() => setSelected(null)}	
+					>	
+						<LocationInfo>
+							<Name>{selected.name}</Name>
+							<a href="https://www.google.com/search?q=Japonia, Osaka" target="_blank" rel="noreferrer">
+								Kliknij, by dowiedzieć się więcej o tym miejscu
+							</a> 
+						</LocationInfo>
+					</InfoWindow>
+				) : null}	
 			</>
 		</GoogleMap>	
 	) : (
@@ -106,5 +119,30 @@ function Map({ width, height }) {
 	);
 
 }
+
+// GrLinkNext
+
+const LocationInfo = styled.div`
+	color: ${({theme}) => theme.color.darkTurquise};
+	font-size: 18px;
+	a {
+		color: ${({theme}) => theme.color.darkTurquise};
+		font-size: 16px;
+		&:link, &:visited, &:hover, &:active {
+			color: ${({theme}) => theme.color.darkTurquise};
+		}
+	}
+	@media only screen and (max-width: 510px) {
+        font-size: 12px;
+		a {
+			font-size: 10px;
+		}
+    }
+`;
+
+const Name = styled.p`
+	margin-bottom: 5px;
+	font-weight: ${({theme}) => theme.fontWeight.bold};
+`;
 
 export default React.memo(Map);

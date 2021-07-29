@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from 'react-router-dom';
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
 import "./scrollbar.css";
 
-const AlbumSection = ({sectionType, data}) => {
+const AlbumSection = ({ sectionType, data }) => {
+
+    const [ redirect, setRedirect ] = useState({
+        active: false, 
+        albumId: "",
+    });
+    
+    if (redirect.active) {
+        return <Redirect to={{pathname: `album/${redirect.albumId}`, state: {albumId: redirect.albumId}}}/>
+    }
 
     return ( 
         <Container>
@@ -29,21 +39,43 @@ const AlbumSection = ({sectionType, data}) => {
                 data 
                 && sectionType === "public" 
                 && data.list.map((album) => 
-                    <AlbumThumbnail album={album}/>
+                    <AlbumThumbnail
+                        key={album.id} 
+                        album={album} 
+                        redirectTo={() => setRedirect({
+                            active: true, 
+                            albumId: album.id
+                        })}
+                    />
                 ) 
             }
             {
                 data 
                 && sectionType === "private" 
                 && data.list.map((album) => 
-                    <AlbumThumbnail album={album}/>
+                    <AlbumThumbnail
+                        key={album.id} 
+                        album={album} 
+                        redirectTo={() => setRedirect({
+                            active: true, 
+                            albumId: album.id
+                         })}
+                    />
                 ) 
             }
             {
                 data 
                 && sectionType === "shared" 
                 && data.list.map((album) => 
-                    <AlbumThumbnail shared={true} album={album}/>
+                    <AlbumThumbnail
+                        shared={true}
+                        key={album.id} 
+                        album={album} 
+                        redirectTo={() => setRedirect({
+                            active: true, 
+                            albumId: album.id
+                        })}
+                    />
                 ) 
             }
             </AlbumGrid>
@@ -64,11 +96,11 @@ const Container = styled.div`
     }
     @media only screen and (max-width: 510px) {
         font-size: 8px;
+        padding: 10px 20px;
     }
 `;
 
 const Header = styled.div`
-    width: 100%;
     color: ${({theme}) => theme.color.greyFont};
     display: flex;
     flex-direction: row;
@@ -110,7 +142,7 @@ const AddButton = styled(Button)`
 
 const Line = styled.div`
     margin-top: 10px;
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
     @media only screen and (max-width: 510px) {
         margin-top: 5px;
     }
@@ -139,11 +171,12 @@ const AlbumGrid = styled.div`
     @media only screen and (max-width: 825px) {
         margin-top: 20px;
         grid-template-columns: 420px;
-        grid-auto-rows: auto;
+        grid-auto-rows: 282px;
     }
     @media only screen and (max-width: 510px) {
-        grid-template-columns: 230px;
-        grid-gap: 20px;
+        grid-template-columns: 240px;
+        grid-auto-rows: 162px;
+        grid-gap: 10px;
         margin-top: 10px;
     }
 `;

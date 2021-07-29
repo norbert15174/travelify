@@ -10,6 +10,13 @@ const StartPage = () => {
 
     const [redirect, setRedirect] = useState('no');
 
+    const options = {
+        disableDefaultUI: true, // disables little yellow guy and satellite view
+        zoomControl: true, // enables zoom in/out tool
+        gestureHandling: "cooperative", // "none" < "cooperative" < "greedy"
+        maxZoom: 3,
+      };
+
     if (redirect === "yes") {
         return <Redirect to={{pathname: '/auth'}}/>
     }
@@ -20,7 +27,7 @@ const StartPage = () => {
                 <StyledLogo/>
                 <StyledButton onClick={() => setRedirect('yes')}>Przejdź dalej</StyledButton>
             </StyledHeader>        
-            <Map width={'100%'} height={'750px'}/>
+            <Map width={'100%'} height={'750px'} options={options} initialCoordinates={{lat: 0, lng: 0,}} type="StartPage"/>
             <StyledFooter>
                 <AppInfo>
                     <Line/>

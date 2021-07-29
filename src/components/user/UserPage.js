@@ -245,7 +245,7 @@ const Name = styled.h1`
 `;
 
 const Line = styled.div`
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
     width: 1250px;
     margin: 0 auto;
     @media only screen and (max-width: 1440px) {
@@ -351,8 +351,6 @@ const UserButton = styled(ButtonIcon)`
         font-size: 8px;
     }
 `;
-
-
 
 const Container = styled.div`
     margin: 0 auto;

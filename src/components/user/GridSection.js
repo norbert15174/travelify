@@ -92,24 +92,25 @@ const Container = styled.div`
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     padding: 20px 25px;
-    font-size: 17px;
-    @media only screen and (max-width: 1080px) {
-        font-size: 12px;
-    }
     @media only screen and (max-width: 560px) {
-        font-size: 8px;
         padding: 15px 20px;
     }
 `;
 
 const Header = styled.div`
-    width: 100%;
+    font-size: 17px;
     color: ${({theme}) => theme.color.greyFont};
+    @media only screen and (max-width: 1080px) {
+        font-size: 12px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+    }
 `;
 
 const Line = styled.div`
     margin-top: 10px;
-    border: 1px solid ${({theme}) => theme.color.darkTurquise};
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
 `;
 
 const animation = keyframes`
@@ -122,7 +123,7 @@ const animation = keyframes`
 `;
 
 const Search = styled(Input)`
-    width: 25%;
+    width: 5%;
     margin: 20px 0 25px 30px;
     &:focus {
         animation: ${animation};
@@ -131,10 +132,15 @@ const Search = styled(Input)`
     }
     @media only screen and (max-width: 1080px) {
         margin: 20px 0;
+        width: 8%;
     }
     @media only screen and (max-width: 830px) {
         margin: 15px 0;
         padding: 5px 5px 5px 35px;
+        width: 10%;
+    }
+    @media only screen and (max-width: 720px) {
+        width: 11%;
     }
     @media only screen and (max-width: 560px) {   
         font-size: 8px;
@@ -155,7 +161,7 @@ const AlbumGrid = styled.div`
     }
     @media only screen and (max-width: 1080px) {
         grid-template-columns: 520px;
-        grid-auto-rows: auto;
+        grid-auto-rows: 350px;
         grid-gap: 20px;
         margin-left: 0px;
     }
@@ -163,16 +169,20 @@ const AlbumGrid = styled.div`
         grid-template-columns: 520px;
     }
     @media only screen and (max-width: 830px) {
+        grid-auto-rows: 317px;
         grid-template-columns: 470px;
     }
     @media only screen and (max-width: 735px) {
         grid-template-columns: 420px;
+        grid-auto-rows: 282px;
     }
     @media only screen and (max-width: 560px) {
         grid-template-columns: 290px;
+        grid-auto-rows: 196px;
     }
     @media only screen and (max-width: 410px) {
         grid-template-columns: 240px;
+        grid-auto-rows: 163px;
     }
 `;
 
