@@ -8,6 +8,7 @@ import infoIcon from "./assets/infoIcon.svg";
 import localizationIcon from "./assets/localizationIcon.svg";
 import photoIcon from "./assets/photoIcon.svg";
 import BasicInfo from "./BasicInfo";
+import Localization from "./Localization";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 
@@ -28,14 +29,20 @@ const AlbumCreator = () => {
         description: "",
         visibility: "",
         shared: [],
-    })
+    });
+    const [ localization, setLocalization ] = useState({
+        lat: "",
+        lng: "",
+        country: "",
+        place: "",
+    });
     
     // hook for retrieving passed props at Redirect
     const location = useLocation();
 
     useEffect(() => {
 
-        // checking if album will be edited or created, setting albumId
+        // checking if album will be edited or created, setting albumId we are editing
         setType(location.state.creatorType);
         if (creatorType.edition === type) {
             setAlbumId(location.state.albumId);
@@ -55,10 +62,10 @@ const AlbumCreator = () => {
         return <Redirect to={{pathname: `album/${albumId}`}}/>
     }
 
-    const formHandler = () => {
-        
-        console.log(basicInfo);
-        
+    // formHandler będzie wykorzystywany tylko przy tworzeniu albumu
+    const formHandler = () => { 
+        console.log(basicInfo); 
+        console.log(localization);
     }
 
     return (
@@ -90,14 +97,20 @@ const AlbumCreator = () => {
                         <Icon src={localizationIcon}/>
                         <h1>Lokalizacja</h1>
                     </Header>
+                    <Localization creatorType={type} setForm={setLocalization}/>
                 </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={photoIcon}/>
-                        <h1>Zdjęcia</h1>
-                    </Header>
-                    <Submit type="submit" onClick={formHandler}>Zapisz</Submit>
-                </SectionContainer>
+                {
+                    type 
+                    &&
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={photoIcon}/>
+                            <h1>Zdjęcia</h1>
+                        </Header>
+                        <Submit type="submit" onClick={formHandler}>Zapisz</Submit>
+                        <Cancel>Anuluj</Cancel>
+                    </SectionContainer>
+                }
             </Container>
         </UserTemplate>
     );
@@ -105,7 +118,7 @@ const AlbumCreator = () => {
 }
 
 const Container = styled.div`
-    width:  95%;
+    width:  89%;
     margin: 0 auto; 
     display: grid;
     grid-auto-rows: auto;

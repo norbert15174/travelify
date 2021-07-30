@@ -9,8 +9,7 @@ import descriptionIcon from "./assets/descriptionIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import countriesIcon from "./assets/countriesIcon.svg";
 import deleteAccountIcon from "./assets/deleteAccountIcon.svg";
-import ProfilePhoto from "./ProfilePhoto";
-import ProfileBackground from "./ProfileBackground";
+import PhotoChange from "./PhotoChange";
 import PersonalInfoForm from "./PersonalInfoForm";
 import PasswordForm from "./PasswordForm";
 import DescriptionForm from "./DescriptionForm";
@@ -38,8 +37,8 @@ const EditProfile = () => {
                     </GoBackButton>
                 </PageHeader>
                 <Images>
-                    <ProfilePhoto/>
-                    <ProfileBackground/>
+                    <PhotoChange type="profile"/>
+                    <PhotoChange type="background"/>
                 </Images>
                 <SectionContainer>
                     <Header>

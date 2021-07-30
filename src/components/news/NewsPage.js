@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import NewsSearch from "../trinkets/DropdownSearch";
-import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
 import { FriendsListArray as news } from "./data";
@@ -17,22 +16,6 @@ const NewsPage = () => {
 
     const [newsType, setNewsType] = useState(types.friends);
         
-
-    // STARE SZUKANIE
-    // search field content
-    const [searchContent, setSearchContent] = useState("");
-    const [foundNews, setFoundNews] = useState([]);
-    // search only by album title and author name
-    const handleSearchBarChange = (e) => {
-        setSearchContent(e.target.value);
-        setFoundNews(news.list.filter((item) => {
-            return item.title.toLowerCase().includes(searchContent.toLowerCase()) || 
-                item.name.toLowerCase().includes(searchContent.toLowerCase());
-        }));      
-        console.log(searchList)
-    };
-    ////////
-
     const searchList = news.list.map((item) => {
         return {
             value: item.name,
@@ -50,22 +33,6 @@ const NewsPage = () => {
                 <Heading>Aktualności</Heading>
             </Header>
             <NewsNavigation>
-                {   
-                    /*
-                    stare wyszukiwanie
-                    <Search 
-                        autoComplete="off"
-                        name="search"
-                        id="search" 
-                        type="text" 
-                        search 
-                        placeholder="Szukaj"
-                        value={searchContent}
-                        onChange={handleSearchBarChange}
-                    />
-                    */
-                }
-                
                 <NewsSearch options={searchList}/>
                 <Line/>
                 <NewsSwitch>
@@ -86,46 +53,20 @@ const NewsPage = () => {
                 </NewsSwitch>
             </NewsNavigation>
             {
-                newsType === types.friends && ( 
-                    (
-                        searchContent.length !== 0 && foundNews.length !== 0
-                        ?
-                        foundNews.map((news) => 
-                            <Post key={news.id} news={news}/>
-                        )
-                        : null
-                    ) || (
-                        news.list.length !== 0 && searchContent.length === 0
-                        ? 
-                        news.list.map((news) => 
-                            <Post key={news.id} news={news}/>
-                        )
-                        : null
-                    ) || (
-                        <NoResults/>
-                    )
+                newsType === types.friends && (
+                    news.list.length !== 0 
+                    ? news.list.map((news) => 
+                        <Post key={news.id} news={news}/>)
+                    : <NoResults/>
                 )
             }
             {
                 newsType === types.community && ( 
-                    (
-                        searchContent.length !== 0 && foundNews.length !== 0
-                        ?
-                        foundNews.map((news) => 
-                            <Post news={news}/>
-                        )
-                        : null
-                    ) || (
-                        news.list.length !== 0 && searchContent.length === 0
-                        ? 
-                        news.list.map((news) => 
-                            <Post news={news}/>
-                        )
-                        : null
-                    ) || (
-                        <NoResults/>
-                    )   
-                )
+                    news.list.length !== 0
+                    ? news.list.map((news) => 
+                        <Post news={news}/>)
+                    : <NoResults/>
+                )  
             }
         </Container>
     );
@@ -170,14 +111,6 @@ const NewsNavigation = styled.div`
     justify-content: flex-start;
     @media only screen and (max-width: 720px) {
         height: 180px;
-    }
-`;
-
-const Search = styled(Input)`
-    width: 35vw;
-    margin: 30px auto 0 auto;
-    @media only screen and (max-width: 720px) {
-        width: 50%;
     }
 `;
 

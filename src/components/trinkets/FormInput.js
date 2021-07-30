@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Input = styled.input`
+const FormInput = styled.input`
     width: 100%;
     font-size: 24px;
     outline: none;
@@ -8,8 +8,13 @@ const Input = styled.input`
     border-bottom: 2px solid ${({ theme }) => theme.color.darkTurquise};
     background-color: ${({ theme }) => theme.color.lightBackground};
     font-weight: ${({ theme }) => theme.fontWeight.light};
+    /*
     &:focus {
         border-bottom: 3px solid ${({ theme }) => theme.color.darkTurquise};
+    }
+    */
+    &:disabled {
+        color: #000;
     }
     &::placeholder {
         font-size: 18px;
@@ -28,4 +33,4 @@ const Input = styled.input`
     }
 `;
 
-export default Input;
+export default FormInput;

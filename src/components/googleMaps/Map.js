@@ -1,12 +1,13 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import Geocode from "react-geocode";
 import styled from "styled-components";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
 import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
-import { GetPlaceName } from "./Geocode";
 
-function Map({ width, height, options, initialCoordinates, type }) {
+function Map({ width, height, options, initialCoordinates, type, setLocalization, deleteMarker=false}) {
+	// deleteMarker - Localization.js - marker won't show up when we have cleared form
 
 	const mapOptions = {
 		options,
@@ -19,27 +20,85 @@ function Map({ width, height, options, initialCoordinates, type }) {
     	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
   	});
 
+	// eslint-disable-next-line
 	const [map, setMap] = useState(null);
 	const [selected, setSelected] = useState(null);
+	const [marker, setMarker ] = useState(null);
 
 	const onMapLoad = useCallback(function callback(map) {
 		setMap(map);
 	}, []);
 
-	// not available when watching AlbumInside
 	const onMapClick = (place) => {
-		if (false) console.log(map);
-		console.log("lat: " + place.latLng.lat() + " lng: " + place.latLng.lng());
-		GetPlaceName({
-			lat: place.latLng.lat(), 
-			lng: place.latLng.lng()
-		});
+		setMarker({lat: place.latLng.lat(), lng: place.latLng.lng()})
 	}
 
 	const onMarkerLoad = (marker) => {
 		console.log("Marker placed on map: ", marker);
 	};
+
 	
+	useEffect(() => {
+		if (marker != null) {
+			let country = "";
+			let place = "";
+			Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_KEY);
+			Geocode.setLanguage("en");
+			Geocode.fromLatLng(marker.lat, marker.lng).then(
+				(response) => {
+					const address = response.results[0].address_components;
+					for (let i = 0; i < address.length; i++) {
+						for (let j = 0; j < address[i].types.length; j++) {
+							if ( country && place ) {
+								// when country and place is found
+								break;
+							}
+							switch (address[i].types[j]) {
+								case "country":
+									country = address[i].long_name;
+									break;
+								case "natural_feature":
+									place = address[i].long_name;
+									break;
+								case "point_of_interest":
+									place = address[i].long_name;
+									break;
+								case "locality":
+									place = address[i].long_name;
+									break;	
+								default:
+									break;
+							}
+						}
+					}
+					if (place === "") {
+						place = "Brak informacji";
+					}
+					if (country === "") {
+						country = "Brak informacji";
+					}
+					setLocalization({
+						lat: marker.lat,
+						lng: marker.lng,
+						country: country,
+						place: place,
+					});
+				}, 
+				(error) => {
+					console.log(error);
+					setLocalization({
+						lat: marker.lat,
+						lng: marker.lng,
+						country: "Brak informacji",
+						place: "Brak informacji",
+					});
+				}     
+			)
+		}
+    }, [marker, setLocalization]);
+	
+
+	// @ts-ignore
 	const onUnmount = useCallback(function callback(map) {
 		setMap(null);	
 	}, []);
@@ -55,7 +114,7 @@ function Map({ width, height, options, initialCoordinates, type }) {
 			onLoad={onMapLoad}
 			onUnmount={onUnmount}
 			options={mapOptions}
-			onClick={type === "StartPage" && ((event) => {
+			onClick={type === "AlbumCreator" && ((event) => {
 				onMapClick(event);
 			})}
 		>
@@ -79,7 +138,9 @@ function Map({ width, height, options, initialCoordinates, type }) {
 						}}
 						onCloseClick={() => setSelected(null)}	
 					>
-						<MarkerInfo
+						<
+// @ts-ignore
+						MarkerInfo
 							name={selected.name}
 							url={selected.url}
 							title={selected.title}
@@ -111,7 +172,15 @@ function Map({ width, height, options, initialCoordinates, type }) {
 							</a> 
 						</LocationInfo>
 					</InfoWindow>
-				) : null}	
+				) : null}
+				{marker && type === "AlbumCreator" && !deleteMarker ? (
+					<Marker
+						position={{
+							lat: marker.lat,
+							lng: marker.lng,
+						}}
+					/>
+				) : null}
 			</>
 		</GoogleMap>	
 	) : (

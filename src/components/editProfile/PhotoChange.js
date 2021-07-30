@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import profilePhoto from "./assets/profilePhoto.png";
+import profileBackground from "./assets/profileBackground.png";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import "./fileUpload.css"
 import StatusMessage from "../trinkets/StatusMessage";
 
-const ProfilePhoto = () => {
+const PhotoChange = ({type}) => {
 
     const [ sizeError, setSizeError ] = useState(false);
     const [ typeError, setTypeError ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState("")
-    const [ data, setData ] = useState(undefined);
+    const [ image, setImage ] = useState(undefined);
+    const [ preview, setPreview ] = useState("");
+
+    useEffect(() => {
+        if (image) {
+            // new image selected
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            }
+            reader.readAsDataURL(image);
+        } else {
+            // no new image selected
+            if ( type === "profile" ) {
+                setPreview(profilePhoto);
+            } else if ( type === "background" ) {
+                setPreview(profileBackground);
+            }
+        }
+    }, [image, type]);
 
     const onChangeHandler = (e) => {
         let file = e.target.files[0];
@@ -20,14 +40,14 @@ const ProfilePhoto = () => {
         setSizeError(false);
         setErrorMessage("");
         if ( file === undefined ) {
-            setData(undefined);
-            document.getElementById("fileInput").value = null;
+            setImage(undefined);
+            document.getElementById(type).value = null;
             return;
         } 
-        if ( file.size >= 2000000) {
+        if ( file.size >= 5000000) {
             setSizeError(true);
             setErrorMessage("Maksymalny rozmiar to 5MB!");
-            document.getElementById("fileInput").value = null;
+            document.getElementById(type).value = null;
             return;
         }
         console.log(file.type);
@@ -35,32 +55,36 @@ const ProfilePhoto = () => {
         {
             setTypeError(true);
             setErrorMessage("Dozwolone formaty zdjęć to JPEG, JPG i PNG!");
-            document.getElementById("fileInput").value = null;
+            document.getElementById(type).value = null;
             return;
         }
-        setData(file);
-        console.log("OK");
+        setImage(file);
     };
 
     const onCancel = () => {
         setTypeError(false);
         setSizeError(false);
         setErrorMessage("");
-        document.getElementById("fileInput").value = null;
-        setData(undefined);
+        document.getElementById(type).value = null;
+        setImage(undefined);
     }
 
     return (
         <Container>
-            <Header>Zdjęcie profilowe</Header>
-            <Photo src={profilePhoto} alt="Profile photo"/> 
+            <Header>{type === "profile" ? "Zdjęcie profilowe" : "Zdjęcie w tle"}</Header>
+            {type === "profile" && <Profile src={preview} alt="Profile photo"/>}
+            {type === "background" && <Background src={preview} alt="Profile background"/>  }
             <Input>
-                <input className="file__upload" id="fileInput" type="file" name="Profile" onChange={(e) => onChangeHandler(e)}/>
+                <input 
+                    className="file__upload" 
+                    id={type}
+                    type="file" 
+                    onChange={(e) => onChangeHandler(e)}/>
                 { errorMessage && <ErrorMessage type="error">{errorMessage}</ErrorMessage> }
             </Input>
             <Buttons>
-                <Submit disabled={sizeError !== true && typeError !== true && data === undefined} onClick={() => null}>Zapisz</Submit> 
-                <Cancel disabled={sizeError !== true && typeError !== true && data === undefined} onClick={() => onCancel()}>Anuluj</Cancel>
+                <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={() => null}>Zapisz</Submit> 
+                <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={() => onCancel()}>Anuluj</Cancel>
             </Buttons>
         </Container>
     );
@@ -83,7 +107,8 @@ const Header = styled.h1`
     }
 `;
 
-const Photo = styled.img`
+const Profile = styled.img`
+    object-fit: cover;
     width: 215px;
     height: 215px;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
@@ -115,6 +140,31 @@ const Photo = styled.img`
     }
 `;
 
+const Background = styled.img`
+    object-fit: cover;
+    width: 81.5%;
+    height: 215px;
+    border: 1px solid ${({theme}) => theme.color.lightTurquise};   
+    display: block;
+    margin: 20px auto;
+    @media only screen and (max-width: 1120px) {
+        height: 170px;
+    }
+    @media only screen and (max-width: 870px) {
+        height: 150px;
+    }
+    @media only screen and (max-width: 660px) {
+        height: 130px
+    }
+    @media only screen and (max-width: 560px) {
+        height: 120px;
+    }  
+    @media only screen and (max-width: 410px) {
+        height: 110px;
+        margin: 10px auto;
+    }  
+`;
+
 const Container = styled.div`
     display: grid;
     grid-template-rows: repeat(3, auto) 1fr;
@@ -134,9 +184,10 @@ const ErrorMessage  = styled(StatusMessage)`
 `;
 
 const Buttons = styled.div`
+    margin-top: 10px;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
 `;
 
-export default ProfilePhoto;
+export default PhotoChange;

@@ -33,6 +33,8 @@ const visibilityType = {
 
 const BasicInfo = ({creatorType, setForm}) => {
 
+     // data will be passed from above
+
     const [ name, setName ] = useState("")
     const [ description, setDescription ] = useState(initialDescription);
     const [ visibility, setVisibility ] = useState(visibilityType.public);
@@ -67,6 +69,10 @@ const BasicInfo = ({creatorType, setForm}) => {
 
     const formHandler = () => {
 
+        setFriendsError("");
+        setNameError("");
+        setSubmitMessage("");
+
         // for validation I'm only checking name field
         if ( !name ) {
             setNameError("Wymagane!");
@@ -85,12 +91,13 @@ const BasicInfo = ({creatorType, setForm}) => {
             })
             setSubmitMessage("Informacje zostały dodane do formularza.");
         } else if (creatorType === "edition") {
-            console.log("Porównanie czy coś się zmieniło i wysyłka");
             // gdy dokonujemy edycji to bierzemy tylko te pola które zmieniliśmy
             setSubmitMessage("Zmiany zostały zapisane.");
         }
         
-        clearForm();
+        console.log("BasicInfo form submitted!");
+
+        //clearForm();
         
     }
 
@@ -108,6 +115,9 @@ const BasicInfo = ({creatorType, setForm}) => {
         }
         setFriendsError("");
         setNameError("");
+
+        console.log("BasicInfo form cleared!");
+
     }
 
     return (
@@ -196,7 +206,6 @@ const BasicInfo = ({creatorType, setForm}) => {
                 <Submit disabled={name === "" ? true : false} type="submit" onClick={formHandler}>{ creatorType === "creation" ? "Dodaj" : "Zapisz"}</Submit>
                 <Cancel disabled={name === "" ? true : false} onClick={clearForm}>Anuluj</Cancel>
             </Buttons>
-
         </>
     );
 
