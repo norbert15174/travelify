@@ -78,6 +78,7 @@ const BasicInfo = ({creatorType, setForm}) => {
             setNameError("Wymagane!");
             return;
         } else if ( name.length < 5) {
+            setSubmitMessage("Popraw występujące błędy!");
             setNameError("Nazwa albumu powinna składać się z minimum 5 znaków!");
             return;
         }
@@ -99,7 +100,7 @@ const BasicInfo = ({creatorType, setForm}) => {
 
         //clearForm();
         
-    }
+    };
 
     const clearForm = () => {
         if (creatorType === "creation") {
@@ -108,33 +109,36 @@ const BasicInfo = ({creatorType, setForm}) => {
             setVisibility(visibilityType.public);
             setFriends([]);
         } else if (creatorType === "edition") {
-            setName("initial value");
+            // initial value
+            setName("");
             setDescription(initialDescription);
             setVisibility(visibilityType.public);
-            setFriends(["initial value"]);
+            // initial value
+            setFriends([]);
         }
         setFriendsError("");
         setNameError("");
+        setSubmitMessage("");
 
         console.log("BasicInfo form cleared!");
 
-    }
+    };
 
     return (
         <>
             <Container>
                 <Label>
                     Nazwa
+                    { 
+                        nameError !== "" ? <NameError type="error">{nameError}</NameError> 
+                        : <NameInfo type="info">Nazwa albumu jest wymagana.<br/>Powinna składać się z minimum 5 znaków.</NameInfo> 
+                    }
                     <FormInput 
                         maxLength={60}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
-                </Label>
-                { 
-                    nameError !== "" ? <ErrorMessage type="error">{nameError}</ErrorMessage> 
-                    : <InfoMessage type="info">Nazwa albumu jest wymagana.<br/>Powinna składać się z minimum 5 znaków.</InfoMessage> 
-                }
+                </Label>   
                 <Label>
                     Opis (opcjonalny)
                     <Description
@@ -143,7 +147,6 @@ const BasicInfo = ({creatorType, setForm}) => {
                             placeholder={initialDescription}
                     />
                 </Label>
-                <div/>
                 <Label>
                     Widoczność
                     <VisibilitySwitch>
@@ -161,14 +164,10 @@ const BasicInfo = ({creatorType, setForm}) => {
                         >
                             Prywatny
                         </VisibilityOption>
+                        
                     </VisibilitySwitch>
                 </Label>
-                { 
-                    visibility === visibilityType.public && <InfoMessage>Album publiczny jest w pełni widoczny dla każdego użytkownika.</InfoMessage> 
-                } 
-                { 
-                    visibility === visibilityType.private && <InfoMessage>Album prywatny jest widoczny tylko dla ciebie.<br/>Możesz go udostępnić znajomym.</InfoMessage>  
-                } 
+
             </Container>
             {
                 visibility === visibilityType.private && 
@@ -178,10 +177,8 @@ const BasicInfo = ({creatorType, setForm}) => {
                         <AddSection>
                             <SelectFriends type="friends" isMulti={true} options={options} value={selectedFriends} setState={setSelectedFriends}/>
                             <AddButton icon={addIcon} onClick={addFriend}/>
+                            { friendsError !== "" && <AddError type="error">{friendsError}</AddError> }
                         </AddSection>
-                        { 
-                            friendsError !== "" && <ErrorMessage type="error">{friendsError}</ErrorMessage>  
-                        }
                     </Label>
                     <FriendsSection>
                         <p>Wybrani znajomi:</p>
@@ -214,14 +211,26 @@ const BasicInfo = ({creatorType, setForm}) => {
 const Container = styled.div`
     display: grid;
     grid-template-rows: repeat(3, auto);
-    grid-template-columns: repeat(2, 50%);
+    grid-template-columns: 50%;
     grid-column-gap: 15px;
     margin: 20px 0px 0px 77px;
     grid-row-gap: 25px;
+    @media only screen and (max-width: 1220px) {
+        margin: 20px 0px 0px 65px;
+    }
+    @media only screen and (max-width: 870px) {
+        margin: 20px 0px 0px 55px;
+        grid-gap: 15px;    
+    }
+    @media only screen and (max-width: 560px) {
+        margin: 15px 0px 0px 40px;
+    }
+    @media only screen and (max-width: 480px) {
+        margin: 15px 0px 0px 15px;
+    }
 `;
 
 const Label = styled.label`
-    font-size: 18px;
     font-weight: ${({theme}) => theme.fontWeight.bold};
     color: ${({theme}) => theme.color.greyFont};
     font-size: 18px;
@@ -249,9 +258,16 @@ const Description = styled.textarea`
     &::placeholder {
         color: #5c5b5b;
     }
+    @media only screen and (max-width: 870px) {
+        font-size: 12px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 10px;
+    }
 `;
 
 const VisibilitySwitch = styled.div`
+    position: relative;
     display: flex;
     margin-top: 5px;
     flex-direction: row;
@@ -273,6 +289,16 @@ const VisibilityOption = styled.div`
     background-position: 10% 50%;
     background-repeat: no-repeat;
     cursor: pointer;
+    @media only screen and (max-width: 980px) {
+        background-size: 27px;
+        padding: 10px 20px 10px 40px;
+        margin-left: 15px;
+    }
+    @media only screen and (max-width: 900px) {
+        background-size: 20px;
+        padding: 10px 20px 10px 35px;
+        margin-left: 10px;
+    }
 `;
 
 const SharingSection = styled.div`
@@ -280,11 +306,27 @@ const SharingSection = styled.div`
     min-height: 100px;
     grid-template-columns: repeat(2, 50%);
     grid-column-gap: 15px;
-    margin-top: 25px;
-    margin-left: 77px;
+    margin: 20px 0px 0px 77px;
+    @media only screen and (max-width: 1220px) {
+        margin: 20px 0px 0px 65px;
+    }
+    @media only screen and (max-width: 870px) {
+        margin: 20px 0px 0px 55px;
+    }
+    @media only screen and (max-width: 800px) {
+        display: flex;
+        flex-direction: column;
+    }
+    @media only screen and (max-width: 560px) {
+        margin: 15px 0px 0px 40px;
+    }
+    @media only screen and (max-width: 480px) {
+        margin: 15px 0px 0px 15px;
+    }
 `;
 
 const AddSection = styled.div`
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -292,18 +334,24 @@ const AddSection = styled.div`
 `;
 
 const AddButton = styled(ButtonIcon)`
+    flex-shrink: 0;
     width: 35px;
     height: 35px;
     border-radius: 25%;
-    margin-left: 15px;
+    margin: 0px 15px 0px 15px;
     background-position: 50% 50%;
-    background-size: 50%;
+    background-size: 20px;
+    @media only screen and (max-width: 560px) {
+        width: 20px;
+        height: 20px;
+        background-size: 10px;
+        margin: 0px 0px 0px 5px;
+    }
 `;
 
 const FriendsSection = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 10px 0px;
     color: ${({theme}) => theme.color.greyFont};
     font-weight: ${({theme}) => theme.fontWeight.bold};
     font-size: 18px;
@@ -323,7 +371,9 @@ const AddedFriends = styled.div`
 `;
 
 const Friend = styled.div`
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     background-color: #E0E5E0;
     background-image: url(${({profilePhoto}) => profilePhoto});
@@ -337,7 +387,17 @@ const Friend = styled.div`
     margin-top: 5px;
     margin-right: 10px;
     flex-shrink: 1;
-
+    @media only screen and (max-width: 870px) {
+        background-size: 20px;
+        padding: 8px 8px 8px 35px;
+        font-size: 12px;
+    }
+    @media only screen and (max-width: 560px) {
+        background-size: 15px;
+        background-position: 10% 48%;
+        padding: 5px 5px 5px 30px;
+        font-size: 10px;
+    }
 `;
 
 const DeleteIcon = styled.img`
@@ -345,35 +405,128 @@ const DeleteIcon = styled.img`
     height: 10px;
     margin-left: 10px;
     cursor: pointer;
+    @media only screen and (max-width: 870px) {
+        width: 7.5px;
+        height: 7.5px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 5px;
+        height: 5px;
+    }
 `;
 
 const Placeholder = styled.p`
     font-size: 12px;
     opacity: 0.8;
+    @media only screen and (max-width: 870px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 8px;
+    }
 `;
 
-const ErrorMessage = styled(StatusMessage)`
+const AddError = styled(StatusMessage)`
+    position: absolute;
+    width: 250px;
     font-size: 12px;
-    align-self: center;
-    width: fit-content;
-    height: fit-content;
-    margin: 0 auto;
+    top: 120%;
+    @media only screen and (max-width: 870px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 800px) {
+        width: 150px;
+        top: 0%;
+        left: 60%;
+    }
+    @media only screen and (max-width: 600px) {
+        width: 100px;
+        left: 65%;
+    }
+    @media only screen and (max-width: 560px) {
+        top: 15%;
+        font-size: 6px;
+        padding: 5px;
+        margin-left: 10px;
+    }
+    @media only screen and (max-width: 450px) {
+        width: 50px;
+        margin-left: 50px;
+    }
 `;
 
-const InfoMessage = styled(StatusMessage)`
+const NameError = styled(StatusMessage)`
+    position: absolute;
     font-size: 12px;
-    align-self: center;
-    width: fit-content;
-    height: fit-content;
-    margin: 0 auto;
+    margin-left: 40%;
+    @media only screen and (max-width: 1080px) {
+        width: 200px;
+    }
+    @media only screen and (max-width: 870px) {
+        font-size: 10px;
+        margin-left: 38%;
+    }
+    @media only screen and (max-width: 770px) {
+        width: 100px;
+        margin-top: -2%;
+    }
+    @media only screen and (max-width: 720px) {
+        margin-top: -2%;
+        margin-left: 45%;
+    }
+    @media only screen and (max-width: 620px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+        padding: 5px;
+        margin-left: 50%;
+    }
 `;
+
+const NameInfo = styled(StatusMessage)`
+    position: absolute;
+    font-size: 12px;
+    margin-left: 40%;
+    @media only screen and (max-width: 870px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 770px) {
+        width: 100px;
+        margin-top: -2%;
+    }
+    @media only screen and (max-width: 720px) {
+        width: auto;
+        margin-top: -2%;
+        margin-left: 45%;
+    }
+    @media only screen and (max-width: 620px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+        width: auto;
+        padding: 5px;
+        margin-left: 50%;
+    }
+    @media only screen and (max-width: 400px) {
+        display: none;
+    }
+`;
+
+
 
 const SubmitMessage = styled(StatusMessage)`
     font-size: 12px;
     align-self: center;
-    width: fit-content;
-    height: fit-content;
     margin-right: 15px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 8px;
+        padding: 5px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+    }
 `;
 
 const Buttons = styled.div`
@@ -382,6 +535,14 @@ const Buttons = styled.div`
     justify-content: flex-end;
     align-items: center;
     margin-top: 25px;
+    height: 40px;
+    @media only screen and (max-width: 1080px) {
+        height: 25px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin-top: 15px;
+        height: 20px;
+    }
 `;
 
 export default BasicInfo;

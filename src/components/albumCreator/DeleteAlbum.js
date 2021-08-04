@@ -2,16 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 
-const DeleteAccountForm = () => {
-
+const DeleteAlbum = () => {
 
     return (
         <>
             <WarningMessage>
-                <p>Usuniętego konta nie da się odzyskać !</p>
-                <p>Profil, albumy i zdjęcia zostaną trwale usunięte.</p>
+                <p>Usuniętego albumu nie da się odzyskać!</p>
+                <p>Dodane zdjęcia zostaną trwale usunięte.</p>
             </WarningMessage>
-            <DeleteButton>Usuń konto</DeleteButton>
+            <DeleteButton>Usuń</DeleteButton>
         </> 
     );
 
@@ -55,4 +54,4 @@ const WarningMessage = styled.div`
     } 
 `;
 
-export default DeleteAccountForm;
+export default DeleteAlbum;

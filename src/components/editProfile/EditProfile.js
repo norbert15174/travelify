@@ -14,7 +14,7 @@ import PersonalInfoForm from "./PersonalInfoForm";
 import PasswordForm from "./PasswordForm";
 import DescriptionForm from "./DescriptionForm";
 import CountriesForm from "./CountriesForm";
-import DeleteAccountForm from "./DeleteAccount";
+import DeleteAccountForm from "./DeleteAcountForm";
 import { routes } from "../../miscellanous/Routes";
 
 const EditProfile = () => {

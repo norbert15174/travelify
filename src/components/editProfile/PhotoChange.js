@@ -46,15 +46,14 @@ const PhotoChange = ({type}) => {
         } 
         if ( file.size >= 5000000) {
             setSizeError(true);
-            setErrorMessage("Maksymalny rozmiar to 5MB!");
+            setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
             document.getElementById(type).value = null;
             return;
         }
-        console.log(file.type);
         if ( !file.type.includes("image/jpeg") && !file.type.includes("image/png"))
         {
             setTypeError(true);
-            setErrorMessage("Dozwolone formaty zdjęć to JPEG, JPG i PNG!");
+            setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
             document.getElementById(type).value = null;
             return;
         }

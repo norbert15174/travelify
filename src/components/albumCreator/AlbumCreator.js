@@ -7,12 +7,13 @@ import { routes } from "../../miscellanous/Routes";
 import infoIcon from "./assets/infoIcon.svg";
 import localizationIcon from "./assets/localizationIcon.svg";
 import photoIcon from "./assets/photoIcon.svg";
+import deleteAlbumIcon from "./assets/deleteAlbumIcon.svg";
 import BasicInfo from "./BasicInfo";
 import Localization from "./Localization";
-import Submit from "../trinkets/Submit";
-import Cancel from "../trinkets/Cancel";
+import Photos from "./Photos";
+import DeleteAlbum from "./DeleteAlbum";
 
-// component for creating and editing albums
+
 const creatorType = {
     creation: "creation",
     edition: "edition",
@@ -30,6 +31,8 @@ const AlbumCreator = () => {
         visibility: "",
         shared: [],
     });
+
+    // Localization submitted data, used at album creation, at editing it won't be used
     const [ localization, setLocalization ] = useState({
         lat: "",
         lng: "",
@@ -37,6 +40,8 @@ const AlbumCreator = () => {
         place: "",
     });
     
+    // there is no need for a state with photos
+
     // hook for retrieving passed props at Redirect
     const location = useLocation();
 
@@ -100,15 +105,44 @@ const AlbumCreator = () => {
                     <Localization creatorType={type} setForm={setLocalization}/>
                 </SectionContainer>
                 {
-                    type 
+                    type === creatorType.edition
                     &&
                     <SectionContainer>
                         <Header>
                             <Icon src={photoIcon}/>
                             <h1>Zdjęcia</h1>
                         </Header>
-                        <Submit type="submit" onClick={formHandler}>Zapisz</Submit>
-                        <Cancel>Anuluj</Cancel>
+                        <Photos/>
+                    </SectionContainer>
+                }
+                {
+                    type === creatorType.creation
+                    &&
+                    (basicInfo.name !== "" &&
+                    localization.lat !== "" &&
+                    localization.place !== "")
+                    && 
+                    <SectionContainer>
+                        <End>
+                            <Line/>
+                            <StyledButton
+                                type="submit" 
+                                onClick={formHandler}
+                            >
+                                Stwórz album
+                            </StyledButton>
+                            <Line/>
+                        </End>
+                    </SectionContainer>
+                }
+                {
+                    type === creatorType.edition &&
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={deleteAlbumIcon}/>
+                            <h1>Usuń album</h1>
+                        </Header>
+                        <DeleteAlbum/>
                     </SectionContainer>
                 }
             </Container>
@@ -117,13 +151,24 @@ const AlbumCreator = () => {
 
 }
 
+/*
+
+    <SectionContainer>
+                    <Header>
+                        <Icon src={infoIcon}/>
+                        <h1>Podstawowe informacje</h1>
+                    </Header>
+                    <BasicInfo creatorType={type} setForm={setBasicInfo}/>
+                </SectionContainer>
+*/
+
 const Container = styled.div`
-    width:  89%;
+    width:  90%;
     margin: 0 auto; 
     display: grid;
     grid-auto-rows: auto;
     grid-row-gap: 15px;
-    min-width: 388px;
+    min-width: 390px;
     margin-bottom: 15px;
 `;
 
@@ -244,6 +289,24 @@ const SectionContainer = styled.div`
     @media only screen and (max-width: 560px) {
         padding: 10px;
     }
+`;
+
+const End = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+`;
+
+const StyledButton = styled(Button)`
+    width: 150px;
+    padding: 5px 15px;
+    margin: 0px 15px 0px 15px;
+`;
+
+const Line = styled.div`
+    width: 40%;
+    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
 `;
 
 export default AlbumCreator;

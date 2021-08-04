@@ -25,7 +25,6 @@ const Localization = ({creatorType, setForm}) => {
         country: "",
         place: place,
     });
-    const [ error, setError ] = useState("");
     const [ submitMessage, setSubmitMessage ] = useState("");
    
     const clearForm = () => {
@@ -48,18 +47,14 @@ const Localization = ({creatorType, setForm}) => {
             // return to initial values
         }
         console.log("Localization form cleared!");
-        setError("");
     }
 
     const formHandler = () => {
         
-        setError("");
         setSubmitMessage("");
 
-        // there is no need to check if form has field filled
-
-        if ( localization.country === "Brak informacji" && localization.place === "Brak informacji") {
-            setError("Określenie wybranego przez ciebie miejsca okazało się niemożliwe.\nSpróbuj wybrać ponownie lub zmień nazwę miejsca.");
+        if (localization.country === "Brak informacji" || localization.place === "Brak informacji") {
+            setSubmitMessage("Popraw występujące błędy!");
             return;
         }
 
@@ -67,7 +62,7 @@ const Localization = ({creatorType, setForm}) => {
             setForm(localization)
             setSubmitMessage("Informacje zostały dodane do formularza.");
         } else if (creatorType === "edition") {
-            // gdy dokonujemy edycji to bierzemy tylko te pola które zmieniliśmy
+            // submit only changed fields
             setSubmitMessage("Zmiany zostały zapisane.");
         }
         
@@ -98,12 +93,6 @@ const Localization = ({creatorType, setForm}) => {
                         }))}
                     />
                 </ValueContainer>
-                { 
-                    error !== "" ? <ErrorMessage type="error">{error}</ErrorMessage> 
-                    : <InfoMessage type="info">
-                        Aby wybrać lokalizację albumu wystarczy kliknąć na mapie w miejsce, które odwiedziłeś. Jeśli nazwa miejsca będzie nieodpowiednia, możesz ustawić ją ręcznie.
-                    </InfoMessage> 
-                }
                 <ValueContainer>
                     Długość geograficzna
                     <FormInput
@@ -119,7 +108,17 @@ const Localization = ({creatorType, setForm}) => {
                     />
                 </ValueContainer>
             </InnerContainer>
-            <MapContainer>
+            { 
+                        localization.country === "Brak informacji" || localization.place === "Brak informacji" 
+                        ? 
+                        <ErrorMessage type="error">
+                            Określenie wybranego przez ciebie miejsca okazało się niemożliwe. W przypadku braku informacji o nazwie miejsca, możesz ustawić ją ręcznie.
+                        </ErrorMessage> 
+                        : <InfoMessage type="info">
+                            Wybierz miejsce, które odwiedziłeś. Jeśli uzyskana nazwa miejsca będzie nieodpowiednia, możesz ustawić ją ręcznie.
+                        </InfoMessage>
+                    }
+            {<MapContainer>
                 <Map 
                     width={"100%"} 
                     height={"100%"} 
@@ -133,7 +132,7 @@ const Localization = ({creatorType, setForm}) => {
                     setLocalization={setLocalization}
                     deleteMarker={localization.lat === "" && localization.lng === "" ? true : false}
                 />
-            </MapContainer>
+                </MapContainer>}
         </Container>
         <Buttons>
             { submitMessage !== "" && <SubmitMessage>{submitMessage} </SubmitMessage>}
@@ -170,9 +169,31 @@ const Localization = ({creatorType, setForm}) => {
 
 const Container = styled.div`
     display: grid;
-    grid-template-rows: auto 604px;
+    grid-template-rows: auto auto 604px;
     margin: 20px 0px 0px 77px;
     grid-row-gap: 25px;
+    @media only screen and (max-width: 1220px) {
+        margin: 20px 0px 0px 65px;
+    }
+    @media only screen and (max-width: 870px) {
+        margin: 20px 0px 0px 55px;
+    }
+    @media only screen and (max-width: 960px) {
+        grid-template-rows: auto auto 504px;
+    }
+    @media only screen and (max-width: 600px) {
+        grid-template-rows: auto auto 404px;
+        grid-gap: 15px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin: 15px 0px 0px 40px;
+    }
+    @media only screen and (max-width: 480px) {
+        margin: 15px 0px 0px 15px;
+    }
+    @media only screen and (max-width: 430px) {
+        grid-template-rows:  auto auto 304px;
+    }
 `;
 
 const InnerContainer = styled.div`
@@ -181,6 +202,10 @@ const InnerContainer = styled.div`
     grid-template-rows: repeat(2, auto);
     grid-gap: 25px;
     justify-content: flex-start;
+    margin-right: 25px;
+    @media only screen and (max-width: 600px) {
+        grid-gap: 10px;
+    }
 `;
 
 const ValueContainer = styled.div`
@@ -196,11 +221,44 @@ const ValueContainer = styled.div`
 `;
 
 const MapContainer = styled.div`
-    width: 1436px; // 4px zabrane na border 
+    width: 1336px; // 4px zabrane na border 
     border: 2px solid ${({theme}) => theme.color.lightTurquise};
     display: inline-block;
     border-radius: 15px;
     overflow: hidden;
+    @media only screen and (max-width: 1780px) {
+        width: 1236px;
+    }
+    @media only screen and (max-width: 1680px) {
+        width: 1136px;
+    }
+    @media only screen and (max-width: 1560px) {
+        width: 1036px;
+    }
+    @media only screen and (max-width: 1400px) {
+        width: 936px;
+    }
+    @media only screen and (max-width: 1300px) {
+        width: 836px;
+    }
+    @media only screen and (max-width: 1180px) {
+        width: 736px;
+    }
+    @media only screen and (max-width: 1070px) {
+        width: 636px;
+    }
+    @media only screen and (max-width: 960px) {
+        width: 536px; 
+    }
+    @media only screen and (max-width: 840px) {
+        width: 436px;
+    }
+    @media only screen and (max-width: 600px) {
+        width: 336px;
+    }
+    @media only screen and (max-width: 430px) {
+        width: 336px;
+    }
 `;
 
 const Buttons = styled.div`
@@ -210,29 +268,52 @@ const Buttons = styled.div`
     align-items: center;
     margin-top: 25px;
     height: 40px;
+    @media only screen and (max-width: 1080px) {
+        height: 25px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin-top: 15px;
+        height: 20px;
+    }
 `;
 
 const ErrorMessage = styled(StatusMessage)`
-    position: absolute; 
-    width: 350px;
     font-size: 12px;
     align-self: center;
-    left: 55%;
+    width: 50%;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+        padding: 5px;
+    }
 `;
 
 const InfoMessage = styled(StatusMessage)`
-    position: absolute;
     font-size: 12px;
     align-self: center;
-    width: 400px;
-    left: 55%;
+    width: 50%;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+        padding: 5px;
+    }
 `;
 
 const SubmitMessage = styled(StatusMessage)`
     font-size: 12px;
     align-self: center;
     margin-right: 15px;
-
+    @media only screen and (max-width: 1080px) {
+        font-size: 8px;
+        padding: 5px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+    }
 `;
 
 export default Localization;

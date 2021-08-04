@@ -65,6 +65,9 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 									break;
 								case "locality":
 									place = address[i].long_name;
+									break;
+								case "park":
+									place = address[i].long_name;
 									break;	
 								default:
 									break;
