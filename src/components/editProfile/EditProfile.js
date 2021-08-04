@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserTemplate from "../../templates/UserTemplate";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
@@ -15,11 +15,32 @@ import PasswordForm from "./PasswordForm";
 import DescriptionForm from "./DescriptionForm";
 import CountriesForm from "./CountriesForm";
 import DeleteAccountForm from "./DeleteAcountForm";
+import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { routes } from "../../miscellanous/Routes";
+import { useSelector } from "react-redux";
 
 const EditProfile = () => {
 
     const [ redirect, setRedirect ] = useState(false);
+
+    const [ confirmDeletingAccount, setConfirmDeletingAccount ] = useState(false);
+    const [ refuseDeletingAccount, setRefuseDeletingAccount ] = useState(false);
+    const [ deleteBox, setDeleteBox ] = useState(false);
+
+    const blurState = useSelector((state) => state.blur.value);    
+
+    useEffect(() => {
+        if (confirmDeletingAccount) {
+            console.log("account has been deleted");
+            setConfirmDeletingAccount(false);
+            setDeleteBox(false);
+        } 
+        if (refuseDeletingAccount) {
+            console.log("account hasn't been deleted");
+            setRefuseDeletingAccount(false);
+            setDeleteBox(false);
+        }
+    }, [confirmDeletingAccount, refuseDeletingAccount]);
 
     if (redirect) {
         return <Redirect to={{pathname: routes.user}}/>
@@ -27,7 +48,8 @@ const EditProfile = () => {
 
     return (
         <UserTemplate>
-            <Container>
+            {deleteBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć swoje konto?"} confirm={setConfirmDeletingAccount} refuse={setRefuseDeletingAccount}/>}
+            <Container blurState={blurState}>
                 <PageHeader>
                     <Heading>
                         Edytuj profil
@@ -80,7 +102,7 @@ const EditProfile = () => {
                         <Icon src={deleteAccountIcon}/>
                         <h1>Usuń konto</h1>
                     </Header>
-                    <DeleteAccountForm/>
+                    <DeleteAccountForm setDeleteBox={setDeleteBox}/>
                 </SectionContainer>
             </Container>
         </UserTemplate>   
@@ -95,6 +117,8 @@ const Container = styled.div`
     grid-row-gap: 15px;
     min-width: 388px;
     margin-bottom: 15px;
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 `;
 
 const PageHeader = styled.div`

@@ -12,7 +12,8 @@ import BasicInfo from "./BasicInfo";
 import Localization from "./Localization";
 import Photos from "./Photos";
 import DeleteAlbum from "./DeleteAlbum";
-
+import { useSelector } from "react-redux";
+import ConfirmationBox from "../trinkets/ConfirmationBox";
 
 const creatorType = {
     creation: "creation",
@@ -23,6 +24,12 @@ const AlbumCreator = () => {
 
     const [ type, setType ] = useState("");
     const [ albumId, setAlbumId ] = useState(null);
+    
+    const [ confirmDeletingAlbum, setConfirmDeletingAlbum ] = useState(false);
+    const [ refuseDeletingAlbum, setRefuseDeletingAlbum ] = useState(false);
+    const [ deleteBox, setDeleteBox ] = useState(false);
+    
+    const blurState = useSelector((state) => state.blur.value);
 
     // BasicInfo submitted data, used at album creation, at editing it won't be used
     const [ basicInfo, setBasicInfo ] = useState({
@@ -48,13 +55,29 @@ const AlbumCreator = () => {
     useEffect(() => {
 
         // checking if album will be edited or created, setting albumId we are editing
-        setType(location.state.creatorType);
+        if (type === "") {
+            setType(location.state.creatorType);
+        }
         if (creatorType.edition === type) {
             setAlbumId(location.state.albumId);
+            if (confirmDeletingAlbum) {
+                console.log("Album has been deleted!");
+                setDeleteBox(false);
+                setConfirmDeletingAlbum(false);
+            }
+            if (refuseDeletingAlbum) {
+                console.log("Album hasn't been deleted!");
+                setDeleteBox(false);
+                setRefuseDeletingAlbum(false);
+            }
         }
-        console.log("creatorType: " + type + " albumId: " + albumId);
+        //console.log("creatorType: " + type + " albumId: " + albumId);
 
-    }, [albumId, type, location.state.creatorType, location.state.albumId]);
+
+        
+
+
+    }, [albumId, type, location.state.creatorType, location.state.albumId, confirmDeletingAlbum, refuseDeletingAlbum]);
     
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectBackToAlbum, setRedirectBackToAlbum ] = useState(false);
@@ -75,7 +98,8 @@ const AlbumCreator = () => {
 
     return (
         <UserTemplate>
-            <Container>
+            {deleteBox && type === creatorType.edition && <ConfirmationBox children={"Czy na pewno chcesz usunąć album?"} confirm={setConfirmDeletingAlbum} refuse={setRefuseDeletingAlbum}/>}
+            <Container blurState={blurState}>
                 <PageHeader>
                     <Heading>
                         { type === creatorType.creation ? "Stwórz album" : "Edytuj album" }
@@ -142,7 +166,7 @@ const AlbumCreator = () => {
                             <Icon src={deleteAlbumIcon}/>
                             <h1>Usuń album</h1>
                         </Header>
-                        <DeleteAlbum/>
+                        <DeleteAlbum setDeleteBox={setDeleteBox}/>
                     </SectionContainer>
                 }
             </Container>
@@ -150,17 +174,6 @@ const AlbumCreator = () => {
     );
 
 }
-
-/*
-
-    <SectionContainer>
-                    <Header>
-                        <Icon src={infoIcon}/>
-                        <h1>Podstawowe informacje</h1>
-                    </Header>
-                    <BasicInfo creatorType={type} setForm={setBasicInfo}/>
-                </SectionContainer>
-*/
 
 const Container = styled.div`
     width:  90%;
@@ -170,6 +183,8 @@ const Container = styled.div`
     grid-row-gap: 15px;
     min-width: 390px;
     margin-bottom: 15px;
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 `;
 
 const PageHeader = styled.div`

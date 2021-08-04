@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 
-const DeleteAccountForm = () => {
+const DeleteAccountForm = ({setDeleteBox}) => {
 
 
     return (
@@ -11,7 +11,7 @@ const DeleteAccountForm = () => {
                 <p>Usuniętego konta nie da się odzyskać !</p>
                 <p>Profil, albumy i zdjęcia zostaną trwale usunięte.</p>
             </WarningMessage>
-            <DeleteButton>Usuń</DeleteButton>
+            <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
         </> 
     );
 

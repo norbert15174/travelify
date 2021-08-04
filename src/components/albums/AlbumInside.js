@@ -11,9 +11,11 @@ import shareIcon from "./assets/shareIcon.svg";
 import publicAlbumBlueIcon from "./assets/publicAlbumBlueIcon.svg";
 import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
+import SharePinBox from "./SharePinBox";
 import profilePhoto from "./assets/profilePhoto.png";
 import { FriendsListArray as photos } from "./data";
 import { routes } from "../../miscellanous/Routes";
+import { useSelector } from "react-redux";
 
 const types = {
     albumType: "private", // public, private
@@ -30,11 +32,15 @@ const AlbumInside = ({albumId}) => {
         minZoom: 2, 
     };
 
+    const [ sharePinBox, setSharePinBox ] = useState(false);
+ 
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
        active: false,
        albumId: null,
     })
+
+    const blurState = useSelector((state) => state.blur.value)
 
     // goes back to albums screen
     if (redirectToAlbums) {
@@ -47,62 +53,67 @@ const AlbumInside = ({albumId}) => {
     }
 
     return (
-        <Container>
-            <Details>
-                <Header>
-                    <h1>Wycieczka do Japonii, Sierpień 2018</h1>
-                    <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
-                    <Localization>
-                        <Icon src={localizationIcon}/>
-                        <h3>
-                            Japonia, Osaka
-                        </h3>
-                    </Localization>
-                </Header>
-                <MapContainer>
-                    <Map 
-                        width={"100%"} 
-                        height={"100%"} 
-                        options={options} 
-                        initialCoordinates={{
-                            lat: photos.list[0].position.lat, 
-                            lng: photos.list[0].position.lng,
-                        }}
-                        type="AlbumInside"
-                    />
-                </MapContainer>
-                <Description>
-                    <Icon src={descriptionIcon}/>
-                    <Text>
-                        Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-                    </Text>
-                </Description>
-                <div>
-                    <Line/>
-                    <Footer>
-                        <AlbumInfo>
-                            <ProfilePhoto src={profilePhoto}/>
-                            <p>Jan Nowak</p>   
-                        </AlbumInfo>
-                        <AlbumInfo>
-                            <Icon src={ types.albumType === "public" ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
-                            { types.albumType === "public" ? <p>Publiczny</p> : <p>Prywatny</p> }
-                        </AlbumInfo>
-                        <Buttons>
-                            { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon}>Udostępnij</TypeSpecifiedButton> }
-                            { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
-                        </Buttons>
-                    </Footer>
-                </div>
-            </Details>
-            <PhotoGrid photos={photos}/>
-        </Container>
+        <>
+            { sharePinBox && <SharePinBox setClose={setSharePinBox}/> }
+            
+            { /* tutaj będzie wyświetlany SharePinBox i Zdjęcia*/ }
+            <Container blurState={blurState}>
+                <Details>
+                    <Header>
+                        <h1>Wycieczka do Japonii, Sierpień 2018</h1>
+                        <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
+                        <Localization>
+                            <Icon src={localizationIcon}/>
+                            <h3>
+                                Japonia, Osaka
+                            </h3>
+                        </Localization>
+                    </Header>
+                    <MapContainer>
+                        <Map 
+                            width={"100%"} 
+                            height={"100%"} 
+                            options={options} 
+                            initialCoordinates={{
+                                lat: photos.list[0].position.lat, 
+                                lng: photos.list[0].position.lng,
+                            }}
+                            type="AlbumInside"
+                        />
+                    </MapContainer>
+                    <Description>
+                        <Icon src={descriptionIcon}/>
+                        <Text>
+                            Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                        </Text>
+                    </Description>
+                    <div>
+                        <Line/>
+                        <Footer>
+                            <AlbumInfo>
+                                <ProfilePhoto src={profilePhoto}/>
+                                <p>Jan Nowak</p>   
+                            </AlbumInfo>
+                            <AlbumInfo>
+                                <Icon src={ types.albumType === "public" ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
+                                { types.albumType === "public" ? <p>Publiczny</p> : <p>Prywatny</p> }
+                            </AlbumInfo>
+                            <Buttons>
+                                { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon} onClick={() => setSharePinBox(true)}>Udostępnij</TypeSpecifiedButton> }
+                                { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
+                            </Buttons>
+                        </Footer>
+                    </div>
+                </Details>
+                <PhotoGrid photos={photos}/>
+            </Container>
+        </>
     );
 }
 
-// setRedirectToAlbumsCreator({active: true, albumId: 1}
-
 const Container = styled.div`
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
     display: grid;
     grid-template-rows: repeat(2, auto);
     grid-row-gap: 15px;

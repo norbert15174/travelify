@@ -6,6 +6,7 @@ import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
 import { FriendsListArray as news } from "./data";
 import noResultsIcon from "./svg/noResultsIcon.svg";
+import { useSelector } from "react-redux";
 
 const types = {
     friends: "friends",
@@ -15,7 +16,8 @@ const types = {
 const NewsPage = () => {
 
     const [newsType, setNewsType] = useState(types.friends);
-        
+    const blurState = useSelector((state) => state.blur.value);    
+
     const searchList = news.list.map((item) => {
         return {
             value: item.name,
@@ -28,7 +30,7 @@ const NewsPage = () => {
     })
 
     return (
-        <Container>
+        <Container blurState={blurState}>
             <Header>
                 <Heading>Aktualności</Heading>
             </Header>
@@ -74,6 +76,8 @@ const NewsPage = () => {
 };
 
 const Container = styled.div`
+	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
     width:  62.5vw;
     margin: 0 auto;
     margin-bottom: 15px; 

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { FriendsListArray as albums } from "./data";
 import AlbumSearch from "../trinkets/DropdownSearch";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import privateAlbumIcon from "./assets/privateAlbumIcon.svg";
 import sharedAlbumIcon from "./assets/sharedAlbumIcon.svg";
 import AlbumGrid from "./AlbumGrid";
+
 
 const types = {
     public: "public",
@@ -16,6 +18,7 @@ const types = {
 const AlbumsPage = () => {
 
     const [albumsType, setAlbumsType] = useState(types.public);
+    const blurState = useSelector((state) => state.blur.value); 
 
     // album title, mainPhoto, place, ID WILL ALSO BE NEEDED 
     const searchList = albums.list.map((item) => {
@@ -29,7 +32,7 @@ const AlbumsPage = () => {
     })
 
     return (
-        <Container>
+        <Container blurState={blurState}>
             <PageHeader>
                 <Heading>Twoje albumy</Heading>
             </PageHeader>
@@ -92,6 +95,8 @@ const Container = styled.div`
     @media only screen and (max-width: 510px) {
         width: 300px;
     }
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 `;
 
 const PageHeader = styled.div`

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import InfoSection from "./InfoSection";
@@ -11,6 +11,9 @@ import editIcon from "./assets/editIcon.svg";
 import friendsIcon from "./assets/friendsIcon.svg";
 import addFriendIcon from "./assets/addFriendIcon.svg";
 import { routes } from "../../miscellanous/Routes";
+import { useSelector, useDispatch } from "react-redux";
+import ConfirmationBox from "../trinkets/ConfirmationBox";
+import { setFriendToDeleteId } from "../../redux/deleteFriendSlice";
 
 const types = {
     type: "logged",
@@ -88,7 +91,42 @@ const UserPage = ({user, albums}) => {
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
     const [ friendsActive, setFriendsActive ] = useState(false);
-    
+
+    const blurState = useSelector((state) => state.blur.value);
+    const friendId = useSelector((state) => state.deleteFriend.value);
+    const dispatch = useDispatch();   
+
+    const [ deleteFriendBox, setDeleteFriendBox ] = useState(false);
+    const [ confirm , setConfirm ] = useState(false);
+    const [ refuse, setRefuse ] = useState(false);
+
+    useEffect(() => {
+
+        if (friendId !== null) {
+            setDeleteFriendBox(true);
+        }
+
+        if (confirm) {
+            
+            console.log("Friend with id 25 has been deleted");
+
+            // jak użytkownik zostanie prawidłowo usunięty to musimy pamiętać by w sklepie Reduxa ustawić wartość id na null oraz ukryć okno
+
+            dispatch(setFriendToDeleteId(null));
+            setDeleteFriendBox(false);
+            setConfirm(false);
+        } 
+
+        if (refuse) {
+            console.log("Deleting friend has been canceled!");
+            dispatch(setFriendToDeleteId(null));
+            setDeleteFriendBox(false);
+            setRefuse(false);
+        }
+
+
+    }, [friendId, confirm, refuse, dispatch]);
+
     // redirects to edit profile page
     const [ redirect, setRedirect ] = useState(false);
 
@@ -117,43 +155,51 @@ const UserPage = ({user, albums}) => {
 
     return (
         <>
-            <Header>
-                <Images>
-                    <ProfileBackground src={profileBackground} alt="Profile background"/>
-                    <ProfilePhoto src={profilePhoto} alt="Profile photo"/>
-                </Images> 
-                <Name>Jan Nowak</Name>
-                <Line/>
-                <Options>
-                    <Button onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
-                    <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
-                    <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
+            {deleteFriendBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
+            <Container blurState={blurState}>
+                <Header>
+                    <Images>
+                        <ProfileBackground src={profileBackground} alt="Profile background"/>
+                        <ProfilePhoto src={profilePhoto} alt="Profile photo"/>
+                    </Images> 
+                    <Name>Jan Nowak</Name>
+                    <Line/>
+                    <Options>
+                        <Button onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
+                        <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
+                        <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
+                        {
+                            types.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
+                        }
+                        {
+                            types.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
+                        }
+                        {
+                            types.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
+                        }
+                    </Options>
+                </Header>
+                <InnerContainer>
                     {
-                        types.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
+                        infoActive && <InfoSection nationality={infoData.nationality} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
                     }
                     {
-                        types.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
+                        albumsActive && <GridSection sectionType={sections.albums} data={albumData.list}/>
                     }
                     {
-                        types.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
+                        friendsActive && <GridSection sectionType={sections.friends} data={albumData.list}/>
                     }
-                </Options>
-            </Header>
-            <Container>
-                {
-                    infoActive && <InfoSection nationality={infoData.nationality} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
-                }
-                {
-                    albumsActive && <GridSection sectionType={sections.albums} data={albumData.list}/>
-                }
-                {
-                    friendsActive && <GridSection sectionType={sections.friends} data={albumData.list}/>
-                }
+                </InnerContainer>
             </Container>
-        </>
+        </>        
     );
 
 };
+
+const Container = styled.div`
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" }; 
+`;
 
 const Header = styled.div`
     width: 100%;
@@ -352,7 +398,7 @@ const UserButton = styled(ButtonIcon)`
     }
 `;
 
-const Container = styled.div`
+const InnerContainer = styled.div`
     margin: 0 auto;
     width: 1250px;
     @media only screen and (max-width: 1440px) {

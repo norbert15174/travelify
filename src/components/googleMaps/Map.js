@@ -6,7 +6,7 @@ import { indyStyle } from "./MapStyle";
 import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
 
-function Map({ width, height, options, initialCoordinates, type, setLocalization, deleteMarker=false}) {
+function Map({ width, height, options, initialCoordinates, type, setLocalization=null, deleteMarker=false}) {
 	// deleteMarker - Localization.js - marker won't show up when we have cleared form
 
 	const mapOptions = {

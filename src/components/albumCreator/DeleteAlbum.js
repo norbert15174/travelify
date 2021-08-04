@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 
-const DeleteAlbum = () => {
+const DeleteAlbum = ({setDeleteBox}) => {
 
     return (
         <>
@@ -10,7 +10,7 @@ const DeleteAlbum = () => {
                 <p>Usuniętego albumu nie da się odzyskać!</p>
                 <p>Dodane zdjęcia zostaną trwale usunięte.</p>
             </WarningMessage>
-            <DeleteButton>Usuń</DeleteButton>
+            <DeleteButton onClick={setDeleteBox}>Usuń</DeleteButton>
         </> 
     );
 

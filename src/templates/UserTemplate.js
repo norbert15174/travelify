@@ -5,18 +5,19 @@ import styled from "styled-components";
 // <Menu/> adds Menu sidebar
 // <Container/> adds div for app sections like UserPage, News etc
 
-const UserTemplate = ({children}) => (
-    <>
-        <Menu/>
-        <Container>
-            {children}
-        </Container>
-    </>
-);
+const UserTemplate = ({children}) => {
+
+    return (
+        <>
+            <Menu/>
+            <Container>
+                {children}
+            </Container>
+        </>    
+    );
+};
 
 const Container = styled.div`
-    //filter: blur(8px);
-    //-webkit-filter: blur(8px);
     width: calc(100% - 120px); // 120px => Menu sidebar width;
     display: flex;
     flex-direction: column;

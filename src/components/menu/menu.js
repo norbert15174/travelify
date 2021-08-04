@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { routes } from "../../miscellanous/Routes";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -13,21 +13,41 @@ import logoutIcon from "./svg/logoutIcon.svg";
 import groupsIcon from "./svg/groupsIcon.svg";
 import messageIcon from "./svg/messageIcon.svg";
 import expandIcon from "./svg/expandIcon.svg";
+import { useSelector } from "react-redux";
+import ConfirmationBox from "../trinkets/ConfirmationBox";
 
 const Menu = () => {
 	
 	const [menuToExpand, setMenuToExpand] = useState("");
 	const [isVisible, toggleVisibility] = useState(true);
+	const [logoutBox, setLogoutBox] = useState(false);
+	const [confirmLogout, setConfirmLogout] = useState(false);
+	const [refuseLogout, setRefuseLogout] = useState(false);
+
+	const blurState = useSelector((state) => state.blur.value);
 
 	const toggleMenuBar = () => {
 		setMenuToExpand("");
 		toggleVisibility(!isVisible);
 	}
 
+	useEffect(() => {
+		if (confirmLogout) {
+			console.log("confirmLogout: true");
+			setConfirmLogout(false);
+			setLogoutBox(false);
+		}
+		if (refuseLogout) {
+			console.log("confirmLogout: false");
+			setRefuseLogout(false);
+			setLogoutBox(false);
+		}
+ 	}, [confirmLogout, refuseLogout]);
 
   	return (
     	<>
-      		<Container isVisible={isVisible}>
+			{logoutBox && <ConfirmationBox children={"Czy na pewno chcesz się wylogować?"} confirm={setConfirmLogout} refuse={setRefuseLogout}/>}
+      		<Container isVisible={isVisible} blurState={blurState}>
         		<ButtonList>
           			<li>
 						<Link to={routes.user}>
@@ -63,19 +83,19 @@ const Menu = () => {
 						</Link>
 					</li>
         		</ButtonList>
-				<Link to={routes.news}>
-					<Logout icon={logoutIcon}/>
-				</Link>
+				<Logout icon={logoutIcon} onClick={() => {
+					setLogoutBox(!logoutBox);
+				}}/>
       		</Container>
 
-			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()}/>
+			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()} blurState={blurState}/>
 			
 			{
-				menuToExpand === "friends" ? (<Friends friendDisplay={setMenuToExpand}/>) : null
+				menuToExpand === "friends" && !logoutBox ? (<Friends friendDisplay={setMenuToExpand}/>) : null
 			}
 
 			{
-				menuToExpand === "notifications"  ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
+				menuToExpand === "notifications" && !logoutBox  ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
 			}
 	
     	</>
@@ -83,8 +103,8 @@ const Menu = () => {
 };
 
 const Container = styled.div`
-	//filter: blur(8px);
-    //-webkit-filter: blur(8px);
+	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 	background-color: ${({ theme }) => theme.color.darkTurquise};
 	top: 0;
 	right: 0;
@@ -106,6 +126,8 @@ const Container = styled.div`
 
 const VisibilityButton = styled(ButtonIcon)`
 	display: none;
+	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 	@media only screen and (max-width: 720px) {
         display: block;
 		position: fixed;
@@ -139,5 +161,5 @@ const Logout = styled(ButtonIcon)`
 	}
 `;
 
-export default Menu;
+export default React.memo(Menu);
 
