@@ -103,8 +103,8 @@ const Menu = () => {
 };
 
 const Container = styled.div`
-	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
 	background-color: ${({ theme }) => theme.color.darkTurquise};
 	top: 0;
 	right: 0;
@@ -126,8 +126,8 @@ const Container = styled.div`
 
 const VisibilityButton = styled(ButtonIcon)`
 	display: none;
-	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
 	@media only screen and (max-width: 720px) {
         display: block;
 		position: fixed;

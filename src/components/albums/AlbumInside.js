@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from 'react-router-dom';
-import PhotoGrid from "../photos/PhotoSection";
+import PhotoSection from "../photos/PhotoSection";
 import Button from "../trinkets/Button";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import localizationIcon from "./assets/localizationIcon.svg";
@@ -12,8 +12,10 @@ import publicAlbumBlueIcon from "./assets/publicAlbumBlueIcon.svg";
 import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
 import SharePinBox from "./SharePinBox";
+import Carousel from "../photos/Carousel";
 import profilePhoto from "./assets/profilePhoto.png";
-import { FriendsListArray as photos } from "./data";
+import { FriendsListArray as album } from "./data";
+import { SliderData as photos } from "./data";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector } from "react-redux";
 
@@ -33,7 +35,8 @@ const AlbumInside = ({albumId}) => {
     };
 
     const [ sharePinBox, setSharePinBox ] = useState(false);
- 
+    const [ photoPreview, setPhotoPreview ] = useState({visible: false, id: null});
+
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
        active: false,
@@ -54,9 +57,9 @@ const AlbumInside = ({albumId}) => {
 
     return (
         <>
+            { photoPreview.visible && <Carousel photoId={photoPreview.id} photos={photos} setClose={setPhotoPreview}/> }
             { sharePinBox && <SharePinBox setClose={setSharePinBox}/> }
-            
-            { /* tutaj będzie wyświetlany SharePinBox i Zdjęcia*/ }
+            { /* tutaj będzie wyświetlane zdjęcie :D */ }
             <Container blurState={blurState}>
                 <Details>
                     <Header>
@@ -75,8 +78,8 @@ const AlbumInside = ({albumId}) => {
                             height={"100%"} 
                             options={options} 
                             initialCoordinates={{
-                                lat: photos.list[0].position.lat, 
-                                lng: photos.list[0].position.lng,
+                                lat: album.list[0].position.lat, 
+                                lng: album.list[0].position.lng,
                             }}
                             type="AlbumInside"
                         />
@@ -105,15 +108,15 @@ const AlbumInside = ({albumId}) => {
                         </Footer>
                     </div>
                 </Details>
-                <PhotoGrid photos={photos}/>
+                <PhotoSection photos={photos} setPreview={setPhotoPreview}/>
             </Container>
         </>
     );
 }
 
 const Container = styled.div`
-    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     display: grid;
     grid-template-rows: repeat(2, auto);
     grid-row-gap: 15px;
@@ -375,6 +378,9 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
         height: 20px;
         width: 20px;
         background-position: 50% 50%;
+    }
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
     }
 `;
 

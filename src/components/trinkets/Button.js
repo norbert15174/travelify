@@ -13,6 +13,9 @@ const Button = styled.button`
     color: ${({fontColor, theme}) => fontColor || theme.color.lightBackground};
     cursor: pointer;
     text-decoration: none;
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
+    }
 `;
 
 export default Button;

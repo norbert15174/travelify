@@ -12,7 +12,7 @@ const FriendThumbnail = ({name, url}) => {
         <Friend>
             <Photo src={url}/>
             <h1>{name}</h1>
-            <ChooseButton className="choose"
+            <ChooseButton
                 onClick={() => {
                     setChosen(true); 
                     console.log("You have clicked at: " + name);

@@ -470,79 +470,6 @@ const InnerContainer = styled.div`
     flex-direction: column;
 `;
 
-const PhotoContainer = styled.div`
-    margin: 20px 0px 10px 0px;
-    padding: 15px 0px 15px 15px;
-    color: #888;
-    background: rgba(229, 229, 229, 0.8);
-    box-shadow: inset 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    min-height: 100px;
-    display: grid;
-    grid-template-columns: repeat(13, 100px);
-    grid-auto-rows: 100px;
-    grid-gap: 10px;
-    @media only screen and (max-width: 1880px) {
-        grid-template-columns: repeat(12, 100px);
-    }
-    @media only screen and (max-width: 1750px) {
-        grid-template-columns: repeat(11, 100px);
-    }
-    @media only screen and (max-width: 1625px) {
-        grid-template-columns: repeat(10, 100px);
-    }
-    @media only screen and (max-width: 1525px) {
-        grid-template-columns: repeat(9, 100px);
-    }
-    @media only screen and (max-width: 1360px) {
-        grid-template-columns: repeat(8, 100px);
-    }
-    @media only screen and (max-width: 1240px) {
-        grid-template-columns: repeat(7, 100px);
-    }
-    @media only screen and (max-width: 1115px) {
-        grid-template-columns: repeat(6, 100px);
-    }
-    @media only screen and (max-width: 995px) {
-        grid-template-columns: repeat(5, 100px);
-    }
-    @media only screen and (max-width: 910px) {
-        grid-template-columns: repeat(7, 70px);
-        grid-auto-rows: 70px;
-    }
-    @media only screen and (max-width: 860px) {
-        grid-template-columns: repeat(6, 70px);
-    }
-    @media only screen and (max-width: 785px) {
-        grid-template-columns: repeat(5, 70px);
-    }
-    @media only screen and (max-width: 720px) {
-        grid-template-columns: repeat(6, 70px);
-    }
-    @media only screen and (max-width: 660px) {
-        grid-template-columns: repeat(5, 70px);
-    }
-    @media only screen and (max-width: 570px) {
-        grid-template-columns: repeat(4, 70px);
-    }
-`;
-
-const Buttons = styled.div`
-    display: flex;   
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 25px;
-    height: 40px;
-    @media only screen and (max-width: 1080px) {
-        height: 25px;
-    }
-    @media only screen and (max-width: 560px) {
-        margin-top: 15px;
-        height: 20px;
-    }
-`;
-
 const SingleImageContainer = styled.div`
     position: relative;
     margin: 10px 0px 20px 25%;
@@ -622,6 +549,79 @@ const SingleDeleteButton = styled.img`
     @media only screen and (max-width: 615px) {
         width: 15px;
         height: 15px;
+    }
+`;
+
+const PhotoContainer = styled.div`
+    margin: 20px 0px 10px 0px;
+    padding: 15px 0px 15px 15px;
+    color: #888;
+    background: rgba(229, 229, 229, 0.8);
+    box-shadow: inset 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    min-height: 100px;
+    display: grid;
+    grid-template-columns: repeat(13, 100px);
+    grid-auto-rows: 100px;
+    grid-gap: 10px;
+    @media only screen and (max-width: 1880px) {
+        grid-template-columns: repeat(12, 100px);
+    }
+    @media only screen and (max-width: 1750px) {
+        grid-template-columns: repeat(11, 100px);
+    }
+    @media only screen and (max-width: 1625px) {
+        grid-template-columns: repeat(10, 100px);
+    }
+    @media only screen and (max-width: 1525px) {
+        grid-template-columns: repeat(9, 100px);
+    }
+    @media only screen and (max-width: 1360px) {
+        grid-template-columns: repeat(8, 100px);
+    }
+    @media only screen and (max-width: 1240px) {
+        grid-template-columns: repeat(7, 100px);
+    }
+    @media only screen and (max-width: 1115px) {
+        grid-template-columns: repeat(6, 100px);
+    }
+    @media only screen and (max-width: 995px) {
+        grid-template-columns: repeat(5, 100px);
+    }
+    @media only screen and (max-width: 910px) {
+        grid-template-columns: repeat(7, 70px);
+        grid-auto-rows: 70px;
+    }
+    @media only screen and (max-width: 860px) {
+        grid-template-columns: repeat(6, 70px);
+    }
+    @media only screen and (max-width: 785px) {
+        grid-template-columns: repeat(5, 70px);
+    }
+    @media only screen and (max-width: 720px) {
+        grid-template-columns: repeat(6, 70px);
+    }
+    @media only screen and (max-width: 660px) {
+        grid-template-columns: repeat(5, 70px);
+    }
+    @media only screen and (max-width: 570px) {
+        grid-template-columns: repeat(4, 70px);
+    }
+`;
+
+const Buttons = styled.div`
+    display: flex;   
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 25px;
+    height: 40px;
+    @media only screen and (max-width: 1080px) {
+        height: 25px;
+    }
+    @media only screen and (max-width: 560px) {
+        margin-top: 15px;
+        height: 20px;
     }
 `;
 

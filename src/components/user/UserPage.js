@@ -106,6 +106,7 @@ const UserPage = ({user, albums}) => {
             setDeleteFriendBox(true);
         }
 
+        // when deleting friend was confirmed
         if (confirm) {
             
             console.log("Friend with id 25 has been deleted");
@@ -117,6 +118,7 @@ const UserPage = ({user, albums}) => {
             setConfirm(false);
         } 
 
+        // when deleting friend was canceled
         if (refuse) {
             console.log("Deleting friend has been canceled!");
             dispatch(setFriendToDeleteId(null));
@@ -395,6 +397,9 @@ const UserButton = styled(ButtonIcon)`
     @media only screen and (max-width: 560px) {
         width: 70px;
         font-size: 8px;
+    }
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
     }
 `;
 

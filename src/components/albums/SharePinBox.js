@@ -5,7 +5,6 @@ import Input from "../trinkets/Input";
 import FriendThumbnail from "./FriendThumbnail";
 import { useSelector, useDispatch } from "react-redux";
 import { toggle } from "../../redux/blurSlice";
-import { useDetectOutsideClick } from "../trinkets/outsideModalClick";
 import "./scrollbar.css";
 
 const friends = [
@@ -30,7 +29,6 @@ const SharePinBox = ({setClose}) => {
     const [found, setFound] = useState([]);
 
     const ref = useRef(null);
-    useDetectOutsideClick(ref)
 
     const dispatch = useDispatch();
     const blurState = useSelector((state) => state.blur.value);
@@ -45,19 +43,12 @@ const SharePinBox = ({setClose}) => {
     }, []);
 
     function handler(e){
-        if (e.target.className.includes("close")) {
-            document.removeEventListener('click', handler, true);
-            document.body.style.overflow = "";
-            return;
-        }
-        if (e.target.className.includes("choose")) {
-            document.removeEventListener('click', handler, true);
+        if (!ref.current || ref.current.contains(e.target)) {
             return;
         }
         e.stopPropagation();
         e.preventDefault();
     }
-
 
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
@@ -69,70 +60,77 @@ const SharePinBox = ({setClose}) => {
 
     return (
         <Container>
-            <Header>
-                <Heading>Udostępnij</Heading>
-                <CloseButton className="close" src={closeIcon} onClick={() => {
-                     setClose(false);
-                     document.removeEventListener('click', handler, true);
-                     document.body.style.overflow = "";
-                     dispatch(toggle());
-                }}/>
-            </Header>
-            <Search 
-                search 
-                autoComplete="off"
-                name="search"
-                id="search" 
-                type="text" 
-                placeholder="Szukaj"
-                value={searchContent}
-                onChange={handleSearchBarChange}
-            />
-            <List className="scroll">
-                {
-                    (
-                        searchContent.length !== 0 && found.length !== 0 ?
-                        found.map((friend) => 
-                            <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
-                        ) : null
-                    ) || (
-                        friends.length !== 0 && searchContent.length === 0 ?
-                        friends.map((friend) => 
-                            <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
-                        ) : null
-                    ) || (
-                        <NoResults>Brak wyników...</NoResults>
-                    ) 
-                }
-            </List>
+            <Box ref={ref}>
+                <Header>
+                    <Heading>Udostępnij</Heading>
+                    <CloseButton src={closeIcon} onClick={() => {
+                        setClose(false);
+                        document.removeEventListener('click', handler, true);
+                        document.body.style.overflow = "";
+                        dispatch(toggle());
+                    }}/>
+                </Header>
+                <Search 
+                    search 
+                    autoComplete="off"
+                    name="search"
+                    id="search" 
+                    type="text" 
+                    placeholder="Szukaj"
+                    value={searchContent}
+                    onChange={handleSearchBarChange}
+                />
+                <List className="scroll">
+                    {
+                        (
+                            searchContent.length !== 0 && found.length !== 0 ?
+                            found.map((friend) => 
+                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                            ) : null
+                        ) || (
+                            friends.length !== 0 && searchContent.length === 0 ?
+                            friends.map((friend) => 
+                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                            ) : null
+                        ) || (
+                            <NoResults>Brak wyników...</NoResults>
+                        ) 
+                    }
+                </List>
+            </Box>
         </Container>
+        
     );
 
 }
 
 const Container = styled.div`
+    width: calc(100% - 120px); // 120px - menu bar
+    z-index: 10000;
+    @media only screen and (max-width: 720px) {
+        width: 100%; // menu bar ignored
+    }
+`;
+
+const Box = styled.div`
     display: flex;
     flex-direction: column;
     position: fixed;
+    top: 50%;
+    left: 46.8%;
+    transform: translate(-50%, -50%);
     background-color: ${({theme}) => theme.color.lightBackground};
     width: 35%;
     height: 75%;
-    top: 10%;
-    left: 28%;
     border: 5px solid ${({theme}) => theme.color.darkTurquise};
-    z-index: 10000;
     box-shadow: 5px 5px 10px 0 ${({theme}) => theme.color.greyFont} ;
     padding-bottom: 25px;
     @media only screen and (max-width: 1140px) {
         height: 60%;
-        width: 45%;
-        top: 19%;
-        left: 20.5%;   
+        width: 45%;   
     }
     @media only screen and (max-width: 720px) {
         height: 40%;
-        top: 30%;
-        left: 25%;
     }
     @media only screen and (max-width: 510px) {
         padding-bottom: 15px;

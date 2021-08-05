@@ -6,7 +6,8 @@ export const theme = {
         darkBackground: "#E0E5E0",
         greyFont: "#5B5B5B",
         appBackground: "#6ABCC3",
-        redAlert: "#FF3131",
+        redAlert: "#ff1919",
+        lightRedAlert: "#ff3636",
     },
     fontWeight: {
         light: "400",

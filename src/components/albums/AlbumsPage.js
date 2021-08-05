@@ -95,8 +95,8 @@ const Container = styled.div`
     @media only screen and (max-width: 510px) {
         width: 300px;
     }
-    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
 `;
 
 const PageHeader = styled.div`

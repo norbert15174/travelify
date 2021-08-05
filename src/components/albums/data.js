@@ -216,3 +216,54 @@ export const FriendsListArray = {
     },
     ],
   };
+
+  export const SliderData = [
+    {
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1546768292-fb12f6c92568?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    },
+    {
+      id: 2,
+      image: 'https://images.unsplash.com/photo-1501446529957-6226bd447c46?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1489&q=80'
+    },
+    {
+      id: 3,
+      image: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'
+    },
+    {
+      id: 4,
+      image: 'https://images.unsplash.com/photo-1475189778702-5ec9941484ae?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1351&q=80'
+    },
+    {
+      id: 5,
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'
+    },
+    {
+      id: 6,
+      image: 'https://globtroper.pl/wp-content/uploads/2019/07/wyprawa-w-duchu-slow-travel-usa-horseshoe-beng.jpg'
+    },
+    {
+      id: 7,
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9FZxfOlPH1mVY0-RfXApDxUrM7xwYergAVQ&usqp=CAU'
+    },
+    {
+      id: 8,
+      image: 'https://container-news.com/wp-content/uploads/2021/04/Picture-1.jpg'
+    },
+    {
+      id: 9,
+      image: 'https://bezgranictravel.pl/wp-content/uploads/2021/07/wyjazdy-adventure-bezgranic-travel-podroze-slow-matimpex.jpg'
+    },
+    {
+      id: 10,
+      image: 'https://lh3.googleusercontent.com/proxy/t8V24OybfNFGOgZwdoAi-Hia_6kB3jqd-58Z2SaPnJrH8hHhet5PyB7BbFBzwwFPlZys2j_5_90U58C1CIxcL_F1p0WaqUDRQmdbulgt'
+    },
+    {
+      id: 11,
+      image: japonia1
+    },
+    {
+      id: 12,
+      image: japonia2
+    },
+];

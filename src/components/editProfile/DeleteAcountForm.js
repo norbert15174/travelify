@@ -33,6 +33,9 @@ const DeleteButton = styled(Button)`
         width: 100px;
         height: 30px;
         margin: 35px 0px 0px auto;
+    }
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightRedAlert};
     } 
 `;
 
