@@ -1,0 +1,49 @@
+.emoji-picker-react {
+  margin-left: 25%;
+  left: 0;
+  margin-top: -360px;
+  top: 0;
+  background-color: #e0e5e0;
+}
+
+.emoji-picker-react div {
+  background-color: #e0e5e0;
+}
+
+/* search bar */
+
+.emoji-picker-react .emoji-search {
+  background-color: #e0e5e0;
+}
+
+.emoji-picker-react input.emoji-search {
+  border: 1px solid #f2f7f2;
+}
+
+.emoji-picker-react input.emoji-search:focus {
+  border: 1px solid #5b5b5b;
+}
+
+.emoji-categories {
+  background-color: #e0e5e0;
+}
+
+.emoji-picker-react .emoji-group:before {
+  background-color: #e0e5e0;
+}
+
+/* scrollbar */
+
+.emoji-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-track {
+  background: #e0e5e0;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

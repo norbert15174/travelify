@@ -185,7 +185,7 @@ const AlbumGrid = styled.div`
     @media only screen and (max-width: 510px) {
         grid-template-columns: 240px;
         grid-auto-rows: 162px;
-        grid-gap: 10px;
+        grid-gap: 20px;
         margin-top: 10px;
     }
 `;

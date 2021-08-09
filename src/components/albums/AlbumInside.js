@@ -58,8 +58,7 @@ const AlbumInside = ({albumId}) => {
     return (
         <>
             { photoPreview.visible && <Carousel photoId={photoPreview.id} photos={photos} setClose={setPhotoPreview}/> }
-            { sharePinBox && <SharePinBox setClose={setSharePinBox}/> }
-            { /* tutaj będzie wyświetlane zdjęcie :D */ }
+            { sharePinBox && <SharePinBox type="share" setClose={setSharePinBox}/> }
             <Container blurState={blurState}>
                 <Details>
                     <Header>

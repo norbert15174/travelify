@@ -121,6 +121,7 @@ const Container = styled.div`
         visibility: ${({isVisible}) => isVisible ? "" : "hidden"};
 		z-index: 1;
 		overflow-y: scroll;
+
     }
 `;
 

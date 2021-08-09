@@ -76,8 +76,8 @@ const NewsPage = () => {
 };
 
 const Container = styled.div`
-	filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     width:  62.5vw;
     margin: 0 auto;
     margin-bottom: 15px; 

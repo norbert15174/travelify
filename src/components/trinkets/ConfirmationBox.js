@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { toggle } from "../../redux/blurSlice";
+import { toggleBlur } from "../../redux/blurSlice";
 
 const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", confirm, refuse}) => {
     
@@ -14,7 +14,7 @@ const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", confirm, 
         document.addEventListener("click", handler, true);
         document.body.style.overflow = "hidden";
         if (!blurState) {
-            dispatch(toggle()); 
+            dispatch(toggleBlur()); 
         }  
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -38,7 +38,7 @@ const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", confirm, 
                         confirm(true); 
                         document.removeEventListener('click', handler, true);
                         document.body.style.overflow = "";
-                        dispatch(toggle());
+                        dispatch(toggleBlur());
                     }}>
                         {confirmation}
                     </ConfirmButton>
@@ -46,7 +46,7 @@ const ConfirmationBox = ({children, confirmation="Tak", refusal="Nie", confirm, 
                         refuse(true);
                         document.removeEventListener('click', handler, true);
                         document.body.style.overflow = "";
-                        dispatch(toggle());
+                        dispatch(toggleBlur());
                     }}>
                         {refusal}
                     </DeclineButton>

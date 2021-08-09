@@ -8,13 +8,13 @@ export const blurSlice = createSlice({
     value: false,
   },
   reducers: {
-    toggle: (state) => {
+    toggleBlur: (state) => {
       state.value = !state.value;
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggle } = blurSlice.actions
+export const { toggleBlur } = blurSlice.actions
 
 export default blurSlice.reducer

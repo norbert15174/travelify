@@ -1,5 +1,5 @@
 import japonia1 from "./assets/Japonia.jpg";
-import japonia2 from "./assets/japonia2.jpg";
+import japonia2 from "./assets/zdjęcie.jpg";
 
 export const FriendsListArray = {
     list: [
@@ -256,14 +256,10 @@ export const FriendsListArray = {
     },
     {
       id: 10,
-      image: 'https://lh3.googleusercontent.com/proxy/t8V24OybfNFGOgZwdoAi-Hia_6kB3jqd-58Z2SaPnJrH8hHhet5PyB7BbFBzwwFPlZys2j_5_90U58C1CIxcL_F1p0WaqUDRQmdbulgt'
-    },
-    {
-      id: 11,
       image: japonia1
     },
     {
-      id: 12,
+      id: 11,
       image: japonia2
     },
 ];

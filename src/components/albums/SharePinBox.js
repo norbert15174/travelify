@@ -4,25 +4,25 @@ import closeIcon from "./assets/closeIcon.svg";
 import Input from "../trinkets/Input";
 import FriendThumbnail from "./FriendThumbnail";
 import { useSelector, useDispatch } from "react-redux";
-import { toggle } from "../../redux/blurSlice";
+import { toggleBlur } from "../../redux/blurSlice";
 import "./scrollbar.css";
 
 const friends = [
-    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Nobody', label: 'Nobody', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
+    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
+    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
+    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
+    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
+    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
+    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
+    { value: 'Nobody', label: 'Nobody', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
+    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
+    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
+    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
 ]
 
 // Box for sharing and pinning friends
 
-const SharePinBox = ({setClose}) => {
+const SharePinBox = ({type, setClose}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -37,8 +37,11 @@ const SharePinBox = ({setClose}) => {
         document.addEventListener("click", handler, true);
         document.body.style.overflow = "hidden";
         if (!blurState) {
-            dispatch(toggle()); 
+            dispatch(toggleBlur()); 
         }  
+
+        // backend magic
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -62,12 +65,14 @@ const SharePinBox = ({setClose}) => {
         <Container>
             <Box ref={ref}>
                 <Header>
-                    <Heading>Udostępnij</Heading>
+                    <Heading>{type === "pin" ? "Oznacz" : "Udostępnij"}</Heading>
                     <CloseButton src={closeIcon} onClick={() => {
                         setClose(false);
                         document.removeEventListener('click', handler, true);
                         document.body.style.overflow = "";
-                        dispatch(toggle());
+                        if (type === "share") {
+                            dispatch(toggleBlur());
+                        }
                     }}/>
                 </Header>
                 <Search 
@@ -113,6 +118,7 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -172,9 +178,11 @@ const Heading = styled.h1`
 `;
 
 const CloseButton = styled.img`
+    position: absolute;
     width: 32px;
     height: 32px;
-    margin-right: 10px;
+    right: 0;
+    margin-right: 15px;
     cursor: pointer;
     @media only screen and (max-width: 1140px) {
         width: 22px;
