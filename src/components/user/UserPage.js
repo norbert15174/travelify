@@ -199,8 +199,8 @@ const UserPage = ({user, albums}) => {
 };
 
 const Container = styled.div`
-    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
-    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" }; 
+    filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" }; 
 `;
 
 const Header = styled.div`

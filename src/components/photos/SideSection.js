@@ -340,9 +340,6 @@ const UserPhoto = styled.img`
 const Footer = styled.div`
     max-height: 120px;
     border-top: 1px solid ${({theme}) => theme.color.darkTurquise};
-    @media only screen and (max-width: 1085px) {
-        
-    } 
 `;
 
 const EditDescriptionButton = styled(ButtonIcon)`

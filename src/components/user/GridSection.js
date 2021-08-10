@@ -25,9 +25,7 @@ const GridSection = ({data, sectionType}) => {
     return (
         <Container>
             <Header>
-                {
-                    sectionType === "albums" ? <h1>Albumy</h1> : <h1>Znajomi</h1>
-                }
+                { sectionType === "albums" ? <h1>Albumy</h1> : <h1>Znajomi</h1> }
                 <Line/>
             </Header>
             <Search 

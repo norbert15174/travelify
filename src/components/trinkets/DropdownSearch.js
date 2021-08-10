@@ -122,7 +122,7 @@ const DropdownSearch = ({options, onChange, onBlur, value}) => {
 const StyledSelect = styled(Select)`
     min-width: 50%;
     max-width: 50%;
-    margin: 30px auto 0 auto;
+    margin: 35px auto 0 auto;
     font-size: 16px;
 `;
 

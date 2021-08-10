@@ -34,7 +34,7 @@ const SharePinBox = ({type, setClose}) => {
     const blurState = useSelector((state) => state.blur.value);
 
     useEffect(() => {
-        document.addEventListener("click", handler, true);
+        document.addEventListener("click", boxOutsideClick, true);
         document.body.style.overflow = "hidden";
         if (!blurState) {
             dispatch(toggleBlur()); 
@@ -45,7 +45,7 @@ const SharePinBox = ({type, setClose}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    function handler(e){
+    function boxOutsideClick(e){
         if (!ref.current || ref.current.contains(e.target)) {
             return;
         }
@@ -68,7 +68,7 @@ const SharePinBox = ({type, setClose}) => {
                     <Heading>{type === "pin" ? "Oznacz" : "Udostępnij"}</Heading>
                     <CloseButton src={closeIcon} onClick={() => {
                         setClose(false);
-                        document.removeEventListener('click', handler, true);
+                        document.removeEventListener('click', boxOutsideClick, true);
                         document.body.style.overflow = "";
                         if (type === "share") {
                             dispatch(toggleBlur());

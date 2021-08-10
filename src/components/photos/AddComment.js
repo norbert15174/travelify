@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import sendIcon from "./assets/sendIcon.svg";
 import emojiIcon from "./assets/emojiIcon.svg";
@@ -13,13 +13,22 @@ emoji.allow_native = true;
 
 const AddComment = ({ add }) => {
 
+    const commentInputRef = useRef(null);
+    const emojiWindowRef = useRef(null);
+    const emojiButtonRef = useRef(null);
     const [ comment, setComment ] = useState("");
     const [ showEmoji, setShowEmoji ] = useState(false);
+    const [ cursorPos, setCursorPos ] = useState(null);
 
     // when emoji is added manually
     const onEmojiClick = (event, emojiObject) => {
-        console.log(emojiObject)
-        setComment(comment + emojiObject.emoji);
+        const ref = commentInputRef.current;
+        ref.focus();
+        const start = comment.substring(0, ref.selectionStart);
+        const end = comment.substring(ref.selectionStart);
+        //console.log(emojiObject)
+        setComment(start + emojiObject.emoji + end);
+        setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
     };
 
     // when emoji is typed in the comment ... :smile:
@@ -28,13 +37,42 @@ const AddComment = ({ add }) => {
         setComment(text);
     }
 
+    // emoji window will be closed on outside click
+    function onEmojiWindowOutsideClick(e) {
+        if (!emojiWindowRef.current || emojiWindowRef.current.contains(e.target)) {
+            return;
+        }
+        document.removeEventListener("mousedown", onEmojiWindowOutsideClick, true)
+        if (!emojiButtonRef.current.contains(e.target)) { 
+            // EmojiButton onClick event toggles showEmoji
+            setShowEmoji(false) 
+        };
+    };
+    
+    useEffect(() => {
+        // emoji window display
+        if (showEmoji) {
+            document.addEventListener("mousedown", onEmojiWindowOutsideClick, true)
+        }
+        // cursor position when typing comment, enables putting emoji in every place
+        commentInputRef.current.selectionEnd = cursorPos;
+       // eslint-disable-next-line 
+    }, [cursorPos, showEmoji])
+
     return (
         <Container>
             <InnerContainer>
-                <EmojiButton src={emojiIcon} readyToSend={comment !== "" || showEmoji ? true : false} onClick={() => {
-                    setShowEmoji(!showEmoji)
-                }}/>
+                <EmojiButton
+                    ref={emojiButtonRef}
+                    src={emojiIcon} 
+                    readyToSend={comment !== "" || showEmoji ? true : false} 
+                    onClick={() => {
+                        commentInputRef.current.focus(); 
+                        setShowEmoji(!showEmoji);
+                    }}
+                />
                 <CommentInput
+                    ref={commentInputRef}
                     className="scroll_two" 
                     id="comment"
                     name="comment"
@@ -44,7 +82,12 @@ const AddComment = ({ add }) => {
                     value={comment}
                     onChange={(e) => onChangeHandler(e)}
                 />
-                { showEmoji && <Picker onEmojiClick={onEmojiClick} native={true}/> }
+                { 
+                    showEmoji && 
+                    <div ref={emojiWindowRef} id="emojiWindow" className="emoji-window">
+                        <Picker onEmojiClick={onEmojiClick} native={true} disableSkinTonePicker={true}/> 
+                    </div>
+                }
             </InnerContainer>
             <SendButton 
                 src={sendIcon}
@@ -70,7 +113,7 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 90% 1fr;
     grid-column-gap: 10px;
-    margin-top: 35px;
+    margin: 15px 0 0 0;
     align-items: center;
     @media only screen and (max-width: 1225px) {
         margin-top: 15px;
@@ -115,6 +158,9 @@ const CommentInput = styled.textarea`
         @media only screen and (max-width: 1025px) {
             font-size: 10px;
         }
+    }
+    @media only screen and (max-width: 1425px) {
+        width: 83%;
     }
     @media only screen and (max-width: 1225px) {
         font-size: 14px;
@@ -189,19 +235,23 @@ const EmojiButton = styled.img`
     right: 0;
     margin-top: 7px;
     top: 0;
+    @media only screen and (max-width: 1635px) {
+        margin-right: 0px;
+    }
     @media only screen and (max-width: 1225px) {
         width: 20px;
         height: 20px;
+        margin-right: 8px;
         margin-top: 5px;
     }
     @media only screen and (max-width: 1025px) {
         width: 15px;
         height: 15px;
-        margin-right: 5px;
-        margin-top: 3px;
+        margin-right: 3px;
+        margin-top: 2.5px;
     }
     @media only screen and (max-width: 825px) {
-        margin-right: -5px;
+        margin-right: -6px;
     }
 `;
 

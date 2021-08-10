@@ -13,9 +13,10 @@ const Carousel = ({photos, photoId, setClose}) => {
     // Carousel movement
     const [ current, setCurrent ] = useState(photoId - 1); // current displayed image id
     const [ sharePinBox, setSharePinBox ] = useState(false); // controls  
-    const [ imageHeight, setImageHeight ] = useState(null);
+    const [ heightDelimiter, setHeightDelimiter ] = useState(null); // displayed photo clientHeight delimits carousel window dimensions
     const length = photos.length;
-    
+    var prevSrc = "";
+
     const nextPhoto = () => { setCurrent(current === length - 1 ? 0 : current + 1); };
     const prevPhoto = () => { setCurrent(current === 0 ? length - 1 : current - 1); }
 
@@ -26,30 +27,45 @@ const Carousel = ({photos, photoId, setClose}) => {
     const ref = useRef(null);
 
     useEffect(() => {
+        
         if (!blurState) {
             document.body.style.overflow = "hidden";
-            document.addEventListener("click", handler, true);
+            window.addEventListener('resize', onWindowResizeHandler);
+            document.addEventListener("click", touchHandler, true);
+            document.querySelector("#dispImg").addEventListener('load', onImageChangeHandler, false);
             dispatch(toggleBlur()); 
         };
-        setImageHeight(document.querySelector("#dispImg").clientHeight);
-    ;
+        //setHeightDelimiter(document.querySelector("#dispImg").clientHeight); // stary sposób na ustawianie wysokości
+        
+        // [onImageChangeHandler]
+    });
+    
+    // adjusts carousel size when window is resized
+    function onWindowResizeHandler (e) {
+        if (document.querySelector("#dispImg") !== null) {
+            if (window.innerWidth > 825) {
+                // there is no need for updating image height on window resize for width lower than 825px because carousel is displayed then in column
+                setHeightDelimiter(document.querySelector("#dispImg").clientHeight);
+            }
+        }
+    }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [photoId, current, imageHeight]);
+    // updates heightDelimiter when image is changed
+    function onImageChangeHandler (e) {
+        if ( prevSrc !== e.path[0].src) {
+            prevSrc = e.path[0].src;
+            setHeightDelimiter(e.path[0].height); // może to będzie lepsze
+        }
+    };
 
-    function handler(e){
+    // outside click handler, stops propagation outside carousel 
+    function touchHandler(e){
         if (!ref.current || ref.current.contains(e.target)) {
             return;
         }
         e.stopPropagation();
         e.preventDefault();
     }
-
-    
-    /*
-        JAKBY SIĘ POJAWIŁ JAKIŚ PROBLEM Z WYŚWIETLANIEM OKIENKA DO OZNACZANIA I KARUZELI ZE ZDJĘCIAMI TO TU MOŻE BYĆ PROBLEM,
-        NA SZCZĘŚCIE NIC SIĘ NIE ROBIŁO DZIWNEGO JESZCZE XD
-    */
 
     return (
         <>
@@ -66,18 +82,33 @@ const Carousel = ({photos, photoId, setClose}) => {
                     onClick={nextPhoto}
                 />
                 <PreviewContainer>         
-                    <Image id="dispImg" src={photos[current].image}/>
-                    <SideSection photoId={photoId} setPinBox={setSharePinBox} heightDelimiter={imageHeight}/>
+                    <Image 
+                        id="dispImg" 
+                        src={photos[current].image}
+                    />
+                    <SideSection 
+                        photoId={photoId} 
+                        setPinBox={setSharePinBox} 
+                        heightDelimiter={heightDelimiter}
+                    />
                 </PreviewContainer>
-                <CloseButton src={closeIcon} onClick={() => {
-                    setClose({visible: false, id: null});
-                    document.removeEventListener('click', handler, true);
-                    document.body.style.overflow = "";
-                    dispatch(toggleBlur());
-                }}/>  
+                <CloseButton 
+                    src={closeIcon} 
+                    onClick={() => {
+                        setClose({visible: false, id: null});
+                        // it's better to remove those event listeners
+                        document.removeEventListener('click', touchHandler, true);
+                        window.removeEventListener('resize', onWindowResizeHandler);
+                        document.querySelector("#dispImg").removeEventListener('load', onImageChangeHandler, false);
+                        document.body.style.overflow = "";
+                        dispatch(toggleBlur());
+                    }}
+                />  
             </Container>
         </>
     );  
+
+    
 
 };
 
@@ -241,11 +272,11 @@ const PreviewContainer = styled.div`
     top: 50%;
     left: 46.8%;
     transform: translate(-50%, -50%);
-    background-color: #000;
+    background-color: ${({theme}) => theme.color.lightBackground};;
     display: grid;
     grid-template-columns: auto 500px; // 500px - comments section
     align-items: center;
-    border: 2px solid ${({theme}) => theme.color.darkTurquise};;
+    border: 2px solid ${({theme}) => theme.color.darkTurquise};
     width: fit-content;
     min-width: 750px;
     max-width: 1500px;
@@ -275,7 +306,7 @@ const PreviewContainer = styled.div`
         grid-template-rows: auto auto;
         min-width: 300px;
         max-width: 500px;
-        left: 42.5%;
+        left: 42%;
     }
     @media only screen and (max-width: 720px) {
         left: 50%;

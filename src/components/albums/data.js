@@ -252,7 +252,7 @@ export const FriendsListArray = {
     },
     {
       id: 9,
-      image: 'https://bezgranictravel.pl/wp-content/uploads/2021/07/wyjazdy-adventure-bezgranic-travel-podroze-slow-matimpex.jpg'
+      image: 'https://f4fcdn.eu/wp-content/uploads/2018/04/alesandartodorovic.jpg'
     },
     {
       id: 10,
