@@ -5,7 +5,7 @@ import Button from "../trinkets/Button";
 import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
 import { routes } from "../../miscellanous/Routes";
-import "./scrollbar.css";
+import "./albumsScrollbar.css";
 
 const AlbumSection = ({ sectionType, data }) => {
 
@@ -77,7 +77,7 @@ const AlbumSection = ({ sectionType, data }) => {
                 && sectionType === "shared" 
                 && data.list.map((album) => 
                     <AlbumThumbnail
-                        shared={true}
+                        notRealOwner={true}
                         key={album.id} 
                         album={album} 
                         redirectTo={() => setRedirectToAlbum({

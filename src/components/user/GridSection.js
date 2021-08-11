@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import AlbumThumbnail from "./AlbumThumbnail"
 import FriendThumbnail from "./FriendThumbnail";
 import Input from "../trinkets/Input";
-import "./scrollbar.css";
+import "./userScrollbar.css";
 import noResultsIcon from "./assets/noResultsIcon.svg";
 
 const GridSection = ({data, sectionType}) => {

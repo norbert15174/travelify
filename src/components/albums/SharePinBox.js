@@ -5,7 +5,7 @@ import Input from "../trinkets/Input";
 import FriendThumbnail from "./FriendThumbnail";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
-import "./scrollbar.css";
+import "./albumsScrollbar.css";
 
 const friends = [
     { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },

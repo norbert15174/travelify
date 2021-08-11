@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import sendIcon from "./assets/sendIcon.svg";
 import emojiIcon from "./assets/emojiIcon.svg";
 import Picker from 'emoji-picker-react';
-import "./scrollbar.css";
+import "./photosScrollbar.css";
 import "./commentEmojiPicker.css"; 
 import JSEMOJI from 'emoji-js';
 

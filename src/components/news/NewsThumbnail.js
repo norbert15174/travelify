@@ -6,7 +6,6 @@ const NewsThumbnail = ({news}) => (
         <Container>
             <MainPhoto src={news.image} alt="albumMainPhoto"/>
             <Info>
-                {/* Album owner name and avatar */}
                 <Text>
                     <InfoHeader>
                         <Title>{news.title}</Title>

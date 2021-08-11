@@ -93,17 +93,33 @@ const Header = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground}; 
     height: 80px;
     border-radius: 0px 0px 15px 15px;
-    @media only screen and (max-width: 720px) {
-        height: 55px;
+    display: grid;
+    align-items: center;
+    @media only screen and (max-width: 1100px) {
+        height: 70px;
+    }
+    @media only screen and (max-width: 800px) {
+        height: 60px;
+    }
+    @media only screen and (max-width: 500px) {
+        height: 40px;
     }
 `;
 
 const Heading = styled.h1`
-    font-size: 48px;
-    margin: 10px auto 10px 25px;
+    font-size: 54px;
+    margin: auto auto auto 25px;
     color: ${({theme}) => theme.color.greyFont};
-    @media only screen and (max-width: 720px) {
-        font-size: 32px;
+    @media only screen and (max-width: 1100px) {
+        font-size: 46px;
+    }
+    @media only screen and (max-width: 800px) {
+        font-size: 40px;
+        margin: auto auto auto 15px;
+    }
+    @media only screen and (max-width: 500px) {
+        font-size: 24px;
+        margin-left: 15px;
     }
 `;
 
@@ -154,7 +170,7 @@ const NewsOption = styled.div`
     cursor: pointer;
     @media only screen and (max-width: 720px) {
         background-size: 24px;
-        padding: 5px 5px 5px 50px;
+        padding: 10px 10px 10px 50px;
     }
 `;
 

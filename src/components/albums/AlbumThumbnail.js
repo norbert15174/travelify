@@ -5,11 +5,11 @@ import editIcon from "./assets/editIcon.svg";
 
 // redirectTo => set states redirect to album
 
-const AlbumThumbnail = ({album, shared, redirectTo}) => (
+const AlbumThumbnail = ({album, notRealOwner=false, redirectTo}) => (
     <Container onClick={redirectTo}>
         <MainPhoto src={album.image} alt="albumMainPhoto"/>
-        { !shared && <EditButton icon={editIcon} onClick={() => {console.log("klikłem")}}/> }
-        { shared && 
+        { !notRealOwner && <EditButton icon={editIcon} onClick={() => {console.log("klikłem")}}/> }
+        { notRealOwner && 
             <SharingPerson>
                 <ProfilePhoto src={album.url}/>
                 <h3>{album.name}</h3>

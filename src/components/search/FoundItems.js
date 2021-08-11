@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import noResultsIcon from "./assets/noResultsIcon.svg";
+import FoundAlbumThumbnail from "./FoundAlbumThumbnail";
+import FoundPersonThumbnail from "./FoundPersonThumbnail";
+import { FriendsListArray as data } from "./data";
+import "./searchScrollbar.css";
 
 const FoundItems = ({searchType, foundItems}) => {
 
@@ -11,38 +14,38 @@ const FoundItems = ({searchType, foundItems}) => {
             </Header>
             <Line/>
             {
-                foundItems.length !== 0 ?
-                    (
-                        searchType === "albums" ?
-                        <AlbumGrid>
-                        {
-                            foundItems.map((album) => 
-                                <p>Znalazłem album</p>
-                            )  
-                        }
-                        </AlbumGrid>
-                        :
-                        <PeopleGrid>
-                        {
-                            foundItems.map((album) => 
-                                <p>Znalazłem osobę</p>
-                            )  
-                        }    
-                        </PeopleGrid>
-                    )
-                : <NoResults/>
+                searchType === "albums" ?
+                <AlbumGrid className="scroll">
+                {
+                    data.list.map((album) => 
+                        <FoundAlbumThumbnail
+                            key={album.id}
+                            album={album}
+                            redirectTo={() => null}
+                        />
+                    )  
+                }
+                </AlbumGrid> 
+                :
+                <PeopleGrid className="scroll">
+                {
+                    data.list.map((person) => 
+                        <FoundPersonThumbnail person={person}/>
+                    )  
+                }    
+                </PeopleGrid>
             }
-            
         </Container>
     );
 
 }
 
 const Container = styled.div`
+    height: 100%;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     padding: 20px 25px;
-    @media only screen and (max-width: 560px) {
+    @media only screen and (max-width: 500px) {
         padding: 15px 20px;
     }
 `;
@@ -50,10 +53,10 @@ const Container = styled.div`
 const Header = styled.div`
     font-size: 17px;
     color: ${({theme}) => theme.color.greyFont};
-    @media only screen and (max-width: 1080px) {
+    @media only screen and (max-width: 1100px) {
         font-size: 12px;
     }
-    @media only screen and (max-width: 560px) {
+    @media only screen and (max-width: 500px) {
         font-size: 8px;
     }
 `;
@@ -67,30 +70,68 @@ const AlbumGrid = styled.div`
     display: grid;
     align-content: start;
     grid-template-columns: repeat(2, 550px);
-    grid-gap: 30px;
-    margin-left: 30px;
-    max-height: 1000px;
+    grid-gap: 25px;
+    margin-top: 30px;
+    max-height: 500px;
     overflow-y: scroll;
+    @media only screen and (max-width: 1400px) {
+        grid-template-columns: repeat(2, 400px);
+    }
+    @media only screen and (max-width: 1100px) {
+        grid-template-columns: repeat(2, 255px);
+        grid-gap: 20px;
+        margin-top: 25px;
+    }
+    @media only screen and (max-width: 800px) {
+        max-height: 550px;
+        grid-auto-rows: 203px;
+        grid-gap: 0px;
+        grid-row-gap: 25px;
+        margin-top: 20px;
+        grid-template-columns: 330px;
+    }
+    @media only screen and (max-width: 500px) {
+        max-height: 575px;
+        grid-auto-rows: 153px;
+        grid-gap: 0px;
+        grid-row-gap: 25px;
+        margin-top: 15px;
+        grid-template-columns: 245px;
+    }
 `;
 
 const PeopleGrid = styled.div`
     display: grid;
-    align-content: start;
-    grid-template-columns: repeat(2, 550px);
-    grid-gap: 30px;
-    margin-left: 30px;
-    max-height: 750px;
+    grid-template-columns: repeat(2, 535px);
+    grid-template-rows: 100px;
+    grid-gap: 25px;
+    margin-top: 30px;
+    max-height: 500px;
     overflow-y: scroll;
+    @media only screen and (max-width: 1400px) {
+        grid-template-columns: repeat(2, 385px);
+        grid-template-rows: 80px;
+    }
+    @media only screen and (max-width: 1100px) {
+        grid-template-columns: repeat(2, 235px);
+        grid-template-rows: 60px;
+        grid-gap: 20px;
+        margin-top: 25px;
+    }
+    @media only screen and (max-width: 800px) {
+        max-height: 550px;
+        grid-template-rows: 50px;
+        grid-gap: 0px;
+        grid-row-gap: 15px;
+        margin-top: 20px;;
+        grid-template-columns: none;
+    }
+    @media only screen and (max-width: 550px) {
+        max-height: 575px;
+    }
+    @media only screen and (max-width: 500px) {
+       margin-top: 15px;
+    }
 `
-
-const NoResults = styled.div`
-    height: 50vh;
-    background: url(${() => noResultsIcon});
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center;
-    border-radius: 15px;
-    background-color: ${({theme}) => theme.color.lightBackground};
-`;
 
 export default FoundItems;
