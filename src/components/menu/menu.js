@@ -15,6 +15,7 @@ import messageIcon from "./svg/messageIcon.svg";
 import expandIcon from "./svg/expandIcon.svg";
 import { useSelector } from "react-redux";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
+import Notifications from "../notifications/Notifications";
 
 const Menu = () => {
 	
@@ -91,11 +92,11 @@ const Menu = () => {
 			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()} blurState={blurState}/>
 			
 			{
-				menuToExpand === "friends" && !logoutBox ? (<Friends friendDisplay={setMenuToExpand}/>) : null
+				menuToExpand === "friends" ? (<Friends friendDisplay={setMenuToExpand}/>) : null
 			}
 
 			{
-				menuToExpand === "notifications" && !logoutBox  ? (<h1>Powiadomienia wysuwają się z panelu bocznego</h1>) : null
+				menuToExpand === "notifications" ? (<Notifications notificationsDisplay={setMenuToExpand}/>) : null
 			}
 	
     	</>
@@ -121,7 +122,6 @@ const Container = styled.div`
         visibility: ${({isVisible}) => isVisible ? "" : "hidden"};
 		z-index: 1;
 		overflow-y: scroll;
-
     }
 `;
 

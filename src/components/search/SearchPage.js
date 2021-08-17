@@ -57,7 +57,7 @@ const SearchPage = () => {
                 }));
                 setSearching(false);
                 setSearchFinished(true);
-            }, 250);
+            }, 5000);
         }
         //setSearching(false);
     }
@@ -153,7 +153,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     @media only screen and (max-width: 1400px) {
-        width: 900px;
+       width: 900px;
     }
     @media only screen and (max-width: 1100px) {
         width: 600px;
@@ -163,7 +163,7 @@ const Container = styled.div`
     }
     @media only screen and (max-width: 500px) {
         width: 300px;
-    }
+    } 
 `;
 
 const Header = styled.div`

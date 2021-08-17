@@ -5,10 +5,14 @@ import Emoji from "../menu/svg/emoji";
 import Send from "../menu/svg/send";
 import Close from "../menu/svg/close";
 import SingleMessage from "./SingleMessage";
+import { useSelector } from "react-redux";
 
 const Message = ({ user, click }) => {
+
+  const blurState = useSelector((state) => state.blur.value);
+
   return (
-    <Container>
+    <Container blurState={blurState}>
       <TopMessageHeader>
         <Icon src={user.profilePicture} alt="User Photo" />
         <Name>{user.name + " " + user.lastName}</Name>
@@ -85,6 +89,8 @@ const Name = styled.p`
 `;
 
 const Container = styled.div`
+  filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+  -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
   position: fixed;
   width: 350px;
   height: 460px;

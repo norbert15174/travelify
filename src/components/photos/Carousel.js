@@ -6,14 +6,15 @@ import closeIcon from "./assets/closeIcon.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
 import SideSection from "./SideSection";
-import SharePinBox from "../albums/SharePinBox";
+import PinBox from "./PinBox";
 
 const Carousel = ({photos, photoId, setClose}) => {
 
     // Carousel movement
     const [ current, setCurrent ] = useState(photoId - 1); // current displayed image id
-    const [ sharePinBox, setSharePinBox ] = useState(false); // controls  
+    const [ pinBox, setPinBox ] = useState(false); // controls PinBox
     const [ heightDelimiter, setHeightDelimiter ] = useState(null); // displayed photo clientHeight delimits carousel window dimensions
+    const [ widthDelimiter, setWidthDelimiter ] = useState(null);
     const length = photos.length;
     var prevSrc = "";
 
@@ -26,35 +27,41 @@ const Carousel = ({photos, photoId, setClose}) => {
 
     const ref = useRef(null);
 
+    window.addEventListener('resize', onWindowResizeHandler);
+    
     useEffect(() => {
         
         if (!blurState) {
             document.body.style.overflow = "hidden";
-            window.addEventListener('resize', onWindowResizeHandler);
             document.addEventListener("click", touchHandler, true);
-            document.querySelector("#dispImg").addEventListener('load', onImageChangeHandler, false);
+            document.querySelector("#dispImg").addEventListener('load', onImageChangeHandler, true);  
             dispatch(toggleBlur()); 
         };
-        //setHeightDelimiter(document.querySelector("#dispImg").clientHeight); // stary sposób na ustawianie wysokości
+
         
-        // [onImageChangeHandler]
-    });
+    // eslint-disable-next-line    
+    }, [blurState, dispatch]);
     
     // adjusts carousel size when window is resized
     function onWindowResizeHandler (e) {
         if (document.querySelector("#dispImg") !== null) {
-            if (window.innerWidth > 825) {
+            if (window.innerWidth) {
                 // there is no need for updating image height on window resize for width lower than 825px because carousel is displayed then in column
                 setHeightDelimiter(document.querySelector("#dispImg").clientHeight);
+                setWidthDelimiter(document.querySelector("#dispImg").clientWidth);
+            } else {
+                window.removeEventListener('resize', onWindowResizeHandler, true);
             }
         }
     }
 
     // updates heightDelimiter when image is changed
     function onImageChangeHandler (e) {
+        // width/height
         if ( prevSrc !== e.path[0].src) {
             prevSrc = e.path[0].src;
             setHeightDelimiter(e.path[0].height); // może to będzie lepsze
+            setWidthDelimiter(e.path[0].width);
         }
     };
 
@@ -70,29 +77,33 @@ const Carousel = ({photos, photoId, setClose}) => {
     return (
         <>
             <Container ref={ref}>
-            { sharePinBox && <SharePinBox type="pin" setClose={setSharePinBox}/> }
+            { pinBox && <PinBox type="pin" setClose={setPinBox} heightDelimiter={heightDelimiter}/> }
                 <LeftArrow
-                    noDisplay={current === 0 ? true : false}
+                    noDisplay={current === 0 || pinBox ? true : false}
                     src={leftArrowIcon} 
                     onClick={prevPhoto}
                 />
                 <RightArrow 
-                    noDisplay={current === length - 1 ? true : false}
+                    noDisplay={current === length - 1 || pinBox ? true : false}
                     src={rightArrowIcon} 
                     onClick={nextPhoto}
                 />
-                <PreviewContainer>         
+                <PreviewContainer>
                     <Image 
                         id="dispImg" 
                         src={photos[current].image}
+                        heightDelimiter={heightDelimiter}
+                        widthDelimiter={widthDelimiter}
                     />
                     <SideSection 
                         photoId={photoId} 
-                        setPinBox={setSharePinBox} 
+                        setPinBox={setPinBox} 
                         heightDelimiter={heightDelimiter}
+                        widthDelimiter={widthDelimiter}
                     />
                 </PreviewContainer>
-                <CloseButton 
+                <CloseButton
+                    noDisplay={pinBox ? true : false} 
                     src={closeIcon} 
                     onClick={() => {
                         setClose({visible: false, id: null});
@@ -253,13 +264,13 @@ const RightArrow = styled.img`
 `;
 
 const CloseButton = styled.img`
+    display: ${({noDisplay}) => noDisplay ? "none" : "block"};
     position: fixed;
     top: 15px;
 	right: 15px;
     margin: 0;
     width: 40px;
     height: 40px;
-    visibility: ${({fake}) => fake ? "hidden" : ""};
     cursor: pointer;
     opacity: 0.5;
     &:hover, &:focus {
@@ -272,75 +283,98 @@ const PreviewContainer = styled.div`
     top: 50%;
     left: 46.8%;
     transform: translate(-50%, -50%);
-    background-color: ${({theme}) => theme.color.lightBackground};;
+    //background-color: ${({theme}) => theme.color.darkTurquise};
+    background-color: #000;
     display: grid;
     grid-template-columns: auto 500px; // 500px - comments section
     align-items: center;
     border: 2px solid ${({theme}) => theme.color.darkTurquise};
+    
     width: fit-content;
-    min-width: 750px;
     max-width: 1500px;
+
     @media only screen and (max-width: 1635px) {
         left: 46.5%;
-        width: 1300px;
+        max-width: 1300px;
         grid-template-columns: auto 450px;
     }
     @media only screen and (max-width: 1425px) {
         left: 45.5%;
         grid-template-columns: auto 400px;
-        width: 1100px;
+        max-width: 1100px;
     }
     @media only screen and (max-width: 1225px) {
         grid-template-columns: auto 350px;
-        width: 900px;
+        max-width: 900px;
     }
     @media only screen and (max-width: 1025px) {
         left: 44%;
         grid-template-columns: auto 250px;
-        width: 700px;
         max-width: 700px;
-        min-width: 350px;
     }
     @media only screen and (max-width: 825px) {
-        grid-template-columns: 500px;
+        grid-template-columns: none; // container width
         grid-template-rows: auto auto;
-        min-width: 300px;
-        max-width: 500px;
+        max-height: 800px;
         left: 42%;
     }
     @media only screen and (max-width: 720px) {
         left: 50%;
     }
     @media only screen and (max-width: 510px) {
-        grid-template-columns: 300px;
-        grid-template-rows: auto auto;
-        min-width: 200px;
         max-width: 300px;
     }
 `;
 
 const Image = styled.img`
-    width: 100%;
-    height: auto;
+
     object-fit: contain;
-    min-width: 750px;
-    //min-width: 500px; // min-width takie jak side section
+
+    max-height: 800px;
+    min-height: 500px;
+
+    max-width: 1000px;
+    width: ${({widthDelimiter}) => widthDelimiter};
+    min-width: 500px;
+
+    @media only screen and (max-width: 1635px) {
+        min-width: 450px;
+        max-width: 850px;
+        min-height: 450px;
+        max-height: 750px;
+    }
     @media only screen and (max-width: 1425px) {
-        min-width: 600px;
+        min-width: 350px;
+        max-width: 700px; 
+        min-height: 350px;
+        max-height: 700px;
     }
     @media only screen and (max-width: 1225px) {
-        min-width: 500px;
+        min-width: 300px;
+        max-width: 550px; 
+        min-height: 300px;
+        max-height: 650px;
     }
     @media only screen and (max-width: 1025px) {
-        min-width: 450px;
+        min-width: 250px;   
+        max-width: 450px; 
+        min-height: 250px;  
+        max-height: 550px;
     }
+
     @media only screen and (max-width: 825px) {
-       min-width: 500px;
-       max-height: 400px;
+        min-width: 250px;   
+        max-width: 500px; 
+        min-height: 250px; 
+        max-height: 500px;
     }
+
     @media only screen and (max-width: 510px) {
-       min-width: 300px;
-       max-height: 250px;
+        width: 300px;
+        min-width: 300px;
+        max-width: 300px;
+        min-height: 150px;
+        max-height: 350px;
     }
 `;
 

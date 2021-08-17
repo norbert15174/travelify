@@ -82,7 +82,7 @@ const PhotoGrid = styled.div`
         margin-top: 15px;
         grid-template-columns: repeat(2, 120px);
         grid-gap: 10px;
-        max-height: 250px;
+        max-height: 350px;
     }
 `;
 

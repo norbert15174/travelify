@@ -2,10 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import closeIcon from "./assets/closeIcon.svg";
 import Input from "../trinkets/Input";
-import FriendThumbnail from "./FriendThumbnail";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleBlur } from "../../redux/blurSlice";
-import "./albumsScrollbar.css";
+import FriendThumbnail from "./PinFriendThumbnail";
+import "./photosScrollbar.css";
 
 const friends = [
     { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
@@ -22,7 +20,7 @@ const friends = [
 
 // Box for sharing and pinning friends
 
-const SharePinBox = ({type, setClose}) => {
+const PinBox = ({setClose, heightDelimiter}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -30,15 +28,7 @@ const SharePinBox = ({type, setClose}) => {
 
     const ref = useRef(null);
 
-    const dispatch = useDispatch();
-    const blurState = useSelector((state) => state.blur.value);
-
     useEffect(() => {
-        document.addEventListener("click", boxOutsideClick, true);
-        document.body.style.overflow = "hidden";
-        if (!blurState) {
-            dispatch(toggleBlur()); 
-        }  
 
         // backend magic
 
@@ -63,16 +53,11 @@ const SharePinBox = ({type, setClose}) => {
 
     return (
         <Container>
-            <Box ref={ref}>
+            <Box ref={ref} heightDelimiter={heightDelimiter}>
                 <Header>
-                    <Heading>{type === "pin" ? "Oznacz" : "Udostępnij"}</Heading>
+                    <Heading>Oznacz</Heading>
                     <CloseButton src={closeIcon} onClick={() => {
-                        setClose(false);
-                        document.removeEventListener('click', boxOutsideClick, true);
-                        document.body.style.overflow = "";
-                        if (type === "share") {
-                            dispatch(toggleBlur());
-                        }
+                        setClose(false)
                     }}/>
                 </Header>
                 <Search 
@@ -125,22 +110,31 @@ const Box = styled.div`
     top: 50%;
     left: 46.8%;
     transform: translate(-50%, -50%);
+    width: 25%;
+    height: ${({heightDelimiter}) => heightDelimiter - 60 + "px"};
     background-color: ${({theme}) => theme.color.lightBackground};
-    width: 35%;
-    height: 75%;
     border: 5px solid ${({theme}) => theme.color.darkTurquise};
     box-shadow: 5px 5px 10px 0 ${({theme}) => theme.color.greyFont} ;
     padding-bottom: 25px;
-    @media only screen and (max-width: 1140px) {
-        height: 60%;
-        width: 45%;   
-    }
-    @media only screen and (max-width: 720px) {
+    @media only screen and (max-width: 1425px) {
+        padding-bottom: 20px;
+    };
+    @media only screen and (max-width: 1060px) {
+        padding-bottom: 15px;
+    };
+    @media only screen and (max-width: 825px) {
+        left: 42%;
+        width: 300px;
         height: 40%;
     }
+    @media only screen and (max-width: 720px) {
+        left: 50%;
+    }
     @media only screen and (max-width: 510px) {
-        padding-bottom: 15px;
-        min-height: 40%;
+        width: 200px;
+        height: 280px;
+        min-height: 280px;
+        padding-bottom: 10px;
     }
 `;
 
@@ -149,58 +143,67 @@ const Header = styled.div`
     flex-direction: row;
     align-items: center;
     background-color: ${({theme}) => theme.color.darkTurquise};
-    height: 60px;
+    height: 50px;
     padding: 0px;
-    min-height: 60px;
-    @media only screen and (max-width: 720px) {
+    min-height: 50px;
+    @media only screen and (max-width: 1425px) {
         height: 40px;
         min-height: 40px;
     };
+    @media only screen and (max-width: 1060px) {
+        height: 30px;
+        min-height: 30px;
+    };
     @media only screen and (max-width: 510px) {
-       height: 20px;
-       min-height: 20px;
-    }
+        height: 20px;
+        min-height: 20px;
+    };
 `;
 
 const Heading = styled.h1`
-    font-size: 40px;
+    font-size: 36px;
     margin: 0 auto;
     color: ${({theme}) => theme.color.lightBackground};
-    @media only screen and (max-width: 1140px) {
+    @media only screen and (max-width: 1425px) {
         font-size: 30px;
     };
-    @media only screen and (max-width: 720px) {
-        font-size: 20px;
+    @media only screen and (max-width: 1060px) {
+        font-size: 24px;
     };
     @media only screen and (max-width: 510px) {
-       font-size: 10px;
-    }
+        font-size: 18px;
+    };
 `;
 
 const CloseButton = styled.img`
     position: absolute;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     right: 0;
     margin-right: 15px;
     cursor: pointer;
-    @media only screen and (max-width: 1140px) {
-        width: 22px;
-        height: 22px;
+    @media only screen and (max-width: 1425px) {
+        width: 18px;
+        height: 18px;
     };
-    @media only screen and (max-width: 720px) {
-        width: 12px;
-        height: 12px;
+    @media only screen and (max-width: 1060px) {
+        width: 14px;
+        height: 14px;
+        margin-right: 10px;
     };
     @media only screen and (max-width: 510px) {
-        width: 8px;
-        height: 8px;
-    }
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+    };
 `;
 
 const Search = styled(Input)`
     margin: 10px 10px 0px 10px;
-    @media only screen and (max-width: 1140px) {
+    @media only screen and (max-width: 1425px) {
+        font-size: 14px;
+    };
+    @media only screen and (max-width: 1060px) {
         font-size: 12px;
     };
     @media only screen and (max-width: 510px) {
@@ -213,17 +216,20 @@ const Search = styled(Input)`
 const List = styled.div`
     display: grid; 
     grid-auto-rows: auto;
-    margin: 25px 30px 0px 50px;
-    grid-row-gap: 20px;
+    margin: 25px 30px 0px 35px;
+    grid-row-gap: 15px;
     overflow-y: scroll;
-    @media only screen and (max-width: 770px) {
-        margin: 25px 15px 0px 15px;
+    @media only screen and (max-width: 1635px) {
+        margin: 25px 25px 0px 25px;
     }
-    @media only screen and (max-width: 720px) {
+    @media only screen and (max-width: 1425px) {
+        margin: 20px 20px 0px 20px;
+    };
+    @media only screen and (max-width: 1060px) {
         margin: 15px 15px 0px 15px;
-    }
+    };
     @media only screen and (max-width: 510px) {
-        margin: 10px 10px 0px 10px;
+        margin: 10px 10px 0px 10px;  
         grid-row-gap: 10px;
     }
 `;
@@ -238,4 +244,4 @@ const NoResults = styled.h1`
     }
 `;
 
-export default SharePinBox;
+export default PinBox;

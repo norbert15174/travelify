@@ -19,4 +19,5 @@ html {
 body {
     height: 100%;
     font-family: "Cuprum", sans-serif;
+    min-width: 300px;
 }

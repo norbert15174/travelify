@@ -76,7 +76,7 @@ const AddComment = ({ add }) => {
                     className="scroll_two" 
                     id="comment"
                     name="comment"
-                    placeholder="Dodaj komentarz..."
+                    placeholder="Dodaj komentarz... :smile:"
                     wrap="soft"
                     readyToSend={comment !== "" || showEmoji ? true : false}
                     value={comment}

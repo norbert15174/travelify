@@ -77,8 +77,8 @@ const Icon = styled.img`
         width: 200px;
     }
     @media only screen and (max-width: 950px) {
-       height: 150px;
-       width: 150px;
+        height: 150px;
+        width: 150px;
     }
     @media only screen and (max-width: 800px) {
         height: 200px;
@@ -86,8 +86,8 @@ const Icon = styled.img`
         margin-right: 0px;
     }
     @media only screen and (max-width: 500px) {
-       height: 100px;
-       width: 100px;
+        height: 100px;
+        width: 100px;
     }
 `;
 

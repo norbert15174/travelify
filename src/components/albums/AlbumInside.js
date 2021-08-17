@@ -11,7 +11,7 @@ import shareIcon from "./assets/shareIcon.svg";
 import publicAlbumBlueIcon from "./assets/publicAlbumBlueIcon.svg";
 import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
-import SharePinBox from "./SharePinBox";
+import ShareBox from "./ShareBox";
 import Carousel from "../photos/Carousel";
 import profilePhoto from "./assets/profilePhoto.png";
 import { FriendsListArray as album } from "./data";
@@ -58,7 +58,7 @@ const AlbumInside = ({albumId}) => {
     return (
         <>
             { photoPreview.visible && <Carousel photoId={photoPreview.id} photos={photos} setClose={setPhotoPreview}/> }
-            { sharePinBox && <SharePinBox type="share" setClose={setSharePinBox}/> }
+            { sharePinBox && <ShareBox setClose={setSharePinBox}/> }
             <Container blurState={blurState}>
                 <Details>
                     <Header>
@@ -298,18 +298,21 @@ const AlbumInfo = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 24px;
-    margin-top: 5px;
+    margin-top: 15px;
     margin-right: 25px;
     @media only screen and (max-width: 1025px) {
         font-size: 18px; 
+        margin-top: 10px;
     }
     @media only screen and (max-width: 825px) {
         font-size: 12px;
         margin-right: 15px;
+        margin-top: 8px;
     }
     @media only screen and (max-width: 510px) {
         font-size: 8px;
         margin-right: 10px;
+        margin-top: 5px;
     }
 `;
 
@@ -345,7 +348,7 @@ const Buttons = styled.div`
 `;
 
 const TypeSpecifiedButton = styled(ButtonIcon)`
-    margin: 0px 0px 0px 25px;
+    margin: 15px 0px 0px 25px;
     width: 160px;
     height: 40px;
     border-radius: 5px;
@@ -360,6 +363,7 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
         font-size: 12px;
         width: 100px;
         height: 30px;
+        margin-top: 10px;
         margin-left: 15px;
     }
     @media only screen and (max-width: 825px) {
@@ -372,6 +376,7 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
     }
     @media only screen and (max-width: 510px) {
         background-size: 10px;
+        margin-top: 5px;
         margin-left: 5px;
         font-size: 0px;
         height: 20px;

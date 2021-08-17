@@ -17,6 +17,7 @@ const AlbumSection = ({ sectionType, data }) => {
     });
     const [ redirectToCreator, setRedirectToCreator ] = useState(false);
 
+
     if (redirectToAlbum.active) {
         return <Redirect to={{pathname: `album/${redirectToAlbum.albumId}`, state: {albumId: redirectToAlbum.albumId}}}/>
     }
@@ -162,6 +163,7 @@ const AlbumGrid = styled.div`
     margin: 35px 0px 15px 0px;
     align-content: start;
     grid-template-columns: repeat(2, 690px);
+    grid-auto-rows: 370px;
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
@@ -173,9 +175,11 @@ const AlbumGrid = styled.div`
     }
     @media only screen and (max-width: 1225px) {
         grid-template-columns: repeat(2, 390px);
+        grid-auto-rows: 300px;
     }
     @media only screen and (max-width: 1025px) {
         grid-template-columns: repeat(2, 290px);
+        grid-auto-rows: 230px;
     }
     @media only screen and (max-width: 825px) {
         margin-top: 20px;

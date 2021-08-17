@@ -78,14 +78,23 @@ const NewsPage = () => {
 const Container = styled.div`
 	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
-    width:  62.5vw;
+    width:  1200px;
     margin: 0 auto;
     margin-bottom: 15px; 
-    display: grid;
-    grid-auto-rows: auto;
+    display: flex;
+    flex-direction: column;
     grid-row-gap: 15px;
-    @media only screen and (max-width: 720px) {
-        width: 80vw;
+    @media only screen and (max-width: 1400px) {
+       width: 900px;
+    }
+    @media only screen and (max-width: 1100px) {
+        width: 600px;
+    }
+    @media only screen and (max-width: 800px) {
+        width: 400px;
+    }
+    @media only screen and (max-width: 500px) {
+        width: 300px;
     }
 `;
 
@@ -124,6 +133,7 @@ const Heading = styled.h1`
 `;
 
 const NewsNavigation = styled.div`
+    height: 204px;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     display: flex;
@@ -136,21 +146,20 @@ const NewsNavigation = styled.div`
 
 const Line = styled.div`
     border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
-    width: 42vw;
+    width: 75%;
     margin: 25px auto 0 auto;
-    @media only screen and (max-width: 720px) {
-        width: 80%;
+    @media only screen and (max-width: 800px) {
+        margin: 20px auto 20px auto;
     }
 `;
 
 const NewsSwitch = styled.div`
     margin: 25px auto 30px auto;
-    font-size: 24px;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 5vw;
-    @media only screen and (max-width: 720px) {
-        font-size: 16px;
+    @media only screen and (max-width: 800px) {
+        margin: 0px auto 25px auto;
     }
 `;
 
@@ -162,13 +171,15 @@ const NewsOption = styled.div`
     transition: all 0.1s ease-in-out;
     border-radius: 15px;
     text-align: center;
+    font-size: 24px;
     padding: 10px 20px 10px 80px;
     background-image: url(${({icon}) => icon}); 
     background-size: 34px;
     background-position: 10% 50%;
     background-repeat: no-repeat;
     cursor: pointer;
-    @media only screen and (max-width: 720px) {
+    @media only screen and (max-width: 800px) {
+        font-size: 16px;
         background-size: 24px;
         padding: 10px 10px 10px 50px;
     }

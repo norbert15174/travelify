@@ -1,5 +1,6 @@
 import japonia1 from "./assets/Japonia.jpg";
-import japonia2 from "./assets/zdjęcie.jpg";
+import japonia2 from "./assets/japonia2.jpg";
+import zdjecie from "./assets/zdjęcie.jpg";
 
 export const FriendsListArray = {
     list: [
@@ -15,7 +16,7 @@ export const FriendsListArray = {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-        image: japonia1,
+        image: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Eiffel_Tower_Vertical.JPG",
         position: {
           lat: 34.693419963767134,
           lng:  135.50148570719475,
@@ -252,7 +253,7 @@ export const FriendsListArray = {
     },
     {
       id: 9,
-      image: 'https://f4fcdn.eu/wp-content/uploads/2018/04/alesandartodorovic.jpg'
+      image: 'https://upload.wikimedia.org/wikipedia/commons/0/0f/Eiffel_Tower_Vertical.JPG'
     },
     {
       id: 10,
@@ -262,4 +263,28 @@ export const FriendsListArray = {
       id: 11,
       image: japonia2
     },
-];
+    {
+      id: 12,
+      image: "https://thumbs.dreamstime.com/b/vertical-shot-road-magnificent-mountains-under-blue-sky-captured-california-163571053.jpg"
+    },
+    {
+      id: 13,
+      image: "https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dmVydGljYWx8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },
+    {
+      id: 14,
+      image: "https://wallpaperaccess.com/full/1180075.jpg"
+    },
+    {
+      id: 15,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIfvk3JMIGDFv2x9lFT3kO6_T4p8kVjcuEU8K62jCwrgsb5eIErWyaXrhOcl9rebpKkP4&usqp=CAU"
+    },
+    {
+      id: 16,
+      image: "https://img.ashampoo.com/images/products/2118/icon.png"
+    },
+    {
+      id: 17,
+      image: zdjecie
+    },
+  ];

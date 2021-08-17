@@ -44,7 +44,7 @@ const fakeComments = [
 
 const initialDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat."
 
-const SideSection = ({photoId, setPinBox, heightDelimiter}) => {
+const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
 
     const [ commentsArray, setCommentsArray ] = useState(fakeComments);
     const [ editing, setEditing ] = useState(false);
@@ -56,7 +56,7 @@ const SideSection = ({photoId, setPinBox, heightDelimiter}) => {
     }
 
     return (
-        <Container heightDelimiter={heightDelimiter}>
+        <Container heightDelimiter={heightDelimiter} widthDelimiter={widthDelimiter}>
             <EditDescriptionButton 
                 icon={!editing ? editPencilIcon : acceptIcon}
                 onClick={() => {
@@ -100,20 +100,33 @@ const SideSection = ({photoId, setPinBox, heightDelimiter}) => {
                             )
                         }
                 </Heading>
-                {<Tags className="scroll_two">
-                    <TagIcon src={tagTurquiseIcon}/>
-                    <TaggedPerson>
-                        <UserPhoto src={profilePhoto}/>
-                        Krzysztof Jarzyna
-                    </TaggedPerson>
-                    <TaggedPerson>
-                        <UserPhoto src={profilePhoto}/>
-                        Krzysztof Jarzyna
-                    </TaggedPerson>
-                   
-                </Tags>}
+                <TagsContainer>
+                <TagIcon src={tagTurquiseIcon}/>
+                    {<Tags className="scroll_two">
+                        <TaggedPerson>
+                            <UserPhoto src={profilePhoto}/>
+                            Krzysztof Jarzyna
+                        </TaggedPerson>
+                        <TaggedPerson>
+                            <UserPhoto src={profilePhoto}/>
+                            Krzysztof Jarzyna
+                        </TaggedPerson>
+                        <TaggedPerson>
+                            <UserPhoto src={profilePhoto}/>
+                            Krzysztof Jarzyna
+                        </TaggedPerson>
+                        <TaggedPerson>
+                            <UserPhoto src={profilePhoto}/>
+                            Krzysztof Jarzyna
+                        </TaggedPerson>
+                        <TaggedPerson>
+                            <UserPhoto src={profilePhoto}/>
+                            Krzysztof Jarzyna
+                        </TaggedPerson>
+                    </Tags>}
+                </TagsContainer>
             </Header>
-            <CommentsSection className="scroll_two" heightDelimiter={heightDelimiter}>
+            <CommentsSection className="scroll_two">
             {   
                 commentsArray.map((comment) => (
                     <CommentContainer key={comment.id}>
@@ -144,18 +157,29 @@ const Container = styled.div`
     padding: 20px 25px 10px 25px;
     background-color: ${({theme}) => theme.color.lightBackground};
     position: relative;
+
     height: ${({heightDelimiter}) => heightDelimiter - 30 + "px"}; // -30 - top and bottom padding 
-    min-height: ${({heightDelimiter}) => heightDelimiter - 30 + "px"};
+    
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-row-gap: 15px;
+
+    @media only screen and (max-width: 1225px) {
+        grid-row-gap: 10px;
+    }
     @media only screen and (max-width: 1025px) {
         padding: 15px 15px 5px 15px;
         height: ${({heightDelimiter}) => heightDelimiter - 20 + "px"}; // -30 - top and bottom padding 
-        min-height: ${({heightDelimiter}) => heightDelimiter - 20 + "px"};
+    }
+    @media only screen and (max-width: 825px) {
+        width: ${({widthDelimiter}) => widthDelimiter - 30 + "px"}; // -30 - top and bottom padding 
+        height: 280px;
+        min-height: 280px;
+        max-height: 280px;
     }
     @media only screen and (max-width: 510px) {
-        height: 350px;
+        
+        
     }
 `;
 
@@ -244,17 +268,28 @@ const AddDescription = styled.textarea`
     }
 `;
 
+const TagsContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 10px 0px;
+    @media only screen and (max-width: 1425px) {
+        margin: 5px 0px;
+    }
+`;
+
 const Tags = styled.div`
     display: flex; 
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    margin: 10px 0px;
     max-height: 150px;
     overflow-y: scroll;
-
-    @media only screen and (max-width: 1225px) {
-        margin: 5px 0px;
+    @media only screen and (max-width: 825px) {
+        max-height: 50px;
+    }
+    @media only screen and (max-width: 510px) {
+        max-height: 25px;
     }
 `;
 
@@ -262,7 +297,7 @@ const TagIcon = styled.img`
     width: 24px;
     height: 24px;
     margin-right: 15px;
-    @media only screen and (max-width: 1225px) {
+    @media only screen and (max-width: 1425px) {
         width: 16px;
         height: 16px;
         margin-right: 10px;
@@ -281,11 +316,14 @@ const TaggedPerson = styled.div`
     font-size: 16px;
     font-weight: ${({theme}) => theme.fontWeight.bold};
     margin: 5px 10px 0px 0px;
-    @media only screen and (max-width: 1225px) {
+    @media only screen and (max-width: 1425px) {
         font-size: 12px;
     }
     @media only screen and (max-width: 1025px) {
         font-size: 8px;
+    }
+    @media only screen and (max-width: 825px) {
+        margin-right: 5px;
     }
 `;
 
@@ -327,7 +365,7 @@ const UserPhoto = styled.img`
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     border-radius: 50%;
     margin-right: 5px;
-    @media only screen and (max-width: 1225px) {
+    @media only screen and (max-width: 1425px) {
         width: 20px;
         height: 20px;
     }
@@ -425,6 +463,6 @@ const TagButton = styled(ButtonIcon)`
 `;
 
 
-var link = "https://www.youtube.com/watch?v=Ku0d5v32ulk";
+var link = "https://www.youtube.com/watch?v=ObJLIsNcOZ4";
 
 export default SideSection;

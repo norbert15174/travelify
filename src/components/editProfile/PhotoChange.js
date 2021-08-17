@@ -60,6 +60,11 @@ const PhotoChange = ({type}) => {
         setImage(file);
     };
 
+    const onSubmit = () => {
+        /* do some magic */
+        console.log(image);
+    }
+
     const onCancel = () => {
         setTypeError(false);
         setSizeError(false);
@@ -82,8 +87,8 @@ const PhotoChange = ({type}) => {
                 { errorMessage && <ErrorMessage type="error">{errorMessage}</ErrorMessage> }
             </Input>
             <Buttons>
-                <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={() => null}>Zapisz</Submit> 
-                <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={() => onCancel()}>Anuluj</Cancel>
+                <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onSubmit}>Zapisz</Submit> 
+                <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onCancel}>Anuluj</Cancel>
             </Buttons>
         </Container>
     );

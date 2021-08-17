@@ -14,7 +14,7 @@ export const FriendsListArray = {
         description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
         Nam condimentum mattis erat ac feugiat. `,
-        image: japonia1,
+        image: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Eiffel_Tower_Vertical.JPG",
       },
       {
         id: 2,

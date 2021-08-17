@@ -33,9 +33,28 @@ const MainPhoto = styled.img`
 
 const InfoContainer = styled.div`
     width: 100%;
+    height: 158px;
     position: absolute;
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);
+    @media only screen and (max-width: 1440px) {
+        height: 112px;
+    }
+    @media only screen and (max-width: 1080px) {
+        height: 150px;
+    }
+    @media only screen and (max-width: 830px) {
+        height: 138px;
+    }
+    @media only screen and (max-width: 735px) {
+        height: 120px;
+    }
+    @media only screen and (max-width: 560px) {
+        height: 85px;
+    }
+    @media only screen and (max-width: 410px) {
+        height: 68px;
+    }
 `;
 
 const Text = styled.div`
@@ -98,19 +117,25 @@ const Description = styled.p`
     -webkit-line-clamp: 6;
     @media only screen and (max-width: 1440px) { 
         margin-top: 10px;
+        -webkit-line-clamp: 4;
+    }
+    @media only screen and (max-width: 1080px) {
+        -webkit-line-clamp: 6;
+    }
+    @media only screen and (max-width: 830px) {
         -webkit-line-clamp: 5;
     }
     @media only screen and (max-width: 735px) {
         font-size: 10px;
         margin-top: 5px;
-        -webkit-line-clamp: 4;
     }
     @media only screen and (max-width: 560px) {
         font-size: 8px;
         margin-top: 3px;
     }
     @media only screen and (max-width: 410px) {
-        margin-top: 0px;
+        
+        -webkit-line-clamp: 4;
     }
 `;
 

@@ -46,7 +46,6 @@ const Name = styled.div`
   font-weight: 700;
   position: relative;
   top: 18px;
-
 `;
 
 export default FriendItem;

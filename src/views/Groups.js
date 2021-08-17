@@ -1,4 +1,4 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import UserTemplate from "../templates/UserTemplate";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import { setFriendToDeleteId } from "../redux/deleteFriendSlice";
 import Input from "../components/trinkets/Input";
 import Picker from 'emoji-picker-react';
 import JSEMOJI from 'emoji-js';
+
 
 // UserTemplate adds Menu sidebar
 
@@ -23,6 +24,10 @@ const Groups = () => {
     const [ text, setText ] = useState("");
 
     const [chosenEmoji, setChosenEmoji] = useState(null);
+
+    useEffect(() => {
+        throw new Error("Błąd Błąd");
+    }, []);
 
     const onEmojiClick = (event, emojiObject) => {
         console.log(emojiObject)
@@ -60,7 +65,7 @@ const Groups = () => {
                     ) : (
                         <span>No emoji Chosen</span>
                     )}
-                </div>
+                 </div>   
             </div>
         </UserTemplate>
     )

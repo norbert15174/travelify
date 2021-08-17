@@ -86,6 +86,7 @@ const Box = styled.div`
     @media only screen and (max-width: 720px) {
        width: 35%;
        height: 20%;
+       left: 50%;
     }
     @media only screen and (max-width: 560px) {
        width: 50%;
@@ -93,9 +94,11 @@ const Box = styled.div`
        padding: 20px;
     }
     @media only screen and (max-width: 400px) {
-       padding: 10px;
-       width: 60%;
-       height: 15%;
+        padding: 10px;
+        min-width: 264px;
+        width: 264px;
+        height: 155px;
+        min-height: 155px;
     }
 `;
 

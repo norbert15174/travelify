@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams,  } from "react-router-dom";
 import UserTemplate from '../templates/UserTemplate';
 import AlbumInside from "../components/albums/AlbumInside";
+import NotFound from "./NotFound";
+
 
 const AlbumDetails = () => {
 
     const [ albumId, setAlbumId ] = useState(null);
-    const location = useLocation();
+    const location = useLocation(); // params passed at Redirect
+    const params = useParams(); // params straight from url 
 
     useEffect(() => {
-        // checking if album will be edited or created
+
         if (location.state !== undefined) {
             setAlbumId(location.state.albumId);
         }
         
+    }, [albumId, location.state, params.id]);
 
-    }, [albumId, location.state]);
+    // we need to check if album with following ID exists (this kind of check will only happen when someone types id in the url)
+    if ( params.id === "20" ) {
+        console.error("404 - Page not found");
+        return <NotFound/>;
+    } 
 
     // I'm passing albumId
     return (
