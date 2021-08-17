@@ -1,0 +1,70 @@
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #5b5b5b;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@media only screen and (max-width: 870px) {
+  .container {
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width: 560px) {
+  .container {
+    font-size: 10px;
+  }
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #e0e5e0;
+  border-radius: 50%;
+  border: 1px solid #12bfce;
+}
+
+.container:hover input ~ .custom {
+  background-color: #ccc;
+}
+
+.container input:checked ~ .custom {
+  background-color: #12bfce;
+}
+
+.custom:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.container input:checked ~ .custom:after {
+  display: block;
+}
+
+.container .custom:after {
+  top: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}

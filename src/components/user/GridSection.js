@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import AlbumThumbnail from "./AlbumThumbnail"
 import FriendThumbnail from "./FriendThumbnail";
 import Input from "../trinkets/Input";
-import "./scrollbar.css";
+import "./userScrollbar.css";
 import noResultsIcon from "./assets/noResultsIcon.svg";
 
 const GridSection = ({data, sectionType}) => {
@@ -25,9 +25,7 @@ const GridSection = ({data, sectionType}) => {
     return (
         <Container>
             <Header>
-                {
-                    sectionType === "albums" ? <h1>Albumy</h1> : <h1>Znajomi</h1>
-                }
+                { sectionType === "albums" ? <h1>Albumy</h1> : <h1>Znajomi</h1> }
                 <Line/>
             </Header>
             <Search 
@@ -152,21 +150,20 @@ const AlbumGrid = styled.div`
     display: grid;
     align-content: start;
     grid-template-columns: repeat(2, 550px);
+    grid-auto-rows: 370px;
     grid-gap: 30px;
     margin-left: 30px;
     max-height: 1000px;
     overflow-y: scroll;
     @media only screen and (max-width: 1440px) {
         grid-template-columns: repeat(2, 380px);
+        grid-auto-rows: 256px;
     }
     @media only screen and (max-width: 1080px) {
         grid-template-columns: 520px;
         grid-auto-rows: 350px;
         grid-gap: 20px;
         margin-left: 0px;
-    }
-    @media only screen and (max-width: 1080px) {
-        grid-template-columns: 520px;
     }
     @media only screen and (max-width: 830px) {
         grid-auto-rows: 317px;

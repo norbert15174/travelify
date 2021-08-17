@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useFormik } from "formik";
-import ErrorMessage from "./ErrorMessage";
-import Input from "./Input";
-import Submit from "./Submit";
-import Cancel from "./Cancel";
+import StatusMessage from "../trinkets/StatusMessage";
+import FormInput from "../trinkets/FormInput";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
 
 const PasswordForm = () => {
     /*
@@ -20,7 +20,7 @@ const PasswordForm = () => {
         if (!values.actualPassword) {
             errors.actualPassword = "Wymagane!";
         } else if ( values.actualPassword !== "Haslo") {
-            errors.actualPassword = "Hasło nie zgadza się!";
+            errors.actualPassword = "Hasło jest nieprawidłowe!";
         }
 
         if (!values.newPassword) {
@@ -64,7 +64,7 @@ const PasswordForm = () => {
             <Container>
                 <Label htmlFor="actualPassword">
                     Bieżące hasło
-                    <Input 
+                    <FormInput 
                         name="actualPassword" 
                         id="actualPassword" 
                         type="password" 
@@ -73,13 +73,12 @@ const PasswordForm = () => {
                         onBlur={formik.handleBlur} 
                         minLength={8}
                         maxLength={30}
-                        placeholder="Hasło powinno składać się z ..."
                     />
                 </Label>
-                { formik.touched.actualPassword && formik.errors.actualPassword ? <StyledErrorMessage>{formik.errors.actualPassword}</StyledErrorMessage> : <div/>}
+                { formik.touched.actualPassword && formik.errors.actualPassword ? <ErrorMessage type="error">{formik.errors.actualPassword}</ErrorMessage> : <div/>}
                 <Label>
                     Wprowadź nowe hasło
-                    <Input
+                    <FormInput
                         disabled={formik.errors.actualPassword} 
                         name="newPassword" 
                         id="newPassword" 
@@ -91,10 +90,10 @@ const PasswordForm = () => {
                         maxLength={30}
                     />
                 </Label>
-                { formik.touched.newPassword && formik.errors.newPassword ? <StyledErrorMessage>{formik.errors.newPassword}</StyledErrorMessage> : <div/>}
+                { formik.touched.newPassword && formik.errors.newPassword ? <ErrorMessage type="error">{formik.errors.newPassword}</ErrorMessage> : <div/>}
                 <Label>
                     Wprowadź ponownie nowe hasło
-                    <Input
+                    <FormInput
                         disabled={formik.errors.actualPassword || formik.errors.newPassword}  
                         name="repeatPassword" 
                         id="repeatPassword" 
@@ -105,7 +104,7 @@ const PasswordForm = () => {
                         maxLength={30}
                     />
                 </Label> 
-                { formik.touched.repeatPassword && formik.errors.repeatPassword ? <StyledErrorMessage>{formik.errors.repeatPassword}</StyledErrorMessage> : <div/>}
+                { formik.touched.repeatPassword && formik.errors.repeatPassword ? <ErrorMessage type="error">{formik.errors.repeatPassword}</ErrorMessage> : <div/>}
             </Container>
             <Buttons>
                 <Submit type="submit" disabled={formik.isSubmitting || !formik.dirty} >Zapisz</Submit>
@@ -151,7 +150,7 @@ const Label = styled.label`
     }
 `;
 
-const StyledErrorMessage = styled(ErrorMessage)`
+const ErrorMessage = styled(StatusMessage)`
     justify-self: flex-start;
     align-self: center;
     font-size: 12px;

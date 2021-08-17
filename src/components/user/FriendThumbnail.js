@@ -1,18 +1,24 @@
 import React from "react";
 import styled from "styled-components";
 import closeIcon from "./assets/closeIcon.svg";
-
+import { setFriendToDeleteId } from "../../redux/deleteFriendSlice";
+import { useDispatch } from "react-redux";
 
 const FriendThumbnail = ({friend}) => {
     
     // TODO - RemoveFriend shouldn't be available when watching other people profile
+    // Redux Store, compare id's and voila
+
+    const dispatch = useDispatch();
 
     return (
-        <Container>
-            <Photo src={friend.url} alt="Profile photo"/>
-            <Name>{friend.name}</Name>
-            <RemoveFriend src={closeIcon}/>
-        </Container>
+        <>
+            <Container>
+                <Photo src={friend.url} alt="Profile photo"/>
+                <Name>{friend.name}</Name>
+                <RemoveFriend src={closeIcon} onClick={() => dispatch(setFriendToDeleteId(25))}/>
+            </Container>
+        </>
     )
     
 };

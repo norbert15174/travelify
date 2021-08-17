@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import NewsSearch from "../trinkets/DropdownSearch";
-import Input from "../trinkets/Input";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
 import { FriendsListArray as news } from "./data";
 import noResultsIcon from "./svg/noResultsIcon.svg";
+import { useSelector } from "react-redux";
 
 const types = {
     friends: "friends",
@@ -16,22 +16,7 @@ const types = {
 const NewsPage = () => {
 
     const [newsType, setNewsType] = useState(types.friends);
-        
-
-    // STARE SZUKANIE
-    // search field content
-    const [searchContent, setSearchContent] = useState("");
-    const [foundNews, setFoundNews] = useState([]);
-    // search only by album title and author name
-    const handleSearchBarChange = (e) => {
-        setSearchContent(e.target.value);
-        setFoundNews(news.list.filter((item) => {
-            return item.title.toLowerCase().includes(searchContent.toLowerCase()) || 
-                item.name.toLowerCase().includes(searchContent.toLowerCase());
-        }));      
-        console.log(searchList)
-    };
-    ////////
+    const blurState = useSelector((state) => state.blur.value);    
 
     const searchList = news.list.map((item) => {
         return {
@@ -45,27 +30,11 @@ const NewsPage = () => {
     })
 
     return (
-        <Container>
+        <Container blurState={blurState}>
             <Header>
                 <Heading>Aktualności</Heading>
             </Header>
             <NewsNavigation>
-                {   
-                    /*
-                    stare wyszukiwanie
-                    <Search 
-                        autoComplete="off"
-                        name="search"
-                        id="search" 
-                        type="text" 
-                        search 
-                        placeholder="Szukaj"
-                        value={searchContent}
-                        onChange={handleSearchBarChange}
-                    />
-                    */
-                }
-                
                 <NewsSearch options={searchList}/>
                 <Line/>
                 <NewsSwitch>
@@ -86,46 +55,20 @@ const NewsPage = () => {
                 </NewsSwitch>
             </NewsNavigation>
             {
-                newsType === types.friends && ( 
-                    (
-                        searchContent.length !== 0 && foundNews.length !== 0
-                        ?
-                        foundNews.map((news) => 
-                            <Post key={news.id} news={news}/>
-                        )
-                        : null
-                    ) || (
-                        news.list.length !== 0 && searchContent.length === 0
-                        ? 
-                        news.list.map((news) => 
-                            <Post key={news.id} news={news}/>
-                        )
-                        : null
-                    ) || (
-                        <NoResults/>
-                    )
+                newsType === types.friends && (
+                    news.list.length !== 0 
+                    ? news.list.map((news) => 
+                        <Post key={news.id} news={news}/>)
+                    : <NoResults/>
                 )
             }
             {
                 newsType === types.community && ( 
-                    (
-                        searchContent.length !== 0 && foundNews.length !== 0
-                        ?
-                        foundNews.map((news) => 
-                            <Post news={news}/>
-                        )
-                        : null
-                    ) || (
-                        news.list.length !== 0 && searchContent.length === 0
-                        ? 
-                        news.list.map((news) => 
-                            <Post news={news}/>
-                        )
-                        : null
-                    ) || (
-                        <NoResults/>
-                    )   
-                )
+                    news.list.length !== 0
+                    ? news.list.map((news) => 
+                        <Post news={news}/>)
+                    : <NoResults/>
+                )  
             }
         </Container>
     );
@@ -133,14 +76,25 @@ const NewsPage = () => {
 };
 
 const Container = styled.div`
-    width:  62.5vw;
+	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    width:  1200px;
     margin: 0 auto;
     margin-bottom: 15px; 
-    display: grid;
-    grid-auto-rows: auto;
+    display: flex;
+    flex-direction: column;
     grid-row-gap: 15px;
-    @media only screen and (max-width: 720px) {
-        width: 80vw;
+    @media only screen and (max-width: 1400px) {
+       width: 900px;
+    }
+    @media only screen and (max-width: 1100px) {
+        width: 600px;
+    }
+    @media only screen and (max-width: 800px) {
+        width: 400px;
+    }
+    @media only screen and (max-width: 500px) {
+        width: 300px;
     }
 `;
 
@@ -148,21 +102,38 @@ const Header = styled.div`
     background-color: ${({theme}) => theme.color.lightBackground}; 
     height: 80px;
     border-radius: 0px 0px 15px 15px;
-    @media only screen and (max-width: 720px) {
-        height: 55px;
+    display: grid;
+    align-items: center;
+    @media only screen and (max-width: 1100px) {
+        height: 70px;
+    }
+    @media only screen and (max-width: 800px) {
+        height: 60px;
+    }
+    @media only screen and (max-width: 500px) {
+        height: 40px;
     }
 `;
 
 const Heading = styled.h1`
-    font-size: 48px;
-    margin: 10px auto 10px 25px;
+    font-size: 54px;
+    margin: auto auto auto 25px;
     color: ${({theme}) => theme.color.greyFont};
-    @media only screen and (max-width: 720px) {
-        font-size: 32px;
+    @media only screen and (max-width: 1100px) {
+        font-size: 46px;
+    }
+    @media only screen and (max-width: 800px) {
+        font-size: 40px;
+        margin: auto auto auto 15px;
+    }
+    @media only screen and (max-width: 500px) {
+        font-size: 24px;
+        margin-left: 15px;
     }
 `;
 
 const NewsNavigation = styled.div`
+    height: 204px;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     display: flex;
@@ -173,31 +144,22 @@ const NewsNavigation = styled.div`
     }
 `;
 
-const Search = styled(Input)`
-    width: 35vw;
-    margin: 30px auto 0 auto;
-    @media only screen and (max-width: 720px) {
-        width: 50%;
-    }
-`;
-
 const Line = styled.div`
     border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
-    width: 42vw;
+    width: 75%;
     margin: 25px auto 0 auto;
-    @media only screen and (max-width: 720px) {
-        width: 80%;
+    @media only screen and (max-width: 800px) {
+        margin: 20px auto 20px auto;
     }
 `;
 
 const NewsSwitch = styled.div`
     margin: 25px auto 30px auto;
-    font-size: 24px;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 5vw;
-    @media only screen and (max-width: 720px) {
-        font-size: 16px;
+    @media only screen and (max-width: 800px) {
+        margin: 0px auto 25px auto;
     }
 `;
 
@@ -209,15 +171,17 @@ const NewsOption = styled.div`
     transition: all 0.1s ease-in-out;
     border-radius: 15px;
     text-align: center;
+    font-size: 24px;
     padding: 10px 20px 10px 80px;
     background-image: url(${({icon}) => icon}); 
     background-size: 34px;
     background-position: 10% 50%;
     background-repeat: no-repeat;
     cursor: pointer;
-    @media only screen and (max-width: 720px) {
+    @media only screen and (max-width: 800px) {
+        font-size: 16px;
         background-size: 24px;
-        padding: 5px 5px 5px 50px;
+        padding: 10px 10px 10px 50px;
     }
 `;
 

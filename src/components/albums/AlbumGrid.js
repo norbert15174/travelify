@@ -4,17 +4,27 @@ import styled from "styled-components";
 import Button from "../trinkets/Button";
 import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
-import "./scrollbar.css";
+import { routes } from "../../miscellanous/Routes";
+import "./albumsScrollbar.css";
 
 const AlbumSection = ({ sectionType, data }) => {
 
-    const [ redirect, setRedirect ] = useState({
+    // data for album thumbnails should be passed from above
+
+    const [ redirectToAlbum, setRedirectToAlbum ] = useState({
         active: false, 
         albumId: "",
     });
-    
-    if (redirect.active) {
-        return <Redirect to={{pathname: `album/${redirect.albumId}`, state: {albumId: redirect.albumId}}}/>
+    const [ redirectToCreator, setRedirectToCreator ] = useState(false);
+
+
+    if (redirectToAlbum.active) {
+        return <Redirect to={{pathname: `album/${redirectToAlbum.albumId}`, state: {albumId: redirectToAlbum.albumId}}}/>
+    }
+
+    // tworzenie albumu
+    if (redirectToCreator) {
+        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
     }
 
     return ( 
@@ -30,7 +40,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     sectionType === "shared" && <h1>Udostępnione dla ciebie</h1>
                 }
                 { 
-                    sectionType !== "shared" && <AddButton>Stwórz album</AddButton> 
+                    sectionType !== "shared" && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton> 
                 }
             </Header>
             <Line/>
@@ -42,7 +52,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     <AlbumThumbnail
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                         })}
@@ -56,7 +66,7 @@ const AlbumSection = ({ sectionType, data }) => {
                     <AlbumThumbnail
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                          })}
@@ -68,10 +78,10 @@ const AlbumSection = ({ sectionType, data }) => {
                 && sectionType === "shared" 
                 && data.list.map((album) => 
                     <AlbumThumbnail
-                        shared={true}
+                        notRealOwner={true}
                         key={album.id} 
                         album={album} 
-                        redirectTo={() => setRedirect({
+                        redirectTo={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.id
                         })}
@@ -153,6 +163,7 @@ const AlbumGrid = styled.div`
     margin: 35px 0px 15px 0px;
     align-content: start;
     grid-template-columns: repeat(2, 690px);
+    grid-auto-rows: 370px;
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
@@ -164,9 +175,11 @@ const AlbumGrid = styled.div`
     }
     @media only screen and (max-width: 1225px) {
         grid-template-columns: repeat(2, 390px);
+        grid-auto-rows: 300px;
     }
     @media only screen and (max-width: 1025px) {
         grid-template-columns: repeat(2, 290px);
+        grid-auto-rows: 230px;
     }
     @media only screen and (max-width: 825px) {
         margin-top: 20px;
@@ -176,7 +189,7 @@ const AlbumGrid = styled.div`
     @media only screen and (max-width: 510px) {
         grid-template-columns: 240px;
         grid-auto-rows: 162px;
-        grid-gap: 10px;
+        grid-gap: 20px;
         margin-top: 10px;
     }
 `;

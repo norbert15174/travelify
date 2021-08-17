@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserTemplate from "../../templates/UserTemplate";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
@@ -9,37 +9,58 @@ import descriptionIcon from "./assets/descriptionIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import countriesIcon from "./assets/countriesIcon.svg";
 import deleteAccountIcon from "./assets/deleteAccountIcon.svg";
-import ProfilePhoto from "./ProfilePhoto";
-import ProfileBackground from "./ProfileBackground";
+import PhotoChange from "./PhotoChange";
 import PersonalInfoForm from "./PersonalInfoForm";
 import PasswordForm from "./PasswordForm";
 import DescriptionForm from "./DescriptionForm";
 import CountriesForm from "./CountriesForm";
-import DeleteAccountForm from "./DeleteAccount";
-
+import DeleteAccountForm from "./DeleteAcountForm";
+import ConfirmationBox from "../trinkets/ConfirmationBox";
+import { routes } from "../../miscellanous/Routes";
+import { useSelector } from "react-redux";
 
 const EditProfile = () => {
 
     const [ redirect, setRedirect ] = useState(false);
 
+    const [ confirmDeletingAccount, setConfirmDeletingAccount ] = useState(false);
+    const [ refuseDeletingAccount, setRefuseDeletingAccount ] = useState(false);
+    const [ deleteBox, setDeleteBox ] = useState(false);
+
+    const blurState = useSelector((state) => state.blur.value);    
+
+    useEffect(() => {
+        if (confirmDeletingAccount) {
+            console.log("account has been deleted");
+            setConfirmDeletingAccount(false);
+            setDeleteBox(false);
+        } 
+        if (refuseDeletingAccount) {
+            console.log("account hasn't been deleted");
+            setRefuseDeletingAccount(false);
+            setDeleteBox(false);
+        }
+    }, [confirmDeletingAccount, refuseDeletingAccount]);
+
     if (redirect) {
-        return <Redirect to={{pathname: "/user"}}/>
+        return <Redirect to={{pathname: routes.user}}/>
     }
 
     return (
         <UserTemplate>
-            <Container>
+            {deleteBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć swoje konto?"} confirm={setConfirmDeletingAccount} refuse={setRefuseDeletingAccount}/>}
+            <Container blurState={blurState}>
                 <PageHeader>
                     <Heading>
                         Edytuj profil
                     </Heading>
                     <GoBackButton onClick={() => setRedirect(true)}>
-                        Wróć do profilu
+                        Wróć
                     </GoBackButton>
                 </PageHeader>
                 <Images>
-                    <ProfilePhoto/>
-                    <ProfileBackground/>
+                    <PhotoChange type="profile"/>
+                    <PhotoChange type="background"/>
                 </Images>
                 <SectionContainer>
                     <Header>
@@ -81,7 +102,7 @@ const EditProfile = () => {
                         <Icon src={deleteAccountIcon}/>
                         <h1>Usuń konto</h1>
                     </Header>
-                    <DeleteAccountForm/>
+                    <DeleteAccountForm setDeleteBox={setDeleteBox}/>
                 </SectionContainer>
             </Container>
         </UserTemplate>   
@@ -96,6 +117,8 @@ const Container = styled.div`
     grid-row-gap: 15px;
     min-width: 388px;
     margin-bottom: 15px;
+    filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(8px)" : "none" };
 `;
 
 const PageHeader = styled.div`

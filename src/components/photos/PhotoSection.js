@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import "./photosScrollbar.css";
 
-import "./scrollbar.css";
-
-const PhotoSection = ({photos}) => {
+const PhotoSection = ({photos, setPreview}) => {
 
     return (
         <Container>
@@ -11,8 +10,8 @@ const PhotoSection = ({photos}) => {
             <Line/>
             <PhotoGrid className="scroll">
             {
-                photos.list.map((photo) => (
-                    <PhotoContainer>
+                photos.map((photo) => (
+                    <PhotoContainer key={photo.id} onClick={() => setPreview({visible: true, id: photo.id})}>
                         <Photo src={photo.image} alt="album-photo"/>
                     </PhotoContainer>
                 ))
@@ -83,13 +82,14 @@ const PhotoGrid = styled.div`
         margin-top: 15px;
         grid-template-columns: repeat(2, 120px);
         grid-gap: 10px;
-        max-height: 250px;
+        max-height: 350px;
     }
 `;
 
 const PhotoContainer = styled.div`
     width: 450px;
     height: 450px;
+    cursor: pointer;
     @media only screen and (max-width: 1635px) {
         width: 385px;
         height: 385px; 
@@ -120,6 +120,9 @@ const Photo = styled.img`
     width: 450px;
     height: 450px;
     object-fit: cover;
+    &:hover {
+        opacity: 0.9;
+    }
     @media only screen and (max-width: 1635px) {
         width: 385px;
         height: 385px; 

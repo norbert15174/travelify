@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { useFormik } from "formik";
-import Input from "./Input";
-import Submit from "./Submit";
-import Cancel from "./Cancel";
-import CountrySelect from "./CountrySelect";
-import ErrorMessage from "./ErrorMessage"
+import FormInput from "../trinkets/FormInput";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
+import CountrySelect from "../trinkets/Select";
+import StatusMessage from "../trinkets/StatusMessage"
 
 const options = [
     { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
@@ -113,7 +113,7 @@ const PersonalInfoForm = () => {
                         </CurrentContainer>
                         <Label htmlFor="firstname">
                             Nowe imię
-                            <Input 
+                            <FormInput 
                                 name="firstname" 
                                 id="firstname" 
                                 type="text" 
@@ -124,7 +124,7 @@ const PersonalInfoForm = () => {
                                 placeholder="Jan..." 
                                 autoComplete="off"
                             />              
-                            { formik.touched.firstname && formik.errors.firstname ? <StyledErrorMessage>{formik.errors.firstname}</StyledErrorMessage> : null}
+                            { formik.touched.firstname && formik.errors.firstname ? <ErrorMessage type="error">{formik.errors.firstname}</ErrorMessage> : null}
                         </Label>
                         <CurrentContainer>
                             Nazwisko
@@ -132,7 +132,7 @@ const PersonalInfoForm = () => {
                         </CurrentContainer>
                         <Label htmlFor="surname">
                             Nowe nazwisko
-                            <Input 
+                            <FormInput 
                                 name="surname" 
                                 id="surname" 
                                 type="text" 
@@ -143,7 +143,7 @@ const PersonalInfoForm = () => {
                                 placeholder="Nowak..."
                                 autoComplete="off"
                             />
-                            { formik.touched.surname && formik.errors.surname ? <StyledErrorMessage>{formik.errors.surname}</StyledErrorMessage> : null}
+                            { formik.touched.surname && formik.errors.surname ? <ErrorMessage type="error">{formik.errors.surname}</ErrorMessage> : null}
                         </Label>
                         <CurrentContainer>
                             Data urodzenia
@@ -151,7 +151,7 @@ const PersonalInfoForm = () => {
                         </CurrentContainer>
                         <Label htmlFor="birthdate">
                             Nowa data urodzenia
-                            <Input 
+                            <FormInput 
                                 name="birthdate" 
                                 id="birthdate" 
                                 type="date" 
@@ -159,7 +159,7 @@ const PersonalInfoForm = () => {
                                 onChange={formik.handleChange} 
                                 onBlur={formik.handleBlur}
                             />
-                            { formik.touched.birthdate && formik.errors.birthdate ? <StyledErrorMessage>{formik.errors.birthdate}</StyledErrorMessage> : null}
+                            { formik.touched.birthdate && formik.errors.birthdate ? <ErrorMessage type="error">{formik.errors.birthdate}</ErrorMessage> : null}
                         </Label>
                         <CurrentContainer>
                             Pochodzenie
@@ -169,6 +169,7 @@ const PersonalInfoForm = () => {
                             Nowe pochodzenie
                             <CountrySelect 
                                 formik 
+                                type="country"
                                 name="nationality" 
                                 id="nationality" 
                                 options={options} 
@@ -185,7 +186,7 @@ const PersonalInfoForm = () => {
                         </CurrentContainer>
                         <Label htmlFor="email">
                             Nowy email
-                            <Input 
+                            <FormInput 
                                 name="email" 
                                 id="email" 
                                 value={formik.values.email} 
@@ -195,7 +196,7 @@ const PersonalInfoForm = () => {
                                 autoComplete="off"
                                 maxLength={30}
                             />
-                            { formik.touched.email && formik.errors.email ? <StyledErrorMessage><p>{formik.errors.email}</p></StyledErrorMessage> : null}
+                            { formik.touched.email && formik.errors.email ? <ErrorMessage type="error"><p>{formik.errors.email}</p></ErrorMessage> : null}
                         </Label>
                         <CurrentContainer>
                             Telefon
@@ -203,7 +204,7 @@ const PersonalInfoForm = () => {
                         </CurrentContainer>
                         <Label htmlFor="phoneNumber">
                             Nowy numer
-                            <Input 
+                            <FormInput 
                                 name="phoneNumber" 
                                 id="phoneNumber" 
                                 type="tel" 
@@ -214,7 +215,7 @@ const PersonalInfoForm = () => {
                                 maxLength={9}
                                 autoComplete="off"
                             />
-                            { formik.touched.phoneNumber && formik.errors.phoneNumber ? <StyledErrorMessage>{formik.errors.phoneNumber}</StyledErrorMessage> : null}
+                            { formik.touched.phoneNumber && formik.errors.phoneNumber ? <ErrorMessage type="error">{formik.errors.phoneNumber}</ErrorMessage> : null}
                         </Label>
                 </RightContainer>
             </Container>
@@ -349,7 +350,7 @@ const Buttons = styled.div`
 
 
 
-const StyledErrorMessage = styled(ErrorMessage)`
+const ErrorMessage = styled(StatusMessage)`
     font-size: 12px;
     text-align: center;
     padding: 5px;

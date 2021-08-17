@@ -1,28 +1,37 @@
-import React, { Component} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams,  } from "react-router-dom";
 import UserTemplate from '../templates/UserTemplate';
 import AlbumInside from "../components/albums/AlbumInside";
+import NotFound from "./NotFound";
 
-// AlbumDetails is a view for album inside
 
-class AlbumDetails extends Component {
+const AlbumDetails = () => {
 
-    componentDidMount() {
+    const [ albumId, setAlbumId ] = useState(null);
+    const location = useLocation(); // params passed at Redirect
+    const params = useParams(); // params straight from url 
+
+    useEffect(() => {
+
+        if (location.state !== undefined) {
+            setAlbumId(location.state.albumId);
+        }
         
-        // możnaby przekazywać id albumów itd w ten sposób
+    }, [albumId, location.state, params.id]);
 
-        console.log(this.props.location.state.albumId);
-        
-    }
+    // we need to check if album with following ID exists (this kind of check will only happen when someone types id in the url)
+    if ( params.id === "20" ) {
+        console.error("404 - Page not found");
+        return <NotFound/>;
+    } 
 
-    render() {
+    // I'm passing albumId
+    return (
+        <UserTemplate>
+            <AlbumInside albumId={albumId}/>
+        </UserTemplate>
+    );
 
-        return (
-            <UserTemplate>
-                <AlbumInside/>
-            </UserTemplate>
-        );
-    }
-
-};
+}
 
 export default AlbumDetails;

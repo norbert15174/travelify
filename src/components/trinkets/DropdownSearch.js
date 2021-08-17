@@ -122,7 +122,7 @@ const DropdownSearch = ({options, onChange, onBlur, value}) => {
 const StyledSelect = styled(Select)`
     min-width: 50%;
     max-width: 50%;
-    margin: 30px auto 0 auto;
+    margin: 35px auto 0 auto;
     font-size: 16px;
 `;
 
@@ -199,21 +199,21 @@ const User = styled.div`
 
 
 const Profile = styled.img`
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     margin-right: 10px;
     @media only screen and (max-width: 1110px) {
-        width: 40px;
-        height: 40px;
-    }
-    @media only screen and (max-width: 905px) {
         width: 30px;
         height: 30px;
     }
+    @media only screen and (max-width: 905px) {
+        width: 20px;
+        height: 20px;
+    }
     @media only screen and (max-width: 760px) {
-       width: 15px;
-       height: 15px;
+       width: 10px;
+       height: 10px;
        margin-right: 5px;
     }
     @media only screen and (max-width: 435px) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from 'react-router-dom';
-import PhotoGrid from "../photos/PhotoSection";
+import PhotoSection from "../photos/PhotoSection";
 import Button from "../trinkets/Button";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import localizationIcon from "./assets/localizationIcon.svg";
@@ -11,15 +11,20 @@ import shareIcon from "./assets/shareIcon.svg";
 import publicAlbumBlueIcon from "./assets/publicAlbumBlueIcon.svg";
 import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
+import ShareBox from "./ShareBox";
+import Carousel from "../photos/Carousel";
 import profilePhoto from "./assets/profilePhoto.png";
-import { FriendsListArray as photos } from "./data";
+import { FriendsListArray as album } from "./data";
+import { SliderData as photos } from "./data";
+import { routes } from "../../miscellanous/Routes";
+import { useSelector } from "react-redux";
 
 const types = {
     albumType: "private", // public, private
     visibility: "owner", // owner, shared, unknown
 }
 
-const AlbumInside = () => {
+const AlbumInside = ({albumId}) => {
 
     // map options
     const options = {
@@ -29,67 +34,88 @@ const AlbumInside = () => {
         minZoom: 2, 
     };
 
-    const [ redirect, setRedirect ] = useState(false);
-    
-    if (redirect) {
-        return <Redirect to={{pathname: `/albums`}}/>
+    const [ sharePinBox, setSharePinBox ] = useState(false);
+    const [ photoPreview, setPhotoPreview ] = useState({visible: false, id: null});
+
+    const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
+    const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
+       active: false,
+       albumId: null,
+    })
+
+    const blurState = useSelector((state) => state.blur.value)
+
+    // goes back to albums screen
+    if (redirectToAlbums) {
+        return <Redirect to={{pathname: routes.albums}}/>
+    }
+
+    // goes to album edit screen
+    if (redirectToAlbumsCreator.active) {
+        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "edition", albumId: redirectToAlbumsCreator.albumId}}}/>
     }
 
     return (
-        <Container>
-            <Details>
-                <Header>
-                    <h1>Wycieczka do Japonii, Sierpień 2018</h1>
-                    <GoBackButton onClick={() => setRedirect(true)}>Wróć</GoBackButton>
-                    <Localization>
-                        <Icon src={localizationIcon}/>
-                        <h3>
-                            Japonia, Osaka
-                        </h3>
-                    </Localization>
-                </Header>
-                <MapContainer>
-                    <Map 
-                        width={"100%"} 
-                        height={"100%"} 
-                        options={options} 
-                        initialCoordinates={{
-                            lat: photos.list[0].position.lat, 
-                            lng: photos.list[0].position.lng,
-                        }}
-                        type="AlbumInside"
-                    />
-                </MapContainer>
-                <Description>
-                    <Icon src={descriptionIcon}/>
-                    <Text>
-                        Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-                    </Text>
-                </Description>
-                <div>
-                    <Line/>
-                    <Footer>
-                        <AlbumInfo>
-                            <ProfilePhoto src={profilePhoto}/>
-                            <p>Jan Nowak</p>   
-                        </AlbumInfo>
-                        <AlbumInfo>
-                            <Icon src={ types.albumType === "public" ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
-                            { types.albumType === "public" ? <p>Publiczny</p> : <p>Prywatny</p> }
-                        </AlbumInfo>
-                        <Buttons>
-                            { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon}>Udostępnij</TypeSpecifiedButton> }
-                            { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon}>Edytuj album</TypeSpecifiedButton> }
-                        </Buttons>
-                    </Footer>
-                </div>
-            </Details>
-            <PhotoGrid photos={photos}/>
-        </Container>
+        <>
+            { photoPreview.visible && <Carousel photoId={photoPreview.id} photos={photos} setClose={setPhotoPreview}/> }
+            { sharePinBox && <ShareBox setClose={setSharePinBox}/> }
+            <Container blurState={blurState}>
+                <Details>
+                    <Header>
+                        <h1>Wycieczka do Japonii, Sierpień 2018</h1>
+                        <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
+                        <Localization>
+                            <Icon src={localizationIcon}/>
+                            <h3>
+                                Japonia, Osaka
+                            </h3>
+                        </Localization>
+                    </Header>
+                    <MapContainer>
+                        <Map 
+                            width={"100%"} 
+                            height={"100%"} 
+                            options={options} 
+                            initialCoordinates={{
+                                lat: album.list[0].position.lat, 
+                                lng: album.list[0].position.lng,
+                            }}
+                            type="AlbumInside"
+                        />
+                    </MapContainer>
+                    <Description>
+                        <Icon src={descriptionIcon}/>
+                        <Text>
+                            Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                        </Text>
+                    </Description>
+                    <div>
+                        <Line/>
+                        <Footer>
+                            <AlbumInfo>
+                                <ProfilePhoto src={profilePhoto}/>
+                                <p>Jan Nowak</p>   
+                            </AlbumInfo>
+                            <AlbumInfo>
+                                <Icon src={ types.albumType === "public" ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
+                                { types.albumType === "public" ? <p>Publiczny</p> : <p>Prywatny</p> }
+                            </AlbumInfo>
+                            <Buttons>
+                                { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon} onClick={() => setSharePinBox(true)}>Udostępnij</TypeSpecifiedButton> }
+                                { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
+                            </Buttons>
+                        </Footer>
+                    </div>
+                </Details>
+                <PhotoSection photos={photos} setPreview={setPhotoPreview}/>
+            </Container>
+        </>
     );
 }
 
 const Container = styled.div`
+    filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
+    -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     display: grid;
     grid-template-rows: repeat(2, auto);
     grid-row-gap: 15px;
@@ -272,18 +298,21 @@ const AlbumInfo = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 24px;
-    margin-top: 5px;
+    margin-top: 15px;
     margin-right: 25px;
     @media only screen and (max-width: 1025px) {
         font-size: 18px; 
+        margin-top: 10px;
     }
     @media only screen and (max-width: 825px) {
         font-size: 12px;
         margin-right: 15px;
+        margin-top: 8px;
     }
     @media only screen and (max-width: 510px) {
         font-size: 8px;
         margin-right: 10px;
+        margin-top: 5px;
     }
 `;
 
@@ -319,7 +348,7 @@ const Buttons = styled.div`
 `;
 
 const TypeSpecifiedButton = styled(ButtonIcon)`
-    margin: 0px 0px 0px 25px;
+    margin: 15px 0px 0px 25px;
     width: 160px;
     height: 40px;
     border-radius: 5px;
@@ -334,6 +363,7 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
         font-size: 12px;
         width: 100px;
         height: 30px;
+        margin-top: 10px;
         margin-left: 15px;
     }
     @media only screen and (max-width: 825px) {
@@ -346,11 +376,15 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
     }
     @media only screen and (max-width: 510px) {
         background-size: 10px;
+        margin-top: 5px;
         margin-left: 5px;
         font-size: 0px;
         height: 20px;
         width: 20px;
         background-position: 50% 50%;
+    }
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
     }
 `;
 

@@ -17,9 +17,21 @@ const Container = styled.div`
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     padding: 30px 0;
-    display: grid;
-    @media only screen and (max-width: 890px) {
+    display: flex;
+    flex-direction: column;
+    height: 831px;
+    @media only screen and (max-width: 1400px) {
+        height: 731px;
+    }
+    @media only screen and (max-width: 1100px) {
+        height: 500px;
+    }
+    @media only screen and (max-width: 800px) {
+        height: 335px;
         padding: 15px 0;
+    }
+    @media only screen and (max-width: 500px) {
+        height: 250px;
     }
 `;
 
@@ -30,11 +42,11 @@ const Header = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 16px;
-    @media only screen and (max-width: 1020px) {
+    @media only screen and (max-width: 1100px) {
         font-size: 12px;
         margin-bottom: 12px;
     }
-    @media only screen and (max-width: 890px) {
+    @media only screen and (max-width: 800px) {
         font-size: 10px;
         margin-bottom: 10px;
     }
@@ -46,11 +58,11 @@ const ProfilePhoto = styled.img`
     border-radius: 100%;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     margin-right: 15px;
-    @media only screen and (max-width: 1020px) {
+    @media only screen and (max-width: 1100px) {
         width: 60px;
         height: 60px;
     }
-    @media only screen and (max-width: 890px) {
+    @media only screen and (max-width: 800px) {
         width: 40px;
         height: 40px;
     }

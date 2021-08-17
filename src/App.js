@@ -12,35 +12,34 @@ import Groups from "./views/Groups";
 import Albums from "./views/Albums";
 import Search from "./views/Search";
 import AlbumDetails from "./views/AlbumDetails";
+import AlbumCreator from "./components/albumCreator/AlbumCreator";
+import NotFound from "./views/NotFound";
+import ErrorBoundary from "./templates/ErrorBoundary";
+
 
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path={routes.startPage} component={StartPage}/>
-          <Route exact path={routes.auth} component={Auth}/>   
-          <Route exact path={routes.news} component={News}/>
-          <Route exact path={routes.user} component={User}/>
-          <Route exact path={routes.editProfile} component={EditProfile}/>
-          <Route exact path={routes.search} component={Search}/>
-          <Route exact path={routes.albums} component={Albums}/>
-          <Route path={routes.album} component={AlbumDetails}/>
-          <Route exact path={routes.groups} component={Groups}/>
-        </Switch>
-      </BrowserRouter>
-    </ThemeProvider>
-  );
+	return (
+    	<ThemeProvider theme={theme}>
+			<ErrorBoundary>
+				<BrowserRouter>
+					<Switch>
+						<Route exact path={routes.startPage} component={StartPage}/>
+						<Route exact path={routes.auth} component={Auth}/>   
+						<Route exact path={routes.news} component={News}/>
+						<Route exact path={routes.user} component={User}/>
+						<Route exact path={routes.editProfile} component={EditProfile}/>
+						<Route exact path={routes.search} component={Search}/>
+						{ /* /user/albums - taki powinien być url */ }
+						<Route exact path={routes.albums} component={Albums}/>
+						<Route exact path={routes.album} component={AlbumDetails}/>
+						<Route exact path={routes.albumCreator} component={AlbumCreator}/>
+						<Route exact path={routes.groups} component={Groups}/>
+						<Route path="*" component={NotFound}/>
+					</Switch>
+				</BrowserRouter>
+			</ErrorBoundary>
+    	</ThemeProvider>
+  	);
 }
 
 export default App;
-
-/*
-  <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={StartPage}/>
-          <Route exact path="/auth" component={Auth}/>
-          <Route exact path="/menu" component={Menu}/>
-        </Switch>
-      </BrowserRouter>
-*/
