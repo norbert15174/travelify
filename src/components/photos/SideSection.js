@@ -159,7 +159,7 @@ const Container = styled.div`
     position: relative;
 
     height: ${({heightDelimiter}) => heightDelimiter - 30 + "px"}; // -30 - top and bottom padding 
-    
+
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-row-gap: 15px;
@@ -176,10 +176,6 @@ const Container = styled.div`
         height: 280px;
         min-height: 280px;
         max-height: 280px;
-    }
-    @media only screen and (max-width: 510px) {
-        
-        
     }
 `;
 

@@ -30,17 +30,18 @@ const EditProfile = () => {
     const blurState = useSelector((state) => state.blur.value);    
 
     useEffect(() => {
-        if (confirmDeletingAccount) {
-            console.log("account has been deleted");
-            setConfirmDeletingAccount(false);
-            setDeleteBox(false);
-        } 
-        if (refuseDeletingAccount) {
-            console.log("account hasn't been deleted");
-            setRefuseDeletingAccount(false);
-            setDeleteBox(false);
+        if (deleteBox) {
+            if (confirmDeletingAccount) {
+                console.log("account has been deleted");
+                setConfirmDeletingAccount(false);
+                setDeleteBox(false);
+            } else if (refuseDeletingAccount) {
+                console.log("account hasn't been deleted");
+                setRefuseDeletingAccount(false);
+                setDeleteBox(false);
+            }
         }
-    }, [confirmDeletingAccount, refuseDeletingAccount]);
+    }, [deleteBox, confirmDeletingAccount, refuseDeletingAccount]);
 
     if (redirect) {
         return <Redirect to={{pathname: routes.user}}/>

@@ -1,6 +1,7 @@
 export const routes = {
     startPage: '/',
     auth: '/auth',
+    loginTransition: '/transition',
     menu: '/menu', 
     user: '/user', // this will have to be changed to "/:firstName.surName"
     editProfile: '/user/editProfile', 

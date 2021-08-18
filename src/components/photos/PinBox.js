@@ -35,6 +35,7 @@ const PinBox = ({setClose, heightDelimiter}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    /*
     function boxOutsideClick(e){
         if (!ref.current || ref.current.contains(e.target)) {
             return;
@@ -42,6 +43,7 @@ const PinBox = ({setClose, heightDelimiter}) => {
         e.stopPropagation();
         e.preventDefault();
     }
+    */
 
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {

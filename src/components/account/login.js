@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import kompas from "../../assets/kompas.png";
 import Logo from "./svg/logo";
 import "./auth.css";
+import { routes } from "../../miscellanous/Routes";
 import url from "../../url";
 
 const Login = ({ pos, val }) => {
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState("");
-  
+  const [logged, setLogged ] = useState(false);
+
   async function Login() {
     const path = url + "/auth/login";
     await fetch(path, {
@@ -29,13 +32,18 @@ const Login = ({ pos, val }) => {
       .then((data) => {
         localStorage.setItem("Bearer", data.token);
         localStorage.setItem("Login", data.login);
-        window.alert("Logged sucessful");
+        //window.alert("Logged sucessful");
+        setLogged(true);
         // const createHistory = require("history").createBrowserHistory;
         // createHistory().push("/resources");
         // let pathUrl = window.location.href;
         // window.location.href = pathUrl;
       })
-      .catch((er) => null);
+      .catch((er) => setLogged(false));
+  }
+
+  if (logged) {
+    return <Redirect to={{pathname: routes.loginTransition}}/>
   }
 
   return (

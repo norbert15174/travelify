@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import Error from "./Error";
 
 // https://pl.reactjs.org/docs/error-boundaries.html
 
 class ErrorBoundary extends Component {
+
     state = {
-      hasError: false
+      	hasError: false,
+		errorType: "",
     };
   
     // renders error UI
@@ -14,18 +17,17 @@ class ErrorBoundary extends Component {
   
     // logs error
     componentDidCatch(error, info) {
-      console.log(error, info);
+	  	this.setState({errorType: error.message})
     }
   
     render() {
         if (this.state.hasError) {
-            console.log("has error");
-            return <h1>ERROR</h1>
+            return <Error errorType={this.state.errorType}/>
         } else {
-            console.log("no error");
             return this.props.children;
         }
     }
-  }
+          
+}
 
   export default ErrorBoundary;
