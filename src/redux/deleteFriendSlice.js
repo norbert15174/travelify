@@ -17,4 +17,4 @@ export const deleteFriendSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setFriendToDeleteId } = deleteFriendSlice.actions
 
-export default deleteFriendSlice.reducer
+export default deleteFriendSlice.reducer;

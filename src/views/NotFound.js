@@ -3,11 +3,12 @@ import styled from "styled-components";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
 import Button from "../components/trinkets/Button";
 import { useHistory } from "react-router-dom";
+import { errorTypes } from "../miscellanous/Errors";
 
 const NotFound = () => {
   
     const history = useHistory(); // for going back
-    console.error("404 - Page not found");
+    console.error(errorTypes.notFound);
 
     return (
         <Container>

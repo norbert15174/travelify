@@ -102,32 +102,30 @@ const UserPage = ({user, albums}) => {
 
     useEffect(() => {
 
-        if (friendId !== null) {
-            setDeleteFriendBox(true);
-        }
-
-        // when deleting friend was confirmed
-        if (confirm) {
+            if (friendId !== null) {
+                setDeleteFriendBox(true);
+                // when deleting friend was confirmed
+                if (confirm) {
+                    
+                    console.log("Friend with id 25 has been deleted");
+        
+                    // jak użytkownik zostanie prawidłowo usunięty to musimy pamiętać by w sklepie Reduxa ustawić wartość id na null oraz ukryć okno
+        
+                    dispatch(setFriendToDeleteId(null));
+                    setDeleteFriendBox(false);
+                    setConfirm(false);
+                } 
+                // when deleting friend was canceled
+                if (refuse) {
+                    console.log("Deleting friend has been canceled!");
+                    dispatch(setFriendToDeleteId(null));
+                    setDeleteFriendBox(false);
+                    setRefuse(false);
+                }
+            }
             
-            console.log("Friend with id 25 has been deleted");
 
-            // jak użytkownik zostanie prawidłowo usunięty to musimy pamiętać by w sklepie Reduxa ustawić wartość id na null oraz ukryć okno
-
-            dispatch(setFriendToDeleteId(null));
-            setDeleteFriendBox(false);
-            setConfirm(false);
-        } 
-
-        // when deleting friend was canceled
-        if (refuse) {
-            console.log("Deleting friend has been canceled!");
-            dispatch(setFriendToDeleteId(null));
-            setDeleteFriendBox(false);
-            setRefuse(false);
-        }
-
-
-    }, [friendId, confirm, refuse, dispatch]);
+    }, [deleteFriendBox, friendId, confirm, refuse, dispatch]);
 
     // redirects to edit profile page
     const [ redirect, setRedirect ] = useState(false);

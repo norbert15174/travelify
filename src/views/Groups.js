@@ -7,7 +7,7 @@ import { setFriendToDeleteId } from "../redux/deleteFriendSlice";
 import Input from "../components/trinkets/Input";
 import Picker from 'emoji-picker-react';
 import JSEMOJI from 'emoji-js';
-
+//import { errorTypes } from "../miscellanous/Errors";
 
 // UserTemplate adds Menu sidebar
 
@@ -26,7 +26,7 @@ const Groups = () => {
     const [chosenEmoji, setChosenEmoji] = useState(null);
 
     useEffect(() => {
-        throw new Error("Błąd Błąd");
+        //throw new Error(errorTypes.notFound);
     }, []);
 
     const onEmojiClick = (event, emojiObject) => {

@@ -15,6 +15,7 @@ const Carousel = ({photos, photoId, setClose}) => {
     const [ pinBox, setPinBox ] = useState(false); // controls PinBox
     const [ heightDelimiter, setHeightDelimiter ] = useState(null); // displayed photo clientHeight delimits carousel window dimensions
     const [ widthDelimiter, setWidthDelimiter ] = useState(null);
+    const [ windowHeightDelimiter, setWindowHeightDelimiter ] = useState(800); // if your browser will blow up blame lines of code containing this state
     const length = photos.length;
     var prevSrc = "";
 
@@ -30,28 +31,26 @@ const Carousel = ({photos, photoId, setClose}) => {
     window.addEventListener('resize', onWindowResizeHandler);
     
     useEffect(() => {
-        
         if (!blurState) {
             document.body.style.overflow = "hidden";
             document.addEventListener("click", touchHandler, true);
             document.querySelector("#dispImg").addEventListener('load', onImageChangeHandler, true);  
             dispatch(toggleBlur()); 
+            if (window.innerWidth >= 825) {
+                setWindowHeightDelimiter(window.innerHeight - 100);
+            }
         };
-
-        
     // eslint-disable-next-line    
     }, [blurState, dispatch]);
     
     // adjusts carousel size when window is resized
     function onWindowResizeHandler (e) {
         if (document.querySelector("#dispImg") !== null) {
-            if (window.innerWidth) {
-                // there is no need for updating image height on window resize for width lower than 825px because carousel is displayed then in column
-                setHeightDelimiter(document.querySelector("#dispImg").clientHeight);
-                setWidthDelimiter(document.querySelector("#dispImg").clientWidth);
-            } else {
-                window.removeEventListener('resize', onWindowResizeHandler, true);
+            if (window.innerWidth >= 825) {
+                setWindowHeightDelimiter(window.innerHeight - 100);
             }
+            setHeightDelimiter(document.querySelector("#dispImg").clientHeight);
+            setWidthDelimiter(document.querySelector("#dispImg").clientWidth);
         }
     }
 
@@ -62,6 +61,9 @@ const Carousel = ({photos, photoId, setClose}) => {
             prevSrc = e.path[0].src;
             setHeightDelimiter(e.path[0].height); // może to będzie lepsze
             setWidthDelimiter(e.path[0].width);
+            if (window.innerWidth >= 825) {
+                setWindowHeightDelimiter(window.innerHeight - 100);
+            }
         }
     };
 
@@ -94,12 +96,14 @@ const Carousel = ({photos, photoId, setClose}) => {
                         src={photos[current].image}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
+                        windowHeightDelimiter={windowHeightDelimiter}
                     />
                     <SideSection 
                         photoId={photoId} 
-                        setPinBox={setPinBox} 
+                        setPinBox={setPinBox}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
+                        windowHeightDelimiter={windowHeightDelimiter}
                     />
                 </PreviewContainer>
                 <CloseButton
@@ -330,36 +334,37 @@ const Image = styled.img`
 
     object-fit: contain;
 
-    max-height: 800px;
+    max-height: ${({windowHeightDelimiter}) => windowHeightDelimiter + "px"};
     min-height: 500px;
 
     max-width: 1000px;
     width: ${({widthDelimiter}) => widthDelimiter};
+    height: ${({heightDelimiter}) => heightDelimiter};
     min-width: 500px;
 
     @media only screen and (max-width: 1635px) {
         min-width: 450px;
         max-width: 850px;
         min-height: 450px;
-        max-height: 750px;
+        //max-height: 750px;
     }
     @media only screen and (max-width: 1425px) {
         min-width: 350px;
         max-width: 700px; 
         min-height: 350px;
-        max-height: 700px;
+        //max-height: 700px;
     }
     @media only screen and (max-width: 1225px) {
         min-width: 300px;
         max-width: 550px; 
         min-height: 300px;
-        max-height: 650px;
+        //max-height: 650px;
     }
     @media only screen and (max-width: 1025px) {
         min-width: 250px;   
         max-width: 450px; 
         min-height: 250px;  
-        max-height: 550px;
+        //max-height: 550px;
     }
 
     @media only screen and (max-width: 825px) {
@@ -367,6 +372,7 @@ const Image = styled.img`
         max-width: 500px; 
         min-height: 250px; 
         max-height: 500px;
+        // from this point there is no need for windowHeightDelimiter
     }
 
     @media only screen and (max-width: 510px) {
@@ -376,6 +382,7 @@ const Image = styled.img`
         min-height: 150px;
         max-height: 350px;
     }
+
 `;
 
 export default Carousel;
