@@ -1,16 +1,15 @@
 export const routes = {
     startPage: '/',
     auth: '/auth',
-    loginTransition: '/transition',
-    menu: '/menu', 
-    user: '/user', // this will have to be changed to "/:firstName.surName"
-    editProfile: '/user/editProfile', 
+    loginTransition: '/loading',
+    user: '/userProfile/:id', // this will have to be changed to "/user/:firstName.surName"
+    editProfile: '/editProfile', 
     news: '/news',
-    albums: '/albums', // this will have to be changed to "/:firstName.surName/albums"
-    album: "/album/:id", // this will have to be changed to "/:firstName.surName/album"
+    albums: '/albums', // this will have to be changed to "/albums"
+    album: "/album/:id", // this will have to be changed to "/:firstName.surName/album/:id"
     albumCreator: "/albumCreator",
     groups: '/groups',
     search: '/search',
     notFound: '/notFound'
-  };
+};
   

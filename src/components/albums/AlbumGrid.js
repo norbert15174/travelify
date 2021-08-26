@@ -17,12 +17,12 @@ const AlbumSection = ({ sectionType, data }) => {
     });
     const [ redirectToCreator, setRedirectToCreator ] = useState(false);
 
-
+    // redirection to chosen album
     if (redirectToAlbum.active) {
         return <Redirect to={{pathname: `album/${redirectToAlbum.albumId}`, state: {albumId: redirectToAlbum.albumId}}}/>
     }
 
-    // tworzenie albumu
+    // redirection to album creator (CREATION)
     if (redirectToCreator) {
         return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
     }

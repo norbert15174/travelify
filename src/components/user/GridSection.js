@@ -4,9 +4,8 @@ import AlbumThumbnail from "./AlbumThumbnail"
 import FriendThumbnail from "./FriendThumbnail";
 import Input from "../trinkets/Input";
 import "./userScrollbar.css";
-import noResultsIcon from "./assets/noResultsIcon.svg";
 
-const GridSection = ({data, sectionType}) => {
+const GridSection = ({userType, data, sectionType}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -17,8 +16,8 @@ const GridSection = ({data, sectionType}) => {
         setSearchContent(e.target.value);
         setFound(data.filter((item) => {
             return sectionType === "albums" 
-                ? item.title.toLowerCase().includes(searchContent.toLowerCase()) 
-                : item.name.toLowerCase().includes(searchContent.toLowerCase())
+                ? item.name.toLowerCase().includes(searchContent.toLowerCase()) 
+                : (item.name + " " + item.lastName).toLowerCase().includes(searchContent.toLowerCase());
         }));
     };
 
@@ -41,43 +40,53 @@ const GridSection = ({data, sectionType}) => {
             {
                 sectionType === "albums" 
                 ?
-                <AlbumGrid className="scroll">
+                <AlbumGrid squeeze={data.length === 0 ? true : false} className="scroll">
                 {
-                    ( 
+                    data !== null ?
+                    (( 
                         searchContent.length !== 0 && found.length !== 0 ?
-                        found.map((album) => 
-                            <AlbumThumbnail album={album}/>
-                        ) : null
+                        found.map((album) => {   
+                            
+                                return <AlbumThumbnail key={album.id} album={album}/>
+                            
+                        }) : null
                     ) || (
                         data.length !== 0 && searchContent.length === 0 ?
-                        data.map((album) => 
-                            <AlbumThumbnail album={album}/>
-                        ) : null
+                        data.map((album) => {   
+                             
+                                return <AlbumThumbnail key={album.id} album={album}/>
+                            
+                        }) : null
                     ) || (
-                        <NoResults/>
-                    )
+                        <h1>Brak albumów...</h1>
+                    )) : <h1>Brak albumów...</h1>
                 } 
                 </AlbumGrid>
                 :
                 <FriendsGrid className="scroll">
                 {
-                    ( 
+                    data !== null ?
+                    (( 
                         searchContent.length !== 0 && found.length !== 0 ?
                         found.map((friend) => 
-                            <FriendThumbnail 
-                                friend={friend} 
+                            <FriendThumbnail
+                                key={friend.id} 
+                                friend={friend}
+                                userType={userType} 
                             />
                         ) : null
                     ) || (
                         data.length !== 0 && searchContent.length === 0 ?
                         data.map((friend) => 
-                            <FriendThumbnail 
-                                friend={friend} 
+                            <FriendThumbnail
+                                key={friend.id}  
+                                friend={friend}
+                                userType={userType} 
                             />
                         ) : null
                     ) || (
-                        <NoResults/>
-                    )
+                        <h1>Brak znajomych...</h1>
+                    )) : <h1>Brak znajomych...</h1>
                 }
                 </FriendsGrid>
             }
@@ -150,7 +159,8 @@ const AlbumGrid = styled.div`
     display: grid;
     align-content: start;
     grid-template-columns: repeat(2, 550px);
-    grid-auto-rows: 370px;
+    //grid-auto-rows: 370px;
+    grid-auto-rows: ${({squeeze}) => !squeeze ? "370px" : "auto"};
     grid-gap: 30px;
     margin-left: 30px;
     max-height: 1000px;
@@ -164,6 +174,9 @@ const AlbumGrid = styled.div`
         grid-auto-rows: 350px;
         grid-gap: 20px;
         margin-left: 0px;
+        h1 {
+            font-size: 16px;
+        }
     }
     @media only screen and (max-width: 830px) {
         grid-auto-rows: 317px;
@@ -176,6 +189,9 @@ const AlbumGrid = styled.div`
     @media only screen and (max-width: 560px) {
         grid-template-columns: 290px;
         grid-auto-rows: 196px;
+        h1 {
+            font-size: 12px;
+        }
     }
     @media only screen and (max-width: 410px) {
         grid-template-columns: 240px;
@@ -198,6 +214,9 @@ const FriendsGrid = styled.div`
         margin-left: 0px;
         grid-template-columns: repeat(2, 250px);
         grid-gap: 20px;
+        h1 {
+            font-size: 16px;
+        }
     }
     @media only screen and (max-width: 830px) {
         grid-template-columns: repeat(2, 230px);
@@ -210,16 +229,10 @@ const FriendsGrid = styled.div`
         grid-template-columns: 97%;
         grid-auto-rows: auto;
         grid-gap: 10px;
+        h1 {
+            font-size: 12px;
+        }
     }
 `
-const NoResults = styled.div`
-    height: 50vh;
-    background: url(${() => noResultsIcon});
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center;
-    border-radius: 15px;
-    background-color: ${({theme}) => theme.color.lightBackground};
-`;
 
 export default GridSection;

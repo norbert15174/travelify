@@ -1,29 +1,47 @@
 import React from "react";
 import styled from "styled-components";
+import noAccessIcon from "../assets/noAccessIcon.svg";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
 import Button from "../components/trinkets/Button";
 import { useHistory } from "react-router-dom";
+import { errorTypes } from "../miscellanous/Errors";
 
-// If won't be needed delete it later
+const icons = {
+    notFound: pageNotFoundIcon,
+    noAccess: noAccessIcon,
+}
 
-const NotFound = () => {
-  
-    const history = useHistory();
-    
+const errorMessages = {
+    notFound: {
+        h1: "Okrążyliśmy cały świat, ale niestety nie znaleźliśmy miejsca, którego szukasz...",
+        h2: "Szukana strona nie istnieje.",
+        h3: "Wpisany adres jest niepoprawny, strona została usunięta lub przeniesiona.",
+    },
+    noAccess: {
+        h1: "Dotarłeś zbyt daleko i niestety musieliśmy cię zatrzymać...",
+        h2: "Nie masz dostępu do danej strony.",
+        h3: "Nie jesteś zalogowany lub nie masz dostępu do danego zasobu.",
+    }
+}
+
+const Error = ({errorType=errorTypes.notFound}) => {
+
+    const history = useHistory(); // for going back
+
     return (
         <Container>
             <InnerContainer>
-                <Icon/>
+                <Icon icon={errorMessages[errorType] !== undefined ? icons[errorType] : noAccessIcon}/>
                 <InnerInnerContainer>
                     <h1>
-                        Okrążyliśmy cały świat, ale niestety nie znaleźliśmy miejsca, którego szukasz...
+                        {errorMessages[errorType] !== undefined ? errorMessages[errorType].h1 : "Coś się stało, ale nie wiem co :/"}
                     </h1>
                     <div>
                         <h2>
-                            Szukana strona nie istnieje.
+                            {errorMessages[errorType] !== undefined ? errorMessages[errorType].h2 : "Może internet wywaliło?"}
                         </h2>
                         <h3>
-                            Wpisany adres jest niepoprawny, strona została usunięta lub przeniesiona.
+                            {errorMessages[errorType] !== undefined ? errorMessages[errorType].h3 : "A może prądu nie masz?"}
                         </h3>   
                     </div>
                     <GoBackButton onClick={() => history.goBack()}>Wróć</GoBackButton>
@@ -31,7 +49,8 @@ const NotFound = () => {
             </InnerContainer>
         </Container>
     );
-}
+
+};
 
 const Container = styled.div`
     position: fixed;
@@ -82,7 +101,7 @@ const InnerContainer = styled.div`
 `;
 
 const Icon = styled.div`
-    background-image: url(${() => pageNotFoundIcon});
+    background-image: url(${({icon}) => icon});
     width: 450px;
     height: 520px;
     background-repeat: no-repeat;
@@ -206,4 +225,4 @@ const GoBackButton = styled(Button)`
     }
 `;
 
-export default NotFound;
+export default Error;

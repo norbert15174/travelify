@@ -1,215 +1,217 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import kompas from "../../assets/kompas.png";
 import Logo from "./svg/logo";
 import "./auth.css";
 import { routes } from "../../miscellanous/Routes";
-import url from "../../url";
+import { endpoints } from "../../url";
 
 const Login = ({ pos, val }) => {
-  const [password, setPassword] = useState("");
-  const [login, setLogin] = useState("");
-  const [logged, setLogged ] = useState(false);
+	
+	const [password, setPassword] = useState("");
+	const [login, setLogin] = useState("");
+	const [logged, setLogged ] = useState(false);
 
-  async function Login() {
-    const path = url + "/auth/login";
-    await fetch(path, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        login: login,
-        password: password,
-      }),
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        localStorage.setItem("Bearer", data.token);
-        localStorage.setItem("Login", data.login);
-        //window.alert("Logged sucessful");
-        setLogged(true);
-        // const createHistory = require("history").createBrowserHistory;
-        // createHistory().push("/resources");
-        // let pathUrl = window.location.href;
-        // window.location.href = pathUrl;
-      })
-      .catch((er) => setLogged(false));
-  }
+	async function Login() {
+		const path = endpoints.login;
+		await axios({
+			method: "post",
+			url: path,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			data: {
+				login: login,
+				password: password,
+			},
+		})
+		.then((response) => {
+			sessionStorage.setItem("Bearer", response.data.token);
+			sessionStorage.setItem("Login", response.data.login);
+			setLogged(true);
+			// const createHistory = require("history").createBrowserHistory;
+			// createHistory().push("/resources");
+			// let pathUrl = window.location.href;
+			// window.location.href = pathUrl;
+		})
+		.catch((error) => {
+			//console.error("Log failed :(")
+			//console.log(error.response.status);
+			//console.log({...error})
+			setLogged(false)
+		});
+	}
 
-  if (logged) {
-    return <Redirect to={{pathname: routes.loginTransition}}/>
-  }
+	if (logged) {
+		return <Redirect to={{pathname: routes.loginTransition}}/>
+	}
 
-  return (
-    <LoginContainer className="font" pos={pos}>
-      <LeftSide></LeftSide>
-      <RightSide>
-        <Logo></Logo>
-        <Form>
-          <h3 id="head">Witamy</h3>
-          <Label htmlFor="login">Login</Label>
-          <Input
-            type="text"
-            name="login"
-            id="login"
-            onChange={(e) => setLogin(e.target.value)}
-          ></Input>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            type="password"
-            name="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-          ></Input>
-          <Apply onClick={(e) => Login()}>Zaloguj się</Apply>
-          <OrDiv>lub</OrDiv>
-          <CreateAccount onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
-            Dołącz do nas
-          </CreateAccount>
-        </Form>
-      </RightSide>
-    </LoginContainer>
-  );
+	return (
+		<LoginContainer className="font" pos={pos}>
+		<LeftSide></LeftSide>
+		<RightSide>
+			<Logo></Logo>
+			<Form>
+			<h3 id="head">Witamy</h3>
+			<Label htmlFor="login">Login</Label>
+			<Input
+				type="text"
+				name="login"
+				id="login"
+				onChange={(e) => setLogin(e.target.value)}
+			></Input>
+			<Label htmlFor="password">Password</Label>
+			<Input
+				type="password"
+				name="password"
+				id="password"
+				onChange={(e) => setPassword(e.target.value)}
+			></Input>
+			<Apply onClick={(e) => Login()}>Zaloguj się</Apply>
+			<OrDiv>lub</OrDiv>
+			<CreateAccount onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
+				Dołącz do nas
+			</CreateAccount>
+			</Form>
+		</RightSide>
+		</LoginContainer>
+	);
 };
 
 const CreateAccount = styled.div`
-  color: ${({theme}) => theme.color.greyFont};
-  font-weight: ${({theme}) => theme.fontWeight.bold};
-  margin-top: 30px;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
+	color: ${({theme}) => theme.color.greyFont};
+	font-weight: ${({theme}) => theme.fontWeight.bold};
+	margin-top: 30px;
+	font-size: 16px;
+	text-align: center;
+	cursor: pointer;
 `;
 
 const OrDiv = styled.div`
-  font-size: 24px;
-  text-align: center;
-  color: ${({theme}) => theme.color.greyFont};
-  font-weight: ${({theme}) => theme.fontWeight.bold};
-  margin-top: 32px;
-  &:before {
-    height: 1px;
-    display: block;
-    background-color: ${({theme}) => theme.color.darkTurquise};
-    width: 80px;
-    content: " ";
-    position: relative;
-    top: 19px;
-    left: calc(50% - 100px);
-  }
-  &:after {
-    text-align: center;
-    height: 1px;
-    display: block;
-    background-color: ${({theme}) => theme.color.darkTurquise};
-    width: 80px;
-    content: " ";
-    position: relative;
-    left: calc(50% + 21px);
-    top: -14px;
-  }
+	font-size: 24px;
+	text-align: center;
+	color: ${({theme}) => theme.color.greyFont};
+	font-weight: ${({theme}) => theme.fontWeight.bold};
+	margin-top: 32px;
+	&:before {
+		height: 1px;
+		display: block;
+		background-color: ${({theme}) => theme.color.darkTurquise};
+		width: 80px;
+		content: " ";
+		position: relative;
+		top: 19px;
+		left: calc(50% - 100px);
+	}
+	&:after {
+		text-align: center;
+		height: 1px;
+		display: block;
+		background-color: ${({theme}) => theme.color.darkTurquise};
+		width: 80px;
+		content: " ";
+		position: relative;
+		left: calc(50% + 21px);
+		top: -14px;
+	}
 `;
 
 const Apply = styled.div`
-  width: 200px;
-  text-align: center;
-  background-color: ${({theme}) => theme.color.darkTurquise};
-  color: ${({theme}) => theme.color.lightBackground};
-  font-size: 24px;
-  border-radius: 30px;
-  padding-top: 11px;
-  padding-bottom: 11px;
-  position: relative;
-  margin-top: 15px;
-  left: calc(50% - 100px);
-  cursor: pointer;
+	width: 200px;
+	text-align: center;
+	background-color: ${({theme}) => theme.color.darkTurquise};
+	color: ${({theme}) => theme.color.lightBackground};
+	font-size: 24px;
+	border-radius: 30px;
+	padding-top: 11px;
+	padding-bottom: 11px;
+	position: relative;
+	margin-top: 15px;
+	left: calc(50% - 100px);
+	cursor: pointer;
 `;
 
 const Label = styled.label`
-  font-size: 18px;
-  font-weight: ${({theme}) => theme.fontWeight.bold};
-  color: ${({theme}) => theme.color.greyFont};
+	font-size: 18px;
+	font-weight: ${({theme}) => theme.fontWeight.bold};
+	color: ${({theme}) => theme.color.greyFont};
 `;
 
 const LoginContainer = styled.div`
-  transition: transform 1.5s;
-  top: 5vh;
-  left: 5vw;
-  transform: ${({ pos }) =>
-    pos === "yes" ? "translateX(-150vw)" : "translateX(0vw)"};
-  position: absolute;
-  min-height: 800px;
-  width: 90vw;
-  height: 90vh;
-  display: grid;
-  grid-template-columns: 54.66% 43.34%;
-  grid-template-rows: 100%;
-  background-color: ${({theme}) => theme.color.lightBackground};
-  @media only screen and (max-width: 1020px) {
-    grid-template-columns: 100%;
-  }
-  @media only screen and (max-width: 600px) {
-    min-height: 700px;
-  }
+	transition: transform 1.5s;
+	top: 5vh;
+	left: 5vw;
+	transform: ${({ pos }) =>
+		pos === "yes" ? "translateX(-150vw)" : "translateX(0vw)"};
+	position: absolute;
+	min-height: 800px;
+	width: 90vw;
+	height: 90vh;
+	display: grid;
+	grid-template-columns: 54.66% 43.34%;
+	grid-template-rows: 100%;
+	background-color: ${({theme}) => theme.color.lightBackground};
+	@media only screen and (max-width: 1020px) {
+		grid-template-columns: 100%;
+	}
+	@media only screen and (max-width: 600px) {
+		min-height: 700px;
+	}
 
 `;
 const LeftSide = styled.div`
-  height: 100%;
-  position: relative;
-  background: url(${kompas});
-  background-size: 100% 100%;
-  overflow: hidden;
+	height: 100%;
+	position: relative;
+	background: url(${kompas});
+	background-size: 100% 100%;
+	overflow: hidden;
 
-  @media only screen and (max-width: 1020px) {
-    display: none;
-  }
+	@media only screen and (max-width: 1020px) {
+		display: none;
+	}
 `;
 const RightSide = styled.div`
-  width: 100%;
-  background-color: ${({theme}) => theme.color.lightBackground};
-  position: relative;
-  /* @media only screen and (max-height: 800px) {
-    transform: scale(0.9);
-  }
-  @media only screen and (max-width: 1220px) {
-    transform: scale(0.8);
-  }
-  @media only screen and (max-width: 1020px) {
-    transform: scale(1);
-  }
-  @media only screen and (max-width: 600px) {
-    transform: scale(0.7);
-  } */
+	width: 100%;
+	background-color: ${({theme}) => theme.color.lightBackground};
+	position: relative;
+	/* @media only screen and (max-height: 800px) {
+		transform: scale(0.9);
+	}
+	@media only screen and (max-width: 1220px) {
+		transform: scale(0.8);
+	}
+	@media only screen and (max-width: 1020px) {
+		transform: scale(1);
+	}
+	@media only screen and (max-width: 600px) {
+		transform: scale(0.7);
+	} */
 `;
 
 const Form = styled.div`
-  width: 70%;
-  position: relative;
-  left: 15%;
-  padding-bottom: 40px;
+	width: 70%;
+	position: relative;
+	left: 15%;
+	padding-bottom: 40px;
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 10px 10px 10px 10px;
-  font-size: 24px;
-  outline: none;
-  border: none;
-  border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
-  margin-bottom: 20px;
-  margin-top: 10px;
-  background-color: ${({theme}) => theme.color.lightBackground};
+	width: 100%;
+	padding: 10px 10px 10px 10px;
+	font-size: 24px;
+	outline: none;
+	border: none;
+	border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
+	margin-bottom: 20px;
+	margin-top: 10px;
+	background-color: ${({theme}) => theme.color.lightBackground};
 
-  &:hover {
-    border-bottom: 3px solid ${({theme}) => theme.color.darkTurquise};
-    font-weight: 700;
-  }
+	&:hover {
+		border-bottom: 3px solid ${({theme}) => theme.color.darkTurquise};
+		font-weight: 700;
+	}
 `;
 
 export default Login;

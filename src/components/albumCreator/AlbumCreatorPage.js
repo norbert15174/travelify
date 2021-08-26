@@ -20,7 +20,7 @@ const creatorType = {
     edition: "edition",
 }
 
-const AlbumCreator = () => {
+const AlbumCreatorPage = () => {
 
     const [ type, setType ] = useState("");
     const [ albumId, setAlbumId ] = useState(null);
@@ -46,10 +46,8 @@ const AlbumCreator = () => {
         country: "",
         place: "",
     });
-    
-    // there is no need for a state with photos
 
-    // hook for retrieving passed props at Redirect
+    // hook for retrieving albumId if we are editing album (EDITION)
     const location = useLocation();
 
     useEffect(() => {
@@ -59,6 +57,7 @@ const AlbumCreator = () => {
             setType(location.state.creatorType);
         }
         if (creatorType.edition === type) {
+            console.log("albumid" + location.state.albumId)
             setAlbumId(location.state.albumId);
             if (confirmDeletingAlbum) {
                 console.log("Album has been deleted!");
@@ -72,22 +71,19 @@ const AlbumCreator = () => {
             }
         }
         //console.log("creatorType: " + type + " albumId: " + albumId);
-
-
-        
-
-
     }, [albumId, type, location.state.creatorType, location.state.albumId, confirmDeletingAlbum, refuseDeletingAlbum]);
     
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectBackToAlbum, setRedirectBackToAlbum ] = useState(false);
 
+    // when CREATION we aren't passing any state
     if (redirectToAlbums) {
         return <Redirect to={{pathname: routes.albums}}/>
     }
 
+    // when EDITION we are passing albumId to don't lose it
     if (redirectBackToAlbum) {
-        return <Redirect to={{pathname: `album/${albumId}`}}/>
+        return <Redirect to={{pathname: `album/${albumId}`, state: {albumId: albumId}}}/>
     }
 
     // formHandler będzie wykorzystywany tylko przy tworzeniu albumu
@@ -324,4 +320,4 @@ const Line = styled.div`
     border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
 `;
 
-export default AlbumCreator;
+export default AlbumCreatorPage;

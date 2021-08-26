@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import UserTemplate from "../../templates/UserTemplate";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
@@ -19,7 +18,7 @@ import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector } from "react-redux";
 
-const EditProfile = () => {
+const EditProfilePage = ({personalData}) => {
 
     const [ redirect, setRedirect ] = useState(false);
 
@@ -44,69 +43,69 @@ const EditProfile = () => {
     }, [deleteBox, confirmDeletingAccount, refuseDeletingAccount]);
 
     if (redirect) {
-        return <Redirect to={{pathname: routes.user}}/>
+        return <Redirect push to={{pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId"))}}/>
     }
 
     return (
-        <UserTemplate>
-            {deleteBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć swoje konto?"} confirm={setConfirmDeletingAccount} refuse={setRefuseDeletingAccount}/>}
-            <Container blurState={blurState}>
-                <PageHeader>
-                    <Heading>
-                        Edytuj profil
-                    </Heading>
-                    <GoBackButton onClick={() => setRedirect(true)}>
-                        Wróć
-                    </GoBackButton>
-                </PageHeader>
-                <Images>
-                    <PhotoChange type="profile"/>
-                    <PhotoChange type="background"/>
-                </Images>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={personalInfoIcon}/>
-                        <h1>Dane użytkownika</h1>
-                    </Header>
-                    <PersonalInfoForm/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={changePasswordIcon}/>
-                        <h1>Zmiana hasła</h1>
-                    </Header>
-                    <PasswordForm/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={descriptionIcon}/>
-                        <h1>Opis użytkownika</h1>
-                    </Header>
-                    <DescriptionForm type="description"/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={interestsIcon}/>
-                        <h1>Zainteresowania</h1>
-                    </Header>
-                    <DescriptionForm type="about"/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={countriesIcon}/>
-                        <h1>Odwiedzone kraje</h1>
-                    </Header>
-                    <CountriesForm/>
-                </SectionContainer>
-                <SectionContainer>
-                    <Header>
-                        <Icon src={deleteAccountIcon}/>
-                        <h1>Usuń konto</h1>
-                    </Header>
-                    <DeleteAccountForm setDeleteBox={setDeleteBox}/>
-                </SectionContainer>
-            </Container>
-        </UserTemplate>   
+            <>
+                {deleteBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć swoje konto?"} confirm={setConfirmDeletingAccount} refuse={setRefuseDeletingAccount}/>}
+                <Container blurState={blurState}>
+                    <PageHeader>
+                        <Heading>
+                            Edytuj profil
+                        </Heading>
+                        <GoBackButton onClick={() => setRedirect(true)}>
+                            Wróć
+                        </GoBackButton>
+                    </PageHeader>
+                    <Images>
+                        <PhotoChange type="profile" photo={personalData.profilePicture}/>
+                        <PhotoChange type="background" photo={personalData.backgroundPicture}/>
+                    </Images>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={personalInfoIcon}/>
+                            <h1>Dane użytkownika</h1>
+                        </Header>
+                        <PersonalInfoForm personalData={personalData}/>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={changePasswordIcon}/>
+                            <h1>Zmiana hasła</h1>
+                        </Header>
+                        <PasswordForm/>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={descriptionIcon}/>
+                            <h1>Opis użytkownika</h1>
+                        </Header>
+                        <DescriptionForm type="about" data={personalData.personalDescription.about}/>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={interestsIcon}/>
+                            <h1>Zainteresowania</h1>
+                        </Header>
+                        <DescriptionForm type="interest" data={personalData.personalDescription.interest}/>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={countriesIcon}/>
+                            <h1>Odwiedzone kraje</h1>
+                        </Header>
+                        <CountriesForm/>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <Header>
+                            <Icon src={deleteAccountIcon}/>
+                            <h1>Usuń konto</h1>
+                        </Header>
+                        <DeleteAccountForm setDeleteBox={setDeleteBox}/>
+                    </SectionContainer>
+                </Container>
+            </>
     );
 }
 
@@ -194,7 +193,6 @@ const Images = styled.div`
     border-radius: 15px;
     display: grid;
     grid-template-columns: 40% 1fr;
-    grid-template-rows: auto;
     grid-column-gap: 70px;
     padding: 20px 40px;
     @media only screen and (max-width: 1080px) {
@@ -268,4 +266,4 @@ const SectionContainer = styled.div`
     }
 `;
 
-export default EditProfile;
+export default EditProfilePage;
