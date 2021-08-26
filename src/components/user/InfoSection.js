@@ -4,6 +4,8 @@ import aboutIcon from "./assets/aboutIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
 
+// TODO - FIX VISITED COUNTRIES
+
 const InfoSection = ({nationality, about, interests, visitedCountries}) => (
     <Container>
         <Header>
@@ -15,9 +17,7 @@ const InfoSection = ({nationality, about, interests, visitedCountries}) => (
             <h3>Pochodzenie</h3>
         </Title>
         <Text>
-            <Country
-                key={nationality.id} 
-            >
+            <Country key={nationality.id}>
                 <Flag src={nationality.url}/>
                 {nationality.country}
             </Country>
@@ -42,6 +42,14 @@ const InfoSection = ({nationality, about, interests, visitedCountries}) => (
         </Title>
         <VisitedCountries>
             {
+                <Country>
+                    {visitedCountries}
+                     !!! Jak kraje zostaną naprawione to to będzie trzeba poprawić !!!
+                </Country>
+                /*
+
+                TODO - when countries will be repaired this will have to be changed
+
                 visitedCountries.length !== 0 
                 ?
                 visitedCountries.map((country) => (
@@ -51,7 +59,7 @@ const InfoSection = ({nationality, about, interests, visitedCountries}) => (
                         <Flag src={country.url}/>
                         {country.country}
                     </Country>
-                )) : <p>Brak informacji</p>
+                )) : <p>Brak informacji</p>*/
             }
         </VisitedCountries> 
     </Container>

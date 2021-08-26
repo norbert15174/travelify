@@ -3,7 +3,8 @@ import { useLocation, useParams,  } from "react-router-dom";
 import UserTemplate from '../templates/UserTemplate';
 import AlbumInside from "../components/albums/AlbumInside";
 import NotFound from "./NotFound";
-
+//import { endpoints } from "../url";
+import { errorTypes } from "../miscellanous/Errors";
 
 const AlbumDetails = () => {
 
@@ -12,9 +13,12 @@ const AlbumDetails = () => {
     const params = useParams(); // params straight from url 
 
     useEffect(() => {
-
-        if (location.state !== undefined) {
-            setAlbumId(location.state.albumId);
+        if (!sessionStorage.getItem("Login")) {
+            throw new Error(errorTypes.noAccess);
+        } else {
+            if (location.state !== undefined) {
+                setAlbumId(location.state.albumId);
+            }
         }
         
     }, [albumId, location.state, params.id]);

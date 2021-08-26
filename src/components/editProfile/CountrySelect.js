@@ -142,6 +142,7 @@ const CountryFlag = styled.img`
     width: 30px;
     height: 20px;
     margin-right: 10px;
+    background-color: ${({theme}) => theme.color.lightTurquise};
 `;
 
 const ValueContainer = styled.div`

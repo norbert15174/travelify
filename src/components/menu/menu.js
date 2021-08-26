@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { routes } from "../../miscellanous/Routes";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import User from "./UserPhoto";
+import UserProfilePicture from "./UserProfilePicture";
 import Friends from "../messenger/Friends";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import newsIcon from "./svg/newsIcon.svg";
@@ -17,13 +17,15 @@ import { useSelector } from "react-redux";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 import Notifications from "../notifications/Notifications";
 
+
 const Menu = () => {
 	
-	const [menuToExpand, setMenuToExpand] = useState("");
-	const [isVisible, toggleVisibility] = useState(true);
-	const [logoutBox, setLogoutBox] = useState(false);
-	const [confirmLogout, setConfirmLogout] = useState(false);
-	const [refuseLogout, setRefuseLogout] = useState(false);
+	const [ menuToExpand, setMenuToExpand ] = useState("");
+	const [ isVisible, toggleVisibility ] = useState(true);
+	const [ logoutBox, setLogoutBox ] = useState(false);
+	const [ confirmLogout, setConfirmLogout ] = useState(false);
+	const [ refuseLogout, setRefuseLogout ] = useState(false);
+	const [ logoutRedirect, setLogoutRedirect ] = useState(false);
 
 	const blurState = useSelector((state) => state.blur.value);
 
@@ -33,27 +35,35 @@ const Menu = () => {
 	}
 
 	useEffect(() => {
-		if (confirmLogout) {
-			console.log("confirmLogout: true");
-			setConfirmLogout(false);
-			setLogoutBox(false);
+		if (logoutBox) {
+			if (confirmLogout) {
+				console.log("confirmLogout: true");
+				setConfirmLogout(false);
+				setLogoutBox(false);
+				setLogoutRedirect(true);
+			}
+			if (refuseLogout) {
+				console.log("confirmLogout: false");
+				setRefuseLogout(false);
+				setLogoutBox(false);
+			}
 		}
-		if (refuseLogout) {
-			console.log("confirmLogout: false");
-			setRefuseLogout(false);
-			setLogoutBox(false);
-		}
- 	}, [confirmLogout, refuseLogout]);
+ 	}, [confirmLogout, refuseLogout, logoutBox]);
 
+	if ( logoutRedirect ) {
+		sessionStorage.clear();
+		return <Redirect to={{pathname: routes.startPage}}/>
+	}
+// <Link to={{pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId")), state: { loggedUserProfile: true }}}>
   	return (
     	<>
 			{logoutBox && <ConfirmationBox children={"Czy na pewno chcesz się wylogować?"} confirm={setConfirmLogout} refuse={setRefuseLogout}/>}
       		<Container isVisible={isVisible} blurState={blurState}>
         		<ButtonList>
           			<li>
-						<Link to={routes.user}>
+						<Link to={{pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId")), state: { loggedUserProfile: true }}}>
 							<UserProfileContainer>
-								<User/>
+								<UserProfilePicture/>
 							</UserProfileContainer>	
 						</Link>
           			</li>

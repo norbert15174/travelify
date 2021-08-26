@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Error from "./Error";
+import ErrorPage from "./ErrorPage";
 
 // https://pl.reactjs.org/docs/error-boundaries.html
 
@@ -21,8 +21,8 @@ class ErrorBoundary extends Component {
     }
   
     render() {
-        if (this.state.hasError) {
-            return <Error errorType={this.state.errorType}/>
+        if (this.state.hasError && this.state.errorType !== "") {
+            return <ErrorPage errorType={this.state.errorType}/>
         } else {
             return this.props.children;
         }

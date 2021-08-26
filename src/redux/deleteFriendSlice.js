@@ -5,16 +5,19 @@ import { createSlice } from '@reduxjs/toolkit'
 export const deleteFriendSlice = createSlice({
   name: 'deleteFriend',
   initialState: {
-    value: null,
+    idToDelete: null,
   },
   reducers: {
     setFriendToDeleteId: (state, action) => {
-      state.value = action.payload;
+      state.idToDelete = action.payload;
     },
   },
 })
 
-// Action creators are generated for each case reducer function
+// actions
 export const { setFriendToDeleteId } = deleteFriendSlice.actions
+
+// selects
+export const selectFriendToDeleteId = (state) => state.deleteFriend.idToDelete;
 
 export default deleteFriendSlice.reducer;

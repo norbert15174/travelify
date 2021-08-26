@@ -5,7 +5,7 @@ const initialState = {
 }
 
 export const countriesSlice = createSlice({
-    name: 'countries',
+    name: 'countryList',
     initialState: initialState,
     reducers: {
       addCountries: (state, action) => {
@@ -16,5 +16,6 @@ export const countriesSlice = createSlice({
   
   // Action creators are generated for each case reducer function
   export const { addCountries } = countriesSlice.actions
+  export const getCountries = (state) => state.countryList.countries;
   
   export default countriesSlice.reducer

@@ -109,6 +109,7 @@ const StyledFooter = styled.div`
     border-top: 1px solid #808080;
     background-color: ${({theme}) => theme.color.lightBackground};
     padding-bottom: 15px;
+    height: 100%;
    
 `;
 

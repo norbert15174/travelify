@@ -1,15 +1,16 @@
 import React from "react";
 import styled from "styled-components";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 
 const AlbumThumbnail = ({album}) => (
     <>  
         <Container>
-            <MainPhoto src={album.image} alt="albumMainPhoto"/>
+            <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt="albumMainPhoto"/>
             <InfoContainer>
                 <Text>
                     <Header>
-                        <Title>{album.title}</Title>
-                        <Localization>{album.localization}</Localization>
+                        <Title>{album.name}</Title>
+                        <Localization>{album.coordinate.place + ", " + album.coordinate.country.country}</Localization>
                     </Header>
                     <Description>
                         {album.description}
@@ -76,6 +77,7 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
+    color: #000;
     @media only screen and (max-width: 1440px) {
         font-size: 28px;
     }

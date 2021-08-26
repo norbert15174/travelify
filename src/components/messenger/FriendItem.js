@@ -22,6 +22,7 @@ const Icon = styled.img`
   height: 64px;
   border-radius: 100%;
   margin-left: 16px;
+  border: 2px solid ${({theme}) => theme.color.lightTurquise}; 
 `;
 
 const Container = styled.div`

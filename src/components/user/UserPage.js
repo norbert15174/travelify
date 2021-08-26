@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { Redirect } from "react-router-dom";
 import InfoSection from "./InfoSection";
 import GridSection from "./GridSection";
-import { FriendsListArray as albumData } from "./data";
-import profileBackground from "./assets/profileBackground.png";
-import profilePhoto from "./assets/profilePhoto.png"
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import noBackgroundPicture from "../../assets/noBackgroundPicture.png"
 import ButtonIcon from "../trinkets/ButtonIcon";
 import editIcon from "./assets/editIcon.svg";
 import friendsIcon from "./assets/friendsIcon.svg";
@@ -13,14 +13,9 @@ import addFriendIcon from "./assets/addFriendIcon.svg";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector, useDispatch } from "react-redux";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
-import { setFriendToDeleteId } from "../../redux/deleteFriendSlice";
-
-const types = {
-    type: "logged",
-    logged: "logged",
-    friend: "friend",
-    unknown: "unknown"
-}
+import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteFriendSlice";
+import { userTypes } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
 
 const sections = {
     info: "info",
@@ -28,110 +23,170 @@ const sections = {
     friends: "friends",  
 };
 
-const infoData = {
-    nationality: {
-        id: 141,
-        country: "Poland",
-        url: "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
-    },
-    about: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. 
-        Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. 
-        Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae.`,
-    interests: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. 
-        Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. 
-        Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. 
-        Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien.`,
-    visitedCountries: [
-        {
-            id: 141,
-            country: "Poland",
-            url: "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
-        }, 
-        {
-            id: 184,
-            country: "Ukraine",
-            url: "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Ukraine.svg",
-        },
-        {
-            id: 46,
-            country: "Czech Republic",
-            url: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg",
-        },   
-        {
-            id: 159,
-            country: "Slovakia",
-            url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Flag_of_Slovakia.svg",
-        }, 
-        {
-            id: 65,
-            country: "Germany",
-            url: "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg",
-        },
-        {
-            id: 17,
-            country: "Belarus",
-            url: "https://upload.wikimedia.org/wikipedia/commons/8/85/Flag_of_Belarus.svg",
-        },     
-        {
-            id: 102,
-            country: "Lithuania",
-            url: "https://upload.wikimedia.org/wikipedia/commons/1/11/Flag_of_Lithuania.svg",
-        },   
-        {
-            id: 96,
-            country: "Latvia",
-            url: "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Latvia.svg",
-        }
-    ],
-}
-
-const UserPage = ({user, albums}) => {
+const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, userType, userId}) => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
     const [ friendsActive, setFriendsActive ] = useState(false);
 
     const blurState = useSelector((state) => state.blur.value);
-    const friendId = useSelector((state) => state.deleteFriend.value);
+    // id of friend we want to delete
+    const friendId = useSelector(selectFriendToDeleteId);
     const dispatch = useDispatch();   
 
+    // box for deleting friend
     const [ deleteFriendBox, setDeleteFriendBox ] = useState(false);
+    const [ deleteSend, setDeleteSend ] = useState(false);
+    const [ errorAtDeletion, setErrorAtDeletion ] = useState(null);
+    // box for inviting user
+    const [ inviteBox, setInviteBox ] = useState(false);
+    const [ invitationSend, setInvitationSend ] = useState(false);
+    const [ errorAtInvitation, setErrorAtInvitation ] = useState(null);
+
     const [ confirm , setConfirm ] = useState(false);
     const [ refuse, setRefuse ] = useState(false);
 
+
     useEffect(() => {
 
-            if (friendId !== null) {
+            if (friendId !== null && userType === userTypes.logged) {
                 setDeleteFriendBox(true);
                 // when deleting friend was confirmed
                 if (confirm) {
                     
-                    console.log("Friend with id 25 has been deleted");
-        
-                    // jak użytkownik zostanie prawidłowo usunięty to musimy pamiętać by w sklepie Reduxa ustawić wartość id na null oraz ukryć okno
-        
-                    dispatch(setFriendToDeleteId(null));
-                    setDeleteFriendBox(false);
-                    setConfirm(false);
+                    console.log("Friend with id " + friendId + " has been deleted");
+                    deleteFriend(friendId);
+    
+                    //dispatch(setFriendToDeleteId(null));
+                    //setDeleteFriendBox(false);
+                    //setConfirm(false);
                 } 
                 // when deleting friend was canceled
                 if (refuse) {
-                    console.log("Deleting friend has been canceled!");
+                    console.log("Deleting friend with id " + friendId + " has been canceled");
                     dispatch(setFriendToDeleteId(null));
                     setDeleteFriendBox(false);
                     setRefuse(false);
                 }
             }
             
+            if (inviteBox  && userType === userTypes.unknown) {
+                if (confirm) {
+                    console.log("Invitation has been sent to user with id " + userId);
+                    sendInvitation(userId);
+                }
+                if (refuse) {
+                    console.log("Invitation hasn't been sent to user with id " + userId);
+                    setInvitationSend(false);
+                    setInviteBox(false);
+                    setRefuse(false);
+                }
+            }
 
-    }, [deleteFriendBox, friendId, confirm, refuse, dispatch]);
+
+    }, [deleteFriendBox, friendId, confirm, refuse, dispatch, userType, inviteBox, userId]);
+
+    async function sendInvitation(id) {
+        setInvitationSend(false);
+        setErrorAtInvitation(null);
+		await axios({
+			method: "post",
+			url: "http://localhost:8020/friends?id=" + id,
+			headers: {
+				"Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                
+			},
+		})
+		.then((response) => {
+            console.log(response)
+		})
+		.catch((error) => {
+            console.log(error);
+            setErrorAtInvitation(error);
+		})
+        .finally(() => {
+            setInvitationSend(true);
+            setInviteBox(false);
+            setConfirm(false);
+        })
+    }
+
+    async function deleteFriend(id) {
+        setDeleteSend(false);
+        // "http://localhost:8020/friends/delete/"
+        setErrorAtDeletion(null);
+
+        /*
+             await axios.post(url, data, {
+            headers: {
+				"Content-Type": "multipart/form-data",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+        }).
+
+        await axios.post({
+			method: "DELETE",
+			url: `http://localhost:8020/friends/delete/` + id,
+			headers: {
+                //crossdomain: true,
+                //crossorigin: true,
+                //"Access-Control-Allow-Origin": "true",
+                "Access-Control-Allow-Headers": "*",
+                //"Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+				"Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                //withCredentials: true,
+                //credentials: 'same-origin',
+			},
+		})
+        */
+		await axios.delete("http://localhost:8020/friends/delete/" + id, {
+            headers: {
+				
+				//crossdomain: true,
+                //crossorigin: true,
+                //"Access-Control-Allow-Origin": "true",
+                "Access-Control-Allow-Headers": "*",
+                //"Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+				"Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                //withCredentials: true,
+                //credentials: 'same-origin',
+
+			},
+        })
+		.then((response) => {
+            console.log(response)
+		})
+		.catch((error) => {
+            console.log(error);
+            setErrorAtDeletion(error);
+		})
+        .finally(() => {
+            dispatch(setFriendToDeleteId(null));
+            setDeleteFriendBox(false);
+            setConfirm(false);
+        })
+    }
+
+    /*
+         header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, post, get');
+        header("Access-Control-Max-Age", "3600");
+        header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
+        header("Access-Control-Allow-Credentials", "true");
+    */
 
     // redirects to edit profile page
     const [ redirect, setRedirect ] = useState(false);
 
     const sectionsToggle = (sectionName) => {
-        if (sectionName === sections.albums) {
+        /*if (sectionName === sections.albums) {
             setAlbumsActive(true);
             setFriendsActive(false);
         } else if ( sectionName === sections.friends) {
@@ -146,48 +201,67 @@ const UserPage = ({user, albums}) => {
             } else {
                 setInfoActive(!infoActive);
             }
+        }*/
+        if (sectionName === sections.albums) {
+            setAlbumsActive(true);
+            setFriendsActive(false);
+        } else if ( sectionName === sections.friends) {
+            setAlbumsActive(false);
+            setFriendsActive(true);
+        } else if ( sectionName === sections.info) {
+            setInfoActive(!infoActive);
         }
     };
 
     if (redirect) {
-        return <Redirect to={{pathname: routes.editProfile}}/>
+        return <Redirect push to={{pathname: routes.editProfile}}/>
     }
 
     return (
         <>
-            {deleteFriendBox && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
+            {deleteFriendBox && userType === userTypes.logged && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
+            {inviteBox && userType === userTypes.unknown && <ConfirmationBox children={"Czy na pewno chcesz zaprosić daną osobę do znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
             <Container blurState={blurState}>
                 <Header>
                     <Images>
-                        <ProfileBackground src={profileBackground} alt="Profile background"/>
-                        <ProfilePhoto src={profilePhoto} alt="Profile photo"/>
+                        <ProfileBackground src={personalData.backgroundPicture !== undefined ? personalData.backgroundPicture : noBackgroundPicture} alt="Profile background"/>
+                        <ProfilePhoto src={personalData.profilePicture !== undefined ? personalData.profilePicture : noProfilePictureIcon} alt="Profile photo"/>
                     </Images> 
-                    <Name>Jan Nowak</Name>
+                    <Name>{personalData.firstName + " " + personalData.surName}</Name>
                     <Line/>
                     <Options>
                         <Button onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
                         <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
                         <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
                         {
-                            types.type === "logged" && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
+                            userType === userTypes.logged && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                         }
                         {
-                            types.type === "friend" && <UserButton icon={friendsIcon}>Znajomi</UserButton>
+                            userType === userTypes.friend && <UserButton disabled icon={friendsIcon}>Znajomi</UserButton>
                         }
                         {
-                            types.type === "unknown" && <UserButton icon={addFriendIcon}>Dodaj</UserButton>
+                            userType === userTypes.unknown && !invitationSend && <UserButton icon={addFriendIcon} onClick={() => setInviteBox(true)}>Dodaj</UserButton>
+                        }
+                        {
+                            userType === userTypes.unknown && invitationSend && errorAtInvitation === null && <StyledDiv>Zaproszenie wysłane!</StyledDiv>
                         }
                     </Options>
                 </Header>
                 <InnerContainer>
                     {
-                        infoActive && <InfoSection nationality={infoData.nationality} about={infoData.about} interests={infoData.interests} visitedCountries={infoData.visitedCountries}/>
+                        infoActive && 
+                            <InfoSection 
+                                nationality={personalData.nationality} 
+                                about={personalData.personalDescription.about} 
+                                interests={personalData.personalDescription.interest} 
+                                visitedCountries={personalData.personalDescription.visitedCountries}
+                            />
                     }
                     {
-                        albumsActive && <GridSection sectionType={sections.albums} data={albumData.list}/>
+                        albumsActive && <GridSection userType={userType} sectionType={sections.albums} data={individualAlbums}/>
                     }
                     {
-                        friendsActive && <GridSection sectionType={sections.friends} data={albumData.list}/>
+                        friendsActive && <GridSection userType={userType} sectionType={sections.friends} data={friendsList}/>
                     }
                 </InnerContainer>
             </Container>
@@ -225,6 +299,7 @@ const Images = styled.div`
 const ProfileBackground = styled.img`
     height: 250px;
     width: 1300px;
+    object-fit: cover;
     display: block;
     margin: 0 auto;
     border-left: 2px solid ${({theme}) => theme.color.darkTurquise};
@@ -259,6 +334,8 @@ const ProfilePhoto = styled.img`
     width: 208px;
     top: 62%;
     left: 50%;
+    border-radius: 50%;
+    border: 3px solid ${({theme}) => theme.color.lightTurquise};
     transform: translate(-50%, -50%); // (X, Y)
     @media only screen and (max-width: 1080px) {
         width: 150px;
@@ -394,6 +471,38 @@ const UserButton = styled(ButtonIcon)`
     }
     @media only screen and (max-width: 560px) {
         width: 70px;
+        font-size: 8px;
+    }
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
+    }
+`;
+
+const StyledDiv = styled.div`
+    width: 170px;
+    height: 39px;
+    border-radius: 5px;
+    margin: 0;
+    justify-self: end;
+    color: ${({theme}) => theme.color.lightBackground};
+    font-size: 18px;
+    font-weight: ${({theme}) => theme.fontWeight.bold};
+    background-color: ${({theme}) => theme.color.darkTurquise};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media only screen and (max-width: 1080px) {
+        width: 130px;
+        height: 30px;
+        font-size: 14px;  
+    }
+    @media only screen and (max-width: 830px) {
+        width: 110px;
+        height: 20px;
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 80px;
         font-size: 8px;
     }
     &:hover, &:focus {

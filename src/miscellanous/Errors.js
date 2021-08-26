@@ -1,4 +1,5 @@
 export const errorTypes = {
-    notFound: "404 - Page not found",
+    noAccess: "noAccess",
+    notFound: "notFound",
 };
   

@@ -3,11 +3,9 @@ import styled from "styled-components";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 
-const initialDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae. Donec vestibulum, lorem vitae condimentum tristique, neque sem gravida risus, in vulputate sapien est ut sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel. Pellentesque tincidunt vestibulum elit, eget elementum dolor consectetur vitae.`;
-
-const DescriptionForm = () => {
+const DescriptionForm = ({type, data}) => {
     
-    const [ description, setDescription ] = useState(initialDescription);
+    const [ description, setDescription ] = useState(data);
     
     return (
         <>
@@ -15,12 +13,12 @@ const DescriptionForm = () => {
                 <Description 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder={initialDescription}
+                    placeholder={type === "about" ? "Brak opisu użytkownika..." : type === "interest" ? "Brak zainteresowań..." : null}
                 />
             </Container>
             <Buttons>
-                <Submit disabled={description === initialDescription} type="submit" onClick={() => { console.log(description) }}>Zapisz</Submit>
-                <Cancel disabled={description === initialDescription} onClick={() => setDescription(initialDescription)}>Anuluj</Cancel>
+                <Submit disabled={description === data} type="submit" onClick={() => { console.log(description) }}>Zapisz</Submit>
+                <Cancel disabled={description === data} onClick={() => setDescription(data)}>Anuluj</Cancel>
             </Buttons>
         </>
     );

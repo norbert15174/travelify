@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import kompas from "../../assets/kompas.png";
 import "./auth.css";
-import url from "../../url";
+import { endpoints } from "../../url";
 
 const Register = ({ pos, val }) => {
   const [password, setPassword] = useState("");
@@ -15,7 +15,7 @@ const Register = ({ pos, val }) => {
   const [nationality, setNationality] = useState("");
 
   async function AccountRegister() {
-    const path = url + "/auth/register";
+    const path = endpoints.register;
     await fetch(path, {
       method: "post",
       headers: {

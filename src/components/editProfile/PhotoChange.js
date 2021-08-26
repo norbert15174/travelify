@@ -1,59 +1,69 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import profilePhoto from "./assets/profilePhoto.png";
-import profileBackground from "./assets/profileBackground.png";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfilePicture, setBackgroundPicture, selectProfilePicture, selectBackgroundPicture } from "../../redux/userDataSlice";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import noBackgroundPicture from "../../assets/noBackgroundPicture.png";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import "./fileUpload.css"
 import StatusMessage from "../trinkets/StatusMessage";
+import { endpoints } from "../../url";
 
-const PhotoChange = ({type}) => {
+const PhotoChange = ({type, photo}) => {
 
-    const [ sizeError, setSizeError ] = useState(false);
-    const [ typeError, setTypeError ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState("")
     const [ image, setImage ] = useState(undefined);
-    const [ preview, setPreview ] = useState("");
+    const [ preview, setPreview ] = useState(null);
+
+    const [ posting, setPosting ] = useState(false);
+    const [ postFinished, setPostFinished ] = useState(false);
+
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         if (image) {
-            // new image selected
+            // when image is selected it shows up as preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreview(reader.result);
             }
             reader.readAsDataURL(image);
         } else {
-            // no new image selected
-            if ( type === "profile" ) {
-                setPreview(profilePhoto);
-            } else if ( type === "background" ) {
-                setPreview(profileBackground);
+            // done only when image isn't selected
+            if (photo !== undefined) {
+                // when user has a profile photo
+                if (!postFinished) setPreview(photo);
+            } else {
+                // when user doesn't have a photo
+                if ( type === "profile" ) {
+                    setPreview(noProfilePictureIcon);
+                } else if ( type === "background") {
+                    setPreview(noBackgroundPicture);
+                }
             }
         }
-    }, [image, type]);
+    }, [image]);
 
     const onChangeHandler = (e) => {
         let file = e.target.files[0];
-        console.log(file);
-        setTypeError(false);
-        setSizeError(false);
+        setPostFinished(false);
         setErrorMessage("");
         if ( file === undefined ) {
             setImage(undefined);
             document.getElementById(type).value = null;
             return;
         } 
-        if ( file.size >= 5000000) {
-            setSizeError(true);
-            setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+        if ( !file.type.includes("image/jpeg") && !file.type.includes("image/png"))
+        {
+            setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
             document.getElementById(type).value = null;
             return;
         }
-        if ( !file.type.includes("image/jpeg") && !file.type.includes("image/png"))
-        {
-            setTypeError(true);
-            setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+        if ( file.size >= 1000000) {
+            setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
             document.getElementById(type).value = null;
             return;
         }
@@ -61,13 +71,38 @@ const PhotoChange = ({type}) => {
     };
 
     const onSubmit = () => {
-        /* do some magic */
-        console.log(image);
+        uploadPhoto();
+    }
+
+    async function uploadPhoto() {
+        const url = type === "profile" ? endpoints.setUserProfilePicture : endpoints.setUserBackgroundPicture;
+        const data = new FormData();
+        data.append('file', image);
+        setPosting(true);
+        await axios.post(url, data, {
+            headers: {
+				"Content-Type": "multipart/form-data",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+        }).then(({data}) => {
+            if (type === "profile") {
+                dispatch(setProfilePicture(data.profilePicture));
+                setPreview(data.profilePicture);
+            } else if (type === "background") {
+                setPreview(data.backgroundPicture);    
+            }
+		}).catch((error) => {
+            onCancel();
+			setErrorMessage("Coś poszło nie tak...");
+		}).finally(() => {
+            document.getElementById(type).value = null;
+            setPosting(false);
+			setPostFinished(true);
+		});
     }
 
     const onCancel = () => {
-        setTypeError(false);
-        setSizeError(false);
+        setPostFinished(false);
         setErrorMessage("");
         document.getElementById(type).value = null;
         setImage(undefined);
@@ -85,14 +120,20 @@ const PhotoChange = ({type}) => {
                     type="file" 
                     onChange={(e) => onChangeHandler(e)}/>
                 { errorMessage && <ErrorMessage type="error">{errorMessage}</ErrorMessage> }
+                { posting && <InfoMessage>Wysyłanie...</InfoMessage> }
             </Input>
             <Buttons>
-                <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onSubmit}>Zapisz</Submit> 
-                <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onCancel}>Anuluj</Cancel>
+                <Submit disabled={image===undefined || postFinished} onClick={onSubmit}>Zapisz</Submit> 
+                <Cancel disabled={image===undefined || postFinished} onClick={onCancel}>Anuluj</Cancel>
             </Buttons>
         </Container>
     );
 };
+
+/*
+    <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onSubmit}>Zapisz</Submit> 
+        <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onCancel}>Anuluj</Cancel>
+*/
 
 const Header = styled.h1`
     font-size: 48px;
@@ -145,12 +186,13 @@ const Profile = styled.img`
 `;
 
 const Background = styled.img`
-    object-fit: cover;
+    object-fit: contain;
     width: 81.5%;
     height: 215px;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};   
     display: block;
     margin: 20px auto;
+    background-color: ${({theme}) => theme.color.lightTurquise};
     @media only screen and (max-width: 1120px) {
         height: 170px;
     }
@@ -181,6 +223,31 @@ const Input = styled.div`
 `;
 
 const ErrorMessage  = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: -0.8%;
+    @media only screen and (max-width: 1120px) {
+        font-size: 10px;
+        width: 120px;
+    }
+    @media only screen and (max-width: 870px) {
+        padding: 5px;
+        width: 100px;
+    }
+    @media only screen and (max-width: 720px) {
+        font-size: 8px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 80px;
+    }
+    @media only screen and (max-width: 410px) {
+        width: 50px;
+        font-size: 6px;
+    }
+`;
+
+const InfoMessage = styled(StatusMessage)`
     font-size: 12px;
     text-align: center;
     padding: 5px 10px;

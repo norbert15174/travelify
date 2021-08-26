@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useFormik } from "formik";
 import FormInput from "../trinkets/FormInput";
@@ -25,16 +25,17 @@ const options = [
     { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
 ];
 
-const PersonalInfoForm = () => {
+const PersonalInfoForm = ({personalData}) => {
 
-    /*
-    const [ firstname, setFirstname ] = useState("");
-    const [ surname, setSurname ] = useState("");
-    const [ birthdate, setBirthdate ] = useState("");
-    const [ nationality, setNationality ] = useState("");
+    console.log(JSON.parse(localStorage.getItem("countryList")))
+    
+    const [ firstname, setFirstname ] = useState(personalData.firstName);
+    const [ surname, setSurname ] = useState(personalData.surName);
+    const [ birthdate, setBirthdate ] = useState(personalData.birthday);
+    const [ nationality, setNationality ] = useState(personalData.nationality.country);
     const [ email, setEmail ] = useState("");
-    const [ phoneNumber, setPhoneNumber ] = useState("");
-    */
+    const [ phoneNumber, setPhoneNumber ] = useState(personalData.phoneNumber);
+    
 
     /*
         Można jeszcze sprawdzić czy nie chcemy ustawić tego samego co wcześniej
@@ -49,6 +50,8 @@ const PersonalInfoForm = () => {
             errors.firstname = "Imię nie powinno zawierać numerów/znaków specjalnych!";
         } else if ( values.firstname && (/[^a-zA-Z\d]/).test(values.firstname)) {
             errors.firstname = "Imię nie powinno zawierać numerów/znaków specjalnych!";
+        } else if ( values.firstname && values.firstname.length < 2) {
+            errors.firstname = "Imię powinno składać się z minimum 2 znaków!";
         }
 
         // surname - numbers and special signs
@@ -56,6 +59,8 @@ const PersonalInfoForm = () => {
             errors.surname = "Imię nie powinno zawierać cyfr/znaków specjalnych!";
         } else if ( values.surname && (/[^a-zA-Z\d]/).test(values.surname)) {
             errors.surname = "Imię nie powinno zawierać cyfr/znaków specjalnych!";
+        } else if ( values.surname && values.surname.length < 2) {
+            errors.firstname = "Nazwisko powinno składać się z minimum 2 znaków!";
         }
 
         // birthdate - checking if someone isn't from the future
@@ -64,11 +69,6 @@ const PersonalInfoForm = () => {
                 errors.birthdate = "Przybyłeś z przyszłości?";
             }
         } 
-
-        // email - checking email address format
-        if ( values.email && (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))) {
-            errors.email = "Nieprawidłowy adres email!";
-        }
 
         // phoneNumber
         if ( values.phoneNumber && !(/^[0-9]*$/).test(values.phoneNumber)) {
@@ -88,7 +88,6 @@ const PersonalInfoForm = () => {
             surname: "",
             birthdate: "",
             nationality: "",
-            email: "",
             phoneNumber: "",
         },
         validate,
@@ -96,6 +95,11 @@ const PersonalInfoForm = () => {
             //setNationality(values.nationality.value);
             //console.log(nationality);
             alert(JSON.stringify(values, null, 2));
+            setFirstname(values.firstname);
+            setSurname(values.surname);
+            setBirthdate(values.birthdate);
+            setNationality(values.nationality.value);
+            setPhoneNumber(values.phoneNumber);
             actions.setSubmitting(false);
             actions.resetForm();
         },
@@ -109,7 +113,7 @@ const PersonalInfoForm = () => {
                 <LeftContainer>
                         <CurrentContainer>
                             Imię
-                            <CurrentValue>Mikołaj</CurrentValue>
+                            <CurrentValue>{firstname}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="firstname">
                             Nowe imię
@@ -128,7 +132,7 @@ const PersonalInfoForm = () => {
                         </Label>
                         <CurrentContainer>
                             Nazwisko
-                            <CurrentValue>Telec</CurrentValue>
+                            <CurrentValue>{surname}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="surname">
                             Nowe nazwisko
@@ -147,7 +151,7 @@ const PersonalInfoForm = () => {
                         </Label>
                         <CurrentContainer>
                             Data urodzenia
-                            <CurrentValue>07-12-1999</CurrentValue>
+                            <CurrentValue>{birthdate}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="birthdate">
                             Nowa data urodzenia
@@ -163,7 +167,7 @@ const PersonalInfoForm = () => {
                         </Label>
                         <CurrentContainer>
                             Pochodzenie
-                            <CurrentValue>Poland</CurrentValue>
+                            <CurrentValue>{nationality}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="nationality">
                             Nowe pochodzenie
@@ -172,7 +176,7 @@ const PersonalInfoForm = () => {
                                 type="country"
                                 name="nationality" 
                                 id="nationality" 
-                                options={options} 
+                                options={JSON.parse(localStorage.getItem("countryList"))} 
                                 onChange={formik.setFieldValue} 
                                 value={formik.values.nationality}  
                                 onBlur={formik.setFieldTouched}
@@ -181,26 +185,8 @@ const PersonalInfoForm = () => {
                 </LeftContainer>
                 <RightContainer>
                         <CurrentContainer>
-                            Email
-                            <CurrentValue>mikolaj.telec@poczta.com</CurrentValue>
-                        </CurrentContainer>
-                        <Label htmlFor="email">
-                            Nowy email
-                            <FormInput 
-                                name="email" 
-                                id="email" 
-                                value={formik.values.email} 
-                                onChange={formik.handleChange} 
-                                onBlur={formik.handleBlur} 
-                                placeholder="nazwa@poczta.com"
-                                autoComplete="off"
-                                maxLength={30}
-                            />
-                            { formik.touched.email && formik.errors.email ? <ErrorMessage type="error"><p>{formik.errors.email}</p></ErrorMessage> : null}
-                        </Label>
-                        <CurrentContainer>
                             Telefon
-                            <CurrentValue>123456789</CurrentValue>
+                            <CurrentValue>{phoneNumber}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="phoneNumber">
                             Nowy numer
