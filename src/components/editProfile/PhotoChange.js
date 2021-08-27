@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { setProfilePicture, setBackgroundPicture, selectProfilePicture, selectBackgroundPicture } from "../../redux/userDataSlice";
+import { useDispatch } from "react-redux";
+import { setProfilePicture } from "../../redux/userDataSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import noBackgroundPicture from "../../assets/noBackgroundPicture.png";
 import Submit from "../trinkets/Submit";
@@ -129,11 +129,6 @@ const PhotoChange = ({type, photo}) => {
         </Container>
     );
 };
-
-/*
-    <Submit disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onSubmit}>Zapisz</Submit> 
-        <Cancel disabled={sizeError !== true && typeError !== true && image === undefined} onClick={onCancel}>Anuluj</Cancel>
-*/
 
 const Header = styled.h1`
     font-size: 48px;

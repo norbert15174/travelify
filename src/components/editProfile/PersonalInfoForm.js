@@ -1,45 +1,23 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { useFormik } from "formik";
 import FormInput from "../trinkets/FormInput";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import CountrySelect from "../trinkets/Select";
-import StatusMessage from "../trinkets/StatusMessage"
+import StatusMessage from "../trinkets/StatusMessage";
+import { endpoints } from "../../url";
 
-const options = [
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-];
 
 const PersonalInfoForm = ({personalData}) => {
 
-    console.log(JSON.parse(localStorage.getItem("countryList")))
-    
     const [ firstname, setFirstname ] = useState(personalData.firstName);
     const [ surname, setSurname ] = useState(personalData.surName);
     const [ birthdate, setBirthdate ] = useState(personalData.birthday);
-    const [ nationality, setNationality ] = useState(personalData.nationality.country);
-    const [ email, setEmail ] = useState("");
+    const [ nationality, setNationality ] = useState(personalData.nationality);
     const [ phoneNumber, setPhoneNumber ] = useState(personalData.phoneNumber);
-    
-
-    /*
-        Można jeszcze sprawdzić czy nie chcemy ustawić tego samego co wcześniej
-    */
+    const [ errorAtPutting, setErrorAtPutting ] = useState(null);
 
     const validate = (values) => {
 
@@ -48,7 +26,7 @@ const PersonalInfoForm = ({personalData}) => {
         // firstname - numbers and special signs
         if ( values.firstname && (/\d/g).test(values.firstname)) {
             errors.firstname = "Imię nie powinno zawierać numerów/znaków specjalnych!";
-        } else if ( values.firstname && (/[^a-zA-Z\d]/).test(values.firstname)) {
+        } else if ( values.firstname && (/[^a-zA-ZAaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż\s\d]/).test(values.firstname)) {
             errors.firstname = "Imię nie powinno zawierać numerów/znaków specjalnych!";
         } else if ( values.firstname && values.firstname.length < 2) {
             errors.firstname = "Imię powinno składać się z minimum 2 znaków!";
@@ -77,8 +55,6 @@ const PersonalInfoForm = ({personalData}) => {
             errors.phoneNumber = "Numer telefonu powinien składać się z 9 cyfr!";
         }
 
-        console.log(errors);
-
         return errors;
     }
 
@@ -91,21 +67,40 @@ const PersonalInfoForm = ({personalData}) => {
             phoneNumber: "",
         },
         validate,
-        onSubmit: (values, actions) => {
-            //setNationality(values.nationality.value);
-            //console.log(nationality);
-            alert(JSON.stringify(values, null, 2));
-            setFirstname(values.firstname);
-            setSurname(values.surname);
-            setBirthdate(values.birthdate);
-            setNationality(values.nationality.value);
-            setPhoneNumber(values.phoneNumber);
-            actions.setSubmitting(false);
+        onSubmit: async (values, actions) => {
+            setErrorAtPutting(null);
+            await axios({
+                method: "put",
+                url: endpoints.updateUserProfile,
+                data: {
+                    birthday: values.birthdate ? values.birthdate : birthdate,
+                    firstName: values.firstname ? values.firstname : firstname,
+                    surName: values.surname ? values.surname : surname,
+                    nationality: {
+                        id: values.nationality ? values.nationality.id : nationality.id
+                    },
+                    phoneNumber: values.phoneNumber ? values.phoneNumber : phoneNumber,
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                },
+            })
+            .then(({data}) => {                
+                setFirstname(data.firstName);
+                setSurname(data.surName);
+                setBirthdate(data.birthday);
+                setNationality(data.nationality);
+                setPhoneNumber(data.phoneNumber);
+            })
+            .catch((error) => {
+                setErrorAtPutting(error);
+                console.log(error);
+            })
+            //actions.setSubmitting(false); // not needed when onSubmit is async
             actions.resetForm();
         },
     });
-
-    
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -124,7 +119,7 @@ const PersonalInfoForm = ({personalData}) => {
                                 value={formik.values.firstname} 
                                 onChange={formik.handleChange} 
                                 onBlur={formik.handleBlur} 
-                                maxLength={30} 
+                                maxLength={16} 
                                 placeholder="Jan..." 
                                 autoComplete="off"
                             />              
@@ -143,7 +138,7 @@ const PersonalInfoForm = ({personalData}) => {
                                 value={formik.values.surname} 
                                 onChange={formik.handleChange} 
                                 onBlur={formik.handleBlur} 
-                                maxLength={30} 
+                                maxLength={16} 
                                 placeholder="Nowak..."
                                 autoComplete="off"
                             />
@@ -167,7 +162,7 @@ const PersonalInfoForm = ({personalData}) => {
                         </Label>
                         <CurrentContainer>
                             Pochodzenie
-                            <CurrentValue>{nationality}</CurrentValue>
+                            <CurrentValue>{nationality.country}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="nationality">
                             Nowe pochodzenie
@@ -186,7 +181,7 @@ const PersonalInfoForm = ({personalData}) => {
                 <RightContainer>
                         <CurrentContainer>
                             Telefon
-                            <CurrentValue>{phoneNumber}</CurrentValue>
+                            <CurrentValue>{phoneNumber !== 0 ? phoneNumber : "Brak numeru"}</CurrentValue>
                         </CurrentContainer>
                         <Label htmlFor="phoneNumber">
                             Nowy numer
@@ -206,6 +201,8 @@ const PersonalInfoForm = ({personalData}) => {
                 </RightContainer>
             </Container>
             <Buttons>   
+                { errorAtPutting && <ApiErrorMessage type="error">Coś poszło nie tak...</ApiErrorMessage>}
+                { formik.isSubmitting && <ApiInfoMessage>Wysyłanie...</ApiInfoMessage>}
                 <Submit type="submit" disabled={formik.isSubmitting || !formik.dirty}>Zapisz</Submit>
                 <Cancel disabled={formik.isSubmitting || !formik.dirty} onClick={formik.handleReset}>Anuluj</Cancel>
             </Buttons>
@@ -268,22 +265,22 @@ const LeftContainer = styled.div`
 
 const RightContainer = styled.div`
     display: grid;
-    grid-template-rows: repeat(2, 80px);
+    grid-template-rows: repeat(1, 80px);
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 10px;
     grid-row-gap: 20px;
     @media only screen and (max-width: 1360px) {
         grid-template-columns: none;
-        grid-template-rows: repeat(4, 60px);
+        grid-template-rows: repeat(2, 60px);
         grid-column-gap: 0px;
         grid-row-gap: 15px;
     }
     @media only screen and (max-width: 870px) {
-        grid-template-rows: repeat(4, 50px);
+        grid-template-rows: repeat(2, 50px);
         grid-row-gap: 10px;
     }
     @media only screen and (max-width: 560px) {
-        grid-template-rows: repeat(4, 35px);
+        grid-template-rows: repeat(2, 35px);
     }
     @media only screen and (max-width: 460px) {
         margin-top: 40px;
@@ -334,8 +331,6 @@ const Buttons = styled.div`
     margin-right: 0px;
 `;
 
-
-
 const ErrorMessage = styled(StatusMessage)`
     font-size: 12px;
     text-align: center;
@@ -371,6 +366,78 @@ const ErrorMessage = styled(StatusMessage)`
         margin: -25px 0px 0 275px;
         font-size: 6px;
         width: 80px;
+    }
+`;
+
+const ApiErrorMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    padding-top: 8px;
+    margin-right: 15px;
+    width: 150px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+        padding-top: 6px;
+        width: 120px;
+    }
+    @media only screen and (max-width: 745px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 600px) {
+        position: absolute;
+        bottom: -45%;
+        right: 3%;
+        width: 110px;
+    }
+    @media only screen and (max-width: 560px) {
+        position: absolute;
+        bottom: -19%;
+        right: 2%;
+        width: 90px;
+    }
+    @media only screen and (max-width: 480px) {
+        bottom: -18%;
+    }
+    @media only screen and (max-width: 460px) {
+        bottom: -44%;
+        right: 34%;
+    }
+`;
+
+const ApiInfoMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    padding-top: 8px;
+    margin-right: 15px;
+    width: 150px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+        padding-top: 6px;
+        width: 120px;
+    }
+    @media only screen and (max-width: 745px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 600px) {
+        position: absolute;
+        bottom: -45%;
+        right: 3%;
+        width: 110px;
+    }
+    @media only screen and (max-width: 560px) {
+        position: absolute;
+        bottom: -19%;
+        right: 2%;
+        width: 90px;
+    }
+    @media only screen and (max-width: 480px) {
+        bottom: -18%;
+    }
+    @media only screen and (max-width: 460px) {
+        bottom: -44%;
+        right: 34%;
     }
 `;
 

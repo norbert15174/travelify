@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { useFormik } from "formik";
 import StatusMessage from "../trinkets/StatusMessage";
 import FormInput from "../trinkets/FormInput";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
+import { endpoints } from "../../url";
+
 
 const PasswordForm = () => {
-    /*
-    const [ actualPassword, setActualPassword ] = useState("");
-    const [ newPassword, setNewPassword ] = useState("");
-    const [ repeatedPassword, setRepeatedPassword ] = useState("");
-    */
+
+    const [ errorAtPutting, setErrorAtPutting ] = useState(null);
+    const [ success, setSuccess ] = useState(false);
+    const [ wrongOldPassword, setWrongOldPassword ] = useState(false);
 
     const validate = (values) => {
 
@@ -19,8 +21,6 @@ const PasswordForm = () => {
 
         if (!values.actualPassword) {
             errors.actualPassword = "Wymagane!";
-        } else if ( values.actualPassword !== "Haslo") {
-            errors.actualPassword = "Hasło jest nieprawidłowe!";
         }
 
         if (!values.newPassword) {
@@ -39,8 +39,6 @@ const PasswordForm = () => {
             errors.repeatPassword = "Podane hasło nie jest takie samo!";
         } 
 
-        // czy newPassword i repeatPassword są takie same?
-
         return errors;
 
     }
@@ -52,9 +50,40 @@ const PasswordForm = () => {
             repeatPassword: "",
         },
         validate,
-        onSubmit: (values, actions) => {
-            alert(JSON.stringify(values, null, 2));
-            actions.setSubmitting(false);
+        onSubmit: async (values, actions) => {
+            setErrorAtPutting(null);
+            setWrongOldPassword(false);
+            setSuccess(false);
+            await axios({
+                method: "put",
+                url: endpoints.changePassword,
+                data: {
+                    oldPassword: values.actualPassword,
+                    newPassword: values.newPassword,
+                },
+                headers: {
+                    "Access-Control-Allow-Headers": "*",
+                    //"Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                    withCredentials: true,
+                    //credentials: 'same-origin',
+                    
+                },
+            })
+            .then((response) => {                
+                setSuccess(true);
+            })
+            .catch((error) => {
+                if (error.response.status === 403) {
+                    setWrongOldPassword(true);
+                } else {
+                    setErrorAtPutting(error);
+                }
+            })
+            //actions.setSubmitting(false); // not needed when onSubmit is async
             actions.resetForm();
         }
     });
@@ -107,6 +136,10 @@ const PasswordForm = () => {
                 { formik.touched.repeatPassword && formik.errors.repeatPassword ? <ErrorMessage type="error">{formik.errors.repeatPassword}</ErrorMessage> : <div/>}
             </Container>
             <Buttons>
+                { errorAtPutting && <ApiErrorMessage type="error">Coś poszło nie tak...</ApiErrorMessage>}
+                { wrongOldPassword && <ApiErrorMessage type="error">Bieżące hasło, które podałeś jest złe. Spróbuj ponownie!</ApiErrorMessage>}
+                { formik.isSubmitting && <ApiInfoMessage>Wysyłanie...</ApiInfoMessage>}
+                { success && <ApiInfoMessage>Hasło zostało zmienione!</ApiInfoMessage>}
                 <Submit type="submit" disabled={formik.isSubmitting || !formik.dirty} >Zapisz</Submit>
                 <Cancel disabled={formik.isSubmitting || !formik.dirty} onClick={formik.handleReset}>Anuluj</Cancel>
             </Buttons>
@@ -181,6 +214,48 @@ const Buttons = styled.div`
     margin-right: 0px;
     @media only screen and (max-width: 670px) {
         margin-top: 10px;
+    }
+`;
+
+
+const ApiErrorMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 10px;
+    margin-right: 15px;
+    width: auto;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 1080px) {
+        width: 150px;
+    }
+    @media only screen and (max-width: 810px) {
+        width: 120px;
+    }
+    @media only screen and (max-width: 660px) {
+        width: auto;
+    }
+    @media only screen and (max-width: 560px) {
+        padding: 2.5px 5px;
+        font-size: 8px;
+        
+    }
+`;
+
+const ApiInfoMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 10px;
+    margin-right: 15px;
+    width: auto;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+    }
+    @media only screen and (max-width: 560px) {
+        padding: 2.5px 5px;
+        font-size: 8px;
+        
     }
 `;
 
