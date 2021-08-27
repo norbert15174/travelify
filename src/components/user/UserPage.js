@@ -23,7 +23,7 @@ const sections = {
     friends: "friends",  
 };
 
-const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, userType, userId}) => {
+const UserPage = ({personalData, individualAlbums, friendsList, userType, userId}) => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
@@ -46,17 +46,13 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
     const [ confirm , setConfirm ] = useState(false);
     const [ refuse, setRefuse ] = useState(false);
 
-
     useEffect(() => {
-
             if (friendId !== null && userType === userTypes.logged) {
                 setDeleteFriendBox(true);
                 // when deleting friend was confirmed
                 if (confirm) {
-                    
                     console.log("Friend with id " + friendId + " has been deleted");
                     deleteFriend(friendId);
-    
                     //dispatch(setFriendToDeleteId(null));
                     //setDeleteFriendBox(false);
                     //setConfirm(false);
@@ -95,7 +91,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
 			headers: {
 				"Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-                
 			},
 		})
 		.then((response) => {
@@ -114,7 +109,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
 
     async function deleteFriend(id) {
         setDeleteSend(false);
-        // "http://localhost:8020/friends/delete/"
         setErrorAtDeletion(null);
 
         /*
@@ -145,7 +139,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
         */
 		await axios.delete("http://localhost:8020/friends/delete/" + id, {
             headers: {
-				
 				//crossdomain: true,
                 //crossorigin: true,
                 //"Access-Control-Allow-Origin": "true",
@@ -157,7 +150,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
                 //withCredentials: true,
                 //credentials: 'same-origin',
-
 			},
         })
 		.then((response) => {
@@ -173,14 +165,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
             setConfirm(false);
         })
     }
-
-    /*
-         header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, post, get');
-        header("Access-Control-Max-Age", "3600");
-        header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
-        header("Access-Control-Allow-Credentials", "true");
-    */
 
     // redirects to edit profile page
     const [ redirect, setRedirect ] = useState(false);
@@ -253,7 +237,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
                             <InfoSection 
                                 nationality={personalData.nationality} 
                                 about={personalData.personalDescription.about} 
-                                interests={personalData.personalDescription.interest} 
+                                interest={personalData.personalDescription.interest} 
                                 visitedCountries={personalData.personalDescription.visitedCountries}
                             />
                     }

@@ -95,7 +95,7 @@ const EditProfilePage = ({personalData}) => {
                             <Icon src={countriesIcon}/>
                             <h1>Odwiedzone kraje</h1>
                         </Header>
-                        <CountriesForm/>
+                        <CountriesForm visitedCountries={personalData.personalDescription.visitedCountries}/>
                     </SectionContainer>
                     <SectionContainer>
                         <Header>

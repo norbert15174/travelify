@@ -1,73 +1,126 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styled from "styled-components";
+import Submit from "../trinkets/Submit";
+import Cancel from "../trinkets/Cancel";
 import closeIcon from "./assets/closeIcon.svg";
 import CountrySelect from "../trinkets/Select";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import addIcon from "./assets/addIcon.svg";
 import StatusMessage from "../trinkets/StatusMessage";
+import { getCountryData } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
 
-const options = [
-    { value: 'Poland', label: 'Poland', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Germany', label: 'Germany', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Russia', label: 'Russia', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Slovakia', label: 'Slovakia', icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/640px-Flag_of_Poland.svg.png", },
-    { value: 'Czech', label: 'Czech', icon: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png", },
-    { value: 'Belarus', label: 'Belarus', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Ukraine', label: 'Ukraine', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Lithuania', label: 'Lithuania', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Sweden', label: 'Sweden', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-    { value: 'Norway', label: 'Norway', icon: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg" },
-]
-
-const CountriesForm = () => {
+const CountriesForm = ({visitedCountries}) => {
 
     const [ selectedCountries, setSelectedCountries ] = useState([]);
+    const [ initialCountries, setInitialCountries ] = useState([]);
     const [ country , setCountry ] = useState([]);
+    const [ isDirty, setIsDirty ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState("");
+    const [ errorAtPutting, setErrorAtPutting ] = useState(null);
+    const [ putting, setPutting ] = useState(false);
+
+    useEffect(() => {
+        setInitialCountries(getCountryData(visitedCountries));
+        setCountry(getCountryData(visitedCountries));
+    }, []);
 
     const addCountry = () => {
-        console.log(selectedCountries);
+        setIsDirty(true);
         selectedCountries.map((selectedCountry) => {
             setErrorMessage("");
             // SUPER AWESOME METHOD OF FINDING IF COUNTRY ISN'T ALREADY ADDED
-            if (Array.from(country).find((element) => element.name === selectedCountry.value)) { 
+            if (Array.from(country).find((element) => element.country === selectedCountry.country)) {
+                setIsDirty(false); 
                 setErrorMessage("Kraj, który próbowałeś dodać jest już dodany.");
                 return null;
             }
-            setCountry((prevState) => [...prevState,{name: selectedCountry.value, icon: selectedCountry.icon}]);
+            setCountry((prevState) => [...prevState, selectedCountry]);
             return "";
         })
-        console.log(country);
         setSelectedCountries([]);
     };
 
     const deleteCountry = (countryToDelete) => {
-        setCountry(() => country.filter(item => item.name !== countryToDelete));
-        console.log(country);
+        setIsDirty(true);
+        setCountry(() => country.filter(item => item.country !== countryToDelete));
+    };
+
+    const onSubmit = () => {
+        let array = [];
+        country.forEach(element => {
+            array.push(element.country);
+        });
+        let dataToSend = array.join(",");
+        updateVisitedCountries(dataToSend);
+    }
+
+    async function updateVisitedCountries(data) {
+        setErrorAtPutting(null);
+        setPutting(true);
+        await axios({
+            method: "put",
+                url: endpoints.updateUserProfile,
+                data: {
+                    personalDescription: {
+                        visitedCountries: data,
+                    }
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                },
+        })
+        .then(({data}) => {                
+            let parsedData = getCountryData(data.personalDescription.visitedCountries);
+            setInitialCountries(parsedData);
+            setCountry(parsedData);
+        })
+        .catch((error) => {
+            setErrorAtPutting(error);
+        })
+        .finally(() => {
+            setPutting(false);
+            setIsDirty(false);
+        });
+    }
+
+    const clearForm = () => {
+        setCountry(initialCountries);
+        setIsDirty(false);
     };
 
     return (
-        <Container>
-            <AddSection>
-                <CountrySelect type="country" isMulti={true} options={options} value={selectedCountries} setState={setSelectedCountries}/>
-                <AddButton icon={addIcon} onClick={addCountry}/>
-            </AddSection>
-            {errorMessage.length !== 0 && selectedCountries && <ErrorMessage type="error">{errorMessage}</ErrorMessage>}
-            <h3>Aktualnie dodane:</h3>
-            <VisitedCountries>
-                {
-                    country.length !== 0 ?
-                    (
-                        country.map((country) => (
-                            <Country icon={country.icon} key={country.name}>
-                                {country.name}
-                                <DeleteIcon onClick={() => deleteCountry(country.name)} src={closeIcon}/>
-                            </Country>
-                        ))
-                    ) : <Placeholder>Wybierz kraj, który odwiedziłeś...</Placeholder>
-                }                
-            </VisitedCountries>
-        </Container>
+        <>
+            <Container>
+                <AddSection>
+                    <CountrySelect type="country" isMulti={true} options={JSON.parse(localStorage.getItem("countryList"))} value={selectedCountries} setState={setSelectedCountries}/>
+                    <AddButton disabled={selectedCountries.length === 0 ? true : false} icon={addIcon} onClick={addCountry}/>
+                </AddSection>
+                {errorMessage.length !== 0 && selectedCountries && <ErrorMessage type="error">{errorMessage}</ErrorMessage>}
+                <h3>Aktualnie dodane:</h3>
+                <VisitedCountries>
+                    {
+                        country.length !== 0 ?
+                        (
+                            country.map((item) => (
+                                <Country icon={item.url} key={item.id}>
+                                    {item.country}
+                                    <DeleteIcon onClick={() => deleteCountry(item.country)} src={closeIcon}/>
+                                </Country>
+                            ))
+                        ) : <Placeholder>Wybierz kraj, który odwiedziłeś...</Placeholder>
+                    }                
+                </VisitedCountries>
+                <Buttons>   
+                    { errorAtPutting && <ApiErrorMessage type="error">Coś poszło nie tak...</ApiErrorMessage>}
+                    { putting && <ApiInfoMessage>Wysyłanie...</ApiInfoMessage>}
+                    <Submit disabled={!isDirty} onClick={onSubmit}>Zapisz</Submit>
+                    <Cancel disabled={!isDirty} onClick={clearForm}>Anuluj</Cancel>
+                </Buttons>
+            </Container>
+        </>
     );
 
 }
@@ -161,5 +214,65 @@ const Placeholder = styled.p`
     font-size: 12px;
     opacity: 0.8;
 `;
+
+const Buttons = styled.div`
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    justify-content: flex-end;
+    margin-right: 0px;
+`;
+
+const ApiErrorMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    padding-top: 7px;
+    margin-right: 15px;
+    width: 150px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+        padding-top: 6px;
+        width: 120px;
+    }
+    @media only screen and (max-width: 745px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 600px) {
+        width: 110px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 70px;
+        font-size: 8px;
+        padding: 2.5px 5px;
+    }
+`;
+
+const ApiInfoMessage = styled(StatusMessage)`
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    padding-top: 7px;
+    margin-right: 15px;
+    width: 150px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 10px;
+        padding-top: 6px;
+        width: 120px;
+    }
+    @media only screen and (max-width: 745px) {
+        width: 100px;
+    }
+    @media only screen and (max-width: 600px) {
+        width: 110px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 70px;
+        font-size: 8px;
+        padding: 2.5px 5px;
+    }
+`;
+
+
 
 export default CountriesForm;

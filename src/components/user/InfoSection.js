@@ -1,69 +1,74 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import homeIcon from "./assets/homeIcon.svg";
 import aboutIcon from "./assets/aboutIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
+import { getCountryData } from "../../miscellanous/Utils";
 
 // TODO - FIX VISITED COUNTRIES
 
-const InfoSection = ({nationality, about, interests, visitedCountries}) => (
-    <Container>
-        <Header>
-            <h1>Informacje o użytkowniku</h1>
-            <Line/>
-        </Header>
-        <Title>
-            <Icon src={homeIcon}/>
-            <h3>Pochodzenie</h3>
-        </Title>
-        <Text>
-            <Country key={nationality.id}>
-                <Flag src={nationality.url}/>
-                {nationality.country}
-            </Country>
-        </Text>
-        <Title>
-            <Icon src={aboutIcon}/>
-            <h3>O mnie</h3>
-        </Title>
-        <Text>
-            {about !== undefined ? about : <p>Brak informacji</p>}
-        </Text>
-        <Title>
-            <Icon src={interestsIcon}/>
-            <h3>Zainteresowania</h3>
-        </Title>
-        <Text>
-            {interests !== undefined ? interests : <p>Brak informacji</p>}
-        </Text>
-        <Title>
-            <Icon src={visitedIcon}/>
-            <h3>Odwiedzone kraje</h3>
-        </Title>
-        <VisitedCountries>
-            {
-                <Country>
-                    {visitedCountries}
-                     !!! Jak kraje zostaną naprawione to to będzie trzeba poprawić !!!
+const InfoSection = ({nationality, about, interest, visitedCountries}) => {
+    
+    const [ mappedVisitedCountries, setMappedVisitedCountries ] = useState(null);
+
+    useEffect(() => {
+        if (visitedCountries !== undefined) {
+            setMappedVisitedCountries(getCountryData(visitedCountries));
+        }
+    }, []);
+    
+    return (
+        <Container>
+            <Header>
+                <h1>Informacje o użytkowniku</h1>
+                <Line/>
+            </Header>
+            <Title>
+                <Icon src={homeIcon}/>
+                <h3>Pochodzenie</h3>
+            </Title>
+            <Text>
+                <Country key={nationality.id}>
+                    <Flag src={nationality.url}/>
+                    {nationality.country}
                 </Country>
-                /*
-
-                TODO - when countries will be repaired this will have to be changed
-
-                visitedCountries.length !== 0 
-                ?
-                visitedCountries.map((country) => (
-                    <Country
-                        key={country.id} 
-                    >
-                        <Flag src={country.url}/>
-                        {country.country}
-                    </Country>
-                )) : <p>Brak informacji</p>*/
-            }
-        </VisitedCountries> 
-    </Container>
-);
+            </Text>
+            <Title>
+                <Icon src={aboutIcon}/>
+                <h3>O mnie</h3>
+            </Title>
+            <Text>
+                {about !== undefined ? (about !== "" ? about : <p>Brak zawartości</p>) : <p>Brak zawartości</p>}
+            </Text>
+            <Title>
+                <Icon src={interestsIcon}/>
+                <h3>Zainteresowania</h3>
+            </Title>
+            <Text>
+                {interest !== undefined  ? (interest !== "" ? interest : <p>Brak zawartości</p>) : <p>Brak zawartości</p>}
+            </Text>
+            <Title>
+                <Icon src={visitedIcon}/>
+                <h3>Odwiedzone kraje</h3>
+            </Title>
+            <VisitedCountries>
+                {
+                    visitedCountries !== undefined && mappedVisitedCountries !== null && mappedVisitedCountries.length !== 0
+                    ?
+                    mappedVisitedCountries.map((country) => (
+                        <Country
+                            key={country.id} 
+                        >
+                            <Flag src={country.url}/>
+                            {country.country}
+                        </Country>
+                    )) : <p>Brak zawartości</p>
+                }
+            </VisitedCountries> 
+        </Container>
+    );
+};
 
 const Container = styled.div`
     border-radius: 15px;
