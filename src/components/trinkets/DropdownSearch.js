@@ -116,8 +116,10 @@ const DropdownSearch = ({options, onChange, onBlur, value}) => {
             components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
         />
     );
-    
+  
 };
+
+/// Jakby w components zrobić if'a do sprawdzania czy albumy czy użytkownik
 
 const StyledSelect = styled(Select)`
     min-width: 50%;

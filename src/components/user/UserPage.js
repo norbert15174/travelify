@@ -214,9 +214,9 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
                     <Name>{personalData.firstName + " " + personalData.surName}</Name>
                     <Line/>
                     <Options>
-                        <Button onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
-                        <Button onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
-                        <Button onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
+                        <Button active={infoActive ? true : false} onClick={() => sectionsToggle(sections.info)}>Informacje o użytkowniku</Button>
+                        <Button active={albumsActive ? true : false} onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
+                        <Button active={friendsActive ? true : false} onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
                         {
                             userType === userTypes.logged && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                         }
@@ -419,6 +419,8 @@ const Button = styled.div`
     text-align: center;
     padding: 5px;
     border-radius: 5px;
+    color: ${({active, theme}) => active ? "#000" : theme.color.greyFont};
+    font-weight: ${({active, theme}) => active ? theme.fontWeight.bold : theme.fontWeight.medium};
     &:hover {
         background-color: rgba(18, 191, 206, 0.4);
         -webkit-transition: all 0.15s ease-in-out;
@@ -427,7 +429,6 @@ const Button = styled.div`
         transition: all 0.15s ease-in-out;
     }
 `;
-
 
 const UserButton = styled(ButtonIcon)`
     width: 160px;

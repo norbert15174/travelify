@@ -11,6 +11,20 @@ export const userTypes = {
     unknown: "unknown"
 }
 
+export const albumTypes = {
+    public: "public",
+    private: "private",
+    shared: "shared",
+}
+
+export const albumRights = {
+    owner: "owner",
+    visitor: "visitor", // only when public album
+    sharedPerson: "sharedPerson",
+}
+
+
+
 /*
     Function for parsing string with country names to array with objects.
 */

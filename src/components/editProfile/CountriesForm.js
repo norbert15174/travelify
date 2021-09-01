@@ -22,8 +22,10 @@ const CountriesForm = ({visitedCountries}) => {
     const [ putting, setPutting ] = useState(false);
 
     useEffect(() => {
-        setInitialCountries(getCountryData(visitedCountries));
-        setCountry(getCountryData(visitedCountries));
+        if (visitedCountries !== undefined) {
+            setInitialCountries(getCountryData(visitedCountries));
+            setCountry(getCountryData(visitedCountries));
+        }
     }, []);
 
     const addCountry = () => {
@@ -32,7 +34,6 @@ const CountriesForm = ({visitedCountries}) => {
             setErrorMessage("");
             // SUPER AWESOME METHOD OF FINDING IF COUNTRY ISN'T ALREADY ADDED
             if (Array.from(country).find((element) => element.country === selectedCountry.country)) {
-                setIsDirty(false); 
                 setErrorMessage("Kraj, który próbowałeś dodać jest już dodany.");
                 return null;
             }
@@ -105,7 +106,8 @@ const CountriesForm = ({visitedCountries}) => {
                         country.length !== 0 ?
                         (
                             country.map((item) => (
-                                <Country icon={item.url} key={item.id}>
+                                <Country key={item.id}>
+                                    <Flag src={item.url} alt="Flag"/>
                                     {item.country}
                                     <DeleteIcon onClick={() => deleteCountry(item.country)} src={closeIcon}/>
                                 </Country>
@@ -153,6 +155,7 @@ const VisitedCountries = styled.div`
 `;
 
 const Country = styled.div`
+/*
     display: inline-block;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     background-color: #E0E5E0;
@@ -176,6 +179,31 @@ const Country = styled.div`
     @media only screen and (max-width: 560px) {
         font-size: 10px;
     }
+*/  
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    color: #000;
+    font-size: 16px;
+    padding: 5px 10px 5px 0px;
+    margin: 5px 10px 0px 0px;
+    flex-shrink: 1;
+    @media only screen and (max-width: 870px) {
+        font-size: 12px;
+        padding: 5px 10px 5px 0px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 10px;
+    }
+`;
+
+const Flag = styled.img`
+    width: auto;
+    height: 15px;
+    margin: 0px 10px;
 `;
 
 const DeleteIcon = styled.img`

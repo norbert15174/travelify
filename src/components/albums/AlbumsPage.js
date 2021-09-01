@@ -1,25 +1,79 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FriendsListArray as albums } from "./data";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import AlbumSearch from "../trinkets/DropdownSearch";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import privateAlbumIcon from "./assets/privateAlbumIcon.svg";
 import sharedAlbumIcon from "./assets/sharedAlbumIcon.svg";
 import AlbumGrid from "./AlbumGrid";
 
-
-const types = {
+const albumTypes = {
     public: "public",
     private: "private",
     shared: "shared",
 }
 
-const AlbumsPage = () => {
+const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
 
-    const [albumsType, setAlbumsType] = useState(types.public);
+    const [ albumsType, setAlbumsType ] = useState(albumTypes.public);
+    const [ searchList, setSearchList ] = useState(null);
     const blurState = useSelector((state) => state.blur.value); 
+    const location = useLocation();
 
+    useEffect(() => {
+        //mapAlbumsToSearchCallback();
+        if (location.state !== undefined) {
+            setAlbumsType(location.state.albumType);
+        }
+    }, []);
+
+    const mapAlbumsToSearchCallback = useCallback(
+        () => {
+            mapAlbumsToSearch();
+        },
+        [privateAlbums, publicAlbums, sharedAlbums]
+    )
+
+    const mapAlbumsToSearch = () => {
+        let searchList = {
+            public: [],
+            private: [],
+            shared: [],
+        };
+        for (let i = 0; i < privateAlbums.length; i++) {
+            searchList.private.push({
+                value: privateAlbums[i].name,
+                label: privateAlbums[i].name,
+                mainPhoto: privateAlbums[i].mainPhoto !== undefined ? privateAlbums[i].mainPhoto : noAlbumPhotoIcon,
+                place: privateAlbums[i].coordinate.place + ", " + privateAlbums[i].coordinate.country.country,
+                id: privateAlbums[i].id,
+            });
+        };
+        for (let i = 0; i < publicAlbums.length; i++) {
+            searchList.public.push({
+                value: publicAlbums[i].name,
+                label: publicAlbums[i].name,
+                mainPhoto: publicAlbums[i].mainPhoto !== undefined ? publicAlbums[i].mainPhoto : noAlbumPhotoIcon,
+                place: publicAlbums[i].coordinate.place + ", " + publicAlbums[i].coordinate.country.country,
+                id: publicAlbums[i].id,
+            });
+        };
+        for (let i = 0; i < sharedAlbums.length; i++) {
+            searchList.shared.push({
+                value: sharedAlbums[i].album.name,
+                label: sharedAlbums[i].album.name,
+                mainPhoto: sharedAlbums[i].album.mainPhoto !== undefined ? sharedAlbums[i].album.mainPhoto : noAlbumPhotoIcon,
+                place: sharedAlbums[i].album.coordinate.place + ", " + sharedAlbums[i].album.coordinate.country.country,
+                id: sharedAlbums[i].album.id,
+            });
+        };
+        setSearchList(searchList)
+    };
+
+    /*
     // album title, mainPhoto, place, ID WILL ALSO BE NEEDED 
     const searchList = albums.list.map((item) => {
         return {
@@ -30,6 +84,7 @@ const AlbumsPage = () => {
             place: item.localization,
         }
     })
+    */
 
     return (
         <Container blurState={blurState}>
@@ -37,39 +92,50 @@ const AlbumsPage = () => {
                 <Heading>Twoje albumy</Heading>
             </PageHeader>
             <AlbumsNavigation>
-                <AlbumSearch options={searchList}/>
+                <AlbumSearch options={
+                    searchList !== null ? 
+                        albumsType === "public" ? 
+                            searchList["public"] : 
+                                albumsType === "private" ? 
+                                searchList["private"] : 
+                                    searchList["shared"] : null
+                }/>
                 <Line/>
                 <AlbumsSwitch>
                     <AlbumOption 
                         icon={publicAlbumIcon}
-                        active={albumsType === types.public ? true : false } 
-                        onClick={() => setAlbumsType(types.public)}
+                        active={albumsType === albumTypes.public ? true : false } 
+                        onClick={() => setAlbumsType(albumTypes.public)}
                     >
                         Publiczne
                     </AlbumOption>
                     <AlbumOption 
                         icon={privateAlbumIcon}
-                        active={albumsType === types.private ? true : false } 
-                        onClick={() => setAlbumsType(types.private)}
+                        active={albumsType === albumTypes.private ? true : false } 
+                        onClick={() => setAlbumsType(albumTypes.private)}
                     >
                         Prywatne
                     </AlbumOption>
                     <AlbumOption 
                         icon={sharedAlbumIcon}
-                        active={albumsType === types.shared ? true : false } 
-                        onClick={() => setAlbumsType(types.shared)}
+                        active={albumsType === albumTypes.shared ? true : false } 
+                        onClick={() => setAlbumsType(albumTypes.shared)}
                     >
                         Udostępnione
                     </AlbumOption>
                 </AlbumsSwitch>
             </AlbumsNavigation>
-            <AlbumGrid sectionType={albumsType} data={albums}/>
+            <AlbumGrid 
+                sectionType={albumsType} 
+                privateAlbums={privateAlbums} 
+                publicAlbums={publicAlbums} 
+                sharedAlbums={sharedAlbums} 
+                data={albums}
+            />
         </Container>
     );
 
 }
-
-//  <AlbumSection sectionType={albumsType} data={albums}/>
 
 const Container = styled.div`
     display: grid;

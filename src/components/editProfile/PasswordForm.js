@@ -18,6 +18,9 @@ const PasswordForm = () => {
     const validate = (values) => {
 
         const errors = {};
+        
+        if (errorAtPutting !== null) setErrorAtPutting(null);
+        if (success) setSuccess(false);
 
         if (!values.actualPassword) {
             errors.actualPassword = "Wymagane!";
@@ -140,7 +143,7 @@ const PasswordForm = () => {
                 { wrongOldPassword && <ApiErrorMessage type="error">Bieżące hasło, które podałeś jest złe. Spróbuj ponownie!</ApiErrorMessage>}
                 { formik.isSubmitting && <ApiInfoMessage>Wysyłanie...</ApiInfoMessage>}
                 { success && <ApiInfoMessage>Hasło zostało zmienione!</ApiInfoMessage>}
-                <Submit type="submit" disabled={formik.isSubmitting || !formik.dirty} >Zapisz</Submit>
+                <Submit type="submit" disabled={formik.isSubmitting || !formik.dirty || formik.errors.actualPassword || formik.errors.newPassword || formik.errors.repeatPassword } >Zapisz</Submit>
                 <Cancel disabled={formik.isSubmitting || !formik.dirty} onClick={formik.handleReset}>Anuluj</Cancel>
             </Buttons>
         </form>

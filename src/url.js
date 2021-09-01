@@ -6,6 +6,9 @@ export const endpoints = {
     changePassword: url + "/auth/password", // [ PUT ]
     getLoggedUserFriends: url + "/friends",
     getLoggedUserProfile: url + "/user/profile",
+    getLoggedUserAlbums: url + "/albums",
+    getLoggedUserSharedAlbums: url + "/albums/shared",
+    getLoggedUserAlbumDetails: url + "/albums/", // + albumId
     updateUserProfile: url + "/user/profile",
     getLoggedUserProfileBasic: url + "/user/profile/basic",
     setUserBackgroundPicture: url + "/user/background",

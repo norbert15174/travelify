@@ -5,11 +5,10 @@ import Button from "../trinkets/Button";
 import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
 import { routes } from "../../miscellanous/Routes";
+import { albumTypes } from "../../miscellanous/Utils";
 import "./albumsScrollbar.css";
 
-const AlbumSection = ({ sectionType, data }) => {
-
-    // data for album thumbnails should be passed from above
+const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, data}) => {
 
     const [ redirectToAlbum, setRedirectToAlbum ] = useState({
         active: false, 
@@ -19,7 +18,9 @@ const AlbumSection = ({ sectionType, data }) => {
 
     // redirection to chosen album
     if (redirectToAlbum.active) {
-        return <Redirect to={{pathname: `album/${redirectToAlbum.albumId}`, state: {albumId: redirectToAlbum.albumId}}}/>
+        return <Redirect to={{
+            pathname: `album/${redirectToAlbum.albumId}`, 
+        }}/>
     }
 
     // redirection to album creator (CREATION)
@@ -31,62 +32,72 @@ const AlbumSection = ({ sectionType, data }) => {
         <Container>
             <Header>
                 {
-                    sectionType === "public" && <h1>Publiczne</h1>
+                    sectionType === albumTypes.public && <h1>Publiczne</h1>
                 }
                 {
-                    sectionType === "private" && <h1>Prywatne</h1>
+                    sectionType === albumTypes.private && <h1>Prywatne</h1>
                 }
                 {
-                    sectionType === "shared" && <h1>Udostępnione dla ciebie</h1>
+                    sectionType === albumTypes.shared && <h1>Udostępnione dla ciebie</h1>
                 }
                 { 
-                    sectionType !== "shared" && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton> 
+                    sectionType !== albumTypes.shared && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton> 
                 }
             </Header>
             <Line/>
             <AlbumGrid className="scroll">    
             {
-                data 
-                && sectionType === "public" 
-                && data.list.map((album) => 
-                    <AlbumThumbnail
-                        key={album.id} 
-                        album={album} 
-                        redirectTo={() => setRedirectToAlbum({
-                            active: true, 
-                            albumId: album.id
-                        })}
-                    />
+                (sectionType === albumTypes.public) && (
+                    (publicAlbums !== undefined && publicAlbums !== null) 
+                    ? 
+                    publicAlbums.map((album) => 
+                        <AlbumThumbnail
+                            key={album.id} 
+                            album={album} 
+                            redirectTo={() => setRedirectToAlbum({
+                                active: true, 
+                                albumId: album.id,
+                            })}
+                        />
+                    )
+                    : <h1>Brak albumów...</h1>
                 ) 
             }
             {
-                data 
-                && sectionType === "private" 
-                && data.list.map((album) => 
-                    <AlbumThumbnail
-                        key={album.id} 
-                        album={album} 
-                        redirectTo={() => setRedirectToAlbum({
-                            active: true, 
-                            albumId: album.id
-                         })}
-                    />
-                ) 
+                (sectionType === albumTypes.private) && (
+                    (privateAlbums !== undefined && privateAlbums !== null) 
+                    ? 
+                    privateAlbums.map((album) => 
+                        <AlbumThumbnail
+                            key={album.id} 
+                            album={album} 
+                            redirectTo={() => setRedirectToAlbum({
+                                active: true, 
+                                albumId: album.id,
+                            })}
+                        />
+                    ) 
+                    : <h1>Brak albumów...</h1>
+                )
             }
             {
-                data 
-                && sectionType === "shared" 
-                && data.list.map((album) => 
+                (sectionType === albumTypes.shared) && (
+                    (sharedAlbums !== undefined && sharedAlbums !== null) 
+                    ?
+                    sharedAlbums.map((album) => 
                     <AlbumThumbnail
                         notRealOwner={true}
-                        key={album.id} 
-                        album={album} 
+                        key={album.album.id}
+                        owner={album.owner} 
+                        album={album.album} 
                         redirectTo={() => setRedirectToAlbum({
                             active: true, 
-                            albumId: album.id
+                            albumId: album.album.id,
                         })}
                     />
-                ) 
+                    )
+                    : <h1>Brak albumów...</h1>
+                )
             }
             </AlbumGrid>
         </Container>

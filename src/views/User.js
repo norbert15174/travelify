@@ -51,7 +51,7 @@ const User = () => {
 				throw new Error(errorTypes.notFound)
 			}
 		}
-  	}, [location.state, urlParams.username, urlParams.id]);
+  	}, [location.state, urlParams.id]);
 
 	async function getLoggedUserProfile() {
         await axios({

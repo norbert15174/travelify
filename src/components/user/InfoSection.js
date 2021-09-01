@@ -57,9 +57,7 @@ const InfoSection = ({nationality, about, interest, visitedCountries}) => {
                     visitedCountries !== undefined && mappedVisitedCountries !== null && mappedVisitedCountries.length !== 0
                     ?
                     mappedVisitedCountries.map((country) => (
-                        <Country
-                            key={country.id} 
-                        >
+                        <Country key={country.id} >
                             <Flag src={country.url}/>
                             {country.country}
                         </Country>

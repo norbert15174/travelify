@@ -93,7 +93,7 @@ const Photo = styled.img`
 
 const NameContainer = styled.div`
     cursor: pointer;
-    width: auto;
+    width: max-content;
     height: auto;
 `;
 
@@ -101,6 +101,7 @@ const Name = styled.h2`
     margin-left: 15px;
     font-size: 30px;
     color: #000;
+
     @media only screen and (max-width: 1440px) {
         font-size: 25px;
     }

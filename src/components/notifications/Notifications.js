@@ -18,30 +18,10 @@ const Notifications = ({notificationsDisplay}) => {
                 <CloseButton icon={closeIcon} onClick={() => notificationsDisplay(false)}/>
             </Header>
             <NotificationsList className="scroll">
-                <NotificationsItem firstName="Anna" surName="Telec" type="tag"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="invitation"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="friendshipEnd"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="comment"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="share"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="unshare"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="tag"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="invitation"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="friendshipEnd"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="comment"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="share"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="unshare"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="tag"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="invitation"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="friendshipEnd"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="comment"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="share"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="unshare"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="tag"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="invitation"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="friendshipEnd"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="comment"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="share"/>
-                <NotificationsItem firstName="Tomasz" surName="Telec" type="unshare"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="invitation"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="share"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/>
             </NotificationsList>
         </Container>
     );

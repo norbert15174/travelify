@@ -18,7 +18,7 @@ const StartPage = () => {
       };
 
     if (redirect === "yes") {
-        return <Redirect to={{pathname: '/auth'}}/>
+        return <Redirect push to={{pathname: '/auth'}}/>
     }
 
     return (
@@ -87,20 +87,24 @@ const StyledLogo = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    font-size: 48px;
-    width: 326px;
-    height: 77px;
+    font-size: 28px;
+    padding: 15px 30px;
+    height: auto;
+    width: auto;
     margin-left: auto;
     margin-right: 30px;
     @media only screen and (max-width: 763px) {
-        margin: 0 auto;
-        height: 55px;
-        width: 200px;
-        font-size: 32px;
+        font-size: 21px;
     }
     @media only screen and (max-width: 538px) {
-        width: 150px;
-        font-size: 24px;
+        padding: 7.5px 15px;
+        font-size: 14px;
+        margin-right: 20px;
+    }
+    @media only screen and (max-width: 350px) {
+        font-size: 10px;
+        padding: 5px 10px;
+        margin-right: 10px;
     }
 `;
 

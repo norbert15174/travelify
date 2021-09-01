@@ -2,24 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import editIcon from "./assets/editIcon.svg";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 // redirectTo => set states redirect to album
 
-const AlbumThumbnail = ({album, notRealOwner=false, redirectTo}) => (
+const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectTo}) => (
     <Container onClick={redirectTo}>
-        <MainPhoto src={album.image} alt="albumMainPhoto"/>
+        <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt="albumMainPhoto"/>
         { !notRealOwner && <EditButton icon={editIcon} onClick={() => {console.log("klikłem")}}/> }
         { notRealOwner && 
             <SharingPerson>
-                <ProfilePhoto src={album.url}/>
-                <h3>{album.name}</h3>
+                <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
+                <h3>{owner.name + " " + owner.surName}</h3>
             </SharingPerson> 
         }
         <InfoContainer>
             <Text>
                 <Header>
-                    <Title>{album.title}</Title>
-                    <Localization>{album.localization}</Localization>
+                    <Title>{album.name}</Title>
+                    <Localization>{album.coordinate.place + ", " + album.coordinate.country.country}</Localization>
                 </Header>
                 <Description>
                     {album.description}

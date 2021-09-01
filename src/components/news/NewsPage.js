@@ -7,7 +7,6 @@ import communityIcon from "./svg/communityIcon.svg";
 import { FriendsListArray as news } from "./data";
 import noResultsIcon from "./svg/noResultsIcon.svg";
 import { useSelector } from "react-redux";
-import { getCountryData, mapCountriesToSelect } from "../../miscellanous/Utils";
 
 const types = {
     friends: "friends",
@@ -18,10 +17,6 @@ const NewsPage = () => {
 
     const [newsType, setNewsType] = useState(types.friends);
     const blurState = useSelector((state) => state.blur.value);    
-
-    
-    //console.log(getCountryData(["Poland", "Germany"]));
-    //console.log(mapCountriesToSelect());
 
     const searchList = news.list.map((item) => {
         return {
