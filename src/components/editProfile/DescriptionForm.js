@@ -60,7 +60,7 @@ const DescriptionForm = ({type, data}) => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder={type === "about" ? "Brak opisu użytkownika..." : type === "interest" ? "Brak zainteresowań..." : null}
-                    maxLength={800}
+                    maxLength={8000}
                 />
             </Container>
             <Buttons>

@@ -3,18 +3,19 @@ import styled from "styled-components";
 import "./friends.css";
 import MessageIcon from "../account/svg/messageIcon";
 const FriendItem = ({user,click}) => {
-  return (
-    <Container className="font" onClick={e => click(user.id)}>
-      <Icon
-        src={user.profilePicture}
-        alt="User Photo"
-      />
-      <Name>
-          {user.name + " " + user.lastName}
-      </Name>
-      <MessageIcon></MessageIcon>
-    </Container>
-  );
+
+	return (
+    	<Container className="font" onClick={e => click(user.id)}>
+      		<Icon
+        		src={user.profilePicture}
+        		alt="User Photo"
+      		/>
+      		<Name>
+				{user.name + " " + user.lastName}
+			</Name>
+      		<MessageIcon/>
+    	</Container>
+  	);
 };
 
 const Icon = styled.img`

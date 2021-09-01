@@ -43,23 +43,21 @@ const GridSection = ({userType, data, sectionType}) => {
                 <AlbumGrid squeeze={data.length === 0 ? true : false} className="scroll">
                 {
                     data !== null ?
-                    (( 
-                        searchContent.length !== 0 && found.length !== 0 ?
-                        found.map((album) => {   
-                            
+                    (
+                        ( 
+                            searchContent.length !== 0 && found.length !== 0 ?
+                            found.map((album) => {   
                                 return <AlbumThumbnail key={album.id} album={album}/>
-                            
-                        }) : null
-                    ) || (
-                        data.length !== 0 && searchContent.length === 0 ?
-                        data.map((album) => {   
-                             
+                            }) : null
+                        ) || (
+                            data.length !== 0 && searchContent.length === 0 ?
+                            data.map((album) => {   
                                 return <AlbumThumbnail key={album.id} album={album}/>
-                            
-                        }) : null
-                    ) || (
-                        <h1>Brak albumów...</h1>
-                    )) : <h1>Brak albumów...</h1>
+                            }) : null
+                        ) || (
+                            <h1>Brak albumów...</h1>
+                        )
+                    ) : <h1>Brak albumów...</h1>
                 } 
                 </AlbumGrid>
                 :

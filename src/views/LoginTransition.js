@@ -78,7 +78,7 @@ const LoginTransition = () => {
                 countries.push(data[i]);
             }
             localStorage.setItem("countryList", JSON.stringify(countries));
-            mapCountriesToSelect()
+            mapCountriesToSelect();
         }).catch((error) => {
             setError(error);
         }).finally(() => {

@@ -2,23 +2,38 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import kompas from "../../assets/kompas.png";
 import Logo from "./svg/logo";
-import "./auth.css";
 import { routes } from "../../miscellanous/Routes";
 import { endpoints } from "../../url";
+import StatusMessage from "../trinkets/StatusMessage";
+import "./input.css";
+
+const errors = {
+	wrongCredentials: "Podana nazwa użytkownika lub hasło jest nieodpowiednia !!!",
+	apiError: "Coś poszło nie tak... Spróbuj ponownie",
+}
 
 const Login = ({ pos, val }) => {
-	
-	const [password, setPassword] = useState("");
-	const [login, setLogin] = useState("");
-	const [logged, setLogged ] = useState(false);
 
+  	const [ password, setPassword ] = useState("");
+	const [ login, setLogin ] = useState("");
+	const [ logged, setLogged ] = useState(false);
+	const [ errorMessage, setErrorMessage ] = useState("");
+
+	const onLogin = () => {
+		setErrorMessage("");
+		if (login !== "" && password !== "") {
+			Login();
+		} else {
+			setErrorMessage("Wypełnij wszystkie wymagane pola !!!");
+		}
+	};
+	
 	async function Login() {
-		const path = endpoints.login;
+		setErrorMessage("");
 		await axios({
 			method: "post",
-			url: path,
+			url: endpoints.login,
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -40,178 +55,221 @@ const Login = ({ pos, val }) => {
 			//console.error("Log failed :(")
 			//console.log(error.response.status);
 			//console.log({...error})
+			if (error.response !== undefined) {
+				if (error.response.status === 404) {
+					setErrorMessage(errors.wrongCredentials);
+				} else {
+					setErrorMessage(errors.apiError);
+				}
+			}
 			setLogged(false)
+		})
+		.finally(() => {
+			setLogin("");
+			setPassword("");
 		});
-	}
+	};
 
 	if (logged) {
 		return <Redirect to={{pathname: routes.loginTransition}}/>
-	}
+	};
 
 	return (
-		<LoginContainer className="font" pos={pos}>
-		<LeftSide></LeftSide>
-		<RightSide>
-			<Logo></Logo>
-			<Form>
-			<h3 id="head">Witamy</h3>
-			<Label htmlFor="login">Login</Label>
-			<Input
-				type="text"
-				name="login"
-				id="login"
-				onChange={(e) => setLogin(e.target.value)}
-			></Input>
-			<Label htmlFor="password">Password</Label>
-			<Input
-				type="password"
-				name="password"
-				id="password"
-				onChange={(e) => setPassword(e.target.value)}
-			></Input>
-			<Apply onClick={(e) => Login()}>Zaloguj się</Apply>
-			<OrDiv>lub</OrDiv>
-			<CreateAccount onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
-				Dołącz do nas
-			</CreateAccount>
-			</Form>
-		</RightSide>
-		</LoginContainer>
-	);
+		<Container>
+     		<Logo/>
+      		<Form>
+					<InputContainer>
+						<Input
+							type="text"
+							name="login"
+							id="login"
+							value={login}
+							onChange={(e) => {
+								if (errorMessage) {
+									setErrorMessage("");
+								}
+								setLogin(e.target.value)
+							}}
+							placeholder="Nazwa użytkownika"
+						/>
+						<Input
+							type="password"
+							name="password"
+							id="password"
+							placeholder="Hasło"
+							value={password}
+							onChange={(e) => {
+								if (errorMessage) {
+									setErrorMessage("");
+								}
+								setPassword(e.target.value)
+							}}
+						/>
+						{ errorMessage === errors.apiError && <ErrorMessage type="error">{errorMessage}</ErrorMessage> }
+						{ errorMessage === errors.wrongCredentials && <ErrorMessage type="error">{errorMessage}</ErrorMessage>}
+					</InputContainer>
+				<Apply disabled={!login || !password ? true : false} onClick={onLogin}>Zaloguj się</Apply>
+				<OrDiv> lub </OrDiv>
+				<CreateAccount>
+					<Span onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
+						Dołącz do nas
+					</Span>
+				</CreateAccount>
+      		</Form>
+    </Container>
+  );
 };
 
-const CreateAccount = styled.div`
-	color: ${({theme}) => theme.color.greyFont};
-	font-weight: ${({theme}) => theme.fontWeight.bold};
-	margin-top: 30px;
-	font-size: 16px;
-	text-align: center;
-	cursor: pointer;
-`;
+const ErrorMessage = styled(StatusMessage)`
+    font-size: 14px;
+    text-align: center;
+    padding: 10px;
+	border-radius: 5px;
+	width: auto;
+	margin: 15px auto 0px auto;
+	height: max-content;
+	
+	@media screen and (max-width: 1000px) {
+		font-size: 12px;
+		max-width: 275px;
 
-const OrDiv = styled.div`
-	font-size: 24px;
-	text-align: center;
-	color: ${({theme}) => theme.color.greyFont};
-	font-weight: ${({theme}) => theme.fontWeight.bold};
-	margin-top: 32px;
-	&:before {
-		height: 1px;
-		display: block;
-		background-color: ${({theme}) => theme.color.darkTurquise};
-		width: 80px;
-		content: " ";
-		position: relative;
-		top: 19px;
-		left: calc(50% - 100px);
 	}
-	&:after {
-		text-align: center;
-		height: 1px;
-		display: block;
-		background-color: ${({theme}) => theme.color.darkTurquise};
-		width: 80px;
-		content: " ";
-		position: relative;
-		left: calc(50% + 21px);
-		top: -14px;
+	@media screen and (max-width: 600px) {
+		font-size: 10px;
+		max-width: 225px;
+	}
+	@media screen and (max-width: 460px) {
+		padding: 10px 5px;
+		max-width: 175px;
 	}
 `;
 
-const Apply = styled.div`
-	width: 200px;
-	text-align: center;
-	background-color: ${({theme}) => theme.color.darkTurquise};
-	color: ${({theme}) => theme.color.lightBackground};
-	font-size: 24px;
-	border-radius: 30px;
-	padding-top: 11px;
-	padding-bottom: 11px;
-	position: relative;
-	margin-top: 15px;
-	left: calc(50% - 100px);
-	cursor: pointer;
-`;
-
-const Label = styled.label`
-	font-size: 18px;
-	font-weight: ${({theme}) => theme.fontWeight.bold};
-	color: ${({theme}) => theme.color.greyFont};
-`;
-
-const LoginContainer = styled.div`
-	transition: transform 1.5s;
-	top: 5vh;
-	left: 5vw;
-	transform: ${({ pos }) =>
-		pos === "yes" ? "translateX(-150vw)" : "translateX(0vw)"};
-	position: absolute;
-	min-height: 800px;
-	width: 90vw;
-	height: 90vh;
-	display: grid;
-	grid-template-columns: 54.66% 43.34%;
-	grid-template-rows: 100%;
-	background-color: ${({theme}) => theme.color.lightBackground};
-	@media only screen and (max-width: 1020px) {
-		grid-template-columns: 100%;
-	}
-	@media only screen and (max-width: 600px) {
-		min-height: 700px;
-	}
-
-`;
-const LeftSide = styled.div`
-	height: 100%;
-	position: relative;
-	background: url(${kompas});
-	background-size: 100% 100%;
-	overflow: hidden;
-
-	@media only screen and (max-width: 1020px) {
-		display: none;
-	}
-`;
-const RightSide = styled.div`
-	width: 100%;
-	background-color: ${({theme}) => theme.color.lightBackground};
-	position: relative;
-	/* @media only screen and (max-height: 800px) {
-		transform: scale(0.9);
-	}
-	@media only screen and (max-width: 1220px) {
-		transform: scale(0.8);
-	}
-	@media only screen and (max-width: 1020px) {
-		transform: scale(1);
-	}
-	@media only screen and (max-width: 600px) {
-		transform: scale(0.7);
-	} */
+const Container = styled.div`
+  width: 80vw;
+  position: absolute;
+  left: 10vw;
+  top: 10vh;
+  padding-bottom: 100px;
 `;
 
 const Form = styled.div`
-	width: 70%;
-	position: relative;
-	left: 15%;
-	padding-bottom: 40px;
+  margin-top: 100px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  display: grid;
+  grid-template-rows: auto;
+  z-index: 5;
+  @media screen and (max-width: 1400px) {
+    margin-top: 80px;
+  }
+
+  @media screen and (max-width: 1000px) {
+    margin-top: 60px;
+  }
+
+  @media screen and (max-width: 600px) {
+    margin-top: 40px;
+  }
+`;
+
+const InputContainer = styled.div`
+	display: flex;
+	flex-direction: column;
 `;
 
 const Input = styled.input`
-	width: 100%;
-	padding: 10px 10px 10px 10px;
-	font-size: 24px;
-	outline: none;
-	border: none;
-	border-bottom: 2px solid ${({theme}) => theme.color.darkTurquise};
-	margin-bottom: 20px;
-	margin-top: 10px;
-	background-color: ${({theme}) => theme.color.lightBackground};
-
-	&:hover {
-		border-bottom: 3px solid ${({theme}) => theme.color.darkTurquise};
-		font-weight: 700;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 30px 20px 30px;
+  border-radius: 40px;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: ${({theme}) => theme.color.lightBackground};
+  margin-top: 20px;
+  &:focus {
+    outline: none;
+  }
+  input:-webkit-autofill {
+    -webkit-text-fill-color: yellow !important;
 	}
+
+  @media screen and (max-width: 1400px) {
+    width: 400px;
+  }
+
+  @media screen and (max-width: 1000px) {
+    width: 300px;
+  }
+
+  @media screen and (max-width: 600px) {
+    padding: 15px 25px 15px 25px;
+    width: 280px;
+  }
 `;
 
+const Apply = styled.div`
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 30px 20px 30px;
+  border-radius: 40px;
+  font-size: 18px;
+  background-color: ${({theme}) => theme.color.lightTurquise};
+  border: none;
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+  @media screen and (max-width: 1400px) {
+    width: 400px;
+  }
+
+  @media screen and (max-width: 1000px) {
+    width: 300px;
+  }
+
+  @media screen and (max-width: 600px) {
+    padding: 15px 25px 15px 25px;
+    width: 280px;
+  }
+`;
+
+const CreateAccount = styled.div`
+  font-size: 22px;
+  color: white;
+`;
+
+const OrDiv = styled.div`
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
+  display: inline-block;
+  &::after {
+    display: inline-block;
+    content: " ";
+    position: relative;
+    width: 20px;
+    height: 0.5px;
+    background-color: white;
+    z-index: 10;
+    bottom: 5px;
+  }
+  &::before {
+    display: inline-block;
+    content: " ";
+    position: relative;
+    width: 20px;
+    height: 0.5px;
+    background-color: white;
+    z-index: 10;
+    bottom: 5px;
+  }
+`;
+const Span = styled.span`
+  cursor: pointer;
+`;
 export default Login;

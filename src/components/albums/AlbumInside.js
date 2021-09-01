@@ -13,18 +13,14 @@ import privateAlbumBlueIcon from "./assets/privateAlbumBlueIcon.svg";
 import Map from '../googleMaps/Map';
 import ShareBox from "./ShareBox";
 import Carousel from "../photos/Carousel";
-import profilePhoto from "./assets/profilePhoto.png";
-import { FriendsListArray as album } from "./data";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { SliderData as photos } from "./data";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector } from "react-redux";
+import { albumRights, albumTypes } from "../../miscellanous/Utils";
 
-const types = {
-    albumType: "private", // public, private
-    visibility: "owner", // owner, shared, unknown
-}
 
-const AlbumInside = ({albumId}) => {
+const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
 
     // map options
     const options = {
@@ -62,12 +58,12 @@ const AlbumInside = ({albumId}) => {
             <Container blurState={blurState}>
                 <Details>
                     <Header>
-                        <h1>Wycieczka do Japonii, Sierpień 2018</h1>
+                        <h1>{details.name}</h1>
                         <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
                         <Localization>
                             <Icon src={localizationIcon}/>
                             <h3>
-                                Japonia, Osaka
+                                {details.coordinate.place + ", " + details.coordinate.country.country}
                             </h3>
                         </Localization>
                     </Header>
@@ -77,8 +73,8 @@ const AlbumInside = ({albumId}) => {
                             height={"100%"} 
                             options={options} 
                             initialCoordinates={{
-                                lat: album.list[0].position.lat, 
-                                lng: album.list[0].position.lng,
+                                lat: details.coordinate.lat,
+                                lng: details.coordinate.lang,
                             }}
                             type="AlbumInside"
                         />
@@ -86,23 +82,39 @@ const AlbumInside = ({albumId}) => {
                     <Description>
                         <Icon src={descriptionIcon}/>
                         <Text>
-                            Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                            {details.description}
                         </Text>
                     </Description>
                     <div>
                         <Line/>
                         <Footer>
                             <AlbumInfo>
-                                <ProfilePhoto src={profilePhoto}/>
-                                <p>Jan Nowak</p>   
+                                <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
+                                <p>{owner.name + " " + owner.surName}</p>   
                             </AlbumInfo>
                             <AlbumInfo>
-                                <Icon src={ types.albumType === "public" ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
-                                { types.albumType === "public" ? <p>Publiczny</p> : <p>Prywatny</p> }
+                                <Icon src={ albumType === albumTypes.public ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
+                                { albumType === albumTypes.public ? <p>Publiczny</p> : <p>Prywatny</p> }
                             </AlbumInfo>
                             <Buttons>
-                                { types.visibility === "owner" && types.albumType === "private" && <TypeSpecifiedButton icon={shareIcon} onClick={() => setSharePinBox(true)}>Udostępnij</TypeSpecifiedButton> }
-                                { types.visibility === "owner" && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
+                                { 
+                                    rights === albumRights.owner && 
+                                    albumType === albumTypes.private && 
+                                        <TypeSpecifiedButton 
+                                            icon={shareIcon} 
+                                            onClick={() => setSharePinBox(true)}
+                                        >
+                                            Udostępnij
+                                        </TypeSpecifiedButton> 
+                                }
+                                {
+                                    rights === albumRights.sharedPerson && 
+                                    albumType === albumTypes.private && 
+                                    <StyledText icon={shareIcon}>
+                                        Udostępniony dla ciebie
+                                    </StyledText>
+                                }
+                                { rights === albumRights.owner && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
                             </Buttons>
                         </Footer>
                     </div>
@@ -112,6 +124,9 @@ const AlbumInside = ({albumId}) => {
         </>
     );
 }
+
+//rights === albumRights.sharedPerson && 
+//albumType === albumTypes.private && 
 
 const Container = styled.div`
     filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
@@ -385,6 +400,47 @@ const TypeSpecifiedButton = styled(ButtonIcon)`
     }
     &:hover, &:focus {
         background-color: ${({theme}) => theme.color.lightTurquise};
+    }
+`;
+
+const StyledText = styled.div`
+    margin: 15px 0px 0px 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border-radius: 5px;
+    color: ${({theme}) => theme.color.lightBackground};
+    font-size: 18px;
+    font-weight: ${({theme}) => theme.fontWeight.bold};
+    padding: 0px 15px;
+    background-color: ${({theme}) => theme.color.darkTurquise};
+    @media only screen and (max-width: 1025px) {
+        font-size: 12px;
+        height: 30px;
+        margin-top: 10px;
+        margin-left: 15px;
+        padding: 0px 10px;
+    }
+    @media only screen and (max-width: 825px) {
+        font-size: 10px;
+        height: 25px;
+        margin-left: 10px;
+        padding: 0px 5px;
+    }
+    @media only screen and (max-width: 510px) {
+        margin-top: 5px;
+        margin-left: 5px;
+        height: 20px;
+        font-size: 0px;
+        height: 20px;
+        width: 20px;
+        background-image: url(${({icon}) => icon});
+        background-repeat: no-repeat;
+        padding: 0px;
+        background-size: 10px;
+        background-position: 50% 50%;
     }
 `;
 
