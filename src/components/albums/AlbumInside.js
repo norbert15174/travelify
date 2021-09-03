@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Redirect } from 'react-router-dom';
+import axios from "axios";
 import PhotoSection from "../photos/PhotoSection";
 import Button from "../trinkets/Button";
 import ButtonIcon from "../trinkets/ButtonIcon";
@@ -14,13 +15,13 @@ import Map from '../googleMaps/Map';
 import ShareBox from "./ShareBox";
 import Carousel from "../photos/Carousel";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { SliderData as photos } from "./data";
 import { routes } from "../../miscellanous/Routes";
-import { useSelector } from "react-redux";
+import { endpoints } from "../../url";
+import { useSelector, useDispatch } from "react-redux";
 import { albumRights, albumTypes } from "../../miscellanous/Utils";
+import { selectOwner, selectInfo, setFriendsList, selectAlbumType, selectRights } from "../../redux/albumDetailsSlice";
 
-
-const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
+const AlbumInside = ({albumId}) => {
 
     // map options
     const options = {
@@ -31,15 +32,42 @@ const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
     };
 
     const [ sharePinBox, setSharePinBox ] = useState(false);
-    const [ photoPreview, setPhotoPreview ] = useState({visible: false, id: null});
+    const [ photoPreview, setPhotoPreview ] = useState({visible: false, index: null});
 
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
        active: false,
        albumId: null,
-    })
+    });
 
-    const blurState = useSelector((state) => state.blur.value)
+    const dispatch = useDispatch();
+    const blurState = useSelector((state) => state.blur.value);
+    const owner = useSelector(selectOwner);
+    const info = useSelector(selectInfo);
+    const albumType = useSelector(selectAlbumType);
+    const rights = useSelector(selectRights);
+
+    useEffect(() => {
+        if (rights === albumRights.owner && albumType === albumTypes.private) {
+            getLoggedUserFriendsList();
+        }
+    }, [rights, albumType]);
+
+    async function getLoggedUserFriendsList() {
+        await axios({
+            method: "get",
+            url: endpoints.getLoggedUserFriends,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+			dispatch(setFriendsList(data));
+            console.log(data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
 
     // goes back to albums screen
     if (redirectToAlbums) {
@@ -48,22 +76,35 @@ const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
 
     // goes to album edit screen
     if (redirectToAlbumsCreator.active) {
-        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "edition", albumId: redirectToAlbumsCreator.albumId}}}/>
+        return <Redirect to={{
+                        pathname: routes.albumCreator, 
+                        state: {
+                            creatorType: "edition", 
+                            albumId: redirectToAlbumsCreator.albumId
+                        }
+                    }}
+                />
     }
 
     return (
         <>
-            { photoPreview.visible && <Carousel photoId={photoPreview.id} photos={photos} setClose={setPhotoPreview}/> }
-            { sharePinBox && <ShareBox setClose={setSharePinBox}/> }
+            { photoPreview.visible && 
+                <Carousel 
+                    selectedPhotoIndex={photoPreview.index}  
+                    setClose={setPhotoPreview} 
+                    rights={rights}
+                /> 
+                }
+            { sharePinBox && <ShareBox setClose={setSharePinBox} albumId={albumId}/> }
             <Container blurState={blurState}>
                 <Details>
                     <Header>
-                        <h1>{details.name}</h1>
+                        <h1>{info.name}</h1>
                         <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
                         <Localization>
                             <Icon src={localizationIcon}/>
                             <h3>
-                                {details.coordinate.place + ", " + details.coordinate.country.country}
+                                {info.coordinate.place + ", " + info.coordinate.country.country}
                             </h3>
                         </Localization>
                     </Header>
@@ -73,8 +114,8 @@ const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
                             height={"100%"} 
                             options={options} 
                             initialCoordinates={{
-                                lat: details.coordinate.lat,
-                                lng: details.coordinate.lang,
+                                lat: info.coordinate.lat,
+                                lng: info.coordinate.lang,
                             }}
                             type="AlbumInside"
                         />
@@ -82,7 +123,7 @@ const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
                     <Description>
                         <Icon src={descriptionIcon}/>
                         <Text>
-                            {details.description}
+                            {info.description}
                         </Text>
                     </Description>
                     <div>
@@ -114,19 +155,31 @@ const AlbumInside = ({owner, details, rights, photoss, albumType, albumId}) => {
                                         Udostępniony dla ciebie
                                     </StyledText>
                                 }
-                                { rights === albumRights.owner && <TypeSpecifiedButton icon={editIcon} onClick={() => setRedirectToAlbumsCreator({active: true, albumId: albumId})}>Edytuj album</TypeSpecifiedButton> }
+                                { 
+                                    rights === albumRights.owner && 
+                                    <TypeSpecifiedButton 
+                                        icon={editIcon} 
+                                        onClick={() => 
+                                            setRedirectToAlbumsCreator({
+                                                active: true, 
+                                                albumId: albumId
+                                            })
+                                        }
+                                    >
+                                        Edytuj album
+                                    </TypeSpecifiedButton> 
+                                }
                             </Buttons>
                         </Footer>
                     </div>
                 </Details>
-                <PhotoSection photos={photos} setPreview={setPhotoPreview}/>
+                <PhotoSection 
+                    setPreview={setPhotoPreview}
+                />
             </Container>
         </>
     );
 }
-
-//rights === albumRights.sharedPerson && 
-//albumType === albumTypes.private && 
 
 const Container = styled.div`
     filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };

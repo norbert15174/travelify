@@ -5,6 +5,7 @@ import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-map
 import { indyStyle } from "./MapStyle";
 import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
+import { getCountryId } from "../../miscellanous/Utils";
 
 function Map({ width, height, options, initialCoordinates, type, setLocalization=null, deleteMarker=false}) {
 	// deleteMarker - Localization.js - marker won't show up when we have cleared form
@@ -83,7 +84,8 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 					setLocalization({
 						lat: marker.lat,
 						lng: marker.lng,
-						country: country,
+						countryId: getCountryId(country),
+						countryName: country,
 						place: place,
 					});
 				}, 

@@ -22,7 +22,8 @@ const Localization = ({creatorType, setForm}) => {
     const [ localization, setLocalization ] = useState({
         lat: "",
         lng: "",
-        country: "",
+        countryName: "",
+        countryId: null,
         place: place,
     });
     const [ submitMessage, setSubmitMessage ] = useState("");
@@ -33,13 +34,15 @@ const Localization = ({creatorType, setForm}) => {
             setLocalization({
                 lat: "",
                 lng: "",
-                country: "",
+                countryName: "",
+                countryId: null,
                 place: place,
             });
             setForm({
                 lat: "",
                 lng: "",
-                country: "",
+                countryName: "",
+                countryId: null,
                 place: place,
             })
             setSubmitMessage("");
@@ -53,6 +56,7 @@ const Localization = ({creatorType, setForm}) => {
         
         setSubmitMessage("");
 
+        // chyba && nie ||
         if (localization.country === "Brak informacji" || localization.place === "Brak informacji") {
             setSubmitMessage("Popraw występujące błędy!");
             return;
@@ -80,7 +84,7 @@ const Localization = ({creatorType, setForm}) => {
                     Kraj
                     <FormInput
                         disabled
-                        value={localization.country}
+                        value={localization.countryName}
                     />
                 </ValueContainer>
                 <ValueContainer>

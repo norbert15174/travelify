@@ -9,7 +9,7 @@ import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectTo}) => (
     <Container onClick={redirectTo}>
-        <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt="albumMainPhoto"/>
+        <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt={"albumMainPhoto " + album.id}/>
         { !notRealOwner && <EditButton icon={editIcon} onClick={() => {console.log("klikłem")}}/> }
         { notRealOwner && 
             <SharingPerson>
@@ -29,7 +29,6 @@ const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectTo}) => 
             </Text>
         </InfoContainer>
     </Container>
-
 );
 
 const Container = styled.div`

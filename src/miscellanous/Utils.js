@@ -23,7 +23,10 @@ export const albumRights = {
     sharedPerson: "sharedPerson",
 }
 
-
+export const albumCreator = {
+    creation: "creation",
+    edition: "edition",
+}
 
 /*
     Function for parsing string with country names to array with objects.
@@ -63,4 +66,15 @@ export function mapCountriesToSelect() {
         })
     }
     localStorage.setItem("countryList", JSON.stringify(newList));    
+}
+
+export function getCountryId(countryName) {
+    let list = JSON.parse(localStorage.getItem("countryList"));
+    let foundId = 141;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].country === countryName) {
+            foundId = list[i].id;
+        }
+    }
+    return foundId;
 }

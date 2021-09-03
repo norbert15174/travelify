@@ -29,6 +29,7 @@ const LoginTransition = () => {
         if (!sessionStorage.getItem("Login")) {
             throw new Error(errorTypes.noAccess);
         } else {
+            dispatch(setProfilePicture(""));
             getUserData();
             getCountries();
             getFriends();

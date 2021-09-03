@@ -12,7 +12,10 @@ import BasicInfo from "./BasicInfo";
 import Localization from "./Localization";
 import Photos from "./Photos";
 import DeleteAlbum from "./DeleteAlbum";
+import axios from "axios";
+import { albumCreator, albumTypes } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
+import { endpoints } from "../../url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 
 const creatorType = {
@@ -29,6 +32,10 @@ const AlbumCreatorPage = () => {
     const [ refuseDeletingAlbum, setRefuseDeletingAlbum ] = useState(false);
     const [ deleteBox, setDeleteBox ] = useState(false);
     
+    const [ addingAlbumFinished, setAddingAlbumFinished ] = useState(false);
+    const [ errorAtPosting, setErrorAtPosting ] = useState(null);
+    const [ redirectToCreatedAlbum ,setRedirectToCreatedAlbum ] = useState({active: false, createdAlbumId: null});
+
     const blurState = useSelector((state) => state.blur.value);
 
     // BasicInfo submitted data, used at album creation, at editing it won't be used
@@ -43,7 +50,8 @@ const AlbumCreatorPage = () => {
     const [ localization, setLocalization ] = useState({
         lat: "",
         lng: "",
-        country: "",
+        countryName: "",
+        countryId: null,
         place: "",
     });
 
@@ -56,7 +64,8 @@ const AlbumCreatorPage = () => {
         if (type === "") {
             setType(location.state.creatorType);
         }
-        if (creatorType.edition === type) {
+
+        if (albumCreator.edition === type) {
             console.log("albumid" + location.state.albumId)
             setAlbumId(location.state.albumId);
             if (confirmDeletingAlbum) {
@@ -86,19 +95,61 @@ const AlbumCreatorPage = () => {
         return <Redirect to={{pathname: `album/${albumId}`, state: {albumId: albumId}}}/>
     }
 
+    if (redirectToCreatedAlbum.active) {
+        return <Redirect to={{pathname: `album/${redirectToCreatedAlbum.createdAlbumId}`}}/>;
+    }
+
     // formHandler będzie wykorzystywany tylko przy tworzeniu albumu
     const formHandler = () => { 
-        console.log(basicInfo); 
-        console.log(localization);
+        //let test = {
+        //     basicInfo: basicInfo,
+        //    localization: localization,
+        //}
+        //alert(JSON.stringify(test));
+        createAlbum();
     }
+
+    async function createAlbum() {
+        setErrorAtPosting(null);
+        await axios({
+            method: "post",
+            url: endpoints.addAlbum,
+            data: {
+                coordinate: {
+                    country: {
+                        id: localization.countryId,
+                    },
+                    lang: localization.lng,
+                    lat: localization.lat,
+                    place: localization.place,
+                },
+                name: basicInfo.name,
+                description: basicInfo.description,
+                public: basicInfo.visibility === albumTypes.public ? true : false,
+            },
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        })
+        .then((response) => {                
+            setRedirectToCreatedAlbum({active: true, createdAlbumId: response.data.id});
+        })
+        .catch((error) => {
+            setErrorAtPosting(error);
+            console.log(error);
+        })
+    };
+
+    //async function editAlbum() {};
 
     return (
         <UserTemplate>
-            {deleteBox && type === creatorType.edition && <ConfirmationBox children={"Czy na pewno chcesz usunąć album?"} confirm={setConfirmDeletingAlbum} refuse={setRefuseDeletingAlbum}/>}
+            {deleteBox && type === albumCreator.edition && <ConfirmationBox children={"Czy na pewno chcesz usunąć album?"} confirm={setConfirmDeletingAlbum} refuse={setRefuseDeletingAlbum}/>}
             <Container blurState={blurState}>
                 <PageHeader>
                     <Heading>
-                        { type === creatorType.creation ? "Stwórz album" : "Edytuj album" }
+                        { type === albumCreator.creation ? "Stwórz album" : "Edytuj album" }
                     </Heading>
                     <GoBackButton onClick={() => {
                         if ( type === "creation") {
@@ -136,7 +187,7 @@ const AlbumCreatorPage = () => {
                     </SectionContainer>
                 }
                 {
-                    type === creatorType.creation
+                    type === albumCreator.creation
                     &&
                     (basicInfo.name !== "" &&
                     localization.lat !== "" &&
@@ -156,7 +207,7 @@ const AlbumCreatorPage = () => {
                     </SectionContainer>
                 }
                 {
-                    type === creatorType.edition &&
+                    type === albumCreator.edition &&
                     <SectionContainer>
                         <Header>
                             <Icon src={deleteAlbumIcon}/>

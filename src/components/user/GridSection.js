@@ -163,6 +163,9 @@ const AlbumGrid = styled.div`
     margin-left: 30px;
     max-height: 1000px;
     overflow-y: scroll;
+    h1 { 
+        color: ${({theme}) => theme.color.greyFont};
+    }
     @media only screen and (max-width: 1440px) {
         grid-template-columns: repeat(2, 380px);
         grid-auto-rows: 256px;
@@ -205,6 +208,9 @@ const FriendsGrid = styled.div`
     margin-left: 30px;
     max-height: 750px;
     overflow-y: scroll;
+    h1 { 
+        color: ${({theme}) => theme.color.greyFont};
+    }
     @media only screen and (max-width: 1440px) {
         grid-template-columns: repeat(2, 380px);
     }

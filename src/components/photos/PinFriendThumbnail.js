@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 
-// FriendThumbnail for SharePinBox
-
-const PinFriendThumbnail = ({name, url}) => {
+const PinFriendThumbnail = ({friend}) => {
 
     const [ chosen, setChosen ] = useState(false);
 
     return (
         <Friend>
-            <Photo src={url}/>
-            <h1>{name}</h1>
+            <Photo src={friend.profilePicture}/>
+            <h1>{friend.name + " " + friend.lastName}</h1>
             <ChooseButton
                 onClick={() => {
                     setChosen(true); 
-                    console.log("You have clicked at: " + name);
+                    console.log("You have clicked at: " + friend.name);
                 }}
             >
                 {chosen ? "Wybrany" : "Wybierz"}
@@ -33,7 +31,7 @@ const Friend = styled.div`
     h1 { 
         display: inline-block;
         word-wrap: break-word;
-        width: 90%;
+        width: max-content;
         white-space: normal
     }
     @media only screen and (max-width: 1425px) {

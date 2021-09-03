@@ -10,6 +10,8 @@ import privateAlbumIcon from "./assets/privateAlbumIcon.svg";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import addIcon from "./assets/addIcon.svg";
 import closeIcon from "./assets/closeIcon.svg";
+import { albumTypes } from "../../miscellanous/Utils";
+import { albumCreator } from "../../miscellanous/Utils";
 
 const options = [
     { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
@@ -24,20 +26,13 @@ const options = [
     { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
 ]
 
-const initialDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam venenatis tincidunt risus, non tempor nunc mattis vel.`;
-
-const visibilityType = {
-    public: "public",
-    private: "private",
-}
-
 const BasicInfo = ({creatorType, setForm}) => {
 
      // data will be passed from above
 
     const [ name, setName ] = useState("")
-    const [ description, setDescription ] = useState(initialDescription);
-    const [ visibility, setVisibility ] = useState(visibilityType.public);
+    const [ description, setDescription ] = useState("");
+    const [ visibility, setVisibility ] = useState(albumTypes.public);
     const [ selectedFriends, setSelectedFriends ] = useState([]);
     const [ friends, setFriends ] = useState([]);
 
@@ -105,14 +100,20 @@ const BasicInfo = ({creatorType, setForm}) => {
     const clearForm = () => {
         if (creatorType === "creation") {
             setName("");
-            setDescription(initialDescription);
-            setVisibility(visibilityType.public);
+            setDescription("");
+            setVisibility(albumTypes.public);
             setFriends([]);
+            setForm({
+                name: "",
+                description: "",
+                visibility: "",
+                friends: "",
+            })
         } else if (creatorType === "edition") {
             // initial value
             setName("");
-            setDescription(initialDescription);
-            setVisibility(visibilityType.public);
+            setDescription("");
+            setVisibility(albumTypes.public);
             // initial value
             setFriends([]);
         }
@@ -142,9 +143,9 @@ const BasicInfo = ({creatorType, setForm}) => {
                 <Label>
                     Opis (opcjonalny)
                     <Description
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder={initialDescription}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Dodaj opis albumu..."
                     />
                 </Label>
                 <Label>
@@ -152,15 +153,15 @@ const BasicInfo = ({creatorType, setForm}) => {
                     <VisibilitySwitch>
                         <VisibilityOption
                             icon={publicAlbumIcon}
-                            active={visibility === visibilityType.public ? true : false } 
-                            onClick={() => setVisibility(visibilityType.public)}
+                            active={visibility === albumTypes.public ? true : false } 
+                            onClick={() => setVisibility(albumTypes.public)}
                         >
                             Publiczny
                         </VisibilityOption>
                         <VisibilityOption 
                             icon={privateAlbumIcon}
-                            active={visibility === visibilityType.private ? true : false } 
-                            onClick={() => setVisibility(visibilityType.private)}
+                            active={visibility === albumTypes.private ? true : false } 
+                            onClick={() => setVisibility(albumTypes.private)}
                         >
                             Prywatny
                         </VisibilityOption>
@@ -170,7 +171,7 @@ const BasicInfo = ({creatorType, setForm}) => {
 
             </Container>
             {
-                visibility === visibilityType.private && 
+                visibility === albumTypes.private && 
                 <SharingSection>
                     <Label>
                         Udostępnianie (opcjonalne)
@@ -200,8 +201,8 @@ const BasicInfo = ({creatorType, setForm}) => {
             }
             <Buttons>
                 { submitMessage !== "" && <SubmitMessage>{submitMessage} </SubmitMessage>}
-                <Submit disabled={name === "" ? true : false} type="submit" onClick={formHandler}>{ creatorType === "creation" ? "Dodaj" : "Zapisz"}</Submit>
-                <Cancel disabled={name === "" ? true : false} onClick={clearForm}>Anuluj</Cancel>
+                <Submit disabled={!name ? true : false} type="submit" onClick={formHandler}>{ creatorType === "creation" ? "Dodaj" : "Zapisz"}</Submit>
+                <Cancel disabled={!name ? true : false} onClick={clearForm}>Anuluj</Cancel>
             </Buttons>
         </>
     );

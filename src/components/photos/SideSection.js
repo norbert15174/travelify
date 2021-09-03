@@ -8,6 +8,9 @@ import editPencilIcon from "./assets/editPencilIcon.svg";
 import acceptIcon from "./assets/acceptIcon.svg";
 import close2Icon from "./assets/close2Icon.svg";
 import tagTurquiseIcon from "./assets/tagTurquiseIcon.svg";
+import { albumRights } from "../../miscellanous/Utils";
+import { useSelector, useDispatch } from "react-redux"
+import { selectOwner, selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
 const fakeComments = [
     {
@@ -42,32 +45,40 @@ const fakeComments = [
     },
 ]
 
-const initialDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat."
+const SideSection = ({currentPhotoIndex, rights, setPinBox, heightDelimiter, widthDelimiter}) => {
 
-const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
+    const owner = useSelector(selectOwner);
+    const photos = useSelector(selectAlbumPhotos);
+    const currentPhotoDetail = photos[currentPhotoIndex].photo;
 
-    const [ commentsArray, setCommentsArray ] = useState(fakeComments);
+    // dispatch'e by updejtować konkretne stan
+
+    const [ commentsList, setCommentsList ] = useState(fakeComments);
     const [ editing, setEditing ] = useState(false);
-    const [ description, setDescription ] = useState(initialDescription);
+    const [ description, setDescription ] = useState(currentPhotoDetail.description);
     
-    
+    //const [ taggedFriendsList, setTaggedFriendsList ] = useState(null);
+
     const addComment = (comment) => {
-        setCommentsArray((prevState) => [ ...prevState, comment]);
+        setCommentsList((prevState) => [ ...prevState, comment]);
     }
 
     return (
         <Container heightDelimiter={heightDelimiter} widthDelimiter={widthDelimiter}>
-            <EditDescriptionButton 
-                icon={!editing ? editPencilIcon : acceptIcon}
-                onClick={() => {
-                    if (!editing) {
-                        setEditing(true);
-                    } else {
-                        setDescription(description);
-                        setEditing(false);
-                    }
-                }}
-            />
+            {
+                rights === albumRights.owner && 
+                <EditDescriptionButton 
+                    icon={!editing ? editPencilIcon : acceptIcon}
+                    onClick={() => {
+                        if (!editing) {
+                            setEditing(true);
+                        } else {
+                            setDescription(description);
+                            setEditing(false);
+                        }
+                    }}
+                />
+            }
             { 
                 editing 
                 && 
@@ -75,18 +86,18 @@ const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
                     icon={close2Icon}
                     onClick={() => {
                         setEditing(false);
-                        setDescription(initialDescription);
+                        setDescription(currentPhotoDetail.description);
                     }}
                 />
             }
             <Header>
                 <Heading>
-                    <OwnerPhoto src={profilePhoto}/>
+                    <OwnerPhoto src={owner.photo}/>
                         {
                             !editing ? (
                                 <span>
-                                    <a href={link}>Mikołaj Telec </a> 
-                                    {description}  
+                                    <a href={link}>{owner.name + " " + owner.surName} </a> 
+                                    {currentPhotoDetail.description}  
                                 </span>
                             ) : (
                                 <AddDescription
@@ -102,33 +113,36 @@ const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
                 </Heading>
                 <TagsContainer>
                 <TagIcon src={tagTurquiseIcon}/>
-                    {<Tags className="scroll_two">
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                    </Tags>}
+                    {
+                        <Tags className="scroll_two">
+                            <TaggedPerson>
+                                <UserPhoto src={profilePhoto}/>
+                                Krzysztof Jarzyna
+                            </TaggedPerson>
+                            <TaggedPerson>
+                                <UserPhoto src={profilePhoto}/>
+                                Krzysztof Jarzyna
+                            </TaggedPerson>
+                            <TaggedPerson>
+                                <UserPhoto src={profilePhoto}/>
+                                Krzysztof Jarzyna
+                            </TaggedPerson>
+                            <TaggedPerson>
+                                <UserPhoto src={profilePhoto}/>
+                                Krzysztof Jarzyna
+                            </TaggedPerson>
+                            <TaggedPerson>
+                                <UserPhoto src={profilePhoto}/>
+                                Krzysztof Jarzyna
+                            </TaggedPerson>
+                        </Tags>
+                    }
                 </TagsContainer>
             </Header>
             <CommentsSection className="scroll_two">
             {   
-                commentsArray.map((comment) => (
+                commentsList ? 
+                commentsList.map((comment) => (
                     <CommentContainer key={comment.id}>
                         <UserPhoto src={profilePhoto}/>
                         <span>
@@ -137,15 +151,20 @@ const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
                         </span>
                     </CommentContainer>
                 ))
+                : <h1>Brak komentarzy...</h1>
             }
             </CommentsSection>
             <Footer>
-                <TagButton 
-                    icon={tagWhiteIcon}
-                    onClick={() => setPinBox(true)}
-                >
-                    Oznacz osobę
-                </TagButton>
+                {
+                    rights === albumRights.owner 
+                    &&
+                    <TagButton 
+                        icon={tagWhiteIcon}
+                        onClick={() => setPinBox(true)}
+                    >
+                        Oznacz osobę
+                    </TagButton>
+                }
                 <AddComment add={addComment}/> 
             </Footer>
         </Container>

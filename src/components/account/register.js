@@ -18,7 +18,6 @@ const Register = ({ pos, val }) => {
 
 	const [ error, setError ] = useState(null);
 	const [ countryList, setCountryList ] = useState([]);
-	const [ getCountriesFinished, setGetCountriesFinished ] = useState(false);
 	const [ registerSuccess, setRegisterSuccess ] = useState(false);
 
 	useEffect(() => {
@@ -157,9 +156,7 @@ const Register = ({ pos, val }) => {
 			setCountryList(countries);
         }).catch((error) => {
             setError(error);
-        }).finally(() => {
-            setGetCountriesFinished(true);
-        })
+        });
     }
 
   	return (

@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
+import { routes } from "../../miscellanous/Routes";
 
-const AlbumThumbnail = ({album}) => (
-    <>  
-        <Container>
+const AlbumThumbnail = ({album}) => {
+    
+    const [ redirectToAlbumDetails, setRedirectToAlbumDetails ] = useState(false);
+
+    if (redirectToAlbumDetails) {
+        return <Redirect push to={{
+                            pathname: routes.album.replace(/:id/i, album.id), 
+                        }}
+                />
+    }
+
+    return (
+        <Container onClick={() => setRedirectToAlbumDetails(true)}>
             <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt="albumMainPhoto"/>
             <InfoContainer>
                 <Text>
@@ -18,8 +30,8 @@ const AlbumThumbnail = ({album}) => (
                 </Text>
             </InfoContainer>
         </Container>
-    </>
-);
+    );
+};
 
 const Container = styled.div`
     width: 100%;

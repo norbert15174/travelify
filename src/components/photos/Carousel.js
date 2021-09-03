@@ -7,15 +7,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
 import SideSection from "./SideSection";
 import PinBox from "./PinBox";
+import { selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
-const Carousel = ({photos, photoId, setClose}) => {
+const Carousel = ({ rights, selectedPhotoIndex, setClose}) => {
 
     // Carousel movement
-    const [ current, setCurrent ] = useState(photoId - 1); // current displayed image id
+    const [ current, setCurrent ] = useState(selectedPhotoIndex - 1); // current displayed image id
     const [ pinBox, setPinBox ] = useState(false); // controls PinBox
     const [ heightDelimiter, setHeightDelimiter ] = useState(null); // displayed photo clientHeight delimits carousel window dimensions
     const [ widthDelimiter, setWidthDelimiter ] = useState(null);
     const [ windowHeightDelimiter, setWindowHeightDelimiter ] = useState(800); // if your browser will blow up blame lines of code containing this state
+    const photos = useSelector(selectAlbumPhotos);
+    
     const length = photos.length;
     var prevSrc = "";
 
@@ -41,7 +44,7 @@ const Carousel = ({photos, photoId, setClose}) => {
             }
         };
     // eslint-disable-next-line    
-    }, [blurState, dispatch]);
+    }, [blurState, dispatch, current]);
     
     // adjusts carousel size when window is resized
     function onWindowResizeHandler (e) {
@@ -79,7 +82,13 @@ const Carousel = ({photos, photoId, setClose}) => {
     return (
         <>
             <Container ref={ref}>
-            { pinBox && <PinBox type="pin" setClose={setPinBox} heightDelimiter={heightDelimiter}/> }
+            { 
+                pinBox && <PinBox 
+                            setClose={setPinBox} 
+                            heightDelimiter={heightDelimiter}
+                            photoId={photos[current].photo.photoId}
+                          /> 
+            }
                 <LeftArrow
                     noDisplay={current === 0 || pinBox ? true : false}
                     src={leftArrowIcon} 
@@ -93,13 +102,15 @@ const Carousel = ({photos, photoId, setClose}) => {
                 <PreviewContainer>
                     <Image 
                         id="dispImg" 
-                        src={photos[current].image}
+                        src={photos[current].photo.photoUrl}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
                         windowHeightDelimiter={windowHeightDelimiter}
                     />
                     <SideSection 
-                        photoId={photoId} 
+                        //photoDetails={photos[current].photo}
+                        currentPhotoIndex={current}
+                        rights={rights} 
                         setPinBox={setPinBox}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
@@ -110,7 +121,7 @@ const Carousel = ({photos, photoId, setClose}) => {
                     noDisplay={pinBox ? true : false} 
                     src={closeIcon} 
                     onClick={() => {
-                        setClose({visible: false, id: null});
+                        setClose({visible: false, index: null});
                         // it's better to remove those event listeners
                         document.removeEventListener('click', touchHandler, true);
                         window.removeEventListener('resize', onWindowResizeHandler);

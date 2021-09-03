@@ -43,19 +43,22 @@ const Albums = () => {
 				"Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
-		}).then(({data}) => {
-			console.log(data);
-            data.map((album) => {   
-                if (album.public) {
-                    publAlbums.push(album);
-                } else {
-                    privAlbums.push(album);
-                }
-                return "";
-            });
+		}).then((response) => {
+			console.log(response.data);
+            if (response.data !== "") {
+                response.data.map((album) => {   
+                    if (album.public) {
+                        publAlbums.push(album);
+                    } else {
+                        privAlbums.push(album);
+                    }
+                    return "";
+                });
+            }
             setPublicAlbums(publAlbums);
             setPrivateAlbums(privAlbums);
 		}).catch((error) => {
+            console.log(error);
 			setError(error);
 		}).finally(() => {
 			setUserAlbumsFetchFinished(true);
@@ -63,6 +66,7 @@ const Albums = () => {
     };
 
     async function getSharedAlbums() {
+        setSharedAlbums([]);
         await axios({
 			method: "get",
 			url: endpoints.getLoggedUserSharedAlbums,
@@ -77,6 +81,7 @@ const Albums = () => {
 			console.log(data);
             setSharedAlbums(data);
 		}).catch((error) => {
+            console.log(error);
 			setError(error);
 		}).finally(() => {
 			setSharedAlbumsFetchFinished(true);

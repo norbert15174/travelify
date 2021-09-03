@@ -18,14 +18,14 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
 
     // redirection to chosen album
     if (redirectToAlbum.active) {
-        return <Redirect to={{
+        return <Redirect push to={{
             pathname: `album/${redirectToAlbum.albumId}`, 
         }}/>
     }
 
     // redirection to album creator (CREATION)
     if (redirectToCreator) {
-        return <Redirect to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
+        return <Redirect push to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
     }
 
     return ( 
@@ -48,7 +48,7 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
             <AlbumGrid className="scroll">    
             {
                 (sectionType === albumTypes.public) && (
-                    (publicAlbums !== undefined && publicAlbums !== null) 
+                    (publicAlbums.length !== 0) 
                     ? 
                     publicAlbums.map((album) => 
                         <AlbumThumbnail
@@ -65,7 +65,7 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
             }
             {
                 (sectionType === albumTypes.private) && (
-                    (privateAlbums !== undefined && privateAlbums !== null) 
+                    (privateAlbums.length !== 0)
                     ? 
                     privateAlbums.map((album) => 
                         <AlbumThumbnail
@@ -82,7 +82,7 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
             }
             {
                 (sectionType === albumTypes.shared) && (
-                    (sharedAlbums !== undefined && sharedAlbums !== null) 
+                    (sharedAlbums.length !== 0)
                     ?
                     sharedAlbums.map((album) => 
                     <AlbumThumbnail
@@ -178,6 +178,9 @@ const AlbumGrid = styled.div`
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
+    h1 {
+        color: ${({theme}) => theme.color.greyFont};
+    }
     @media only screen and (max-width: 1635px) {
         grid-template-columns: repeat(2, 590px);
     }

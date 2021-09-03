@@ -5,24 +5,12 @@ import Input from "../trinkets/Input";
 import FriendThumbnail from "./ShareFriendThumbnail";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
+import { selectFriendsList } from "../../redux/albumDetailsSlice";
 import "./albumsScrollbar.css";
-
-const friends = [
-    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nobody', label: 'Nobody', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-]
 
 // Box for sharing and pinning friends
 
-const ShareBox = ({setClose}) => {
+const ShareBox = ({setClose, albumId}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -32,7 +20,8 @@ const ShareBox = ({setClose}) => {
 
     const dispatch = useDispatch();
     const blurState = useSelector((state) => state.blur.value);
-
+    const friendsList = useSelector(selectFriendsList);
+    
     useEffect(() => {
         document.addEventListener("click", boxOutsideClick, true);
         document.body.style.overflow = "hidden";
@@ -56,8 +45,13 @@ const ShareBox = ({setClose}) => {
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
         setSearchContent(e.target.value);
-        setFound(friends.filter((item) => {
-            return item.label.toLowerCase().includes(searchContent.toLowerCase());
+        setFound(friendsList.filter((item) => {
+            return (item.name).toLowerCase()
+			.includes(searchContent.toLowerCase()) ||
+			(item.lastName).toLowerCase()
+			.includes(searchContent.toLowerCase()) ||
+			(item.name + " " + item.lastName).toLowerCase()
+			.includes(searchContent.toLowerCase())
         }));
     };
 
@@ -88,16 +82,16 @@ const ShareBox = ({setClose}) => {
                         (
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                                <FriendThumbnail albumId={albumId} key={friend.id} friend={friend}/>
                             ) : null
                         ) || (
-                            friends.length !== 0 && searchContent.length === 0 ?
-                            friends.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                            friendsList.length !== 0 && searchContent.length === 0 ?
+                            friendsList.map((friend) => 
+                                <FriendThumbnail albumId={albumId} key={friend.id} friend={friend}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>
-                        ) 
+                        )
                     }
                 </List>
             </Box>

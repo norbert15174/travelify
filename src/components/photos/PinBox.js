@@ -3,24 +3,14 @@ import styled from "styled-components";
 import closeIcon from "./assets/closeIcon.svg";
 import Input from "../trinkets/Input";
 import FriendThumbnail from "./PinFriendThumbnail";
+import axios from "axios";
 import "./photosScrollbar.css";
+import { useSelector } from "react-redux";
+import { albumTypes } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
+import { selectAlbumType, selectSharedPersonList } from "../../redux/albumDetailsSlice";
 
-const friends = [
-    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nobody', label: 'Nobody', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-]
-
-// Box for sharing and pinning friends
-
-const PinBox = ({setClose, heightDelimiter}) => {
+const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -28,28 +18,45 @@ const PinBox = ({setClose, heightDelimiter}) => {
 
     const ref = useRef(null);
 
-    useEffect(() => {
+    const albumType = useSelector(selectAlbumType);
+    const sharedPersonList = useSelector(selectSharedPersonList);
+    const [ list, setList ] = useState([]);
 
-        // backend magic
+    useEffect(() => {
+        if (albumType === albumTypes.public) {
+            getLoggedUserFriendsList();
+        } else if (albumType === albumTypes.private) {
+            setList(sharedPersonList);
+        }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /*
-    function boxOutsideClick(e){
-        if (!ref.current || ref.current.contains(e.target)) {
-            return;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-    }
-    */
+    async function getLoggedUserFriendsList() {
+        await axios({
+            method: "get",
+            url: endpoints.getLoggedUserFriends,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+			setList(data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
 
     // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
         setSearchContent(e.target.value);
-        setFound(friends.filter((item) => {
-            return item.label.toLowerCase().includes(searchContent.toLowerCase());
+        setFound(list.filter((item) => {
+            return (item.name).toLowerCase()
+			.includes(searchContent.toLowerCase()) ||
+			(item.lastName).toLowerCase()
+			.includes(searchContent.toLowerCase()) ||
+			(item.name + " " + item.lastName).toLowerCase()
+			.includes(searchContent.toLowerCase())
         }));
     };
 
@@ -74,19 +81,19 @@ const PinBox = ({setClose, heightDelimiter}) => {
                 />
                 <List className="scroll">
                     {
-                        (
+                        list ? ((
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                                <FriendThumbnail key={friend.id} friend={friend}/>
                             ) : null
                         ) || (
-                            friends.length !== 0 && searchContent.length === 0 ?
-                            friends.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                            list.length !== 0 && searchContent.length === 0 ?
+                            list.map((friend) => 
+                                <FriendThumbnail key={friend.id} friend={friend}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>
-                        ) 
+                        )) : <NoResults>Brak wyników...</NoResults>
                     }
                 </List>
             </Box>
