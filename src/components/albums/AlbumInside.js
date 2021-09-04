@@ -18,7 +18,7 @@ import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { routes } from "../../miscellanous/Routes";
 import { endpoints } from "../../url";
 import { useSelector, useDispatch } from "react-redux";
-import { albumRights, albumTypes } from "../../miscellanous/Utils";
+import { albumRights, albumTypes, albumCreator } from "../../miscellanous/Utils";
 import { selectOwner, selectInfo, setFriendsList, selectAlbumType, selectRights } from "../../redux/albumDetailsSlice";
 
 const AlbumInside = ({albumId}) => {
@@ -79,7 +79,7 @@ const AlbumInside = ({albumId}) => {
         return <Redirect to={{
                         pathname: routes.albumCreator, 
                         state: {
-                            creatorType: "edition", 
+                            creatorType: albumCreator.edition, 
                             albumId: redirectToAlbumsCreator.albumId
                         }
                     }}

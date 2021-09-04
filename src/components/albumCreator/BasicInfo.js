@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
@@ -13,20 +13,7 @@ import closeIcon from "./assets/closeIcon.svg";
 import { albumTypes } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
 
-const options = [
-    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png", },
-    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Nobody', label: 'Nobody', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png" },
-]
-
-const BasicInfo = ({creatorType, setForm}) => {
+const BasicInfo = ({creatorType, setForm, friendsList}) => {
 
      // data will be passed from above
 
@@ -34,92 +21,99 @@ const BasicInfo = ({creatorType, setForm}) => {
     const [ description, setDescription ] = useState("");
     const [ visibility, setVisibility ] = useState(albumTypes.public);
     const [ selectedFriends, setSelectedFriends ] = useState([]);
-    const [ friends, setFriends ] = useState([]);
+    const [ sharedFriends, setSharedFriends ] = useState([]);
 
     const [ friendsError, setFriendsError ] = useState("");
-    const [ nameError, setNameError ] = useState("");
+    const [ infoError, setInfoError ] = useState("");
     const [ submitMessage, setSubmitMessage ] = useState("");
+    const [ formSubmitted, setFormSubmitted ] = useState(false);
 
     const addFriend = () => {
-        //console.log(selectedFriends);
         selectedFriends.map((selectedFriend) => {
             setFriendsError("");
             // for friends we should be checking id's
-            if (Array.from(friends).find((element) => element.name === selectedFriend.value)) { 
+            if (Array.from(sharedFriends).find((element) => element.name === selectedFriend.value)) { 
                 setFriendsError("Jedna z osób została już przez ciebie dodana!");
                 return null;
             }
-            setFriends((prevState) => [...prevState,{name: selectedFriend.value, icon: selectedFriend.icon}]);
+            setSharedFriends((prevState) => [...prevState,{name: selectedFriend.value, icon: selectedFriend.icon, id: selectedFriend.id}]);
             return "";
         })
-        //console.log(friends);
+        if (formSubmitted) {
+            setSubmitMessage("");
+            setFormSubmitted(false);
+        }
         setSelectedFriends([]);
     };
 
     const deleteFriend = (friendToDelete) => {
-        // zmienić na usuwanie po ID !!!!
-        setFriends(() => friends.filter(item => item.name !== friendToDelete));
-        console.log(friends);
+        setSharedFriends(() => sharedFriends.filter(item => item.id !== friendToDelete));
+        if (formSubmitted) {
+            setSubmitMessage("");
+            setFormSubmitted(false);
+        }
+        if (friendsError) {
+            setFriendsError("");
+        }
+        console.log(sharedFriends);
     };
 
     const formHandler = () => {
 
         setFriendsError("");
-        setNameError("");
+        setInfoError("");
         setSubmitMessage("");
 
         // for validation I'm only checking name field
-        if ( !name ) {
-            setNameError("Wymagane!");
-            return;
-        } else if ( name.length < 5) {
-            setSubmitMessage("Popraw występujące błędy!");
-            setNameError("Nazwa albumu powinna składać się z minimum 5 znaków!");
+        if (name.length < 5) {
+            setInfoError("Nazwa albumu powinna składać się z minimum 5 znaków!");
             return;
         }
 
-        if (creatorType === "creation") {
+        if (creatorType === albumCreator.creation) {
             setForm({
                 name: name,
                 description: description,
                 visibility: visibility,
-                friends: friends,
+                shared: sharedFriends,
             })
             setSubmitMessage("Informacje zostały dodane do formularza.");
-        } else if (creatorType === "edition") {
+            setFormSubmitted(true);
+        } else if (creatorType === albumCreator.edition) {
             // gdy dokonujemy edycji to bierzemy tylko te pola które zmieniliśmy
             setSubmitMessage("Zmiany zostały zapisane.");
+            setFormSubmitted(true);
         }
         
-        console.log("BasicInfo form submitted!");
-
         //clearForm();
         
     };
 
     const clearForm = () => {
-        if (creatorType === "creation") {
+        if (creatorType === albumCreator.creation) {
             setName("");
             setDescription("");
             setVisibility(albumTypes.public);
-            setFriends([]);
+            setSharedFriends([]);
             setForm({
                 name: "",
                 description: "",
                 visibility: "",
                 friends: "",
             })
-        } else if (creatorType === "edition") {
+        } else if (creatorType === albumCreator.edition) {
             // initial value
             setName("");
             setDescription("");
             setVisibility(albumTypes.public);
             // initial value
-            setFriends([]);
+            setSharedFriends([]);
         }
         setFriendsError("");
-        setNameError("");
+        setInfoError("");
         setSubmitMessage("");
+        setFormSubmitted(false);
+        setInfoError("");
 
         console.log("BasicInfo form cleared!");
 
@@ -131,21 +125,34 @@ const BasicInfo = ({creatorType, setForm}) => {
                 <Label>
                     Nazwa
                     { 
-                        nameError !== "" ? <NameError type="error">{nameError}</NameError> 
-                        : <NameInfo type="info">Nazwa albumu jest wymagana.<br/>Powinna składać się z minimum 5 znaków.</NameInfo> 
+                        infoError !== "" ? <NameError type="error">{infoError}</NameError> 
+                        : <NameInfo type="info">Nazwa albumu oraz opis jest wymagany.</NameInfo> 
                     }
                     <FormInput 
-                        maxLength={60}
+                        maxLength={30}
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                            if (formSubmitted) {
+                                setFormSubmitted(false);
+                            };
+                            setSubmitMessage("");
+                            setName(e.target.value)
+                        }}
                     />
                 </Label>   
                 <Label>
-                    Opis (opcjonalny)
+                    Opis
                     <Description
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={(e) => {
+                            if (formSubmitted) {
+                                setFormSubmitted(false);
+                            };
+                            setSubmitMessage("");
+                            setDescription(e.target.value)
+                        }}
                         placeholder="Dodaj opis albumu..."
+                        maxLength={250}
                     />
                 </Label>
                 <Label>
@@ -154,14 +161,31 @@ const BasicInfo = ({creatorType, setForm}) => {
                         <VisibilityOption
                             icon={publicAlbumIcon}
                             active={visibility === albumTypes.public ? true : false } 
-                            onClick={() => setVisibility(albumTypes.public)}
+                            onClick={() => {
+                                if (formSubmitted) {
+                                    setFormSubmitted(false);
+                                };
+                                setFriendsError("");
+                                setSubmitMessage("");
+                                setSharedFriends([]);
+                                setVisibility(albumTypes.public)
+                            }}
                         >
                             Publiczny
                         </VisibilityOption>
                         <VisibilityOption 
                             icon={privateAlbumIcon}
                             active={visibility === albumTypes.private ? true : false } 
-                            onClick={() => setVisibility(albumTypes.private)}
+                            onClick={() => {
+                                if (albumCreator.edition) {
+                                    //setSharedFriends(); INITIAL VALUE
+                                };
+                                if (formSubmitted) {
+                                    setFormSubmitted(false);
+                                };
+                                setSubmitMessage("");
+                                setVisibility(albumTypes.private)
+                            }}
                         >
                             Prywatny
                         </VisibilityOption>
@@ -176,7 +200,7 @@ const BasicInfo = ({creatorType, setForm}) => {
                     <Label>
                         Udostępnianie (opcjonalne)
                         <AddSection>
-                            <SelectFriends type="friends" isMulti={true} options={options} value={selectedFriends} setState={setSelectedFriends}/>
+                            <SelectFriends type="friends" isMulti={true} options={friendsList} value={selectedFriends} setState={setSelectedFriends}/>
                             <AddButton icon={addIcon} onClick={addFriend}/>
                             { friendsError !== "" && <AddError type="error">{friendsError}</AddError> }
                         </AddSection>
@@ -185,12 +209,13 @@ const BasicInfo = ({creatorType, setForm}) => {
                         <p>Wybrani znajomi:</p>
                         <AddedFriends>
                             {
-                                friends.length !== 0 ?
+                                sharedFriends.length !== 0 ?
                                 (
-                                    friends.map((friend) => (
-                                        <Friend profilePhoto={friend.icon} key={friend.name}>
+                                    sharedFriends.map((friend) => (
+                                        <Friend key={friend.id}>
+                                            <ProfilePicture src={friend.icon} alt="Profile picture"/>
                                             {friend.name}
-                                            <DeleteIcon onClick={() => deleteFriend(friend.name)} src={closeIcon}/>
+                                            <DeleteIcon onClick={() => deleteFriend(friend.id)} src={closeIcon}/>
                                         </Friend>
                                     ))
                                 ) : <Placeholder>Wybierz znajomego, by udostępnić mu album...</Placeholder>
@@ -201,8 +226,8 @@ const BasicInfo = ({creatorType, setForm}) => {
             }
             <Buttons>
                 { submitMessage !== "" && <SubmitMessage>{submitMessage} </SubmitMessage>}
-                <Submit disabled={!name ? true : false} type="submit" onClick={formHandler}>{ creatorType === "creation" ? "Dodaj" : "Zapisz"}</Submit>
-                <Cancel disabled={!name ? true : false} onClick={clearForm}>Anuluj</Cancel>
+                <Submit disabled={!name || !description || formSubmitted ? true : false} type="submit" onClick={formHandler}>{ creatorType === albumCreator.creation ? "Dodaj" : "Zapisz"}</Submit>
+                <Cancel disabled={(!name && !description) || formSubmitted ? true : false} onClick={clearForm}>Anuluj</Cancel>
             </Buttons>
         </>
     );
@@ -376,28 +401,35 @@ const Friend = styled.div`
     flex-direction: row;
     align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-    background-color: #E0E5E0;
-    background-image: url(${({profilePhoto}) => profilePhoto});
-    background-size: 25px;
-    background-position: 10% 50%;
-    background-repeat: no-repeat;
+    background-color: ${({theme}) => theme.color.darkBackground};
     border-radius: 15px;
     color: #000;
     font-size: 16px;
-    padding: 10px 10px 10px 45px;
+    padding: 5px 10px;
     margin-top: 5px;
     margin-right: 10px;
     flex-shrink: 1;
     @media only screen and (max-width: 870px) {
-        background-size: 20px;
-        padding: 8px 8px 8px 35px;
         font-size: 12px;
     }
     @media only screen and (max-width: 560px) {
-        background-size: 15px;
-        background-position: 10% 48%;
-        padding: 5px 5px 5px 30px;
+        padding: 5px;
         font-size: 10px;
+    }
+`;
+
+const ProfilePicture = styled.img`
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+    @media only screen and (max-width: 870px) {
+        width: 20px;
+        height: 20px;
+    }
+    @media only screen and (max-width: 560px) {
+        width: 15px;
+        height: 15px;
     }
 `;
 
@@ -460,28 +492,31 @@ const NameError = styled(StatusMessage)`
     position: absolute;
     font-size: 12px;
     margin-left: 40%;
-    @media only screen and (max-width: 1080px) {
-        width: 200px;
+    @media only screen and (max-width: 1070px) {
+        width: 150px;
+        padding: 5px 10px;
     }
     @media only screen and (max-width: 870px) {
         font-size: 10px;
-        margin-left: 38%;
+        margin-left: 35%;
     }
     @media only screen and (max-width: 770px) {
         width: 100px;
         margin-top: -2%;
     }
     @media only screen and (max-width: 720px) {
-        margin-top: -2%;
         margin-left: 45%;
     }
     @media only screen and (max-width: 620px) {
         width: 100px;
     }
     @media only screen and (max-width: 560px) {
-        font-size: 6px;
-        padding: 5px;
+        font-size: 8px;
         margin-left: 50%;
+    }
+    @media only screen and (max-width: 400px) {
+        margin-left: 55%;
+        position: fixed;
     }
 `;
 
@@ -489,8 +524,13 @@ const NameInfo = styled(StatusMessage)`
     position: absolute;
     font-size: 12px;
     margin-left: 40%;
+    @media only screen and (max-width: 1070px) {
+        width: 150px;
+        padding: 5px 10px;
+    }
     @media only screen and (max-width: 870px) {
         font-size: 10px;
+        margin-left: 35%;
     }
     @media only screen and (max-width: 770px) {
         width: 100px;
@@ -505,13 +545,12 @@ const NameInfo = styled(StatusMessage)`
         width: 100px;
     }
     @media only screen and (max-width: 560px) {
-        font-size: 6px;
-        width: auto;
-        padding: 5px;
+        font-size: 8px;
         margin-left: 50%;
     }
     @media only screen and (max-width: 400px) {
-        display: none;
+        margin-left: 55%;
+        position: fixed;
     }
 `;
 

@@ -68,6 +68,32 @@ export function mapCountriesToSelect() {
     localStorage.setItem("countryList", JSON.stringify(newList));    
 }
 
+export function mapFriendsToSelect(input, type=null) {
+    // type jest podawany ponieważ czasem możemy otrzymać lastName lub surName xD
+    let output = [];
+    if ( type !== "shared") {
+        for (let i = 0; i < input.length; i++) {
+            output.push({
+                value: (input[i].name + " " + input[i].lastName),
+                label: (input[i].name + " " + input[i].lastName),
+                icon: input[i].profilePicture,
+                id: input[i].id,
+            })
+        }
+    } else {
+        for (let i = 0; i < input.length; i++) {
+            output.push({
+                value: (input[i].name + " " + input[i].surName),
+                label: (input[i].name + " " + input[i].surName),
+                icon: input[i].profilePicture,
+                id: input[i].id,
+            })
+        }
+    }
+    console.log(output);
+    return output;
+}
+
 export function getCountryId(countryName) {
     let list = JSON.parse(localStorage.getItem("countryList"));
     let foundId = 141;

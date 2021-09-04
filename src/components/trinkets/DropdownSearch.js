@@ -105,7 +105,9 @@ const CustomStyles = {
 const DropdownSearch = ({options, setState, value}) => {
     
     const setValueOnChange = (value) => {
-        setState(value.id); // albumId
+        if (value) {
+            setState(value.id); // albumId
+        }
     };
 
     return (

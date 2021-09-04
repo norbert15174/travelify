@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import FormInput from "../trinkets/FormInput";
 import Map from '../googleMaps/Map';
@@ -7,8 +7,6 @@ import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
 
 const Localization = ({creatorType, setForm}) => {
-
-    // data will be passed from above
 
     // map options
     const options = {
@@ -26,8 +24,15 @@ const Localization = ({creatorType, setForm}) => {
         countryId: null,
         place: place,
     });
+
+    useEffect(() => {
+        setFormSubmitted(false);
+        setSubmitMessage("");
+    }, [localization.place, localization.countryName]);
+
     const [ submitMessage, setSubmitMessage ] = useState("");
-   
+    const [ formSubmitted, setFormSubmitted ] = useState(false);
+
     const clearForm = () => {
         if (creatorType === "creation") {
             setPlace("");
@@ -44,12 +49,12 @@ const Localization = ({creatorType, setForm}) => {
                 countryName: "",
                 countryId: null,
                 place: place,
-            })
+            });
+            setFormSubmitted(false);
             setSubmitMessage("");
         } else if ( creatorType === "edition" ) {
             // return to initial values
         }
-        console.log("Localization form cleared!");
     }
 
     const formHandler = () => {
@@ -57,7 +62,7 @@ const Localization = ({creatorType, setForm}) => {
         setSubmitMessage("");
 
         // chyba && nie ||
-        if (localization.country === "Brak informacji" || localization.place === "Brak informacji") {
+        if (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") {
             setSubmitMessage("Popraw występujące błędy!");
             return;
         }
@@ -65,14 +70,13 @@ const Localization = ({creatorType, setForm}) => {
         if (creatorType === "creation") {
             setForm(localization)
             setSubmitMessage("Informacje zostały dodane do formularza.");
+            setFormSubmitted(true);
         } else if (creatorType === "edition") {
             // submit only changed fields
             setSubmitMessage("Zmiany zostały zapisane.");
         }
         
-        console.log("Localization form submitted!");
-
-        // clearForm();
+        
 
     }
 
@@ -113,7 +117,7 @@ const Localization = ({creatorType, setForm}) => {
                 </ValueContainer>
             </InnerContainer>
             { 
-                        localization.country === "Brak informacji" || localization.place === "Brak informacji" 
+                        (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") 
                         ? 
                         <ErrorMessage type="error">
                             Określenie wybranego przez ciebie miejsca okazało się niemożliwe. W przypadku braku informacji o nazwie miejsca, możesz ustawić ją ręcznie.
@@ -128,7 +132,7 @@ const Localization = ({creatorType, setForm}) => {
                     height={"100%"} 
                     options={options} 
                     initialCoordinates={
-                        localization.lat !== "" && localization.lng !== "" 
+                        (localization.lat !== "" && localization.lng !== "") 
                         ? { lat: localization.lat, lng: localization.lng, } 
                         : { lat: 0, lng: 0, } 
                     }
@@ -139,13 +143,14 @@ const Localization = ({creatorType, setForm}) => {
                 </MapContainer>}
         </Container>
         <Buttons>
-            { submitMessage !== "" && <SubmitMessage>{submitMessage} </SubmitMessage>}
+            { submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
             <Submit 
                 disabled={
-                    localization.lat === "" 
+                   ( localization.lat === "" 
                     && localization.lng === "" 
                     && localization.place === "" 
-                    && localization.country === "" 
+                    && localization.countryName === "") 
+                    || formSubmitted
                     ? true : false
                 }
                 type="submit"
@@ -155,10 +160,11 @@ const Localization = ({creatorType, setForm}) => {
             </Submit>
             <Cancel 
                 disabled={
-                    localization.lat === "" 
+                    (localization.lat === "" 
                     && localization.lng === "" 
                     && localization.place === "" 
-                    && localization.country === "" 
+                    && localization.countryName === "")
+                    || formSubmitted 
                     ? true : false
                 }
                 onClick={clearForm}
