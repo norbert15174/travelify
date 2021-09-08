@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCoordinate, setCoordinate } from "../../redux/albumCreatorSlice";
 import FormInput from "../trinkets/FormInput";
 import Map from '../googleMaps/Map';
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
+import { albumCreator } from "../../miscellanous/Utils";
 
 const Localization = ({creatorType, setForm}) => {
+
+    const coordinate = useSelector(selectCoordinate);
+    const dispatch = useDispatch();
+    const [ firstRun, setFirstRun ] = useState(true);
+    const [ isDirty, setIsDirty ] = useState(false);
 
     // map options
     const options = {
@@ -26,15 +34,41 @@ const Localization = ({creatorType, setForm}) => {
     });
 
     useEffect(() => {
-        setFormSubmitted(false);
-        setSubmitMessage("");
-    }, [localization.place, localization.countryName]);
+        if (firstRun && creatorType === albumCreator.edition) {
+            setPlace(coordinate.place);
+            setLocalization({
+                lat: coordinate.lat,
+                lng: coordinate.lang,
+                countryName: coordinate.country.country,
+                countryId: coordinate.country.id,
+                place: coordinate.place,
+            });
+            setFirstRun(false);
+        }
+        if (creatorType === albumCreator.creation) {
+            setFormSubmitted(false);
+            setSubmitError("");
+            setSubmitMessage("");
+        } else if (creatorType === albumCreator.edition) {
+            if (coordinate.lat !== localization.lat || 
+                coordinate.lang !== localization.lng || 
+                localization.place !== coordinate.place) {
+                setIsDirty(true);
+            } else {
+                setIsDirty(false);
+            }
+            setSubmitMessage("");
+            setSubmitError("");
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [localization.place, localization.countryName, localization.place]);
 
     const [ submitMessage, setSubmitMessage ] = useState("");
+    const [ submitError, setSubmitError ] = useState("");
     const [ formSubmitted, setFormSubmitted ] = useState(false);
 
     const clearForm = () => {
-        if (creatorType === "creation") {
+        if (creatorType === albumCreator.creation) {
             setPlace("");
             setLocalization({
                 lat: "",
@@ -52,32 +86,56 @@ const Localization = ({creatorType, setForm}) => {
             });
             setFormSubmitted(false);
             setSubmitMessage("");
-        } else if ( creatorType === "edition" ) {
-            // return to initial values
+        } else if (creatorType === albumCreator.edition) {
+            setPlace(coordinate.place);
+            setLocalization({
+                lat: coordinate.lat,
+                lng: coordinate.lang,
+                countryName: coordinate.country.country,
+                countryId: coordinate.country.id,
+                place: coordinate.place,
+            });
+            setSubmitMessage("");
+            setSubmitError("");
+            setIsDirty(false);
         }
     }
 
     const formHandler = () => {
-        
-        setSubmitMessage("");
 
-        // chyba && nie ||
+        setSubmitMessage("");
+        setSubmitError("");
+
         if (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") {
-            setSubmitMessage("Popraw występujące błędy!");
+            setSubmitError("Popraw występujące błędy!");
+            return;
+        }
+        
+        if (localization.place === "") {
+            setSubmitError("Nazwa miejsca jest wymagana!");
             return;
         }
 
-        if (creatorType === "creation") {
+        if (creatorType === albumCreator.creation) {
             setForm(localization)
             setSubmitMessage("Informacje zostały dodane do formularza.");
             setFormSubmitted(true);
-        } else if (creatorType === "edition") {
-            // submit only changed fields
-            setSubmitMessage("Zmiany zostały zapisane.");
+        } else if (creatorType === albumCreator.edition) {
+            setSubmitMessage("Zapisywanie zmian...")
+            setSubmitMessage("Zmiany zostały zapisane!");
+            dispatch(setCoordinate({
+                country: {
+                    id: localization.countryId,
+                    country: localization.countryName,
+                },
+                lang: localization.lng,
+                lat: localization.lat,
+                place: localization.place,
+            }))
+            setIsDirty(false);
+            setSubmitError("");
         }
         
-        
-
     }
 
     return (
@@ -103,55 +161,50 @@ const Localization = ({creatorType, setForm}) => {
                 </ValueContainer>
                 <ValueContainer>
                     Długość geograficzna
-                    <FormInput
-                        disabled 
-                        value={localization.lat}
-                    />
-                </ValueContainer>
-                <ValueContainer>
-                    Szerokość geograficzna
                     <FormInput 
                         disabled 
                         value={localization.lng}
                     />
                 </ValueContainer>
+                <ValueContainer>
+                    Szerokość geograficzna
+                    <FormInput
+                        disabled 
+                        value={localization.lat}
+                    />
+                </ValueContainer>
             </InnerContainer>
             { 
-                        (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") 
-                        ? 
-                        <ErrorMessage type="error">
-                            Określenie wybranego przez ciebie miejsca okazało się niemożliwe. W przypadku braku informacji o nazwie miejsca, możesz ustawić ją ręcznie.
-                        </ErrorMessage> 
-                        : <InfoMessage type="info">
-                            Wybierz miejsce, które odwiedziłeś. Jeśli uzyskana nazwa miejsca będzie nieodpowiednia, możesz ustawić ją ręcznie.
-                        </InfoMessage>
-                    }
+                (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") ? 
+                <ErrorMessage type="error">
+                    Określenie wybranego przez ciebie miejsca okazało się niemożliwe. W przypadku braku informacji o nazwie miejsca, możesz ustawić ją ręcznie.
+                </ErrorMessage> : 
+                <InfoMessage type="info">
+                    Wybierz miejsce, które odwiedziłeś. Jeśli uzyskana nazwa miejsca będzie nieodpowiednia, możesz ustawić ją ręcznie.
+                </InfoMessage>
+            }
             {<MapContainer>
                 <Map 
                     width={"100%"} 
                     height={"100%"} 
                     options={options} 
                     initialCoordinates={
-                        (localization.lat !== "" && localization.lng !== "") 
-                        ? { lat: localization.lat, lng: localization.lng, } 
-                        : { lat: 0, lng: 0, } 
+                        creatorType === albumCreator.edition ? { lat: localization.lat, lng: localization.lng, } : { lat: 0, lng: 0, } 
                     }
-                    type="AlbumCreator"
+                    type={creatorType === albumCreator.edition ? albumCreator.edition : albumCreator.creation}
                     setLocalization={setLocalization}
-                    deleteMarker={localization.lat === "" && localization.lng === "" ? true : false}
+                    deleteMarker={(creatorType === albumCreator.creation && localization.lat === "" && localization.lng === "") ? true : false}
                 />
                 </MapContainer>}
         </Container>
         <Buttons>
-            { submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
+            {submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
+            {submitError !== "" && <SubmitError type="error">{submitError}</SubmitError>}
             <Submit 
                 disabled={
-                   ( localization.lat === "" 
-                    && localization.lng === "" 
-                    && localization.place === "" 
-                    && localization.countryName === "") 
-                    || formSubmitted
-                    ? true : false
+                   (creatorType === albumCreator.creation && (( localization.lat === "" 
+                    && localization.lng === "" && localization.place === "" && localization.countryName === "") 
+                    || formSubmitted ? true : false)) || (creatorType === albumCreator.edition && !isDirty) 
                 }
                 type="submit"
                 onClick={formHandler}
@@ -160,13 +213,10 @@ const Localization = ({creatorType, setForm}) => {
             </Submit>
             <Cancel 
                 disabled={
-                    (localization.lat === "" 
-                    && localization.lng === "" 
-                    && localization.place === "" 
-                    && localization.countryName === "")
-                    || formSubmitted 
-                    ? true : false
-                }
+                    (creatorType === albumCreator.creation && (( localization.lat === "" 
+                     && localization.lng === "" && localization.place === "" && localization.countryName === "") 
+                     || formSubmitted ? true : false)) || (creatorType === albumCreator.edition && !isDirty) 
+                 }
                 onClick={clearForm}
             >
                 Anuluj
@@ -314,6 +364,19 @@ const InfoMessage = styled(StatusMessage)`
 `;
 
 const SubmitMessage = styled(StatusMessage)`
+    font-size: 12px;
+    align-self: center;
+    margin-right: 15px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 8px;
+        padding: 5px;
+    }
+    @media only screen and (max-width: 560px) {
+        font-size: 6px;
+    }
+`;
+
+const SubmitError = styled(StatusMessage)`
     font-size: 12px;
     align-self: center;
     margin-right: 15px;

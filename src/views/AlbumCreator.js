@@ -7,6 +7,8 @@ import { errorTypes } from "../miscellanous/Errors";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { mapFriendsToSelect, albumCreator } from "../miscellanous/Utils";
+import { clearStore, setAlbumPhotosRedux, setMainPhotoRedux, setBasicInfo, setCoordinate } from "../redux/albumCreatorSlice";
+import { useDispatch } from "react-redux";
 
 const AlbumCreator = () => {
 
@@ -16,10 +18,7 @@ const AlbumCreator = () => {
 	const [ userFriendsFetchFinished, setUserFriendsFetchFinished ] = useState(false);
 	const [ albumDetailsFetchFinished, setAlbumDetailsFetchFinished ] = useState(false);
 
-	const [ albumInfo, setAlbumInfo ] = useState(null);
-	const [ sharedList, setSharedList ] = useState(null);
-	const [ photos, setPhotos ] = useState(null);
-
+	const dispatch = useDispatch();
 
 	const [ creatorType, setCreatorType ] = useState(null);
 	const [ editedAlbumId, setEditedAlbumId ] = useState(null);
@@ -29,6 +28,7 @@ const AlbumCreator = () => {
     	if (!sessionStorage.getItem("Login")) {
       		throw new Error(errorTypes.noAccess);
     	} else {
+			dispatch(clearStore());
 			if (location.state !== undefined && location.state.albumId) {
 				setCreatorType(location.state.creatorType);
 				setEditedAlbumId(location.state.albumId);
@@ -46,16 +46,22 @@ const AlbumCreator = () => {
 			method: "get",
 			url: endpoints.getAlbumDetails + id,
 			headers: {
-					"Content-Type": "application/json",
-					'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
 			console.log(data);
-			setAlbumInfo(data.album);
 			let temp = [];
 			temp = mapFriendsToSelect(data.shared, "shared");
-			setSharedList(temp);
-			setPhotos(data.photosDTOS);
+			dispatch(setMainPhotoRedux(data.album.mainPhoto));
+			dispatch(setAlbumPhotosRedux(data.photosDTOS));
+			dispatch(setBasicInfo({
+				public: data.album.public,
+				name: data.album.name,
+				sharedPersonList: temp,
+				description: data.album.description,
+			}));
+			dispatch(setCoordinate(data.album.coordinate));
 		}).catch((error) => {
 			setError(error);
 		}).finally(() => {

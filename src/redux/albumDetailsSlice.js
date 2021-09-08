@@ -10,10 +10,14 @@ const initialState = {
     info: null,
 };
 
+/*
+    CHYBA BĘDZIE TRZEBA ZROBIĆ TEMP COMMENTS, TAGS sztuk jedno, i po każdym przełączeniu zdjęcia podmieniać...
+*/
+
 export const albumDetailsSlice = createSlice({
-  name: "albumDetails",
-  initialState: initialState,
-  reducers: {
+    name: "albumDetails",
+    initialState: initialState,
+    reducers: {
         setOwner: (state, action) => {
             state.owner = action.payload;
         },

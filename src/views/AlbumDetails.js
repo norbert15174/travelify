@@ -29,6 +29,7 @@ const AlbumDetails = () => {
             setAlbumId(urlParams.id);
             getUserAlbum(urlParams.id);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [urlParams.id]);
 
     async function getUserAlbum(id) {

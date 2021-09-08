@@ -6,6 +6,7 @@ import addAlbumIcon from "./assets/addAlbumIcon.svg";
 import AlbumThumbnail from "./AlbumThumbnail";
 import { routes } from "../../miscellanous/Routes";
 import { albumTypes } from "../../miscellanous/Utils";
+import { albumCreator } from "../../miscellanous/Utils";
 import "./albumsScrollbar.css";
 
 const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, data}) => {
@@ -15,6 +16,10 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
         albumId: "",
     });
     const [ redirectToCreator, setRedirectToCreator ] = useState(false);
+    const [ redirectToEdition, setRedirectToEdition ] = useState({
+        active: false, 
+        albumId: "",
+    });
 
     // redirection to chosen album
     if (redirectToAlbum.active) {
@@ -25,24 +30,29 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
 
     // redirection to album creator (CREATION)
     if (redirectToCreator) {
-        return <Redirect push to={{pathname: routes.albumCreator, state: {creatorType: "creation"}}}/>
+        return <Redirect push to={{pathname: routes.albumCreator, state: {creatorType: albumCreator.creation}}}/>
     }
+
+    // redirection to album edition (EDITION)    
+    if (redirectToEdition.active) {
+        return <Redirect push to={{
+                        pathname: routes.albumCreator, 
+                        state: {
+                            creatorType: albumCreator.edition, 
+                            albumId: redirectToEdition.albumId
+                        }
+                    }}
+                />
+    }
+    
 
     return ( 
         <Container>
             <Header>
-                {
-                    sectionType === albumTypes.public && <h1>Publiczne</h1>
-                }
-                {
-                    sectionType === albumTypes.private && <h1>Prywatne</h1>
-                }
-                {
-                    sectionType === albumTypes.shared && <h1>Udostępnione dla ciebie</h1>
-                }
-                { 
-                    sectionType !== albumTypes.shared && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton> 
-                }
+                {sectionType === albumTypes.public && <h1>Publiczne</h1>}
+                {sectionType === albumTypes.private && <h1>Prywatne</h1>}
+                {sectionType === albumTypes.shared && <h1>Udostępnione dla ciebie</h1>}
+                {sectionType !== albumTypes.shared && <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz album</AddButton>}
             </Header>
             <Line/>
             <AlbumGrid className="scroll">    
@@ -54,13 +64,17 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
                         <AlbumThumbnail
                             key={album.id} 
                             album={album} 
-                            redirectTo={() => setRedirectToAlbum({
+                            redirectToAlbum={() => setRedirectToAlbum({
+                                active: true, 
+                                albumId: album.id,
+                            })}
+                            redirectToAlbumEdit={() => setRedirectToEdition({
                                 active: true, 
                                 albumId: album.id,
                             })}
                         />
                     )
-                    : <h1>Brak albumów...</h1>
+                    : <h1 style={{color: "#5B5B5B"}}>Brak albumów...</h1>
                 ) 
             }
             {
@@ -71,13 +85,17 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
                         <AlbumThumbnail
                             key={album.id} 
                             album={album} 
-                            redirectTo={() => setRedirectToAlbum({
+                            redirectToAlbum={() => setRedirectToAlbum({
+                                active: true, 
+                                albumId: album.id,
+                            })}
+                            redirectToAlbumEdit={() => setRedirectToEdition({
                                 active: true, 
                                 albumId: album.id,
                             })}
                         />
                     ) 
-                    : <h1>Brak albumów...</h1>
+                    : <h1 style={{color: "#5B5B5B"}}>Brak albumów...</h1>
                 )
             }
             {
@@ -90,13 +108,13 @@ const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, 
                         key={album.album.id}
                         owner={album.owner} 
                         album={album.album} 
-                        redirectTo={() => setRedirectToAlbum({
+                        redirectToAlbum={() => setRedirectToAlbum({
                             active: true, 
                             albumId: album.album.id,
                         })}
                     />
                     )
-                    : <h1>Brak albumów...</h1>
+                    : <h1 style={{color: "#5B5B5B"}}>Brak albumów...</h1>
                 )
             }
             </AlbumGrid>
@@ -178,9 +196,6 @@ const AlbumGrid = styled.div`
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
-    h1 {
-        color: ${({theme}) => theme.color.greyFont};
-    }
     @media only screen and (max-width: 1635px) {
         grid-template-columns: repeat(2, 590px);
     }
@@ -194,6 +209,9 @@ const AlbumGrid = styled.div`
     @media only screen and (max-width: 1025px) {
         grid-template-columns: repeat(2, 290px);
         grid-auto-rows: 230px;
+        h1 {
+            font-size: 16px;
+        }
     }
     @media only screen and (max-width: 825px) {
         margin-top: 20px;
@@ -205,6 +223,9 @@ const AlbumGrid = styled.div`
         grid-auto-rows: 162px;
         grid-gap: 20px;
         margin-top: 10px;
+        h1 {
+            font-size: 12px;
+        }
     }
 `;
 

@@ -16,7 +16,7 @@ const PhotoSection = ({setPreview}) => {
             {
                 photos.length !== 0 ? photos.map((item) => (
                     <PhotoContainer key={item.photo.photoId} onClick={() => setPreview({visible: true, index: item.index})}>
-                        <Photo src={item.photo.photoUrl} alt="album-photo"/>
+                        <Photo src={item.photo.photoUrl} alt={"album-photo-" + item.photo.photoId}/>
                     </PhotoContainer>
                 ))
                 : <NoResults>Brak zdjęć w albumie...</NoResults>

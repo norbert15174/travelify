@@ -76,8 +76,9 @@ export function mapFriendsToSelect(input, type=null) {
             output.push({
                 value: (input[i].name + " " + input[i].lastName),
                 label: (input[i].name + " " + input[i].lastName),
+                name: (input[i].name + " " + input[i].lastName),
                 icon: input[i].profilePicture,
-                id: input[i].id,
+                id: input[i].id, // (USER_ID)
             })
         }
     } else {
@@ -85,12 +86,13 @@ export function mapFriendsToSelect(input, type=null) {
             output.push({
                 value: (input[i].name + " " + input[i].surName),
                 label: (input[i].name + " " + input[i].surName),
-                icon: input[i].profilePicture,
-                id: input[i].id,
+                name: (input[i].name + " " + input[i].surName),
+                icon: input[i].photo,
+                id: input[i].id,    // share id (NOT USERID)
+                userId: input[i].userId,
             })
         }
     }
-    console.log(output);
     return output;
 }
 
@@ -104,3 +106,32 @@ export function getCountryId(countryName) {
     }
     return foundId;
 }
+
+export const getDate = (input) => {
+    const months = [
+        'stycznia',
+        'lutego',
+        'marca',
+        'kwietnia',
+        'maj',
+        'czerwca',
+        'lipca',
+        'sierpnia',
+        'września',
+        'października',
+        'listopada',
+        'grudnia'
+    ];
+    const days = [
+        'Niedz',
+        'Pon',
+        'Wt',
+        'Śr',
+        'Czw',
+        'Pt',
+        'Sb'
+    ]
+    let temp = new Date(input);
+    let output = days[temp.getDay()] + " " + temp.getDate() + " " + months[temp.getMonth()] + " " + temp.getFullYear();
+    return output;
+};

@@ -89,7 +89,6 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
-    color: #000;
     @media only screen and (max-width: 1440px) {
         font-size: 28px;
     }

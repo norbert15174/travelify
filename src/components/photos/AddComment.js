@@ -11,7 +11,7 @@ let emoji = new JSEMOJI();
 emoji.replace_mode = 'unified';
 emoji.allow_native = true;
 
-const AddComment = ({ add }) => {
+const AddComment = ({ add, currentPhotoIndex }) => {
 
     const commentInputRef = useRef(null);
     const emojiWindowRef = useRef(null);
@@ -55,9 +55,9 @@ const AddComment = ({ add }) => {
             document.addEventListener("mousedown", onEmojiWindowOutsideClick, true)
         }
         // cursor position when typing comment, enables putting emoji in every place
-        commentInputRef.current.selectionEnd = cursorPos;
-       // eslint-disable-next-line 
-    }, [cursorPos, showEmoji])
+        //commentInputRef.current.selectionEnd = cursorPos; // 
+        // eslint-disable-next-line 
+    }, [showEmoji])
 
     return (
         <Container>
@@ -94,11 +94,7 @@ const AddComment = ({ add }) => {
                 readyToSend={comment !== "" || showEmoji ? true : false} 
                 onClick={() => {
                     if (comment !== "" ) {
-                        add({
-                            id: Math.random(),
-                            name: "Mikołaj Telec",
-                            text: comment,
-                        })
+                        add(comment);
                         setComment("");
                         setShowEmoji(false);
                     }

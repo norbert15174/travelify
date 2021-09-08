@@ -24,14 +24,7 @@ export const ErrorAtLoading = () => (
     </LoadingContainer>
 );
 
-const rotate = keyframes`
-    from {
-        transform :rotate(0deg);
-    }
-    to {
-        transform :rotate(360deg);
-    }
-`;
+
 
 const InnerContainer = styled.div`
     display: flex;
@@ -91,6 +84,15 @@ const Messages = styled.div`
       font-size: 10px;
     }
   }
+`;
+
+const rotate = keyframes`
+    from {
+        transform :rotate(0deg);
+    }
+    to {
+        transform :rotate(360deg);
+    }
 `;
 
 const LoadingSpinner = styled.div`

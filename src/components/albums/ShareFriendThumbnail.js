@@ -83,7 +83,7 @@ const Friend = styled.div`
     h1 { 
         display: inline-block;
         word-wrap: break-word;
-        width: 90%;
+        width: max-content;
         white-space: normal
     }
     @media only screen and (max-width: 1140px) {

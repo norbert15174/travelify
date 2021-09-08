@@ -9,7 +9,7 @@ import SideSection from "./SideSection";
 import PinBox from "./PinBox";
 import { selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
-const Carousel = ({ rights, selectedPhotoIndex, setClose}) => {
+const Carousel = ({ selectedPhotoIndex, setClose}) => {
 
     // Carousel movement
     const [ current, setCurrent ] = useState(selectedPhotoIndex - 1); // current displayed image id
@@ -110,7 +110,6 @@ const Carousel = ({ rights, selectedPhotoIndex, setClose}) => {
                     <SideSection 
                         //photoDetails={photos[current].photo}
                         currentPhotoIndex={current}
-                        rights={rights} 
                         setPinBox={setPinBox}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}

@@ -51,6 +51,7 @@ const AlbumInside = ({albumId}) => {
         if (rights === albumRights.owner && albumType === albumTypes.private) {
             getLoggedUserFriendsList();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rights, albumType]);
 
     async function getLoggedUserFriendsList() {

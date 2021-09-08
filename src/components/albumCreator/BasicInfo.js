@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { selectBasicInfo, setName, setDescription, setSharedPersonList, makePrivate, makePublic, setBasicInfo } from "../../redux/albumCreatorSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
@@ -12,10 +14,13 @@ import addIcon from "./assets/addIcon.svg";
 import closeIcon from "./assets/closeIcon.svg";
 import { albumTypes } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
+import axios from "axios";
 
-const BasicInfo = ({creatorType, setForm, friendsList}) => {
-
-     // data will be passed from above
+const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
+    
+    const dispatch = useDispatch();
+    const basicInfo = useSelector(selectBasicInfo);
 
     const [ name, setName ] = useState("")
     const [ description, setDescription ] = useState("");
@@ -23,10 +28,54 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
     const [ selectedFriends, setSelectedFriends ] = useState([]);
     const [ sharedFriends, setSharedFriends ] = useState([]);
 
+    const [ firstRun, setFirstRun ] = useState(true);
+    const [ isDirty, setIsDirty ] = useState(false);
     const [ friendsError, setFriendsError ] = useState("");
     const [ infoError, setInfoError ] = useState("");
     const [ submitMessage, setSubmitMessage ] = useState("");
+    const [ submitError, setSubmitError ] = useState("");
+    const [ error, setError ] = useState(false);
     const [ formSubmitted, setFormSubmitted ] = useState(false);
+
+
+    const [ shareDeleteFinished, setShareDeleteFinished ] = useState(false);
+    const [ sharesToDelete, setSharesToDelete ] = useState([]); // share id's
+    const [ shareAddFinished, setShareAddFinished ] = useState(false);
+    const [ sharesToAdd, setSharesToAdd ] = useState([]); // user id's
+
+    useEffect(() => {
+        if (firstRun) {
+            if (creatorType === albumCreator.creation) {
+                setName("");
+                setDescription("");
+                setVisibility(albumTypes.public);
+                setSharedFriends([]);
+            } else if (creatorType === albumCreator.edition) {
+                setName(basicInfo.name);
+                setDescription(basicInfo.description);
+                if (basicInfo.public) {
+                    setVisibility(albumTypes.public);
+                } else {
+                    setVisibility(albumTypes.private);
+                }
+                setSharedFriends(basicInfo.sharedPersonList);
+            }
+            setFirstRun(false);
+        }
+        if (creatorType === albumCreator.edition && shareAddFinished && shareDeleteFinished) {
+            if (error) {
+                setSubmitMessage("");
+                setSubmitError("Coś poszło nie tak... spróbuj ponownie");
+                setError(false);
+            } else {
+                setSubmitMessage("Zmiany zostały zapisane");
+                dispatch(setSharedPersonList(sharedFriends));
+                setShareAddFinished(false);
+                setShareDeleteFinished(false);
+                setIsDirty(false);
+            }
+        }
+    }, [shareAddFinished, shareDeleteFinished]);
 
     const addFriend = () => {
         selectedFriends.map((selectedFriend) => {
@@ -36,58 +85,129 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                 setFriendsError("Jedna z osób została już przez ciebie dodana!");
                 return null;
             }
-            setSharedFriends((prevState) => [...prevState,{name: selectedFriend.value, icon: selectedFriend.icon, id: selectedFriend.id}]);
+            setSharedFriends((prevState) => [...prevState, {name: selectedFriend.value, icon: selectedFriend.icon, id: selectedFriend.id}]);
+            setSharesToAdd((prevState) => [...prevState, selectedFriend.id]);
             return "";
         })
-        if (formSubmitted) {
+        if (creatorType === albumCreator.creation && formSubmitted) {
             setSubmitMessage("");
             setFormSubmitted(false);
         }
+        if (creatorType === albumCreator.edition) {
+            setSubmitError("");
+            setSubmitMessage("");
+            setIsDirty(true);
+        }
         setSelectedFriends([]);
     };
-
+    
     const deleteFriend = (friendToDelete) => {
         setSharedFriends(() => sharedFriends.filter(item => item.id !== friendToDelete));
-        if (formSubmitted) {
+        if (creatorType === albumCreator.creation && formSubmitted) {
             setSubmitMessage("");
             setFormSubmitted(false);
         }
         if (friendsError) {
             setFriendsError("");
         }
-        console.log(sharedFriends);
+        if (creatorType === albumCreator.edition) {
+            setSharesToDelete((prevState) => [...prevState, friendToDelete]);
+            setSubmitError("");
+            setSubmitMessage("");
+            setIsDirty(true);
+        }
     };
 
     const formHandler = () => {
-
         setFriendsError("");
         setInfoError("");
         setSubmitMessage("");
-
-        // for validation I'm only checking name field
         if (name.length < 5) {
             setInfoError("Nazwa albumu powinna składać się z minimum 5 znaków!");
             return;
         }
-
+        if (description.length === 0) {
+            setInfoError("Opis albumu jest wymagany!");
+            return;
+        }
         if (creatorType === albumCreator.creation) {
             setForm({
                 name: name,
                 description: description,
                 visibility: visibility,
                 shared: sharedFriends,
-            })
+            });
             setSubmitMessage("Informacje zostały dodane do formularza.");
             setFormSubmitted(true);
         } else if (creatorType === albumCreator.edition) {
-            // gdy dokonujemy edycji to bierzemy tylko te pola które zmieniliśmy
-            setSubmitMessage("Zmiany zostały zapisane.");
-            setFormSubmitted(true);
+            setSubmitMessage("Zapisywanie...");
+            if (sharesToDelete.length !== 0) {
+                // we post if there was a change
+                deleteAlbumShare();
+            } else {
+                // no change
+                setShareDeleteFinished(true);
+            }
+            if (sharesToAdd.length !== 0) {
+                shareAlbum();
+            } else {
+                setShareAddFinished(true);
+            }
         }
-        
-        //clearForm();
-        
     };
+
+    async function shareAlbum() {
+        await axios({
+            method: "post",
+            url: endpoints.shareAlbumWithUser + editedAlbumId,
+            data: sharesToAdd,
+            headers: {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                withCredentials: true,
+            },
+        })
+        .then((response) => {               
+            console.log(response); 
+            setShareAddFinished(true);
+        })
+        .catch((error) => {
+            console.log(error);
+            setError(true);
+        })
+        .finally(() => {
+            setShareAddFinished(true);
+        });
+    };
+
+    async function deleteAlbumShare() {
+        await axios({
+            method: "delete",
+            url: endpoints.deleteShare,
+            data: sharesToDelete,
+            headers: {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "delete",
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        })
+        .then((response) => {                
+            console.log(response);
+            setShareAddFinished(true); 
+        })
+        .catch((error) => {
+            console.log(error);
+            setError(true);     
+        })
+        .finally(() => {
+            setShareDeleteFinished(true);
+        });
+    }
 
     const clearForm = () => {
         if (creatorType === albumCreator.creation) {
@@ -102,21 +222,25 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                 friends: "",
             })
         } else if (creatorType === albumCreator.edition) {
-            // initial value
-            setName("");
-            setDescription("");
-            setVisibility(albumTypes.public);
-            // initial value
-            setSharedFriends([]);
+            setName(basicInfo.name);
+            setDescription(basicInfo.description);
+            if (basicInfo.public) {
+                setVisibility(albumTypes.public);
+            } else {
+                setVisibility(albumTypes.private);
+            }
+            setSharedFriends(basicInfo.sharedPersonList);
         }
         setFriendsError("");
         setInfoError("");
+        setSubmitError("");
         setSubmitMessage("");
         setFormSubmitted(false);
+        setError(false);
         setInfoError("");
-
-        console.log("BasicInfo form cleared!");
-
+        setSharesToDelete([]);
+        setSharesToAdd([]);
+        setIsDirty(false);
     };
 
     return (
@@ -137,6 +261,9 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                             };
                             setSubmitMessage("");
                             setName(e.target.value)
+                            if (creatorType === albumCreator.edition && e.target.value !== basicInfo.name) {
+                                setIsDirty(true);
+                            }
                         }}
                     />
                 </Label>   
@@ -149,7 +276,10 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                                 setFormSubmitted(false);
                             };
                             setSubmitMessage("");
-                            setDescription(e.target.value)
+                            setDescription(e.target.value);
+                            if (creatorType === albumCreator.edition && e.target.value !== basicInfo.description) {
+                                setIsDirty(true);
+                            }
                         }}
                         placeholder="Dodaj opis albumu..."
                         maxLength={250}
@@ -169,6 +299,13 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                                 setSubmitMessage("");
                                 setSharedFriends([]);
                                 setVisibility(albumTypes.public)
+                                if (albumCreator.edition) {
+                                    setSharedFriends(basicInfo.sharedPersonList);
+                                    if (!basicInfo.public) {
+                                        setIsDirty(true);
+                                    }
+                                    console.log(sharedFriends);
+                                };
                             }}
                         >
                             Publiczny
@@ -178,13 +315,17 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                             active={visibility === albumTypes.private ? true : false } 
                             onClick={() => {
                                 if (albumCreator.edition) {
-                                    //setSharedFriends(); INITIAL VALUE
+                                    setSharedFriends(basicInfo.sharedPersonList);
+                                    if (basicInfo.public) {
+                                        setIsDirty(true);
+                                    }
+                                    console.log(sharedFriends);
                                 };
                                 if (formSubmitted) {
                                     setFormSubmitted(false);
                                 };
                                 setSubmitMessage("");
-                                setVisibility(albumTypes.private)
+                                setVisibility(albumTypes.private);
                             }}
                         >
                             Prywatny
@@ -214,7 +355,7 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                                     sharedFriends.map((friend) => (
                                         <Friend key={friend.id}>
                                             <ProfilePicture src={friend.icon} alt="Profile picture"/>
-                                            {friend.name}
+                                            {friend.name || friend.label}
                                             <DeleteIcon onClick={() => deleteFriend(friend.id)} src={closeIcon}/>
                                         </Friend>
                                     ))
@@ -225,9 +366,21 @@ const BasicInfo = ({creatorType, setForm, friendsList}) => {
                 </SharingSection>
             }
             <Buttons>
-                { submitMessage !== "" && <SubmitMessage>{submitMessage} </SubmitMessage>}
-                <Submit disabled={!name || !description || formSubmitted ? true : false} type="submit" onClick={formHandler}>{ creatorType === albumCreator.creation ? "Dodaj" : "Zapisz"}</Submit>
-                <Cancel disabled={(!name && !description) || formSubmitted ? true : false} onClick={clearForm}>Anuluj</Cancel>
+                {submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
+                {submitError !== "" && <SubmitMessage type="error">{submitError}</SubmitMessage>}
+                <Submit 
+                    disabled={creatorType === albumCreator.creation ? (!name || !description || formSubmitted ? true : false) : !isDirty} 
+                    type="submit" 
+                    onClick={formHandler}
+                >
+                    {creatorType === albumCreator.creation ? "Dodaj" : "Zapisz"}
+                </Submit>
+                <Cancel 
+                    disabled={creatorType === albumCreator.creation ? ((!name && !description) || formSubmitted ? true : false) : !isDirty} 
+                    onClick={clearForm}
+                >
+                    Anuluj
+                </Cancel>
             </Buttons>
         </>
     );

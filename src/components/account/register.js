@@ -99,6 +99,7 @@ const Register = ({ pos, val }) => {
 				setRegisterSuccess(false);
 				let countryName = "";
 				for (let i = 0; i < countryList.length; i++) {
+					// eslint-disable-next-line
 					if (countryList[i].id == values.nationality) {
 						countryName = countryList[i].country;
 					}

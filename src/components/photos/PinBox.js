@@ -8,7 +8,7 @@ import "./photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { albumTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
-import { selectAlbumType, selectSharedPersonList } from "../../redux/albumDetailsSlice";
+import { selectAlbumType, selectSharedPersonList, selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
 const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
@@ -19,18 +19,36 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
     const ref = useRef(null);
 
     const albumType = useSelector(selectAlbumType);
+    const photos = useSelector(selectAlbumPhotos);
     const sharedPersonList = useSelector(selectSharedPersonList);
+
     const [ list, setList ] = useState([]);
+    const [ tags, setTags ] = useState([]);
 
     useEffect(() => {
         if (albumType === albumTypes.public) {
             getLoggedUserFriendsList();
+            console.log(photos);
+            getPhotoTags();
         } else if (albumType === albumTypes.private) {
+            // shared person list from redux
             setList(sharedPersonList);
+            console.log(photos);
+            console.log(sharedPersonList);
+            getPhotoTags();
         }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const getPhotoTags = () => {
+        for (let i = 0; i < photos.length; i++) {
+            if (photos[i].photo.photoId === photoId) {
+                setTags(photos[i].photo.taggedList)
+                console.log(photos[i].photo);
+                break;
+            }
+        }
+    };
 
     async function getLoggedUserFriendsList() {
         await axios({
@@ -42,22 +60,34 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
             },
         }).then(({data}) => {
 			setList(data);
+            console.log(data);
         }).catch((error) => {
             console.log(error);
         });
     };
 
-    // albums are searched by title, friends by name of course
     const handleSearchBarChange = (e) => {
+        // surName for sharedPersonList, lastName for friends
         setSearchContent(e.target.value);
-        setFound(list.filter((item) => {
-            return (item.name).toLowerCase()
-			.includes(searchContent.toLowerCase()) ||
-			(item.lastName).toLowerCase()
-			.includes(searchContent.toLowerCase()) ||
-			(item.name + " " + item.lastName).toLowerCase()
-			.includes(searchContent.toLowerCase())
-        }));
+        if (albumType === albumTypes.private) {
+            setFound(list.filter((item) => {
+                return (item.name).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.surName).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.name + " " + item.surName).toLowerCase()
+                .includes(searchContent.toLowerCase())
+            }));      
+        } else if (albumType === albumTypes.public) {
+            setFound(list.filter((item) => {
+                return (item.name).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.lastName).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.name + " " + item.lastName).toLowerCase()
+                .includes(searchContent.toLowerCase())
+            }));
+        }
     };
 
     return (
@@ -84,12 +114,12 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
                         list ? ((
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.id} friend={friend}/>
+                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
                             ) : null
                         ) || (
                             list.length !== 0 && searchContent.length === 0 ?
                             list.map((friend) => 
-                                <FriendThumbnail key={friend.id} friend={friend}/>
+                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>

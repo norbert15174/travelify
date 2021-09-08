@@ -5,19 +5,21 @@ import editIcon from "./assets/editIcon.svg";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-// redirectTo => set states redirect to album
-
-const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectTo}) => (
-    <Container onClick={redirectTo}>
-        <MainPhoto src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} alt={"albumMainPhoto " + album.id}/>
-        { !notRealOwner && <EditButton icon={editIcon} onClick={() => {console.log("klikłem")}}/> }
+const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectToAlbum, redirectToAlbumEdit=null}) => (
+    <Container>
+        { !notRealOwner && <EditButton icon={editIcon} onClick={redirectToAlbumEdit}/> }
+        <MainPhoto 
+            src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} 
+            alt={"albumMainPhoto " + album.id} 
+            onClick={redirectToAlbum}
+        />
         { notRealOwner && 
             <SharingPerson>
                 <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
                 <h3>{owner.name + " " + owner.surName}</h3>
             </SharingPerson> 
         }
-        <InfoContainer>
+        <InfoContainer onClick={redirectToAlbum}>
             <Text>
                 <Header>
                     <Title>{album.name}</Title>
@@ -61,22 +63,25 @@ const EditButton = styled(ButtonIcon)`
     margin: 0;
     @media only screen and (max-width: 1425px) {
         left: 89%;
-    }
+    };
     @media only screen and (max-width: 1225px) {
         left: 87%;
-    }
+    };
     @media only screen and (max-width: 1025px) {
         width: 30px;
         height: 30px;
-    }
+    };
     @media only screen and (max-width: 825px) {
         left: 91%;
-    }
+    };
     @media only screen and (max-width: 510px) {
         left: 90%;
         width: 20px;
         height: 20px;
-    }
+    };
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightTurquise};
+    };
 `;
 
 const SharingPerson = styled.div`
@@ -151,6 +156,7 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
+    color: #000;
     @media only screen and (max-width: 1425px) {
         font-size: 28px;
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Button from "../trinkets/Button";
 import { routes } from "../../miscellanous/Routes";
 import infoIcon from "./assets/infoIcon.svg";
@@ -10,25 +10,25 @@ import deleteAlbumIcon from "./assets/deleteAlbumIcon.svg";
 import BasicInfo from "./BasicInfo";
 import Localization from "./Localization";
 import Photos from "./Photos";
-import DeleteAlbum from "./DeleteAlbum";
 import axios from "axios";
 import { albumCreator, albumTypes } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
 import { endpoints } from "../../url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
+import { selectBasicInfo } from "../../redux/albumCreatorSlice";
 
-const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumInfo=null, photos=null, sharedList=null}) => {
+const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
 
     const [ confirmDeletingAlbum, setConfirmDeletingAlbum ] = useState(false);
     const [ refuseDeletingAlbum, setRefuseDeletingAlbum ] = useState(false);
     const [ deleteBox, setDeleteBox ] = useState(false);
-    
+
     const [ creatingAlbum, setCreatingAlbum ] = useState(false);
-    const [ addingAlbumFinished, setAddingAlbumFinished ] = useState(false);
     const [ errorAtPosting, setErrorAtPosting ] = useState(null);
     const [ redirectToCreatedAlbum ,setRedirectToCreatedAlbum ] = useState({active: false, createdAlbumId: null});
 
     const blurState = useSelector((state) => state.blur.value);
+    const basicInfoooo = useSelector(selectBasicInfo);
 
     // BasicInfo submitted data, used at album creation, at editing it won't be used
     const [ basicInfo, setBasicInfo ] = useState({
@@ -47,15 +47,33 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
         place: "",
     });
 
-    // hook for retrieving albumId if we are editing album (EDITION)
+    async function deleteAlbum() {
+        await axios({
+            method: "delete",
+            url: endpoints.deleteAlbum + editedAlbumId,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        })
+        .then((response) => {
+            setRedirectToAlbums(true);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally((error) => {
+            setDeleteBox(false);
+            setConfirmDeletingAlbum(false);
+        });
+    }
 
     useEffect(() => {
+        console.log(basicInfoooo);
         // checking if album will be edited or created, setting albumId we are editing
         if (deleteBox && albumCreator.edition === creatorType) {
             if (confirmDeletingAlbum) {
-                console.log("Album has been deleted!");
-                setDeleteBox(false);
-                setConfirmDeletingAlbum(false);
+                deleteAlbum();
             }
             if (refuseDeletingAlbum) {
                 console.log("Album hasn't been deleted!");
@@ -69,7 +87,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectBackToAlbum, setRedirectBackToAlbum ] = useState(false);
 
-    // when CREATION we aren't passing any state
+    // CREATION or after album delete
     if (redirectToAlbums) {
         return <Redirect to={{pathname: routes.albums}}/>
     }
@@ -127,11 +145,9 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
             console.log(error);
         })
         .finally(() => {
-             setCreatingAlbum(false);
+            setCreatingAlbum(false);
         });
     };
-
-    //async function editAlbum() {};
 
     return (
         <>
@@ -156,7 +172,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
                         <Icon src={infoIcon}/>
                         <h1>Podstawowe informacje</h1>
                     </Header>
-                    <BasicInfo creatorType={creatorType} setForm={setBasicInfo} friendsList={friendsList}/>
+                    <BasicInfo editedAlbumId={editedAlbumId} creatorType={creatorType} setForm={setBasicInfo} friendsList={friendsList}/>
                 </SectionContainer>
                 <SectionContainer>
                     <Header>
@@ -173,7 +189,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
                             <Icon src={photoIcon}/>
                             <h1>Zdjęcia</h1>
                         </Header>
-                        <Photos/>
+                        <Photos editedAlbumId={editedAlbumId}/>
                     </SectionContainer>
                 }
                 {
@@ -218,7 +234,11 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
                             <Icon src={deleteAlbumIcon}/>
                             <h1>Usuń album</h1>
                         </Header>
-                        <DeleteAlbum setDeleteBox={setDeleteBox}/>
+                        <WarningMessage>
+                            <p>Usuniętego albumu nie da się odzyskać!</p>
+                            <p>Dodane zdjęcia zostaną trwale usunięte.</p>
+                        </WarningMessage>
+                        <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
                     </SectionContainer>
                 }
             </Container>
@@ -226,17 +246,6 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList, albumIn
     );
 
 }
-
-/*
-    type === albumCreator.creation
-                    &&
-                    (
-                        basicInfo.name !== "" &&
-                        localization.lat !== "" &&
-                        localization.place !== "" 
-                    )
-                    && 
-*/
 
 const Container = styled.div`
     width:  90%;
@@ -389,6 +398,47 @@ const StyledButton = styled(Button)`
 const Line = styled.div`
     width: 40%;
     border-top: 2px solid${({theme, errorAtPosting}) => !errorAtPosting ? theme.color.darkTurquise : "#B90E0A"};
+`;
+
+const DeleteButton = styled(Button)`
+    font-size: 16px;
+    text-transform: uppercase;
+    background-color: ${({theme}) => theme.color.redAlert};
+    display: block;
+    width: 150px;
+    margin: 50px 0px 0px auto;
+    @media only screen and (max-width: 870px) {
+        font-size: 14px;
+        width: 125px;
+    } 
+    @media only screen and (max-width: 560px) {
+        font-size: 10px;
+        width: 100px;
+        height: 30px;
+        margin: 35px 0px 0px auto;
+    } 
+    &:hover, &:focus {
+        background-color: ${({theme}) => theme.color.lightRedAlert};
+    } 
+`;
+
+const WarningMessage = styled.div`
+    margin: 20px auto 0px auto;;
+    width: 50%;
+    font-size: 24px;
+    color: ${({theme}) => theme.color.redAlert};
+    padding: 20px 25px;
+    text-align:center;
+    text-transform: uppercase;
+    border: 5px dashed ${({theme}) => theme.color.redAlert};
+    @media only screen and (max-width: 870px) {
+        font-size: 18px;
+        padding: 15px 20px;
+    } 
+    @media only screen and (max-width: 560px) {
+        font-size: 12px;
+        padding: 15px 15px;
+    } 
 `;
 
 export default AlbumCreatorPage;

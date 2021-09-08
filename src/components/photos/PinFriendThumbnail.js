@@ -1,22 +1,59 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAlbumType } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import { endpoints } from "../../url";
+import axios from "axios";
+import { albumTypes } from "../../miscellanous/Utils";
 
-const PinFriendThumbnail = ({friend}) => {
+const PinFriendThumbnail = ({friend, photoId, tags}) => {
 
-    const [ chosen, setChosen ] = useState(false);
+    const [ error, setError ] = useState(false);
+    const [ pinFinished, setPinFinished ] = useState(false);
+    const [ putting, setPutting ] = useState(false);
+    const albumType = useSelector(selectAlbumType);
+    const alreadyChosen = tags.find((item) => item.userId === (albumType === albumTypes.private ? friend.userId : friend.id)) ? true : false;
+    const dispatch = useDispatch();
 
+    async function tagPersonOnPhoto() {
+        setError(null);
+        setPinFinished(false);
+        setPutting(true);
+        console.log(friend.id);
+        await axios({
+            method: "put",
+                url: endpoints.tagPersonOnPhoto + photoId,
+                data: [
+                    friend.id
+                ],
+                headers: {
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                    withCredentials: true,
+                },
+        })
+        .then((response) => {           
+            console.log(response); 
+        })
+        .catch((error) => {
+            setError(error);
+        })
+        .finally(() => {
+            setPinFinished(true);
+            setPutting(false);
+        });
+    };
     return (
         <Friend>
-            <Photo src={friend.profilePicture}/>
-            <h1>{friend.name + " " + friend.lastName}</h1>
-            <ChooseButton
-                onClick={() => {
-                    setChosen(true); 
-                    console.log("You have clicked at: " + friend.name);
-                }}
-            >
-                {chosen ? "Wybrany" : "Wybierz"}
+            <Photo src={friend.profilePicture || friend.photo || noProfilePictureIcon}/>
+            <h1>{friend.name + " " + (friend.lastName || friend.surName)}</h1>
+            <ChooseButton disabled={alreadyChosen || (pinFinished && !error)} onClick={tagPersonOnPhoto}>
+                {alreadyChosen || (pinFinished && !error) ? "Oznaczony" : putting ? "Oznaczanie..." : "Wybierz"}
             </ChooseButton>
         </Friend>
     );
