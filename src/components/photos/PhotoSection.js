@@ -1,8 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import "./photosScrollbar.css";
+import { useSelector } from "react-redux";
+import { selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
-const PhotoSection = ({photos, setPreview}) => {
+const PhotoSection = ({setPreview}) => {
+
+    const photos = useSelector(selectAlbumPhotos);
 
     return (
         <Container>
@@ -10,11 +14,12 @@ const PhotoSection = ({photos, setPreview}) => {
             <Line/>
             <PhotoGrid className="scroll">
             {
-                photos.map((photo) => (
-                    <PhotoContainer key={photo.id} onClick={() => setPreview({visible: true, id: photo.id})}>
-                        <Photo src={photo.image} alt="album-photo"/>
+                photos.length !== 0 ? photos.map((item) => (
+                    <PhotoContainer key={item.photo.photoId} onClick={() => setPreview({visible: true, index: item.index})}>
+                        <Photo src={item.photo.photoUrl} alt={"album-photo-" + item.photo.photoId}/>
                     </PhotoContainer>
                 ))
+                : <NoResults>Brak zdjęć w albumie...</NoResults>
             }
             </PhotoGrid>
         </Container>
@@ -48,6 +53,16 @@ const Header = styled.h1`
 
 const Line = styled.div`
     border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
+`;
+
+const NoResults = styled.h1`
+    color: ${({theme}) => theme.color.greyFont};
+    @media only screen and (max-width: 1140px) {
+        font-size: 16px;
+    };
+    @media only screen and (max-width: 510px) {
+        font-size: 12px;
+    }
 `;
 
 const PhotoGrid = styled.div`

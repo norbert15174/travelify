@@ -1,24 +1,74 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { selectSharedPersonList, setSharedPersonList } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
+import {endpoints} from "../../url";
 
 // FriendThumbnail for SharePinBox
 
-const ShareFriendThumbnail = ({name, url}) => {
+const ShareFriendThumbnail = ({friend, albumId}) => {
 
-    const [ chosen, setChosen ] = useState(false);
+    const [ error, setError ] = useState(null);
+    const [ shareFinished, setShareFinished ] = useState(false);
+    const [ posting, setPosting ] = useState(false);
+    const sharedPersonList = useSelector(selectSharedPersonList);
+    const alreadyChosen = sharedPersonList.find((item) => item.userId === friend.id) ? true : false;
+    const dispatch = useDispatch();
+
+    async function updateSharedPersonList() {
+        setError(null);
+        setShareFinished(false);
+        setPosting(true);
+        await axios({
+            method: "post",
+                url: endpoints.shareAlbumWithUser + albumId,
+                data: [
+                    friend.id
+                ],
+                headers: {
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                    withCredentials: true,
+                },
+        })
+        .then((response) => {
+            // response should return shareId                
+            console.log(response); 
+            dispatch(setSharedPersonList([
+                ...sharedPersonList, 
+                {
+                    userId: friend.id, 
+                    name: friend.name, 
+                    surName: friend.lastName, 
+                    photo: friend.profilePicture
+                }
+            ]));
+        })
+        .catch((error) => {
+            console.log(error);
+            setError(error);
+        })
+        .finally(() => {
+            console.log(sharedPersonList);
+            setShareFinished(true);
+            setPosting(false);
+        });
+    };
 
     return (
         <Friend>
-            <Photo src={url}/>
-            <h1>{name}</h1>
+            <Photo src={friend.profilePicture}/>
+            <h1>{friend.name + " " + friend.lastName}</h1>
             <ChooseButton
-                onClick={() => {
-                    setChosen(true); 
-                    console.log("You have clicked at: " + name);
-                }}
+                onClick={updateSharedPersonList}
+                disabled={alreadyChosen || (shareFinished && !error)}
             >
-                {chosen ? "Wybrany" : "Wybierz"}
+                {alreadyChosen || (shareFinished && !error) ? "Udostępniony" : posting ? "Udostępnianie..." : "Wybierz"}
             </ChooseButton>
         </Friend>
     );
@@ -30,6 +80,12 @@ const Friend = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 14px;
+    h1 { 
+        display: inline-block;
+        word-wrap: break-word;
+        width: max-content;
+        white-space: normal
+    }
     @media only screen and (max-width: 1140px) {
         font-size: 10px;
     }

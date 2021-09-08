@@ -55,9 +55,9 @@ const GridSection = ({userType, data, sectionType}) => {
                                 return <AlbumThumbnail key={album.id} album={album}/>
                             }) : null
                         ) || (
-                            <h1>Brak albumów...</h1>
+                            <h1 style={{color: "#5B5B5B"}}>Brak albumów...</h1>
                         )
-                    ) : <h1>Brak albumów...</h1>
+                    ) : <h1 style={{color: "#5B5B5B"}}>Brak albumów...</h1>
                 } 
                 </AlbumGrid>
                 :
@@ -83,8 +83,8 @@ const GridSection = ({userType, data, sectionType}) => {
                             />
                         ) : null
                     ) || (
-                        <h1>Brak znajomych...</h1>
-                    )) : <h1>Brak znajomych...</h1>
+                        <h1 style={{color: "#5B5B5B"}}>Brak znajomych...</h1>
+                    )) : <h1 style={{color: "#5B5B5B"}}>Brak znajomych...</h1>
                 }
                 </FriendsGrid>
             }
@@ -205,6 +205,9 @@ const FriendsGrid = styled.div`
     margin-left: 30px;
     max-height: 750px;
     overflow-y: scroll;
+    h1 { 
+        color: ${({theme}) => theme.color.greyFont};
+    }
     @media only screen and (max-width: 1440px) {
         grid-template-columns: repeat(2, 380px);
     }

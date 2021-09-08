@@ -87,7 +87,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
         setErrorAtInvitation(null);
 		await axios({
 			method: "post",
-			url: "http://localhost:8020/friends?id=" + id,
+			url: endpoints.sendInvitation + id,
 			headers: {
 				"Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,

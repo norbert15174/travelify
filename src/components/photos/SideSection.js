@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import profilePhoto from  "../albums/assets/profilePhoto.png";
+import React, { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import AddComment from "./AddComment";
 import tagWhiteIcon from "./assets/tagWhiteIcon.svg";
@@ -8,66 +7,109 @@ import editPencilIcon from "./assets/editPencilIcon.svg";
 import acceptIcon from "./assets/acceptIcon.svg";
 import close2Icon from "./assets/close2Icon.svg";
 import tagTurquiseIcon from "./assets/tagTurquiseIcon.svg";
+import { albumRights } from "../../miscellanous/Utils";
+import axios from "axios";
+import Spinner from "../trinkets/Spinner";
+import { endpoints } from "../../url";
+import { getDate } from "../../miscellanous/Utils";
+import { useSelector, useDispatch } from "react-redux"
+import { selectOwner, selectAlbumPhotos, selectRights } from "../../redux/albumDetailsSlice";
 
-const fakeComments = [
-    {
-        id: 1,
-        name: "Krzysztof Nowak",
-        text: "Super zdjęcie! :D",
-    },
-    {
-        id: 2,
-        name: "Magda Elk",
-        text: "Piękne zdjęcie! Jak było? Na pewno też kiedyś tam pojadę :D :D :D",
-    },
-    {
-        id: 3,
-        name: "Krzysztof Nowak",
-        text: "Chyba w twoich snach! xDD",
-    },
-    {
-        id: 4,
-        name: "Mikołaj Telec",
-        text: "Spokój w komentarzach, bo bany polecą :D. A tak serio to naprawdę warto się wybrać w to miejsce.",
-    },
-    {
-        id: 5,
-        name: "Magda Elk",
-        text: "Napiszę do ciebie na priv to pogadamy :) Opowiesz mi jak najlepiej przygotować się do takiej wycieczki.",
-    },
-    {
-        id: 6,
-        name: "Mikołaj Telec",
-        text: "Jasne :D czekam na wiadomość. ",
-    },
-]
+const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimiter}) => {
 
-const initialDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat."
+    const owner = useSelector(selectOwner);
+    const photos = useSelector(selectAlbumPhotos);
+    const rights = useSelector(selectRights)
+    const currentPhotoDetail = photos[currentPhotoIndex].photo;
+    const photoId = photos[currentPhotoIndex].photo.photoId;
 
-const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
-
-    const [ commentsArray, setCommentsArray ] = useState(fakeComments);
+    const [ comments, setComments ] = useState([]);
+    const [ loadingComments, setLoadingComments ] = useState(false);
+    const [ tags, setTags ] = useState([]);
+    const [ loadingTags, setLoadingTags ] = useState(false);
     const [ editing, setEditing ] = useState(false);
-    const [ description, setDescription ] = useState(initialDescription);
+    const [ description, setDescription ] = useState(currentPhotoDetail.description);
     
-    
+    useEffect(() => {
+        getPhotoTags();
+        getComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPhotoIndex]);
+
     const addComment = (comment) => {
-        setCommentsArray((prevState) => [ ...prevState, comment]);
-    }
+        //setComments((prevState) => [ ...prevState, comment]);
+        sendComment(comment);
+    };
+
+    const getPhotoTags = () => {
+        setLoadingTags(true);
+        for (let i = 0; i < photos.length; i++) {
+            if (photos[i].photo.photoId === photoId) {
+                setTags(photos[i].photo.taggedList)
+                break;
+            }
+        }
+        setLoadingTags(false);
+    };
+
+    const getComments = () => {
+        setLoadingComments(true);
+        let temp = null;
+        for (let i = 0; i < photos.length; i++) {
+            if (photos[i].photo.photoId === photoId) {
+                //setComments(photos[i].photo.photoComments);
+                temp = photos[i].photo.photoComments;
+                break;
+            }
+        }
+        setComments(sortCommentsByTime(temp));
+        setLoadingComments(false);
+    }; 
+
+    const sortCommentsByTime = (input) => {
+        input = input.slice().sort((a, b) => {
+            let a_temp = a.time.split(" "); // ["date", "time"]
+            let b_temp = b.time.split(" ");
+            return (a_temp[1] < b_temp[1]) ? -1 : ((a_temp[1] > b_temp[1]) ? 1 : 0);
+        });
+        return input;
+    };
+
+
+    async function sendComment(comment) {
+        await axios({
+			method: "put",
+			url: endpoints.addComment + photoId,
+            data: {
+                text: comment
+            },
+			headers: {
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		}).then((response) => {
+            console.log(response);
+		}).catch((error) => {
+            console.log(error);
+		})
+    };
 
     return (
         <Container heightDelimiter={heightDelimiter} widthDelimiter={widthDelimiter}>
-            <EditDescriptionButton 
-                icon={!editing ? editPencilIcon : acceptIcon}
-                onClick={() => {
-                    if (!editing) {
-                        setEditing(true);
-                    } else {
-                        setDescription(description);
-                        setEditing(false);
-                    }
-                }}
-            />
+            {
+                rights === albumRights.owner && 
+                <EditDescriptionButton 
+                    icon={!editing ? editPencilIcon : acceptIcon}
+                    onClick={() => {
+                        if (!editing) {
+                            setEditing(true);
+                        } else {
+                            setDescription(description);
+                            setEditing(false);
+                        }
+                    }}
+                />
+            }
             { 
                 editing 
                 && 
@@ -75,18 +117,18 @@ const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
                     icon={close2Icon}
                     onClick={() => {
                         setEditing(false);
-                        setDescription(initialDescription);
+                        setDescription(currentPhotoDetail.description);
                     }}
                 />
             }
             <Header>
                 <Heading>
-                    <OwnerPhoto src={profilePhoto}/>
+                    <OwnerPhoto src={owner.photo}/>
                         {
                             !editing ? (
                                 <span>
-                                    <a href={link}>Mikołaj Telec </a> 
-                                    {description}  
+                                    <a href={link}>{owner.name + " " + owner.surName} </a> 
+                                    {currentPhotoDetail.description}  
                                 </span>
                             ) : (
                                 <AddDescription
@@ -100,58 +142,85 @@ const SideSection = ({photoId, setPinBox, heightDelimiter, widthDelimiter}) => {
                             )
                         }
                 </Heading>
-                <TagsContainer>
-                <TagIcon src={tagTurquiseIcon}/>
-                    {<Tags className="scroll_two">
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                        <TaggedPerson>
-                            <UserPhoto src={profilePhoto}/>
-                            Krzysztof Jarzyna
-                        </TaggedPerson>
-                    </Tags>}
-                </TagsContainer>
+                {
+                    !loadingTags ? (
+                        tags.length !== 0 && (
+                        <TagsContainer>
+                            <TagIcon src={tagTurquiseIcon}/>
+                            {
+                                <Tags className="scroll_two">
+                                    {tags.map((item) => (
+                                        <TaggedPerson key={item.userId}>
+                                            <UserPhoto src={item.photo}/>
+                                            {item.name + " " + item.surName}
+                                        </TaggedPerson>
+                                    ))}
+                                </Tags>
+                            }
+                        </TagsContainer>)
+                    ) : (
+                        <TagsSpinner>
+                            <Spinner width={"15px"} height={"15px"} firstColor={"#12BFCE"} secondColor={"#0FA3B1"} border={"5px"}/>
+                        </TagsSpinner>
+                    )
+                }
             </Header>
             <CommentsSection className="scroll_two">
             {   
-                commentsArray.map((comment) => (
-                    <CommentContainer key={comment.id}>
-                        <UserPhoto src={profilePhoto}/>
-                        <span>
-                            <a href={link}>{comment.name} </a>
-                            {comment.text}
-                        </span>
-                    </CommentContainer>
-                ))
+                !loadingComments ? (
+                    comments.length !== 0 
+                    ? 
+                    comments.map((item) => (
+                        <>
+                            <CommentContainer key={item.commentId}>
+                                <UserPhoto src={item.photo}/>
+                                <span>
+                                    <a href={link}>{item.name + " " + item.surName} </a>
+                                    {item.text}
+                                </span>
+                            </CommentContainer>
+                            <CommentDate key={'_' + Math.random().toString(36).substr(2, 9)}>
+                                {item.time.split(" ")[1].substring(0,5) + "  " + getDate(item.time.split(" ")[0])}
+                            </CommentDate>
+                        </>
+                    ))
+                    : 
+                    <NoCommments>
+                        Sekcja komentarzy jest pusta...<br/>
+                        Podziel się zdjęciem, a być może ktoś doceni jego piękno i zostawi miły komentarz &#128522;
+                    </NoCommments>
+                ) : (
+                    <CommentsSpinner>
+                        <Spinner width={"30px"} height={"30px"} firstColor={"#12BFCE"} secondColor={"#0FA3B1"} border={"8px"}/>
+                    </CommentsSpinner>
+                )
             }
             </CommentsSection>
             <Footer>
-                <TagButton 
-                    icon={tagWhiteIcon}
-                    onClick={() => setPinBox(true)}
-                >
-                    Oznacz osobę
-                </TagButton>
-                <AddComment add={addComment}/> 
+                {
+                    rights === albumRights.owner 
+                    &&
+                    <TagButton 
+                        icon={tagWhiteIcon}
+                        onClick={() => setPinBox(true)}
+                    >
+                        Oznacz osobę
+                    </TagButton>
+                }
+                <AddComment currentPhotoIndex={currentPhotoIndex} add={addComment}/> 
             </Footer>
         </Container>
     );
 
 };
+
+const CommentsSpinner = styled.div`
+    margin: auto auto;
+`;
+
+const TagsSpinner = styled.div`
+    margin: 0px auto 5px 5px;
+`;
 
 const Container = styled.div`
     padding: 20px 25px 10px 25px;
@@ -323,6 +392,21 @@ const TaggedPerson = styled.div`
     }
 `;
 
+const NoCommments = styled.h1`
+    color: ${({theme}) => theme.color.greyFont};
+    display: inline-block;
+    word-wrap: break-word;
+    width: 80%;
+    white-space: normal;
+    @media only screen and (max-width: 1425px) {
+        font-size: 15px;
+    }
+    @media only screen and (max-width: 1025px) {
+        font-size: 10px;
+    }
+    
+`;
+
 const CommentsSection = styled.div`
     display: flex;
     flex-direction: column;
@@ -335,7 +419,7 @@ const CommentContainer = styled.div`
     align-items: flex-start;
     font-size: 14px;
     color: ${({theme}) => theme.color.greyFont};
-    margin: 0 5px 20px 0;
+    margin: 0 5px 5px 0;
     span {
         display: inline-block;
         word-wrap:break-word;
@@ -350,8 +434,16 @@ const CommentContainer = styled.div`
         }
     }
     @media only screen and (max-width: 1225px) {
-        margin: 0px 5px 10px 0px;
+        margin: 0px 5px 2.5px 0px;
         font-size: 10px;
+    }
+`;
+
+const CommentDate = styled.p`
+    color: ${({theme}) => theme.color.greyFont};
+    margin-bottom: 10px;
+    @media only screen and (max-width: 1225px) {
+        font-size: 8px;
     }
 `;
 
@@ -457,6 +549,7 @@ const TagButton = styled(ButtonIcon)`
         margin-top: 5px;
     }
 `;
+
 
 
 var link = "https://www.youtube.com/watch?v=ObJLIsNcOZ4";

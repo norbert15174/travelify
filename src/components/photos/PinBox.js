@@ -3,24 +3,14 @@ import styled from "styled-components";
 import closeIcon from "./assets/closeIcon.svg";
 import Input from "../trinkets/Input";
 import FriendThumbnail from "./PinFriendThumbnail";
+import axios from "axios";
 import "./photosScrollbar.css";
+import { useSelector } from "react-redux";
+import { albumTypes } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
+import { selectAlbumType, selectSharedPersonList, selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 
-const friends = [
-    { value: 'Jan Nowak', label: 'Jan Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Nowak', label: 'Krzysztof Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Mateusz Nowak', label: 'Mateusz Nowak', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Mateusz Kowalski', label: 'Mateusz Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Jan Kowalski', label: 'Jan Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU", },
-    { value: 'Krzysztof Kowalski', label: 'Krzysztof Kowalski', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nobody', label: 'Nobody', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Nieznajomy', label: 'Nieznajomy', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny', label: 'Bezimienny', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-    { value: 'Bezimienny2', label: 'Bezimienny2', icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLkbtTa0kfmKizxJgqECQLdlt_xq1R2jEQQ&usqp=CAU" },
-]
-
-// Box for sharing and pinning friends
-
-const PinBox = ({setClose, heightDelimiter}) => {
+const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
     // search field content
     const [searchContent, setSearchContent] = useState("");
@@ -28,29 +18,76 @@ const PinBox = ({setClose, heightDelimiter}) => {
 
     const ref = useRef(null);
 
+    const albumType = useSelector(selectAlbumType);
+    const photos = useSelector(selectAlbumPhotos);
+    const sharedPersonList = useSelector(selectSharedPersonList);
+
+    const [ list, setList ] = useState([]);
+    const [ tags, setTags ] = useState([]);
+
     useEffect(() => {
-
-        // backend magic
-
+        if (albumType === albumTypes.public) {
+            getLoggedUserFriendsList();
+            console.log(photos);
+            getPhotoTags();
+        } else if (albumType === albumTypes.private) {
+            // shared person list from redux
+            setList(sharedPersonList);
+            console.log(photos);
+            console.log(sharedPersonList);
+            getPhotoTags();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /*
-    function boxOutsideClick(e){
-        if (!ref.current || ref.current.contains(e.target)) {
-            return;
+    const getPhotoTags = () => {
+        for (let i = 0; i < photos.length; i++) {
+            if (photos[i].photo.photoId === photoId) {
+                setTags(photos[i].photo.taggedList)
+                console.log(photos[i].photo);
+                break;
+            }
         }
-        e.stopPropagation();
-        e.preventDefault();
-    }
-    */
+    };
 
-    // albums are searched by title, friends by name of course
+    async function getLoggedUserFriendsList() {
+        await axios({
+            method: "get",
+            url: endpoints.getLoggedUserFriends,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+			setList(data);
+            console.log(data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
     const handleSearchBarChange = (e) => {
+        // surName for sharedPersonList, lastName for friends
         setSearchContent(e.target.value);
-        setFound(friends.filter((item) => {
-            return item.label.toLowerCase().includes(searchContent.toLowerCase());
-        }));
+        if (albumType === albumTypes.private) {
+            setFound(list.filter((item) => {
+                return (item.name).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.surName).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.name + " " + item.surName).toLowerCase()
+                .includes(searchContent.toLowerCase())
+            }));      
+        } else if (albumType === albumTypes.public) {
+            setFound(list.filter((item) => {
+                return (item.name).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.lastName).toLowerCase()
+                .includes(searchContent.toLowerCase()) ||
+                (item.name + " " + item.lastName).toLowerCase()
+                .includes(searchContent.toLowerCase())
+            }));
+        }
     };
 
     return (
@@ -74,19 +111,19 @@ const PinBox = ({setClose, heightDelimiter}) => {
                 />
                 <List className="scroll">
                     {
-                        (
+                        list ? ((
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
                             ) : null
                         ) || (
-                            friends.length !== 0 && searchContent.length === 0 ?
-                            friends.map((friend) => 
-                                <FriendThumbnail key={friend.label} name={friend.value} url={friend.icon}/>
+                            list.length !== 0 && searchContent.length === 0 ?
+                            list.map((friend) => 
+                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>
-                        ) 
+                        )) : <NoResults>Brak wyników...</NoResults>
                     }
                 </List>
             </Box>

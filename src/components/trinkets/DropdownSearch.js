@@ -14,14 +14,14 @@ const CustomSelectOption = props => (
             <Album src={props.data.mainPhoto}/>
             <InnerContainer>
                 <MobileContainer>
-                    <Title>{props.data.title}</Title>
+                    <Title>{props.data.value}</Title>
                     <Place>{props.data.place}</Place>
                 </MobileContainer>
                 {
-                    props.data.profilePhoto &&
+                    props.data.owner !== undefined &&
                     <User>
-                        <Profile src={props.data.profilePhoto}/>
-                        <Name>{props.data.value}</Name>
+                        <Profile src={props.data.owner.photo}/>
+                        <Name>{props.data.owner.name + " " + props.data.owner.surName}</Name>
                     </User>
                 } 
             </InnerContainer>
@@ -34,13 +34,16 @@ const CustomSelectValue = props => (
             <Album src={props.data.mainPhoto}/>
             <InnerContainer>
                 <MobileContainer>
-                    <Title>{props.data.title}</Title>
+                    <Title>{props.data.value}</Title>
                     <Place>{props.data.place}</Place>
                 </MobileContainer>
-                <User>
-                    <Profile src={props.data.profilePhoto}/>
-                    <Name>{props.data.value}</Name>
-                </User>
+                {
+                    props.data.owner !== undefined &&
+                    <User>
+                        <Profile src={props.data.owner.photo}/>
+                        <Name>{props.data.owner.name + " " + props.data.owner.surName}</Name>
+                    </User>
+                } 
             </InnerContainer>
     </ValueContainer>
 )
@@ -99,8 +102,14 @@ const CustomStyles = {
     })
 };
 
-const DropdownSearch = ({options, onChange, onBlur, value}) => {
+const DropdownSearch = ({options, setState, value}) => {
     
+    const setValueOnChange = (value) => {
+        if (value) {
+            setState(value.id); // albumId
+        }
+    };
+
     return (
         <StyledSelect
             styles={CustomStyles}
@@ -109,9 +118,8 @@ const DropdownSearch = ({options, onChange, onBlur, value}) => {
             isSearchable 
             isClearable
             placeholder="Szukaj..."
-            noOptionsMessage={() => "Brak wyników :("}
-            onChange={onChange}
-            onBlur={onBlur}
+            noOptionsMessage={() => "Brak albumów :("}
+            onChange={setValueOnChange}
             value={value}
             components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
         />
@@ -205,6 +213,7 @@ const Profile = styled.img`
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
+    border: 2px solid ${({theme}) => theme.color.lightTurquise};
     @media only screen and (max-width: 1110px) {
         width: 30px;
         height: 30px;

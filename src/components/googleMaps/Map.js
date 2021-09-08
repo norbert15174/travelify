@@ -5,9 +5,10 @@ import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-map
 import { indyStyle } from "./MapStyle";
 import { FriendsListArray as markers } from "./data";
 import MarkerInfo from "./MarkerInfo";
+import { albumCreator } from "../../miscellanous/Utils";
+import { getCountryId } from "../../miscellanous/Utils";
 
 function Map({ width, height, options, initialCoordinates, type, setLocalization=null, deleteMarker=false}) {
-	// deleteMarker - Localization.js - marker won't show up when we have cleared form
 
 	const mapOptions = {
 		options,
@@ -83,7 +84,8 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 					setLocalization({
 						lat: marker.lat,
 						lng: marker.lng,
-						country: country,
+						countryId: getCountryId(country),
+						countryName: country,
 						place: place,
 					});
 				}, 
@@ -117,7 +119,7 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 			onLoad={onMapLoad}
 			onUnmount={onUnmount}
 			options={mapOptions}
-			onClick={type === "AlbumCreator" && ((event) => {
+			onClick={(type === (albumCreator.creation) || type === (albumCreator.edition)) && ((event) => {
 				onMapClick(event);
 			})}
 		>
@@ -141,9 +143,7 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 						}}
 						onCloseClick={() => setSelected(null)}	
 					>
-						<
-// @ts-ignore
-						MarkerInfo
+						<MarkerInfo
 							name={selected.name}
 							url={selected.url}
 							title={selected.title}
@@ -160,27 +160,19 @@ function Map({ width, height, options, initialCoordinates, type, setLocalization
 						onClick={() => setSelected({name: "Japonia, Osaka", lat: initialCoordinates.lat, lng: initialCoordinates.lng })}
 						onLoad={onMarkerLoad}
 					/>}
-				{selected && type === "AlbumInside" ? (
-					<InfoWindow
-						position={{
-							lat: selected.lat,
-							lng: selected.lng,
-						}}
-						onCloseClick={() => setSelected(null)}	
-					>	
-						<LocationInfo>
-							<Name>{selected.name}</Name>
-							<a href="https://www.google.com/search?q=Japonia, Osaka" target="_blank" rel="noreferrer">
-								Kliknij, by dowiedzieć się więcej o tym miejscu
-							</a> 
-						</LocationInfo>
-					</InfoWindow>
-				) : null}
-				{marker && type === "AlbumCreator" && !deleteMarker ? (
+				{(type === albumCreator.creation) && marker && !deleteMarker ? (
 					<Marker
 						position={{
 							lat: marker.lat,
 							lng: marker.lng,
+						}}
+					/>
+				) : null}
+				{type === albumCreator.edition ? (
+					<Marker
+						position={{
+							lat: initialCoordinates.lat,
+							lng: initialCoordinates.lng,
 						}}
 					/>
 				) : null}

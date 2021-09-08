@@ -18,7 +18,6 @@ const Register = ({ pos, val }) => {
 
 	const [ error, setError ] = useState(null);
 	const [ countryList, setCountryList ] = useState([]);
-	const [ getCountriesFinished, setGetCountriesFinished ] = useState(false);
 	const [ registerSuccess, setRegisterSuccess ] = useState(false);
 
 	useEffect(() => {
@@ -100,6 +99,7 @@ const Register = ({ pos, val }) => {
 				setRegisterSuccess(false);
 				let countryName = "";
 				for (let i = 0; i < countryList.length; i++) {
+					// eslint-disable-next-line
 					if (countryList[i].id == values.nationality) {
 						countryName = countryList[i].country;
 					}
@@ -157,9 +157,7 @@ const Register = ({ pos, val }) => {
 			setCountryList(countries);
         }).catch((error) => {
             setError(error);
-        }).finally(() => {
-            setGetCountriesFinished(true);
-        })
+        });
     }
 
   	return (

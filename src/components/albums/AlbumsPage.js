@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
+import { useLocation, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FriendsListArray as albums } from "./data";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
@@ -20,14 +20,19 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
 
     const [ albumsType, setAlbumsType ] = useState(albumTypes.public);
     const [ searchList, setSearchList ] = useState(null);
+    const [ albumIdSearch, setAlbumIdSearch ] = useState(null);
     const blurState = useSelector((state) => state.blur.value); 
     const location = useLocation();
 
     useEffect(() => {
-        //mapAlbumsToSearchCallback();
-        if (location.state !== undefined) {
+        setAlbumIdSearch(null);
+        if (location.state !== undefined && !albumsType) {
             setAlbumsType(location.state.albumType);
         }
+        if (!searchList) {
+            mapAlbumsToSearchCallback();
+        }
+        console.log(albumIdSearch);
     }, []);
 
     const mapAlbumsToSearchCallback = useCallback(
@@ -65,26 +70,21 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
             searchList.shared.push({
                 value: sharedAlbums[i].album.name,
                 label: sharedAlbums[i].album.name,
+                owner: sharedAlbums[i].owner,
                 mainPhoto: sharedAlbums[i].album.mainPhoto !== undefined ? sharedAlbums[i].album.mainPhoto : noAlbumPhotoIcon,
                 place: sharedAlbums[i].album.coordinate.place + ", " + sharedAlbums[i].album.coordinate.country.country,
                 id: sharedAlbums[i].album.id,
             });
         };
+        console.log(searchList);
         setSearchList(searchList)
     };
 
-    /*
-    // album title, mainPhoto, place, ID WILL ALSO BE NEEDED 
-    const searchList = albums.list.map((item) => {
-        return {
-            value: item.title,
-            label: item.title,
-            title: item.title,
-            mainPhoto: item.image,
-            place: item.localization,
-        }
-    })
-    */
+    if (albumIdSearch) {
+        return <Redirect push to={{
+            pathname: `album/${albumIdSearch}`, 
+        }}/>
+    }
 
     return (
         <Container blurState={blurState}>
@@ -92,14 +92,18 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
                 <Heading>Twoje albumy</Heading>
             </PageHeader>
             <AlbumsNavigation>
-                <AlbumSearch options={
-                    searchList !== null ? 
-                        albumsType === "public" ? 
-                            searchList["public"] : 
-                                albumsType === "private" ? 
-                                searchList["private"] : 
-                                    searchList["shared"] : null
-                }/>
+                <AlbumSearch 
+                    options={ 
+                        searchList !== null ? 
+                            albumsType === "public" ? 
+                        searchList["public"] : 
+                            albumsType === "private" ? 
+                        searchList["private"] : 
+                            searchList["shared"] : null
+                    }
+                    setState={setAlbumIdSearch}
+                    value={albumIdSearch}
+                />
                 <Line/>
                 <AlbumsSwitch>
                     <AlbumOption 
