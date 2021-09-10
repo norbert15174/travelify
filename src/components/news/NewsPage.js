@@ -18,25 +18,12 @@ const NewsPage = () => {
     const [newsType, setNewsType] = useState(types.friends);
     const blurState = useSelector((state) => state.blur.value);    
 
-    const searchList = news.list.map((item) => {
-        return {
-            value: item.name,
-            label: item.name,
-            profilePhoto: item.url,
-            mainPhoto: item.image,
-            title: item.title,
-            place: item.localization,
-        }
-    })
-
     return (
         <Container blurState={blurState}>
             <Header>
                 <Heading>Aktualności</Heading>
             </Header>
             <NewsNavigation>
-                <NewsSearch options={searchList}/>
-                <Line/>
                 <NewsSwitch>
                     <NewsOption 
                         icon={friendsIcon} 
@@ -133,34 +120,21 @@ const Heading = styled.h1`
 `;
 
 const NewsNavigation = styled.div`
-    height: 204px;
+    height: auto;
+    padding: 25px 0px;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    @media only screen and (max-width: 720px) {
-        height: 180px;
-    }
 `;
 
-const Line = styled.div`
-    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
-    width: 75%;
-    margin: 25px auto 0 auto;
-    @media only screen and (max-width: 800px) {
-        margin: 20px auto 20px auto;
-    }
-`;
 
 const NewsSwitch = styled.div`
-    margin: 25px auto 30px auto;
+    margin: 0px auto;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 5vw;
-    @media only screen and (max-width: 800px) {
-        margin: 0px auto 25px auto;
-    }
 `;
 
 const NewsOption = styled.div`

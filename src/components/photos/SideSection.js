@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
+import { Redirect } from "react-router-dom";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import AddComment from "./AddComment";
 import tagWhiteIcon from "./assets/tagWhiteIcon.svg";
@@ -13,6 +14,7 @@ import Spinner from "../trinkets/Spinner";
 import { endpoints } from "../../url";
 import { getDate } from "../../miscellanous/Utils";
 import { useSelector, useDispatch } from "react-redux"
+import { routes } from "../../miscellanous/Routes";
 import { selectOwner, selectAlbumPhotos, selectRights } from "../../redux/albumDetailsSlice";
 
 const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimiter}) => {
@@ -22,6 +24,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
     const rights = useSelector(selectRights)
     const currentPhotoDetail = photos[currentPhotoIndex].photo;
     const photoId = photos[currentPhotoIndex].photo.photoId;
+    const dispatch = useDispatch();
 
     const [ comments, setComments ] = useState([]);
     const [ loadingComments, setLoadingComments ] = useState(false);
@@ -29,6 +32,10 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
     const [ loadingTags, setLoadingTags ] = useState(false);
     const [ editing, setEditing ] = useState(false);
     const [ description, setDescription ] = useState(currentPhotoDetail.description);
+    const [ redirectToProfile, setRedirectToProfile ] = useState({
+        active: false,
+        userId: null,
+    });
     
     useEffect(() => {
         getPhotoTags();
@@ -70,7 +77,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
         input = input.slice().sort((a, b) => {
             let a_temp = a.time.split(" "); // ["date", "time"]
             let b_temp = b.time.split(" ");
-            return (a_temp[1] < b_temp[1]) ? -1 : ((a_temp[1] > b_temp[1]) ? 1 : 0);
+            return (a_temp[0] < b_temp[0] && a_temp[1] < b_temp[1]) ? -1 : ((a_temp[1] > b_temp[1] && a_temp[0] > b_temp[0]) ? 1 : 0);
         });
         return input;
     };
@@ -93,6 +100,16 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
             console.log(error);
 		})
     };
+
+    if (redirectToProfile.active) {
+        document.body.style.overflow = "";
+        return <Redirect 
+					push to={{
+                    	pathname: routes.user.replace(/:id/i, redirectToProfile.userId), 
+                    	state: { selectedUser: { selectIsTrue: true, id: redirectToProfile.userId, isHeFriend: false} }
+					}}
+        		/>
+	}
 
     return (
         <Container heightDelimiter={heightDelimiter} widthDelimiter={widthDelimiter}>
@@ -123,11 +140,21 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
             }
             <Header>
                 <Heading>
-                    <OwnerPhoto src={owner.photo}/>
+                    <OwnerPhoto src={owner.photo} onClick={() => {
+                        document.body.style.overflow = "";
+                        setRedirectToProfile({active: true, userId: owner.id})
+                    }}/>
                         {
                             !editing ? (
                                 <span>
-                                    <a href={link}>{owner.name + " " + owner.surName} </a> 
+                                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                                    <p onClick={() => {
+                                            document.body.style.overflow = "";
+                                            setRedirectToProfile({active: true, userId: owner.id})
+                                        }}
+                                    >
+                                        {owner.name + " " + owner.surName} 
+                                    </p> 
                                     {currentPhotoDetail.description}  
                                 </span>
                             ) : (
@@ -150,7 +177,10 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
                             {
                                 <Tags className="scroll_two">
                                     {tags.map((item) => (
-                                        <TaggedPerson key={item.userId}>
+                                        <TaggedPerson key={item.userId} onClick={() => {
+                                            document.body.style.overflow = "";
+                                            setRedirectToProfile({active: true, userId: item.userId})
+                                        }}>
                                             <UserPhoto src={item.photo}/>
                                             {item.name + " " + item.surName}
                                         </TaggedPerson>
@@ -173,9 +203,18 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
                     comments.map((item) => (
                         <>
                             <CommentContainer key={item.commentId}>
-                                <UserPhoto src={item.photo}/>
+                                <UserPhoto src={item.photo} onClick={() => {
+                                    document.body.style.overflow = "";
+                                    setRedirectToProfile({active: true, userId: item.userId})
+                                }}/>
                                 <span>
-                                    <a href={link}>{item.name + " " + item.surName} </a>
+                                    <p onClick={() => {
+                                            document.body.style.overflow = "";
+                                            setRedirectToProfile({active: true, userId: item.userId})
+                                        }}
+                                    >
+                                        {item.name + " " + item.surName} 
+                                    </p>
                                     {item.text}
                                 </span>
                             </CommentContainer>
@@ -267,12 +306,13 @@ const Heading = styled.div`
         width: 90%;
         white-space: normal
     }
-    a {
+    p {
+        color: #000;
+        margin-right: 5px;
+        display: inline-block;
+        cursor: pointer;
         text-decoration: none;
         font-weight: ${({theme}) => theme.fontWeight.bold};
-        &:link, &:visited, &:hover, &:active {
-            color: #000;
-        }
     }
     @media only screen and (max-width: 1225px) {
         font-size: 14px;
@@ -288,6 +328,7 @@ const OwnerPhoto = styled.img`
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     border-radius: 50%;
     margin-right: 10px;
+    cursor: pointer;
     @media only screen and (max-width: 1225px) {
         width: 30px;
         height: 30px;
@@ -390,6 +431,7 @@ const TaggedPerson = styled.div`
     @media only screen and (max-width: 825px) {
         margin-right: 5px;
     }
+    cursor: pointer;
 `;
 
 const NoCommments = styled.h1`
@@ -426,12 +468,13 @@ const CommentContainer = styled.div`
         width: 90%;
         white-space: normal
     }
-    a {
+    p {
+        color: #000;
+        margin-right: 2.5px;
+        display: inline-block;
         text-decoration: none;
         font-weight: ${({theme}) => theme.fontWeight.bold};
-        &:link, &:visited, &:hover, &:active {
-            color: #000;
-        }
+        cursor: pointer;
     }
     @media only screen and (max-width: 1225px) {
         margin: 0px 5px 2.5px 0px;
@@ -453,6 +496,7 @@ const UserPhoto = styled.img`
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     border-radius: 50%;
     margin-right: 5px;
+    cursor: pointer;
     @media only screen and (max-width: 1425px) {
         width: 20px;
         height: 20px;

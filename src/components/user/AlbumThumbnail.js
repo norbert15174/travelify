@@ -51,22 +51,16 @@ const InfoContainer = styled.div`
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);
     @media only screen and (max-width: 1440px) {
-        height: 112px;
-    }
-    @media only screen and (max-width: 1080px) {
-        height: 150px;
-    }
-    @media only screen and (max-width: 830px) {
-        height: 138px;
-    }
-    @media only screen and (max-width: 735px) {
         height: 120px;
     }
-    @media only screen and (max-width: 560px) {
-        height: 85px;
+    @media only screen and (max-width: 1080px) {
+        height: 100px;
     }
-    @media only screen and (max-width: 410px) {
-        height: 68px;
+    @media only screen and (max-width: 830px) {
+        height: 80px;
+    }
+    @media only screen and (max-width: 560px) {
+        height: 50px;
     }
 `;
 
@@ -89,14 +83,18 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
+    margin-right: 10px;
     @media only screen and (max-width: 1440px) {
-        font-size: 28px;
+        font-size: 24px;
     }
-    @media only screen and (max-width: 735px) {
-        font-size: 22px;
+    @media only screen and (max-width: 1080px) {
+        font-size: 20px;
+    }
+    @media only screen and (max-width: 830px) {
+        font-size: 16px;
     }
     @media only screen and (max-width: 560px) {
-        font-size: 16px;
+        font-size: 14px;
     }
     @media only screen and (max-width: 410px) {
         font-size: 12px;
@@ -105,51 +103,41 @@ const Title = styled.h1`
 
 const Localization = styled.h2`
     font-size: 18px;
-    justify-self: end;
+    margin-right: 0;
+    margin-left: auto;
     @media only screen and (max-width: 1440px) {
-        font-size: 16px;
-    }
-    @media only screen and (max-width: 735px) {
         font-size: 14px;
     }
-    @media only screen and (max-width: 560px) {
+    @media only screen and (max-width: 830px) {
         font-size: 12px;
     }
-    @media only screen and (max-width: 410px) {
-        font-size: 8px;
+    @media only screen and (max-width: 560px) {
+        font-size: 10px;
     }
 `;
 
 const Description = styled.p`
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    @media only screen and (max-width: 1440px) { 
-        margin-top: 10px;
-        -webkit-line-clamp: 4;
-    }
-    @media only screen and (max-width: 1080px) {
-        -webkit-line-clamp: 6;
-    }
+    -webkit-line-clamp: 3;
     @media only screen and (max-width: 830px) {
-        -webkit-line-clamp: 5;
-    }
-    @media only screen and (max-width: 735px) {
         font-size: 10px;
         margin-top: 5px;
+        
+    }
+    @media only screen and (max-width: 735px) {
+
     }
     @media only screen and (max-width: 560px) {
+        -webkit-line-clamp: 2;
         font-size: 8px;
-        margin-top: 3px;
+        margin-top: 2.5px;
     }
-    @media only screen and (max-width: 410px) {
-        
-        -webkit-line-clamp: 4;
-    }
+
 `;
 
 export default AlbumThumbnail;

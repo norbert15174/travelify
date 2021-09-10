@@ -172,9 +172,7 @@ const AlbumGrid = styled.div`
         grid-auto-rows: 350px;
         grid-gap: 20px;
         margin-left: 0px;
-        h1 {
-            font-size: 16px;
-        }
+        font-size: 16px;
     }
     @media only screen and (max-width: 830px) {
         grid-auto-rows: 317px;
