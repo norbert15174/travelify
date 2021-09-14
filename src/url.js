@@ -28,6 +28,8 @@ export const endpoints = {
     deleteAlbum: url + "/albums?id=",
     tagPersonOnPhoto: url + "/photos/add/tagged/", // + photoId
     addComment: url + "/photos/comment/", // + photoId
+    getFriendsRequests: url + "/friends/requests",
+    invitationHandler: url + "/friends?id=", // invitationId, for accept PUT, for decline DELETE
 }
 
 // http://localhost:8020/friends/delete/
