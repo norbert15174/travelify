@@ -108,9 +108,9 @@ const Carousel = ({ selectedPhotoIndex, setClose}) => {
                         windowHeightDelimiter={windowHeightDelimiter}
                     />
                     <SideSection 
-                        //photoDetails={photos[current].photo}
                         currentPhotoIndex={current}
                         setPinBox={setPinBox}
+                        pinBox={pinBox}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
                         windowHeightDelimiter={windowHeightDelimiter}

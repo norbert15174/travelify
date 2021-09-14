@@ -135,23 +135,23 @@ const User = () => {
 
   	return (
     	<UserTemplate>
-      		{
-				(userDataFetchFinished && userFriendsFetchFinished && error === null) 
+      	{
+			(userDataFetchFinished && userFriendsFetchFinished && error === null) 
+			?
+				<UserPage 
+					personalData={personalData} 
+					individualAlbums={individualAlbums}
+					friendsList={friendsList}
+					userType={userType}
+					userId={urlParams.id}
+				/>
+			:	
+				!error
 				?
-					<UserPage 
-						personalData={personalData} 
-						individualAlbums={individualAlbums}
-						friendsList={friendsList}
-						userType={userType}
-						userId={urlParams.id}
-					/>
-				:	
-					!error
-					?
-					<Loading/>
-					: 
-					<ErrorAtLoading/>
-			}
+				<Loading/>
+				: 
+				<ErrorAtLoading/>
+		}
     	</UserTemplate>
   	);
 };

@@ -5,7 +5,7 @@ import { routes } from "../miscellanous/Routes";
 import Button from "../components/trinkets/Button";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setProfilePicture } from "../redux/userDataSlice";
+import { setProfilePicture, setUserData } from "../redux/userDataSlice";
 import { endpoints } from "../url";
 import { errorTypes } from "../miscellanous/Errors";
 import somethingWentWrongIcon from "../assets/somethingWentWrongIcon.svg";
@@ -53,6 +53,11 @@ const LoginTransition = () => {
             if (response.data.photo !== undefined) {
                 dispatch(setProfilePicture(response.data.photo));
             }
+            dispatch(setUserData({
+                id: response.data.id,
+                name: response.data.name,
+                surName: response.data.surName,
+            }))
             sessionStorage.setItem("loggedUserId", response.data.id);
         }).catch((error) => {
             setError(error);

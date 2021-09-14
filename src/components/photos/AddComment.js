@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import sendIcon from "./assets/sendIcon.svg";
 import emojiIcon from "./assets/emojiIcon.svg";
 import Picker from 'emoji-picker-react';

@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import "./friends.css";
 import MessageIcon from "../account/svg/messageIcon";
-const FriendItem = ({user,click}) => {
+const FriendItem = ({user, selectFriend}) => {
 
 	return (
-    	<Container className="font" onClick={e => click(user.id)}>
+    	<Container className="font" onClick={e => selectFriend(user)}>
       		<Icon
         		src={user.profilePicture}
         		alt="User Photo"

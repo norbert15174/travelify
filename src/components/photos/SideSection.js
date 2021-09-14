@@ -15,20 +15,22 @@ import { endpoints } from "../../url";
 import { getDate } from "../../miscellanous/Utils";
 import { useSelector, useDispatch } from "react-redux"
 import { routes } from "../../miscellanous/Routes";
-import { selectOwner, selectAlbumPhotos, selectRights } from "../../redux/albumDetailsSlice";
+import { selectOwner, selectAlbumPhotos, selectRights, selectTags } from "../../redux/albumDetailsSlice";
+import { selectUserData, setProfilePicture, setUserData } from "../../redux/userDataSlice";
 
-const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimiter}) => {
+const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, widthDelimiter}) => {
 
     const owner = useSelector(selectOwner);
     const photos = useSelector(selectAlbumPhotos);
     const rights = useSelector(selectRights)
     const currentPhotoDetail = photos[currentPhotoIndex].photo;
     const photoId = photos[currentPhotoIndex].photo.photoId;
+    const reduxTags = useSelector(selectTags);
     const dispatch = useDispatch();
 
+    const [ tags, setTags ] = useState(reduxTags.find((item) => item.photoId === photoId).tags);
     const [ comments, setComments ] = useState([]);
     const [ loadingComments, setLoadingComments ] = useState(false);
-    const [ tags, setTags ] = useState([]);
     const [ loadingTags, setLoadingTags ] = useState(false);
     const [ editing, setEditing ] = useState(false);
     const [ description, setDescription ] = useState(currentPhotoDetail.description);
@@ -37,34 +39,37 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
         userId: null,
     });
     
+    const userData = useSelector(selectUserData);
+    const [ basicUserData, setBasicUserData ] = useState({
+        name: userData.name,
+        surName: userData.surName,
+        photo: userData.profilePicture,
+        id: userData.id,
+    })
+
     useEffect(() => {
-        getPhotoTags();
-        getComments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPhotoIndex]);
-
-    const addComment = (comment) => {
-        //setComments((prevState) => [ ...prevState, comment]);
-        sendComment(comment);
-    };
-
-    const getPhotoTags = () => {
-        setLoadingTags(true);
-        for (let i = 0; i < photos.length; i++) {
-            if (photos[i].photo.photoId === photoId) {
-                setTags(photos[i].photo.taggedList)
-                break;
-            }
+        if (!userData.id) {
+            getBasicUserData();
         }
+        if (!pinBox) {
+            getTags();
+            getComments();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPhotoIndex, userData.id, pinBox]);
+    
+    const getTags = () => {
+        setLoadingTags(true);
+        setTags(reduxTags.find((item) => item.photoId === photoId).tags);
         setLoadingTags(false);
-    };
+    }; 
+    
 
     const getComments = () => {
         setLoadingComments(true);
         let temp = null;
         for (let i = 0; i < photos.length; i++) {
             if (photos[i].photo.photoId === photoId) {
-                //setComments(photos[i].photo.photoComments);
                 temp = photos[i].photo.photoComments;
                 break;
             }
@@ -82,6 +87,31 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
         return input;
     };
 
+    async function getBasicUserData() {
+		await axios({
+            method: "get",
+            url: endpoints.getLoggedUserProfileBasic,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+            dispatch(setProfilePicture(data.photo));
+            dispatch(setUserData({
+                id: data.id,
+                name: data.name,
+                surName: data.surName,
+            }))
+            setBasicUserData({
+                name: data.name,
+                surName: data.surName,
+                photo: data.photo,
+                id: data.id,
+            })
+        }).catch((error) => {
+            console.error(error);
+        })
+	}
 
     async function sendComment(comment) {
         await axios({
@@ -95,7 +125,19 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then((response) => {
-            console.log(response);
+            let d = new Date();
+            let minutes = d.getMinutes() < 9 ? "0" + d.getMinutes() : d.getMinutes();
+            let seconds = d.getSeconds() < 9 ? "0" + d.getSeconds() : d.getSeconds();
+            let temp = {
+                commentId: Math.random(),
+                photo: basicUserData.photo,
+                name: basicUserData.name,
+                surName: basicUserData.surName,
+                text: comment,
+                time: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + minutes + ":" + seconds,
+                userId: sessionStorage.getItem("loggedUserId"),
+            }
+            setComments((prevState) => [ ...prevState, temp]);
 		}).catch((error) => {
             console.log(error);
 		})
@@ -246,7 +288,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, heightDelimiter, widthDelimi
                         Oznacz osobę
                     </TagButton>
                 }
-                <AddComment currentPhotoIndex={currentPhotoIndex} add={addComment}/> 
+                <AddComment currentPhotoIndex={currentPhotoIndex} add={sendComment}/> 
             </Footer>
         </Container>
     );

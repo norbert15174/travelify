@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import NewsThumbnail from "./NewsThumbnail";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
+const profilePhoto = "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x";
 
 const Post = ({news}) => (
     <Container>
         <Header>
-            <ProfilePhoto src={"https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x"} alt="profilePhoto"/>
+            <ProfilePhoto src={profilePhoto !== undefined ? profilePhoto : noProfilePictureIcon} alt="profilePhoto"/>
             <h1>{news.name}</h1>
         </Header>
         <NewsThumbnail news={news}/> 

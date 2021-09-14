@@ -46,7 +46,7 @@ const MainPhoto = styled.img`
 
 const InfoContainer = styled.div`
     width: 100%;
-    height: 158px;
+    height: 120px;
     position: absolute;
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);

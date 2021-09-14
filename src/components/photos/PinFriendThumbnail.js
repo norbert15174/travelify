@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectAlbumType } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
@@ -14,14 +14,12 @@ const PinFriendThumbnail = ({friend, photoId, tags}) => {
     const [ pinFinished, setPinFinished ] = useState(false);
     const [ putting, setPutting ] = useState(false);
     const albumType = useSelector(selectAlbumType);
-    const alreadyChosen = tags.find((item) => item.userId === (albumType === albumTypes.private ? friend.userId : friend.id)) ? true : false;
-    const dispatch = useDispatch();
+    const [alreadyChosen, setAlreadyChosen ] = useState(tags.find((item) => item.userId === (albumType === albumTypes.private ? friend.userId : friend.id)) ? true : false);
 
     async function tagPersonOnPhoto() {
         setError(null);
         setPinFinished(false);
         setPutting(true);
-        console.log(friend.id);
         await axios({
             method: "put",
                 url: endpoints.tagPersonOnPhoto + photoId,
@@ -39,6 +37,7 @@ const PinFriendThumbnail = ({friend, photoId, tags}) => {
         })
         .then((response) => {           
             console.log(response); 
+            setAlreadyChosen(true)
         })
         .catch((error) => {
             setError(error);

@@ -16,7 +16,7 @@ let emoji = new JSEMOJI();
 emoji.replace_mode = 'unified';
 emoji.allow_native = true;
 
-const Message = ({ user, click, friendDisplay}) => {
+const Message = ({ user, closeMessenger, friendDisplay}) => {
 
 	const messageInputRef = useRef(null);
     const emojiWindowRef = useRef(null);
@@ -95,18 +95,18 @@ const Message = ({ user, click, friendDisplay}) => {
 					<Name>{user.name + " " + user.lastName}</Name>
 				</NameContainer>
 				<CloseContainer onClick={e => {
-					click(-1);
+					closeMessenger(null);
 				}}>
 					<Close width="20px" height="20px"></Close>
 				</CloseContainer>
       		</TopMessageHeader>
       		<SendContainer className="scroll_two">
-				<SingleMessage url={user.profilePicture}></SingleMessage>
-				<SingleMessage url={user.profilePicture} side="right"></SingleMessage>
-				<SingleMessage url={user.profilePicture}></SingleMessage>
-				<SingleMessage url={user.profilePicture}></SingleMessage>
-				<SingleMessage url={user.profilePicture} side="right"></SingleMessage>
-				<SingleMessage url={user.profilePicture}></SingleMessage>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} side="right"/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} side="right"/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
       		</SendContainer>
       		<BottomPanel>
 				<MessageInputContainer>

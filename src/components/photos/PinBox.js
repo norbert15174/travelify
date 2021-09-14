@@ -8,7 +8,7 @@ import "./photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { albumTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
-import { selectAlbumType, selectSharedPersonList, selectAlbumPhotos } from "../../redux/albumDetailsSlice";
+import { selectAlbumType, selectSharedPersonList, selectTags } from "../../redux/albumDetailsSlice";
 
 const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
@@ -19,36 +19,21 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
     const ref = useRef(null);
 
     const albumType = useSelector(selectAlbumType);
-    const photos = useSelector(selectAlbumPhotos);
     const sharedPersonList = useSelector(selectSharedPersonList);
+    const tags = useSelector(selectTags);
 
     const [ list, setList ] = useState([]);
-    const [ tags, setTags ] = useState([]);
 
     useEffect(() => {
         if (albumType === albumTypes.public) {
             getLoggedUserFriendsList();
-            console.log(photos);
-            getPhotoTags();
         } else if (albumType === albumTypes.private) {
             // shared person list from redux
             setList(sharedPersonList);
-            console.log(photos);
-            console.log(sharedPersonList);
-            getPhotoTags();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const getPhotoTags = () => {
-        for (let i = 0; i < photos.length; i++) {
-            if (photos[i].photo.photoId === photoId) {
-                setTags(photos[i].photo.taggedList)
-                console.log(photos[i].photo);
-                break;
-            }
-        }
-    };
 
     async function getLoggedUserFriendsList() {
         await axios({
@@ -92,7 +77,10 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
     return (
         <Container>
-            <Box ref={ref} heightDelimiter={heightDelimiter}>
+            <Box 
+                ref={ref} 
+                heightDelimiter={heightDelimiter}
+            >
                 <Header>
                     <Heading>Oznacz</Heading>
                     <CloseButton src={closeIcon} onClick={() => {
@@ -114,12 +102,12 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
                         list ? ((
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
+                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId} tags={tags.find((item) => item.photoId === photoId).tags}/>
                             ) : null
                         ) || (
                             list.length !== 0 && searchContent.length === 0 ?
                             list.map((friend) => 
-                                <FriendThumbnail key={friend.id} friend={friend} photoId={photoId} tags={tags}/>
+                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId} tags={tags.find((item) => item.photoId === photoId).tags}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>

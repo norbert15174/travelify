@@ -17,7 +17,6 @@ const Albums = () => {
     const [ sharedAlbumsFetchFinished, setSharedAlbumsFetchFinished ] = useState(false);
 	const [ error, setError ] = useState(null);
 
-    // when all requests will be processed redirection to NewsPage will happen
     useEffect(() => {
         if (!sessionStorage.getItem("Login")) {
             throw new Error(errorTypes.noAccess);
