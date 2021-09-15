@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
 import Map from '../googleMaps/Map';
-
+import { FriendsListArray as markers } from "../googleMaps/data";
 
 const StartPage = () => {
 
@@ -27,7 +27,7 @@ const StartPage = () => {
                 <StyledLogo/>
                 <StyledButton onClick={() => setRedirect('yes')}>Przejdź dalej</StyledButton>
             </StyledHeader>        
-            <Map width={'100%'} height={'750px'} options={options} initialCoordinates={{lat: 0, lng: 0,}} type="StartPage"/>
+            <Map width={'100%'} height={'750px'} options={options} initialCoordinates={{lat: 0, lng: 0,}} markers={markers} type="StartPage"/>
             <StyledFooter>
                 <AppInfo>
                     <Line/>

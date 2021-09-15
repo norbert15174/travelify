@@ -21,7 +21,7 @@ const User = () => {
 	const urlParams = useParams();
 	  
   	useEffect(() => {
-		// just in case
+
 		setUserDataFetchFinished(false);
 		setUserFriendsFetchFinished(false);
 		setError(null);

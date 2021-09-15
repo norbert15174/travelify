@@ -3,12 +3,12 @@ import Geocode from "react-geocode";
 import styled from "styled-components";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
-import { FriendsListArray as markers } from "./data";
+
 import MarkerInfo from "./MarkerInfo";
 import { albumCreator } from "../../miscellanous/Utils";
 import { getCountryId } from "../../miscellanous/Utils";
 
-function Map({ width, height, options, initialCoordinates, type, setLocalization=null, deleteMarker=false}) {
+function Map({ width, height, options, markers=null, initialCoordinates, type, setLocalization=null, deleteMarker=false}) {
 
 	const mapOptions = {
 		options,

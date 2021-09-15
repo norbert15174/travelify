@@ -21,11 +21,17 @@ export const albumRights = {
     owner: "owner",
     visitor: "visitor", // only when public album
     sharedPerson: "sharedPerson",
+    notLogged: "notLogged"
 }
 
 export const albumCreator = {
     creation: "creation",
     edition: "edition",
+}
+
+export const groupTypes = {
+    member: "member",
+    notMember: "notMember"
 }
 
 /*

@@ -13,8 +13,6 @@ import { setOwner, setAlbumPhotos, setSharedPersonList, setInfo, setTags, clearS
 const AlbumDetails = () => {
 
     const [ albumId, setAlbumId ] = useState(null);
-    //const [ albumType, setAlbumType ] = useState(null);
-    //const [ rights, setRights ] = useState(null);
     const [ albumDetailsFetchFinished, setAlbumDetailsFetchFinished ] = useState(false);
     const [ error, setError ] = useState(null);
     
@@ -92,19 +90,19 @@ const AlbumDetails = () => {
 
     return (
         <UserTemplate>
-            {
-                (albumDetailsFetchFinished && error === null) 
+        {
+            (albumDetailsFetchFinished && error === null) 
+            ?
+                <AlbumInside 
+                    albumId={albumId}
+                />
+            :
+                !error
                 ?
-                    <AlbumInside 
-                        albumId={albumId}
-                    />
+                <Loading/>
                 :
-                    !error
-                    ?
-                    <Loading/>
-                    :
-                    <ErrorAtLoading/>
-            }
+                <ErrorAtLoading/>
+        }
         </UserTemplate>
     );
 

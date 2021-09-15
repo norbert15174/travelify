@@ -288,7 +288,11 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         Oznacz osobę
                     </TagButton>
                 }
-                <AddComment currentPhotoIndex={currentPhotoIndex} add={sendComment}/> 
+                {
+                    rights !== albumRights.notLogged 
+                    &&
+                    <AddComment currentPhotoIndex={currentPhotoIndex} add={sendComment}/>
+                } 
             </Footer>
         </Container>
     );

@@ -5,12 +5,12 @@ import styled from "styled-components";
 // <Menu/> adds Menu sidebar
 // <Container/> adds div for app sections like UserPage, News etc
 
-const UserTemplate = ({children}) => {
+const UserTemplate = ({children, notLogged=false}) => {
 
     return (
         <>
-            <Menu/>
-            <Container>
+            {!notLogged && <Menu/>}
+            <Container notLogged={notLogged}>
                 {children}
             </Container>
         </>    

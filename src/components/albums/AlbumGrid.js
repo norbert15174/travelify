@@ -9,7 +9,7 @@ import { albumTypes } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
 import "./albumsScrollbar.css";
 
-const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums, data}) => {
+const AlbumSection = ({ sectionType, privateAlbums, publicAlbums, sharedAlbums}) => {
 
     const [ redirectToAlbum, setRedirectToAlbum ] = useState({
         active: false, 
