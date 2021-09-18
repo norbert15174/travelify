@@ -137,6 +137,7 @@ const Container = styled.div`
         font-size: 8px;
         padding: 10px 20px;
     }
+    min-height: 100vh;
 `;
 
 const Header = styled.div`

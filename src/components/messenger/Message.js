@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import "./friends.css";
-import Emoji from "../menu/svg/emoji";
-import Send from "../menu/svg/send";
-import Close from "../menu/svg/close";
+import Emoji from "../menu/assets/emoji";
+import Send from "../menu/assets/send";
+import Close from "../menu/assets/close";
 import SingleMessage from "./SingleMessage";
 import Picker from 'emoji-picker-react';
 import "./messageEmojiPicker.css"; 
@@ -153,14 +153,13 @@ const CloseContainer = styled.div`
 `;
 
 const SendContainer = styled.div`
-  margin-top: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  width: 330px;
-  margin-left: 10px;
-  height: calc(100% - 140px);
-  overflow-x: hidden;
-  overflow-y: visible;
+	margin-top: 10px;
+	padding: 5px 0px;
+	width: 330px;
+	margin-left: 10px;
+	height: calc(100% - 140px);
+	overflow-x: hidden;
+	overflow-y: visible;
 `;
 
 const EmojiIcon = styled.div`

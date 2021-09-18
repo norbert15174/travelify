@@ -44,6 +44,7 @@ const Error = ({errorType=errorTypes.notFound}) => {
                             {errorMessages[errorType] !== undefined ? errorMessages[errorType].h3 : "A może prądu nie masz?"}
                         </h3>   
                     </div>
+                    <a href="https://forms.gle/wJbqTVawXYZLwdNW7" target="_blank" rel="noopener noreferrer">Formularz zgłaszania błędu</a>
                     <GoBackButton onClick={() => history.goBack()}>Wróć</GoBackButton>
                 </InnerInnerContainer>
             </InnerContainer>
@@ -197,6 +198,28 @@ const InnerInnerContainer = styled.div`
             @media only screen and (max-width: 540px) {
                 font-size: 10px;
             }
+        }
+    }
+    a {
+        font-size: 16px;
+        margin-top: 25px;
+        &:link, &:visited { 
+            color: ${({theme}) => theme.color.darkTurquise};
+        }
+        &:hover, &:active {
+            color: ${({theme}) => theme.color.lightTurquise};
+        }
+        @media only screen and (max-width: 1350px) {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        @media only screen and (max-width: 1080px) {
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        @media only screen and (max-width: 800px) {
+            font-size: 10px;
+            margin-top: 10px;
         }
     }
 `;

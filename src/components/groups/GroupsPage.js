@@ -245,6 +245,7 @@ const Grid = styled.div`
     grid-gap: 30px;
     max-height: 1000px;
     overflow-y: scroll;
+    min-height: 100vh;
     @media only screen and (max-width: 1635px) {
         grid-template-columns: repeat(2, 590px);
     }

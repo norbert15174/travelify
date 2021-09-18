@@ -179,34 +179,9 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 			</>
 		</GoogleMap>	
 	) : (
-		<h1>Loading... or maybe not :D</h1>
+		<h1>Loading Google Maps...</h1>
 	);
 
 }
-
-// GrLinkNext
-
-const LocationInfo = styled.div`
-	color: ${({theme}) => theme.color.darkTurquise};
-	font-size: 18px;
-	a {
-		color: ${({theme}) => theme.color.darkTurquise};
-		font-size: 16px;
-		&:link, &:visited, &:hover, &:active {
-			color: ${({theme}) => theme.color.darkTurquise};
-		}
-	}
-	@media only screen and (max-width: 510px) {
-        font-size: 12px;
-		a {
-			font-size: 10px;
-		}
-    }
-`;
-
-const Name = styled.p`
-	margin-bottom: 5px;
-	font-weight: ${({theme}) => theme.fontWeight.bold};
-`;
 
 export default React.memo(Map);

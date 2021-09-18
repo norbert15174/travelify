@@ -6,7 +6,7 @@ import "./friends.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import FriendItem from "./FriendItem";
 import Message from "./Message";
-import Close from "../menu/svg/close";
+import Close from "../menu/assets/close";
 import { endpoints } from "../../url";
 import { theme } from "../../miscellanous/GlobalTheme";
 
@@ -57,8 +57,7 @@ const Friends = ({friendDisplay}) => {
     };
 
 	return (
-    	<>
-      		<Container blurState={blurState} className="font">
+      	<Container blurState={blurState} className="font">
         		<FriendsHeader>
           			<FriendsHeaderText>Znajomi</FriendsHeaderText>
 					<CloseContainer onClick={(e) => {
@@ -110,7 +109,7 @@ const Friends = ({friendDisplay}) => {
 					<Message user={selectedFriend} closeMessenger={setSelectedFriend} friendDisplay={friendDisplay}/> 
 				}
       		</Container>
-    	</>
+    	
   	);
 };
 

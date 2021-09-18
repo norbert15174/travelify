@@ -6,9 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectProfilePicture, setProfilePicture } from "../../redux/userDataSlice";
 import { endpoints } from "../../url";
 
-// user profile picture is saved in Redux Store during LoginTransition.
-// When store accidently will be reseted, profile picture will be fetched once again
-
 const UserProfilePicture = () => {
 
 	const profilePicture = useSelector(selectProfilePicture);
@@ -45,8 +42,8 @@ const UserProfilePicture = () => {
 };
 
 const Container = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 77px;
+  height: 77px;
   margin-top: 7px;
   border-radius: 100%;
   cursor: pointer;

@@ -100,6 +100,7 @@ const Container = styled.div`
     @media only screen and (max-width: 560px) {
         padding: 15px 20px;
     }
+    min-height: 100vh;
 `;
 
 const Header = styled.div`
