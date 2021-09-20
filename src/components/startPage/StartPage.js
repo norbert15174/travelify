@@ -38,7 +38,7 @@ const StartPage = () => {
                         Twórcy: Norbert Faron, Mikołaj Telec - studenci III roku Elektroniki i Telekomunikacji na wydziale Informatyki, Elektroniki i Telekomunikacji w AGH w Krakowie<br/>
                         Promotor: dr hab. inż. Mikołaj Leszczuk<br/>
                         Wykorzystane technologie: Spring Boot, Hibernate, MySQL, Google Cloud Platform, React, JavaScript, CSS, Google Maps Platform, Figma<br/><br/>
-                        <a href="https://forms.gle/wJbqTVawXYZLwdNW7" target="_blank" rel="noopener noreferrer">Zgłaszanie błędu</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://forms.gle/jKofK3JwQNFousM59" target="_blank" rel="noopener noreferrer">Ankieta</a>
+                        <a href="https://forms.gle/wJbqTVawXYZLwdNW7" target="_blank" rel="noopener noreferrer">Zgłaszanie błędów</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://forms.gle/jKofK3JwQNFousM59" target="_blank" rel="noopener noreferrer">Ankieta</a>
                     </StyledParagraph>
                 </AppInfo>
             </StyledFooter>

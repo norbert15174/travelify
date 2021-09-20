@@ -8,7 +8,7 @@ import "./photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { albumTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
-import { selectAlbumType, selectSharedPersonList, selectTags } from "../../redux/albumDetailsSlice";
+import { selectAlbumType, selectSharedPersonList} from "../../redux/albumDetailsSlice";
 
 const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
@@ -20,7 +20,6 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
 
     const albumType = useSelector(selectAlbumType);
     const sharedPersonList = useSelector(selectSharedPersonList);
-    const tags = useSelector(selectTags);
 
     const [ list, setList ] = useState([]);
 
