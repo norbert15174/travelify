@@ -20,3 +20,20 @@
     background: #555; 
     
   }
+
+  
+.scroll_two::-webkit-scrollbar {
+  width: 1px;
+}
+
+.scroll_two::-webkit-scrollbar-track {
+  background: none;
+}
+.scroll_two::-webkit-scrollbar-thumb {
+  background: #E0E5E0;
+}
+
+.scroll_two::-webkit-scrollbar-thumb:hover {
+background: #E0E5E0;
+}
+

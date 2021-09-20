@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
 import Map from '../googleMaps/Map';
-
+import { FriendsListArray as markers } from "../googleMaps/data";
 
 const StartPage = () => {
 
@@ -27,14 +27,18 @@ const StartPage = () => {
                 <StyledLogo/>
                 <StyledButton onClick={() => setRedirect('yes')}>Przejdź dalej</StyledButton>
             </StyledHeader>        
-            <Map width={'100%'} height={'750px'} options={options} initialCoordinates={{lat: 0, lng: 0,}} type="StartPage"/>
+            <Map width={'100%'} height={'750px'} options={options} initialCoordinates={{lat: 0, lng: 0,}} markers={markers} type="StartPage"/>
             <StyledFooter>
                 <AppInfo>
                     <Line/>
                     <StyledParagraph>
-                        Travelify &copy; 2021<br/>
-                        Aplikacja internetowa, umożliwiająca integrację osób o zainteresowaniach podróżniczych.<br/>
-                        Twórcy: Norbert Faron, Mikołaj Telec 
+                        Travelify &copy;2021<br/><br/>
+                        Praca inżynierska<br/>
+                        Celem pracy było stworzenie aplikacji internetowej pozwalającej na integrację osób zainteresowanych podróżami.<br/>
+                        Twórcy: Norbert Faron, Mikołaj Telec - studenci III roku Elektroniki i Telekomunikacji na wydziale Informatyki, Elektroniki i Telekomunikacji w AGH w Krakowie<br/>
+                        Promotor: dr hab. inż. Mikołaj Leszczuk<br/>
+                        Wykorzystane technologie: Spring Boot, Hibernate, MySQL, Google Cloud Platform, React, JavaScript, CSS, Google Maps Platform, Figma<br/><br/>
+                        <a href="https://forms.gle/wJbqTVawXYZLwdNW7" target="_blank" rel="noopener noreferrer">Zgłaszanie błędu</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://forms.gle/jKofK3JwQNFousM59" target="_blank" rel="noopener noreferrer">Ankieta</a>
                     </StyledParagraph>
                 </AppInfo>
             </StyledFooter>
@@ -48,9 +52,20 @@ const Wrapper = styled.div`
 `;
 
 const StyledParagraph = styled.p`
-    font-weight: ${({theme}) => theme.fontWeight.light};
+    font-weight: ${({theme}) => theme.fontWeight.medium};
     color: ${({theme}) => theme.color.greyFont};
     font-size: 16px;
+    @media only screen and (max-width: 800px) {
+        font-size: 12px;
+    }
+    a {
+        &:link, &:visited { 
+            color: ${({theme}) => theme.color.darkTurquise};
+        }
+        &:hover, &:active {
+            color: ${({theme}) => theme.color.lightTurquise};
+        }
+    }
 `;
 
 const StyledHeader = styled.div`
@@ -60,7 +75,7 @@ const StyledHeader = styled.div`
     width: 100%;
     height: 140px;
     background-color: ${({theme}) => theme.color.lightBackground};
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid ${({theme}) => theme.color.greyFont};;
     @media only screen and (max-width: 763px) {
         grid-template-columns: 320px 1fr;
     }
@@ -110,7 +125,7 @@ const StyledButton = styled(Button)`
 
 const StyledFooter = styled.div`
     width: 100%;
-    border-top: 1px solid #808080;
+    border-top: 1px solid ${({theme}) => theme.color.greyFont};
     background-color: ${({theme}) => theme.color.lightBackground};
     padding-bottom: 15px;
     height: 100%;
@@ -118,19 +133,17 @@ const StyledFooter = styled.div`
 `;
 
 const Line = styled.div`
-    border: 1px solid #808080;
+    border-top: 1px solid ${({theme}) => theme.color.greyFont};;
 `;
 
 const AppInfo = styled.div`
-    width: 960px;
+    width: 80%;
     padding-top: 45px;
     margin: 0 auto;
-    @media only screen and (max-width: 1020px) {
-        width: 80%
+    @media only screen and (max-width: 1030px) {
+        font-size;
     }
-    @media only screen and (max-width: 720px) {
-        width: 50%
-    }
+
 `;
 
 

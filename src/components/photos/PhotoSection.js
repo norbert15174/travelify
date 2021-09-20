@@ -105,6 +105,7 @@ const PhotoContainer = styled.div`
     width: 450px;
     height: 450px;
     cursor: pointer;
+    border-radius: 5px;
     @media only screen and (max-width: 1635px) {
         width: 385px;
         height: 385px; 
@@ -138,6 +139,7 @@ const Photo = styled.img`
     &:hover {
         opacity: 0.9;
     }
+    border-radius: 5px;
     @media only screen and (max-width: 1635px) {
         width: 385px;
         height: 385px; 

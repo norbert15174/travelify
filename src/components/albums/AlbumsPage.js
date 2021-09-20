@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useLocation, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FriendsListArray as albums } from "./data";
+
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import AlbumSearch from "../trinkets/DropdownSearch";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
@@ -93,6 +93,7 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
             </PageHeader>
             <AlbumsNavigation>
                 <AlbumSearch 
+                    searchType="albums"
                     options={ 
                         searchList !== null ? 
                             albumsType === "public" ? 
@@ -134,7 +135,6 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
                 privateAlbums={privateAlbums} 
                 publicAlbums={publicAlbums} 
                 sharedAlbums={sharedAlbums} 
-                data={albums}
             />
         </Container>
     );

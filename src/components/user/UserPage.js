@@ -16,6 +16,7 @@ import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteFriendSlice";
 import { userTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
+import { toggleBlur } from "../../redux/blurSlice";
 
 const sections = {
     info: "info",
@@ -47,6 +48,9 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
     const [ refuse, setRefuse ] = useState(false);
 
     useEffect(() => {
+        if (blurState) {
+            dispatch(toggleBlur());
+        }    
             if (friendId !== null && userType === userTypes.logged) {
                 setDeleteFriendBox(true);
                 // when deleting friend was confirmed

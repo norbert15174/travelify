@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import sendIcon from "./assets/sendIcon.svg";
 import emojiIcon from "./assets/emojiIcon.svg";
 import Picker from 'emoji-picker-react';
@@ -84,7 +84,7 @@ const AddComment = ({ add, currentPhotoIndex }) => {
                 />
                 { 
                     showEmoji && 
-                    <div ref={emojiWindowRef} id="emojiWindow" className="emoji-window">
+                    <div ref={emojiWindowRef} id="emojiWindow" className="emoji-window-comment">
                         <Picker onEmojiClick={onEmojiClick} native={true} disableSkinTonePicker={true}/> 
                     </div>
                 }
@@ -125,12 +125,6 @@ const InnerContainer = styled.div`
 `;
 
 const CommentInput = styled.textarea`
-    /*
-    animation: ${({readyToSend}) => !readyToSend ? expand : narrow};
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
-    width: 100%;
-     */
     width: 85%;
     height: 30px;
     resize: none;
@@ -177,20 +171,6 @@ const CommentInput = styled.textarea`
 
 
 const SendButton = styled.img`
-    /*
-    display: ${({readyToSend}) => readyToSend ? "block" : "none"};
-    animation-name: ${
-        keyframes`
-            0% { opacity: 0; }
-            25% { opacity: 0.25; }
-            50% { opacity: 0.5; }
-            75% { opacity: 0.75; }
-            100% { opacity: 1; }
-        `
-    };
-    animation-duration: 0.5s;
-    animation-fill-mode: none;
-    */
     width: 37px;
     height: 34px;
     cursor: pointer;
@@ -214,10 +194,6 @@ const SendButton = styled.img`
 
 
 const EmojiButton = styled.img`
-    //animation-name: ${({readyToSend}) => !readyToSend ? emojiMoveRight : emojiMoveLeft};
-    //animation-duration: 0.5s;
-    //animation-fill-mode: none;
-    //margin-right: ${({readyToSend}) => !readyToSend ? "-50px" : "10px"};
     width: 25px;
     height: 25px;
     position: absolute;
@@ -248,44 +224,6 @@ const EmojiButton = styled.img`
     }
     @media only screen and (max-width: 825px) {
         margin-right: -6px;
-    }
-`;
-
-const emojiMoveRight = keyframes`
-    0% { opacity: 1; margin-right: 10px; }
-    15% { opacity: 0.66; margin-right: 10px; }
-    30% { opacity: 0.33;  margin-right: 10px; }
-    50% { opacity: 0; margin-right: 10px; }
-    70% { opacity: 0.33; margin-right: -50px }
-    85% { opacity: 0.66; margin-right: -50px }
-    100% { opacity: 1; margin-right: -50px }
-`;
-
-const emojiMoveLeft = keyframes`
-    0% { opacity: 1; margin-right: -50px; }
-    15% { opacity: 0.66; margin-right: -50px; }
-    30% { opacity: 0.33;  margin-right: -50px; }
-    50% { opacity: 0; margin-right: -50px; }
-    70% { opacity: 0.33; margin-right: 10px }
-    85% { opacity: 0.66; margin-right: 10px }
-    100% { opacity: 1; margin-right: 10px }
-`;
-
-const expand = keyframes`
-    from {
-        width: 85%;
-    }
-    to {
-        width: 100%;
-    }
-`;
-
-const narrow = keyframes`
-    from {
-      width: 100%;
-    }
-    to {
-      width: 85%;
     }
 `;
 

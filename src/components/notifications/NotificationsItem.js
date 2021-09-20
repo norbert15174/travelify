@@ -1,30 +1,25 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
-
-
-const profilePhoto = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/af/af7aa0fd682203081a93ea7233b8832c7319f72d_full.jpg"
-const link = "https://www.youtube.com/watch?v=ObJLIsNcOZ4";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import { endpoints } from "../../url";
 
 const notificationsMaleVersion = {
     "tag": " oznaczył cię na zdjęciu",
     "invitation": " wysłał ci zaproszenie do znajomych",
-    "friendshipEnd": " usunął cię z listy znajomych",
     "comment": " skomentował twoje zdjęcie",
     "share": " udostępnił Ci swój album",
-    "unshare": " przestał udostępniać Ci jeden ze swoich albumów",
 }
 
 const notificationsFemaleVersion = {
     "tag": " oznaczyła cię na zdjęciu",
     "invitation": " wysłała ci zaproszenie do znajomych",
-    "friendshipEnd": " usunęła cię z listy znajomych",
     "comment": " skomentowała twoje zdjęcie",
     "share": " udostępniła Ci swój album",
-    "unshare": " przestała udostępniać Ci jeden ze swoich albumów",
 }
 
-const NotificationsItem = ({type, firstName, surName}) => {
+const NotificationsItem = ({type, firstName, surName, photo, invitationId}) => {
 
     const [ accepted, setAccepted ] = useState(false);
     const [ notClicked, setNotClicked ] = useState(true);
@@ -32,20 +27,42 @@ const NotificationsItem = ({type, firstName, surName}) => {
     // my super detection of users gender. Unfortunately works only for polish names :/ .
     const notifier = firstName.replace(/ /g, "").substring(firstName.length - 1) === "a" ? notificationsFemaleVersion : notificationsMaleVersion;
     
+    async function invitationHandler(type) {
+        await axios({
+			method: type === "accept" ? "put" : "delete",
+			url: endpoints.invitationHandler + invitationId,
+			headers: {
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		}).then((response) => {
+            console.log(response);
+            if (type === "accept") {
+                setAccepted(true);
+                setNotClicked(false);
+            } else if (type === "decline") {
+                setAccepted(false);
+                setNotClicked(false);
+            }
+		}).catch((error) => {
+            console.log(error);
+		});
+    }
+
     return (
         <Container>
             <InnerContainer>
-                <UserPhoto src={profilePhoto}/>
+                <UserPhoto src={photo !== undefined ? photo : noProfilePictureIcon}/>
                 <span>
-                    <a href={link}>{firstName} {surName}</a> 
+                    <p>{firstName} {surName}</p> 
                     {notifier[type]}            
                 </span>
             </InnerContainer>
             { 
                 (type === "invitation" && notClicked) &&
                 <Buttons>
-                    <AcceptButton id="accept-button" onClick={() => { setAccepted(true); setNotClicked(false); }}>Zaakceptuj</AcceptButton>
-                    <DeclineButton id="decline-button" onClick={() => { setAccepted(false); setNotClicked(false); }}>Odrzuć</DeclineButton>
+                    <AcceptButton id="accept-button" onClick={() => invitationHandler("accept")}>Zaakceptuj</AcceptButton>
+                    <DeclineButton id="decline-button" onClick={() => invitationHandler("decline")}>Odrzuć</DeclineButton>
                 </Buttons>
             }
             { 
@@ -68,24 +85,26 @@ const Container = styled.div`
     font-size: 20px;
     span {
         display: inline-block;
-        word-wrap:break-word;
-        width: 100%;
+        word-wrap: break-word;
+        width: 300px;
         white-space: normal;
     }
-    a {
+    p {
+        display: inline-block;
         font-weight: ${({theme}) => theme.fontWeight.bold};
-        text-decoration: none;
-        &:link, &:visited, &:hover, &:active {
-            color: #000;
-        }
     }
-
     @media only screen and (max-width: 1000px) {
         font-size: 15px;
         width: 245px;
+        span { 
+            width: 180px;
+        }
     }
     @media only screen and (max-width: 720px) {
         width: 95%;
+        span { 
+            width: 100%;
+        }
     }
 `;
 
@@ -142,7 +161,7 @@ const Status = styled.p`
     color: ${({theme}) => theme.color.lightTurquise};
     font-weight: ${({theme}) => theme.fontWeight.bold};
     text-align: center;
-    margin: 10px auto 0 auto;
+    margin: 10px 0 0 35px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     line-height: 30px;
     font-size: 15px;
@@ -164,6 +183,7 @@ const UserPhoto = styled.img`
     border-radius: 100%;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     margin-right: 10px;
+    flex-shrink: 1;
     @media only screen and (max-width: 1000px) {
         width: 48px;
         height: 48px;

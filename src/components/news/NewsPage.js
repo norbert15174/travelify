@@ -1,33 +1,213 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import NewsSearch from "../trinkets/DropdownSearch";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
-import { FriendsListArray as news } from "./data";
-import noResultsIcon from "./svg/noResultsIcon.svg";
 import { useSelector } from "react-redux";
+import Spinner from "../trinkets/Spinner";
+import japonia1 from "./photos/Japonia.jpg";
+import japonia2 from "./photos/japonia2.jpg";
+
 
 const types = {
     friends: "friends",
     community: "community"
 }
 
+const fakeNews = [
+    {
+        id: 1,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Robert Żaak",
+        title: "Czarny",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        bilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/0/0f/Eiffel_Tower_Vertical.JPG',
+      },
+      {
+        id: 2,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Mikołaj Telec",
+        title: "Czerwony",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia2,
+      },
+      {
+        id: 3,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Justyna Socała",
+        title: "Biały",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia1,
+      },
+      {
+        id: 4,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Weronika Kubińska",
+        title: "Kolor",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lor amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia2,
+      },
+      {
+        id: 5,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Natalia Fabia",
+        title: "Zielony",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum um primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia1,
+    },
+      {
+        id: 6,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Michał Czarnik",
+        title: "Czarny",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+        Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+        orem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia2,
+    },
+      
+      {
+        id: 7,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Radosław Sajdak",
+        title: "Różowy",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia1,
+    },
+      {
+        id: 8,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Kamil Faron",
+        title: "Żółty",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia2,
+    },
+      {
+        id: 9,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Łukasz Faron",
+        title: "Turkusowy",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia1,
+    },
+      {
+        id: 10,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Rokowska Maria",
+        title: "Szary",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia2,
+    },
+      {
+        id: 11,
+        url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
+        name: "Wojewodzic Mariola",
+        title: "Brązowy",
+        localization: "Japonia, Osaka",
+        description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
+        image: japonia1,
+    },
+]
+
 const NewsPage = () => {
 
     const [newsType, setNewsType] = useState(types.friends);
-    const blurState = useSelector((state) => state.blur.value);    
+    const blurState = useSelector((state) => state.blur.value);
 
-    const searchList = news.list.map((item) => {
-        return {
-            value: item.name,
-            label: item.name,
-            profilePhoto: item.url,
-            mainPhoto: item.image,
-            title: item.title,
-            place: item.localization,
+    const [ newsList, setNewsList ] = useState(fakeNews);
+    const [ page, setPage ] = useState(1) // page number
+    const [ noMoreNews, setNoMoreNews ] = useState(false);
+    const loader = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(handleObserver, {
+            root: null,
+            rootMargin: "20px",
+            threshold: 0.5,
+        })
+        if (loader.current) {
+            observer.observe(loader.current);
         }
-    })
+    }, []);
+
+    // when page changes
+    useEffect(() => {
+        if (fakeNews.length > 0) {
+            setTimeout(() => {
+                const newNewsList = newsList.concat([newsList[2], newsList[3]]);
+                setNewsList(newNewsList);
+            }, 1000);
+        } else {
+            setNoMoreNews(true);
+        }
+    }, [page]);
+
+    const handleObserver = (entities) => {
+        const target = entities[0];
+        if (target.isIntersecting) {
+            setPage((page) => page + 1);
+        }
+    }
 
     return (
         <Container blurState={blurState}>
@@ -35,8 +215,6 @@ const NewsPage = () => {
                 <Heading>Aktualności</Heading>
             </Header>
             <NewsNavigation>
-                <NewsSearch options={searchList}/>
-                <Line/>
                 <NewsSwitch>
                     <NewsOption 
                         icon={friendsIcon} 
@@ -55,21 +233,34 @@ const NewsPage = () => {
                 </NewsSwitch>
             </NewsNavigation>
             {
-                newsType === types.friends && (
-                    news.list.length !== 0 
-                    ? news.list.map((news) => 
-                        <Post key={news.id} news={news}/>)
-                    : <NoResults/>
+                newsType === types.friends && newsList.length > 0 && (
+                    newsList.map((news) => 
+                        <Post key={news.id} news={news}/>
+                    )
                 )
             }
             {
-                newsType === types.community && ( 
-                    news.list.length !== 0
-                    ? news.list.map((news) => 
-                        <Post news={news}/>)
-                    : <NoResults/>
+                newsType === types.community && newsList.length > 0 && ( 
+                    newsList.map((news) => 
+                        <Post news={news}/>
+                    )
                 )  
             }
+            <InnerContainer ref={loader}>
+            {
+                !noMoreNews 
+                ?
+                (<Spinner 
+                    width={"30px"} 
+                    height={"30px"} 
+                    border={"6px"} 
+                    firstColor={({theme}) => theme.color.darkTurquise} 
+                    secondColor={({theme}) => theme.color.lightTurquise}
+                />) 
+                :
+                <h1>Brak nowych albumów...</h1>
+            }
+            </InnerContainer>  
         </Container>
     );
     
@@ -95,6 +286,22 @@ const Container = styled.div`
     }
     @media only screen and (max-width: 500px) {
         width: 300px;
+    }
+`;
+
+const InnerContainer = styled.div`
+    width: 100%;
+    background-color: ${({theme}) => theme.color.lightBackground}; 
+    padding: 15px 0px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h1 {
+        color: ${({theme}) => theme.color.greyFont};
+        @media only screen and (max-width: 800px) {
+            font-size: 15px;
+        }
     }
 `;
 
@@ -133,34 +340,21 @@ const Heading = styled.h1`
 `;
 
 const NewsNavigation = styled.div`
-    height: 204px;
+    height: auto;
+    padding: 25px 0px;
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    @media only screen and (max-width: 720px) {
-        height: 180px;
-    }
 `;
 
-const Line = styled.div`
-    border-top: 2px solid ${({theme}) => theme.color.darkTurquise};
-    width: 75%;
-    margin: 25px auto 0 auto;
-    @media only screen and (max-width: 800px) {
-        margin: 20px auto 20px auto;
-    }
-`;
 
 const NewsSwitch = styled.div`
-    margin: 25px auto 30px auto;
+    margin: 0px auto;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-column-gap: 5vw;
-    @media only screen and (max-width: 800px) {
-        margin: 0px auto 25px auto;
-    }
 `;
 
 const NewsOption = styled.div`
@@ -184,16 +378,5 @@ const NewsOption = styled.div`
         padding: 10px 10px 10px 50px;
     }
 `;
-
-const NoResults = styled.div`
-    height: 50vh;
-    background: url(${() => noResultsIcon});
-    background-repeat: no-repeat;
-    background-size: 80%;
-    background-position: center;
-    border-radius: 15px;
-    background-color: ${({theme}) => theme.color.lightBackground};
-`;
-
 
 export default NewsPage;

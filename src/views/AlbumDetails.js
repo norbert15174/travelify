@@ -8,13 +8,11 @@ import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { errorTypes } from "../miscellanous/Errors";
 import { useDispatch } from "react-redux";
-import { setOwner, setAlbumPhotos, setSharedPersonList, setInfo, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
+import { setOwner, setAlbumPhotos, setSharedPersonList, setInfo, setTags, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
 
 const AlbumDetails = () => {
 
     const [ albumId, setAlbumId ] = useState(null);
-    //const [ albumType, setAlbumType ] = useState(null);
-    //const [ rights, setRights ] = useState(null);
     const [ albumDetailsFetchFinished, setAlbumDetailsFetchFinished ] = useState(false);
     const [ error, setError ] = useState(null);
     
@@ -42,17 +40,24 @@ const AlbumDetails = () => {
 			},
 		}).then(({data}) => {
             console.log(data);
-            let temp = [];
+            let tempPhotos = [];
+            let tempTags = [];
+            //let tempComments = [];
             for (let i=0; i < data.photosDTOS.length; i++) {
-                temp.push({
+                tempPhotos.push({
                     index: i + 1,
                     photo: data.photosDTOS[i],
                 })
+                tempTags.push({
+                    photoId: data.photosDTOS[i].photoId,
+                    tags: data.photosDTOS[i].taggedList,
+                });
             };
+            dispatch(setTags(tempTags));
             dispatch(setOwner(data.owner));
             dispatch(setInfo(data.album));
             dispatch(setSharedPersonList(data.shared));
-            dispatch(setAlbumPhotos(temp));
+            dispatch(setAlbumPhotos(tempPhotos));
             if (data.owner.id.toString() === sessionStorage.getItem("loggedUserId")) {
                 dispatch(setRights(albumRights.owner));
             } else {
@@ -85,19 +90,19 @@ const AlbumDetails = () => {
 
     return (
         <UserTemplate>
-            {
-                (albumDetailsFetchFinished && error === null) 
+        {
+            (albumDetailsFetchFinished && error === null) 
+            ?
+                <AlbumInside 
+                    albumId={albumId}
+                />
+            :
+                !error
                 ?
-                    <AlbumInside 
-                        albumId={albumId}
-                    />
+                <Loading/>
                 :
-                    !error
-                    ?
-                    <Loading/>
-                    :
-                    <ErrorAtLoading/>
-            }
+                <ErrorAtLoading/>
+        }
         </UserTemplate>
     );
 

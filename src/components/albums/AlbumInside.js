@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import axios from "axios";
 import PhotoSection from "../photos/PhotoSection";
 import Button from "../trinkets/Button";
@@ -35,6 +35,7 @@ const AlbumInside = ({albumId}) => {
     const [ photoPreview, setPhotoPreview ] = useState({visible: false, index: null});
 
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
+    const [ redirectToStartPage, setRedirectToStartPage ] = useState(false);
     const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
        active: false,
        albumId: null,
@@ -46,6 +47,7 @@ const AlbumInside = ({albumId}) => {
     const info = useSelector(selectInfo);
     const albumType = useSelector(selectAlbumType);
     const rights = useSelector(selectRights);
+    const history = useHistory();
 
     useEffect(() => {
         if (rights === albumRights.owner && albumType === albumTypes.private) {
@@ -70,9 +72,10 @@ const AlbumInside = ({albumId}) => {
         });
     };
 
-    // goes back to albums screen
+    // goes back
     if (redirectToAlbums) {
-        return <Redirect to={{pathname: routes.albums}}/>
+        //return <Redirect to={{pathname: routes.albums}}/>
+        history.goBack();
     }
 
     // goes to album edit screen
@@ -87,13 +90,17 @@ const AlbumInside = ({albumId}) => {
                 />
     }
 
+    // goes back to start page
+    if (redirectToStartPage) {
+        return <Redirect to={{pathname: routes.startPage}}/>
+    }
+
     return (
         <>
             { photoPreview.visible && 
                 <Carousel 
                     selectedPhotoIndex={photoPreview.index}  
                     setClose={setPhotoPreview} 
-                    rights={rights}
                 /> 
                 }
             { sharePinBox && <ShareBox setClose={setSharePinBox} albumId={albumId}/> }
@@ -101,7 +108,12 @@ const AlbumInside = ({albumId}) => {
                 <Details>
                     <Header>
                         <h1>{info.name}</h1>
-                        <GoBackButton onClick={() => setRedirectToAlbums(true)}>Wróć</GoBackButton>
+                        <GoBackButton 
+                            active={rights === albumRights.notLogged ? true : false} 
+                            onClick={() => setRedirectToStartPage(true)}
+                        >
+                            Wróć
+                        </GoBackButton>
                         <Localization>
                             <Icon src={localizationIcon}/>
                             <h3>
@@ -135,8 +147,8 @@ const AlbumInside = ({albumId}) => {
                                 <p>{owner.name + " " + owner.surName}</p>   
                             </AlbumInfo>
                             <AlbumInfo>
-                                <Icon src={ albumType === albumTypes.public ? publicAlbumBlueIcon : privateAlbumBlueIcon }/>
-                                { albumType === albumTypes.public ? <p>Publiczny</p> : <p>Prywatny</p> }
+                                <Icon src={ albumType === albumTypes.public ? publicAlbumBlueIcon : albumType === albumTypes.private ? privateAlbumBlueIcon : null}/>
+                                { albumType === albumTypes.public ? <p>Publiczny</p> : albumType === albumTypes.private ? <p>Prywatny</p> : null }
                             </AlbumInfo>
                             <Buttons>
                                 { 
@@ -282,6 +294,8 @@ const Header = styled.div`
 `;
 
 const GoBackButton = styled(Button)`
+    visibility: ${({active}) => active ? "visible" : "hidden"};
+    visibility: ;
     border-radius: 5px;
     justify-self: flex-end;
     width: 125px;

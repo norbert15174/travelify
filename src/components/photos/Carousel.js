@@ -83,11 +83,12 @@ const Carousel = ({ selectedPhotoIndex, setClose}) => {
         <>
             <Container ref={ref}>
             { 
-                pinBox && <PinBox 
-                            setClose={setPinBox} 
-                            heightDelimiter={heightDelimiter}
-                            photoId={photos[current].photo.photoId}
-                          /> 
+                pinBox && 
+                <PinBox 
+                    setClose={setPinBox} 
+                    heightDelimiter={heightDelimiter}
+                    photoId={photos[current].photo.photoId}
+                /> 
             }
                 <LeftArrow
                     noDisplay={current === 0 || pinBox ? true : false}
@@ -108,9 +109,9 @@ const Carousel = ({ selectedPhotoIndex, setClose}) => {
                         windowHeightDelimiter={windowHeightDelimiter}
                     />
                     <SideSection 
-                        //photoDetails={photos[current].photo}
                         currentPhotoIndex={current}
                         setPinBox={setPinBox}
+                        pinBox={pinBox}
                         heightDelimiter={heightDelimiter}
                         widthDelimiter={widthDelimiter}
                         windowHeightDelimiter={windowHeightDelimiter}

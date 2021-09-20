@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 
 const NewsThumbnail = ({news}) => (
     <>  
         <Container>
-            <MainPhoto src={news.image} alt="albumMainPhoto"/>
+            <MainPhoto src={news.image !== undefined ? news.image : noAlbumPhotoIcon} alt="albumMainPhoto"/>
             <Info>
                 <Text>
                     <InfoHeader>
@@ -43,6 +44,7 @@ const MainPhoto = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 5px;
 `;
 
 const Info = styled.div`
@@ -51,6 +53,7 @@ const Info = styled.div`
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);
     min-height: 15%;
+    border-radius: 0px 0px 5px 5px;
 `;
 
 const Text = styled.div`
@@ -67,18 +70,18 @@ const InfoHeader = styled.div`
 `;
 
 const Title = styled.h1`
-    font-size: 32px;    
+    font-size: 40px;    
     display: inline-block;
     @media only screen and (max-width: 800px) {
-        font-size: 18px;
+        font-size: 26px;
     }
 `;
 
 const Localization = styled.h2`
-    font-size: 18px;
+    font-size: 26px;
     justify-self: end;
     @media only screen and (max-width: 800px) {
-        font-size: 10px;
+        font-size: 18px;
     }
 `;
 

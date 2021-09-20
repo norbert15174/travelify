@@ -26,8 +26,8 @@ const Localization = ({creatorType, setForm}) => {
 
     const [ place, setPlace ] = useState("");
     const [ localization, setLocalization ] = useState({
-        lat: "",
-        lng: "",
+        lat: 0,
+        lng: 0,
         countryName: "",
         countryId: null,
         place: place,
@@ -71,15 +71,15 @@ const Localization = ({creatorType, setForm}) => {
         if (creatorType === albumCreator.creation) {
             setPlace("");
             setLocalization({
-                lat: "",
-                lng: "",
+                lat: 0,
+                lng: 0,
                 countryName: "",
                 countryId: null,
                 place: place,
             });
             setForm({
-                lat: "",
-                lng: "",
+                lat: 0,
+                lng: 0,
                 countryName: "",
                 countryId: null,
                 place: place,
@@ -188,9 +188,10 @@ const Localization = ({creatorType, setForm}) => {
                     width={"100%"} 
                     height={"100%"} 
                     options={options} 
-                    initialCoordinates={
-                        creatorType === albumCreator.edition ? { lat: localization.lat, lng: localization.lng, } : { lat: 0, lng: 0, } 
-                    }
+                    initialCoordinates={{ 
+                        lat: localization.lat, 
+                        lng: localization.lng 
+                    }}
                     type={creatorType === albumCreator.edition ? albumCreator.edition : albumCreator.creation}
                     setLocalization={setLocalization}
                     deleteMarker={(creatorType === albumCreator.creation && localization.lat === "" && localization.lng === "") ? true : false}

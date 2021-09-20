@@ -6,13 +6,13 @@ import "./friends.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import FriendItem from "./FriendItem";
 import Message from "./Message";
-import Close from "../menu/svg/close";
+import Close from "../menu/assets/close";
 import { endpoints } from "../../url";
 import { theme } from "../../miscellanous/GlobalTheme";
 
 const Friends = ({friendDisplay}) => {
   
-	const [ display, setDisplay ] = useState(-1);
+	const [ selectedFriend, setSelectedFriend ] = useState(null);
 	const [ friends, setFriends ] = useState([]);
 	const [ error, setError ] = useState(false);
 	
@@ -57,8 +57,7 @@ const Friends = ({friendDisplay}) => {
     };
 
 	return (
-    	<>
-      		<Container blurState={blurState} className="font">
+      	<Container blurState={blurState} className="font">
         		<FriendsHeader>
           			<FriendsHeaderText>Znajomi</FriendsHeaderText>
 					<CloseContainer onClick={(e) => {
@@ -86,11 +85,7 @@ const Friends = ({friendDisplay}) => {
             				? 
 							friends.map((friend) => (
 								<div key={friend.id}>
-									<FriendItem user={friend} click={setDisplay}/>
-									{
-										(display === friend.id)  &&
-										<Message user={friend} click={setDisplay} friendDisplay={friendDisplay}/> 
-									}
+									<FriendItem user={friend} selectFriend={setSelectedFriend}/>
 								</div>
               				))
             				: null
@@ -99,11 +94,7 @@ const Friends = ({friendDisplay}) => {
 							?
 							found.map((friend) => (
 								<div key={friend.id}>
-									<FriendItem user={friend} click={setDisplay}/>
-									{
-										(display === friend.id) &&
-										<Message user={friend} click={setDisplay} friendDisplay={friendDisplay}/> 
-									}
+									<FriendItem user={friend} selectFriend={setSelectedFriend}/>
 								</div>	
 							))
 							: null
@@ -113,8 +104,12 @@ const Friends = ({friendDisplay}) => {
 					) : <h1 style={{color: theme.color.greyFont, marginLeft: "30px"}}>Brak znajomych</h1>
 				}
         		</FriendsList>
+				{
+					(selectedFriend)  &&
+					<Message user={selectedFriend} closeMessenger={setSelectedFriend} friendDisplay={friendDisplay}/> 
+				}
       		</Container>
-    	</>
+    	
   	);
 };
 

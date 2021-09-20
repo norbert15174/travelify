@@ -8,11 +8,8 @@ const initialState = {
     albumPhotos: [],
     friendsList: null,
     info: null,
+    tags: [],
 };
-
-/*
-    CHYBA BĘDZIE TRZEBA ZROBIĆ TEMP COMMENTS, TAGS sztuk jedno, i po każdym przełączeniu zdjęcia podmieniać...
-*/
 
 export const albumDetailsSlice = createSlice({
     name: "albumDetails",
@@ -43,25 +40,24 @@ export const albumDetailsSlice = createSlice({
             state.rights = "";
             state.albumType = "";
             state.owner = null;
+            state.tags = [];
         },
         setFriendsList: (state, action) => {
             state.friendsList = action.payload;
         },
-        updateComments: (state, action) => {
-            // let arr = [objects...] i iterować i modyfikować
-            // będę musiał przesłać id zdjęcia
+        setTags: (state, action) => {
+            state.tags = action.payload;
         },
-        updateTaggedPersonList: (state, action) => {
-            // let arr = [objects...] i iterować i modyfikować
-        },
-        updateDescription: (state, action) => {
-             // let arr = [objects...] i iterować i modyfikować
-        }
   },
 });
 
 // actions
-export const { setOwner, setRights, setAlbumType, setSharedPersonList, setAlbumPhotos, setInfo, setFriendsList, clearStore } = albumDetailsSlice.actions;
+export const { 
+    setOwner, setRights, setAlbumType, 
+    setSharedPersonList, setAlbumPhotos,
+    setInfo, setFriendsList,
+    setTags, clearStore 
+} = albumDetailsSlice.actions;
 
 // exporting selects
 export const selectInfo = (state) => state.albumDetails.info;
@@ -71,5 +67,6 @@ export const selectAlbumPhotos = (state) => state.albumDetails.albumPhotos;
 export const selectRights = (state) => state.albumDetails.rights;
 export const selectAlbumType = (state) => state.albumDetails.albumType;
 export const selectFriendsList = (state) => state.albumDetails.friendsList;
+export const selectTags = (state) => state.albumDetails.tags;
 
 export default albumDetailsSlice.reducer;

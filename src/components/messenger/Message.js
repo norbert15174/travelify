@@ -1,18 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import "./friends.css";
-import Emoji from "../menu/svg/emoji";
-import Send from "../menu/svg/send";
-import Close from "../menu/svg/close";
+import Emoji from "../menu/assets/emoji";
+import Send from "../menu/assets/send";
+import Close from "../menu/assets/close";
 import SingleMessage from "./SingleMessage";
+import Picker from 'emoji-picker-react';
+import "./messageEmojiPicker.css"; 
+import JSEMOJI from 'emoji-js';
 import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes"; 
 
-const Message = ({ user, click, friendDisplay}) => {
+let emoji = new JSEMOJI();
+emoji.replace_mode = 'unified';
+emoji.allow_native = true;
+
+const Message = ({ user, closeMessenger, friendDisplay}) => {
+
+	const messageInputRef = useRef(null);
+    const emojiWindowRef = useRef(null);
+    const emojiButtonRef = useRef(null);
+    const [ message, setMessage ] = useState("");
+    const [ showEmoji, setShowEmoji ] = useState(false);
+    const [ cursorPos, setCursorPos ] = useState(null);
 
 	const [ redirectToProfile, setRedirectToProfile ] = useState(false);
 	const blurState = useSelector((state) => state.blur.value);
+
+	// when emoji is added manually
+    const onEmojiClick = (event, emojiObject) => {
+        const ref = messageInputRef.current;
+        ref.focus();
+        const start = message.substring(0, ref.selectionStart);
+        const end = message.substring(ref.selectionStart);
+        //console.log(emojiObject)
+        setMessage(start + emojiObject.emoji + end);
+        setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
+    };
+
+	// when emoji is typed in the comment ... :smile:
+    const onChangeHandler = (event) => {
+        let text = emoji.replace_colons(event.target.value);
+        setMessage(text);
+    }
+
+	// emoji window will be closed on outside click
+    function onEmojiWindowOutsideClick(e) {
+        if (!emojiWindowRef.current || emojiWindowRef.current.contains(e.target)) {
+            return;
+        }
+        document.removeEventListener("mousedown", onEmojiWindowOutsideClick, true)
+        if (!emojiButtonRef.current.contains(e.target)) { 
+            // EmojiButton onClick event toggles showEmoji
+            setShowEmoji(false) 
+        };
+    };
+
+	useEffect(() => {
+        // emoji window display
+        if (showEmoji) {
+            document.addEventListener("mousedown", onEmojiWindowOutsideClick, true)
+        }
+        // cursor position when typing comment, enables putting emoji in every place
+        //commentInputRef.current.selectionEnd = cursorPos; // 
+        // eslint-disable-next-line 
+    }, [showEmoji])
 
 	if (redirectToProfile) {
 		friendDisplay("");
@@ -42,24 +95,51 @@ const Message = ({ user, click, friendDisplay}) => {
 					<Name>{user.name + " " + user.lastName}</Name>
 				</NameContainer>
 				<CloseContainer onClick={e => {
-					click(-1);
+					closeMessenger(null);
 				}}>
 					<Close width="20px" height="20px"></Close>
 				</CloseContainer>
       		</TopMessageHeader>
-      		<SendContainer>
-				<SingleMessage url={user.profilePicture}></SingleMessage>
-				<SingleMessage url={user.profilePicture} side="right"></SingleMessage>
-				<SingleMessage url={user.profilePicture}></SingleMessage>
+      		<SendContainer className="scroll_two">
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} side="right"/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<SingleMessage url={user.profilePicture} side="right"/>
+				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
       		</SendContainer>
       		<BottomPanel>
 				<MessageInputContainer>
-					<MessageInput placeholder="Aa"/>
-					<EmojiIcon>
+					<MessageInput 
+						ref={messageInputRef}
+						placeholder="Aa :smile:"
+						id="message"
+						className="scroll_two"
+						name="message"
+						wrap="soft"
+						value={message}
+						onChange={(e) => onChangeHandler(e)}
+					/>
+					<EmojiIcon ref={emojiButtonRef} onClick={() => {
+                        messageInputRef.current.focus(); 
+                        setShowEmoji(!showEmoji);
+                    }}>
 						<Emoji/>
 					</EmojiIcon>
+					{ 
+						showEmoji && 
+						<div ref={emojiWindowRef} id="emojiWindow" className="emoji-window-message">
+							<Picker onEmojiClick={onEmojiClick} native={true} disableSkinTonePicker={true}/> 
+						</div>
+                	}
 				</MessageInputContainer>
-				<SendIcon>
+				<SendIcon onClick={() => {
+					if (message !== "") {
+						// SEND MESSAGE
+						setMessage("");
+						setShowEmoji(false);
+					}
+				}}>
 					<Send/>
 				</SendIcon>
       		</BottomPanel>
@@ -73,21 +153,23 @@ const CloseContainer = styled.div`
 `;
 
 const SendContainer = styled.div`
-  margin-top: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  width: 330px;
-  margin-left: 10px;
-  height: calc(100% - 140px);
-  overflow-x: hidden;
-  overflow-y: visible;
+	margin-top: 10px;
+	padding: 5px 0px;
+	width: 330px;
+	margin-left: 10px;
+	height: calc(100% - 140px);
+	overflow-x: hidden;
+	overflow-y: visible;
 `;
 
 const EmojiIcon = styled.div`
   position: absolute;
   z-index: 1200;
-  bottom: 16px;
-  left: 261px;
+  bottom: 9px;
+  left: 250px;
+  &:hover {
+        opacity: 0.5;
+    }
 `;
 
 const SendIcon = styled.div`
@@ -95,6 +177,9 @@ const SendIcon = styled.div`
   z-index: 1300;
   bottom: 8px;
   left: 298px;
+  &:hover {
+        opacity: 0.5;
+    }
 `;
 
 const Icon = styled.img`
@@ -141,6 +226,7 @@ const BottomPanel = styled.div`
 `;
 
 const MessageInputContainer = styled.div`
+	position: relative;
 	width: 251px;
 	font-size: 16px;
 	height: 22px;

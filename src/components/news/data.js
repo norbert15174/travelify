@@ -1,8 +1,7 @@
 import japonia1 from "./photos/Japonia.jpg";
 import japonia2 from "./photos/japonia2.jpg";
 
-export const FriendsListArray = {
-    list: [
+export const FriendsListArray = [
       {
         id: 1,
         url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
@@ -155,5 +154,4 @@ export const FriendsListArray = {
         Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
         image: japonia1,
     },
-    ],
-  };
+];

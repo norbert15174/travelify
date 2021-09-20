@@ -3,12 +3,12 @@ import styled from "styled-components";
 import Select, { components } from "react-select";
 
 /*
-    Dropdown search is used at AlbumsPage and NewsPage.
+    Dropdown search is used at AlbumsPage
 */
 
 const { Option } = components; 
 
-const CustomSelectOption = props => (
+const AlbumSelectOption = props => (
     <Option {...props}>
         <ValueContainer>
             <Album src={props.data.mainPhoto}/>
@@ -29,7 +29,7 @@ const CustomSelectOption = props => (
     </Option>
 )
   
-const CustomSelectValue = props => (
+const AlbumSelectValue = props => (
     <ValueContainer>
             <Album src={props.data.mainPhoto}/>
             <InnerContainer>
@@ -102,7 +102,7 @@ const CustomStyles = {
     })
 };
 
-const DropdownSearch = ({options, setState, value}) => {
+const DropdownSearch = ({options, setState, value, searchType}) => {
     
     const setValueOnChange = (value) => {
         if (value) {
@@ -118,10 +118,10 @@ const DropdownSearch = ({options, setState, value}) => {
             isSearchable 
             isClearable
             placeholder="Szukaj..."
-            noOptionsMessage={() => "Brak albumów :("}
+            noOptionsMessage={() => searchType === "albums" ? "Brak albumów :(" : "Brak grup :("}
             onChange={setValueOnChange}
             value={value}
-            components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
+            components={{ Option: searchType === "albmus" ? AlbumSelectOption : AlbumSelectOption, SingleValue: searchType === "albmus" ? AlbumSelectValue : AlbumSelectValue }}
         />
     );
   

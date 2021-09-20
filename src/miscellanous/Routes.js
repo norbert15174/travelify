@@ -10,6 +10,7 @@ export const routes = {
     albumCreator: "/albumCreator",
     groups: '/groups',
     search: '/search',
-    notFound: '/notFound'
+    notFound: '/notFound',
+    albumNotLogged: '/albumPreview/:id',
 };
   

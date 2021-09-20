@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
+import axios from "axios";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import closeIcon from "./assets/closeIcon.svg";
 import NotificationsItem from "./NotificationsItem";
 import "./notificationsScrollbar.css";
+import { endpoints } from "../../url";
 
 const Notifications = ({notificationsDisplay}) => {
 
     const blurState = useSelector((state) => state.blur.value); 
+    const [ friendsRequests, setFriendsRequests ] = useState([]);
+    const [ error, setError ] = useState(null);
+
+    useEffect(() => {
+        axios({
+			url: endpoints.getFriendsRequests,
+			method: "get",
+			headers: {
+		  		"Content-Type": "application/json",
+		  		Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		})
+		.then(({data}) => {
+            console.log(data);
+  			setFriendsRequests(data);
+		})
+		.catch((error) => {
+			setError(error);
+		});
+    }, []);
 
     return (
         <Container blurState={blurState}>
@@ -18,7 +40,22 @@ const Notifications = ({notificationsDisplay}) => {
                 <CloseButton icon={closeIcon} onClick={() => notificationsDisplay(false)}/>
             </Header>
             <NotificationsList className="scroll">
-                <NotificationsItem firstName="Jaś" surName="Fasola" type="invitation"/>
+                {
+                    friendsRequests.length !== 0 
+                    ?
+                    friendsRequests.map((item) => (
+                        <NotificationsItem 
+                            key={item.id} 
+                            firstName={item.firstName} 
+                            surName={item.lastName} 
+                            photo={item.photo} 
+                            type="invitation" 
+                            invitationId={item.id}
+                        />
+                    ))
+                    : 
+                    null
+                }
                 <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
                 <NotificationsItem firstName="Jaś" surName="Fasola" type="share"/>
                 <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/>

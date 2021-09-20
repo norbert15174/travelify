@@ -49,6 +49,16 @@ const InfoContainer = styled.div`
     position: absolute;
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);
+    height: 120px;
+    @media only screen and (max-width: 1635px) {
+        height: 100px;
+    }
+    @media only screen and (max-width: 1025px) {
+        height: 80px;
+    }
+    @media only screen and (max-width: 510px) {
+        height: 55px;
+    }    
 `;
 
 const EditButton = styled(ButtonIcon)`
@@ -96,7 +106,7 @@ const SharingPerson = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 34px;
-    @media only screen and (max-width: 1625px) {
+    @media only screen and (max-width: 1635px) {
         font-size: 30px;
     }
     @media only screen and (max-width: 1225px) {
@@ -118,7 +128,7 @@ const ProfilePhoto = styled.img`
     margin-left: 5px;
     margin-right: 10px;
     border: 2px solid ${({theme}) => theme.color.lightTurquise };
-    @media only screen and (max-width: 1625px) {
+    @media only screen and (max-width: 1635px) {
         width: 50px;
         height: 50px;    
     }
@@ -157,10 +167,14 @@ const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
     color: #000;
+    margin-right: 10px;
+    @media only screen and (max-width: 1635px) {
+        font-size: 30px;
+    }
     @media only screen and (max-width: 1425px) {
         font-size: 28px;
     }
-    @media only screen and (max-width: 1025px) {
+    @media only screen and (max-width: 1225px) {
         font-size: 22px;
     }
     @media only screen and (max-width: 510px) {
@@ -170,42 +184,44 @@ const Title = styled.h1`
 
 const Localization = styled.h2`
     font-size: 18px;
-    justify-self: end;
+    margin-right: 0;
+    margin-left: auto;
     @media only screen and (max-width: 1425px) {
         font-size: 16px;
     }
-    @media only screen and (max-width: 1025px) {
+    @media only screen and (max-width: 1225px) {
         font-size: 14px;
+    }
+    @media only screen and (max-width: 1025px) {
+        font-size: 12px;
     }
     @media only screen and (max-width: 735px) {
-        font-size: 14px;
-    }
-    @media only screen and (max-width: 510px) {
-        font-size: 8px;
+        font-size: 10px;
     }
 `;
 
 const Description = styled.p`
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 3;
     @media only screen and (max-width: 1425px) { 
         margin-top: 10px;
-        -webkit-line-clamp: 5;
     }
     @media only screen and (max-width: 1025px) {
         font-size: 10px;
         margin-top: 5px;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 2;
+    }
+    @media only screen and (max-width: 825px) {
+        -webkit-line-clamp: 3;
     }
     @media only screen and (max-width: 510px) {
         font-size: 8px;
         margin-top: 2.5px;
-        -webkit-line-clamp: 3;
     }
 `;
 
