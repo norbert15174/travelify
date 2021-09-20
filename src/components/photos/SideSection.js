@@ -49,12 +49,13 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 
     useEffect(() => {
         if (!userData.id) {
+            // when store with user data has been reseted
             getBasicUserData();
         }
         if (!pinBox) {
             getTags();
-            getComments();
         }
+        getComments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPhotoIndex, userData.id, pinBox]);
     
@@ -170,8 +171,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 />
             }
             { 
-                editing 
-                && 
+                editing && 
                 <CloseEditing 
                     icon={close2Icon}
                     onClick={() => {

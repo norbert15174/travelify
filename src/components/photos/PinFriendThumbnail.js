@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { selectAlbumType } from "../../redux/albumDetailsSlice";
+import { selectAlbumType, selectTags } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
 import axios from "axios";
 import { albumTypes } from "../../miscellanous/Utils";
 
-const PinFriendThumbnail = ({friend, photoId, tags}) => {
+const PinFriendThumbnail = ({friend, photoId}) => {
+
+    const reduxTags = useSelector(selectTags);
+    const tags = reduxTags.find((item) => item.photoId === photoId).tags
 
     const [ error, setError ] = useState(false);
     const [ pinFinished, setPinFinished ] = useState(false);
     const [ putting, setPutting ] = useState(false);
     const albumType = useSelector(selectAlbumType);
-    const [alreadyChosen, setAlreadyChosen ] = useState(tags.find((item) => item.userId === (albumType === albumTypes.private ? friend.userId : friend.id)) ? true : false);
+    const friendId = (albumType === albumTypes.private ? friend.userId : friend.id);
+    const [alreadyChosen, setAlreadyChosen ] = useState(tags.find((item) => item.userId === friendId ? true : false));
 
     async function tagPersonOnPhoto() {
         setError(null);
@@ -24,7 +28,7 @@ const PinFriendThumbnail = ({friend, photoId, tags}) => {
             method: "put",
                 url: endpoints.tagPersonOnPhoto + photoId,
                 data: [
-                    friend.id
+                    friendId
                 ],
                 headers: {
                     "Access-Control-Allow-Headers": "*",
@@ -36,7 +40,6 @@ const PinFriendThumbnail = ({friend, photoId, tags}) => {
                 },
         })
         .then((response) => {           
-            console.log(response); 
             setAlreadyChosen(true)
         })
         .catch((error) => {
@@ -47,6 +50,7 @@ const PinFriendThumbnail = ({friend, photoId, tags}) => {
             setPutting(false);
         });
     };
+
     return (
         <Friend>
             <Photo src={friend.profilePicture || friend.photo || noProfilePictureIcon}/>

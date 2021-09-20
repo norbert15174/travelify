@@ -129,9 +129,6 @@ const Description = styled.p`
         margin-top: 5px;
         
     }
-    @media only screen and (max-width: 735px) {
-
-    }
     @media only screen and (max-width: 560px) {
         -webkit-line-clamp: 2;
         font-size: 8px;

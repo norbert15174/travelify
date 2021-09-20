@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Post from "./Post";
 import friendsIcon from "./svg/friendsIcon.svg";
 import communityIcon from "./svg/communityIcon.svg";
-import noResultsIcon from "./svg/noResultsIcon.svg";
 import { useSelector } from "react-redux";
 import Spinner from "../trinkets/Spinner";
 import japonia1 from "./photos/Japonia.jpg";
@@ -175,9 +174,9 @@ const NewsPage = () => {
     const [newsType, setNewsType] = useState(types.friends);
     const blurState = useSelector((state) => state.blur.value);
 
-
     const [ newsList, setNewsList ] = useState(fakeNews);
     const [ page, setPage ] = useState(1) // page number
+    const [ noMoreNews, setNoMoreNews ] = useState(false);
     const loader = useRef(null);
 
     useEffect(() => {
@@ -193,10 +192,14 @@ const NewsPage = () => {
 
     // when page changes
     useEffect(() => {
-        setTimeout(() => {
-            const newNewsList = newsList.concat([newsList[2], newsList[3]]);
-            setNewsList(newNewsList);
-        }, 1000);
+        if (fakeNews.length > 0) {
+            setTimeout(() => {
+                const newNewsList = newsList.concat([newsList[2], newsList[3]]);
+                setNewsList(newNewsList);
+            }, 1000);
+        } else {
+            setNoMoreNews(true);
+        }
     }, [page]);
 
     const handleObserver = (entities) => {
@@ -230,23 +233,33 @@ const NewsPage = () => {
                 </NewsSwitch>
             </NewsNavigation>
             {
-                newsType === types.friends && (
-                    newsList
-                    ? newsList.map((news) => 
-                        <Post key={news.id} news={news}/>)
-                    : <NoResults/>
+                newsType === types.friends && newsList.length > 0 && (
+                    newsList.map((news) => 
+                        <Post key={news.id} news={news}/>
+                    )
                 )
             }
             {
-                newsType === types.community && ( 
-                    newsList
-                    ? newsList.map((news) => 
-                        <Post news={news}/>)
-                    : <NoResults/>
+                newsType === types.community && newsList.length > 0 && ( 
+                    newsList.map((news) => 
+                        <Post news={news}/>
+                    )
                 )  
             }
             <InnerContainer ref={loader}>
-                <Spinner width={"30px"} height={"30px"} border={"6px"} firstColor={({theme}) => theme.color.darkTurquise} secondColor={({theme}) => theme.color.lightTurquise }/>
+            {
+                !noMoreNews 
+                ?
+                (<Spinner 
+                    width={"30px"} 
+                    height={"30px"} 
+                    border={"6px"} 
+                    firstColor={({theme}) => theme.color.darkTurquise} 
+                    secondColor={({theme}) => theme.color.lightTurquise}
+                />) 
+                :
+                <h1>Brak nowych albumów...</h1>
+            }
             </InnerContainer>  
         </Container>
     );
@@ -284,6 +297,12 @@ const InnerContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    h1 {
+        color: ${({theme}) => theme.color.greyFont};
+        @media only screen and (max-width: 800px) {
+            font-size: 15px;
+        }
+    }
 `;
 
 const Header = styled.div`
@@ -359,16 +378,5 @@ const NewsOption = styled.div`
         padding: 10px 10px 10px 50px;
     }
 `;
-
-const NoResults = styled.div`
-    height: 50vh;
-    background: url(${() => noResultsIcon});
-    background-repeat: no-repeat;
-    background-size: 80%;
-    background-position: center;
-    border-radius: 15px;
-    background-color: ${({theme}) => theme.color.lightBackground};
-`;
-
 
 export default NewsPage;

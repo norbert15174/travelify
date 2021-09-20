@@ -102,12 +102,12 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
                         list ? ((
                             searchContent.length !== 0 && found.length !== 0 ?
                             found.map((friend) => 
-                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId} tags={tags.find((item) => item.photoId === photoId).tags}/>
+                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId}/>
                             ) : null
                         ) || (
                             list.length !== 0 && searchContent.length === 0 ?
                             list.map((friend) => 
-                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId} tags={tags.find((item) => item.photoId === photoId).tags}/>
+                                <FriendThumbnail key={friend.id || friend.userId} friend={friend} photoId={photoId}/>
                             ) : null
                         ) || (
                             <NoResults>Brak wyników...</NoResults>
@@ -122,10 +122,10 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
 }
 
 const Container = styled.div`
-    width: calc(100% - 120px); // 120px - menu bar
+    width: calc(100% - 120px); // 120px - sidebar
     z-index: 10000;
     @media only screen and (max-width: 720px) {
-        width: 100%; // menu bar ignored
+        width: 100%; // hiding sidebar
     }
 `;
 

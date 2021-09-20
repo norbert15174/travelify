@@ -41,6 +41,19 @@ const InfoContainer = styled.div`
     position: absolute;
     bottom: 0%;
     background: rgba(229, 229, 229, 0.8);
+    height: 120px;
+    @media only screen and (max-width: 1400px) {
+        height: 100px;
+    }
+    @media only screen and (max-width: 1100px) {
+        height: 75px;
+    }
+    @media only screen and (max-width: 800px) {
+        height: 65px;
+    }
+    @media only screen and (max-width: 500px) {
+        height: 50px;
+    }
 `;
 
 const Owner = styled.div`
@@ -113,7 +126,7 @@ const ProfilePhoto = styled.img`
 const Text = styled.div`
     padding: 10px 20px;
     @media only screen and (max-width: 1100px) {
-        padding: 5px 5px;
+        padding: 5px 10px;
     }
     @media only screen and (max-width: 800px) {
         padding: 5px 10px;
@@ -130,16 +143,16 @@ const Title = styled.h1`
     font-size: 34px;    
     display: inline-block;
     @media only screen and (max-width: 1400px) {
-        font-size: 28px;
+        font-size: 24px;
     }
     @media only screen and (max-width: 1100px) {
-        font-size: 18px;
+        font-size: 20px;
     }
     @media only screen and (max-width: 800px) {
-        font-size: 22px;
+        font-size: 16px;
     }
     @media only screen and (max-width: 500px) {
-        font-size: 12px;
+        font-size: 14px;
     }
 `;
 
@@ -147,41 +160,33 @@ const Localization = styled.h2`
     font-size: 18px;
     justify-self: end;
     @media only screen and (max-width: 1400px) {
-        font-size: 16px;
-    }
-    @media only screen and (max-width: 1100px) {
-        font-size: 12px;
+        font-size: 14px;
     }
     @media only screen and (max-width: 800px) {
-        font-size: 16px;
+        font-size: 12px;
     }
     @media only screen and (max-width: 500px) {
-        font-size: 8px;
+        font-size: 10px;
     }
 `;
 
 const Description = styled.p`
-    margin-top: 15px;
+    margin-top: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 3;
     font-size: 12px;
-    @media only screen and (max-width: 1400px) { 
-        margin-top: 10px;
-        -webkit-line-clamp: 5;
-    }
     @media only screen and (max-width: 1100px) {
-        font-size: 8px;
-        margin-top: 2.5px;
-        -webkit-line-clamp: 3;
+        font-size: 10px;
+        margin-top: 5px;
     }
     @media only screen and (max-width: 800px) {
-        font-size: 10px;
-        margin-top: 5;
+
     }
     @media only screen and (max-width: 500px) {
+        -webkit-line-clamp: 2;
         font-size: 8px;
         margin-top: 2.5px;
     }

@@ -75,7 +75,7 @@ const StyledHeader = styled.div`
     width: 100%;
     height: 140px;
     background-color: ${({theme}) => theme.color.lightBackground};
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid ${({theme}) => theme.color.greyFont};;
     @media only screen and (max-width: 763px) {
         grid-template-columns: 320px 1fr;
     }
@@ -125,7 +125,7 @@ const StyledButton = styled(Button)`
 
 const StyledFooter = styled.div`
     width: 100%;
-    border-top: 1px solid #808080;
+    border-top: 1px solid ${({theme}) => theme.color.greyFont};
     background-color: ${({theme}) => theme.color.lightBackground};
     padding-bottom: 15px;
     height: 100%;
@@ -133,7 +133,7 @@ const StyledFooter = styled.div`
 `;
 
 const Line = styled.div`
-    border: 1px solid #808080;
+    border-top: 1px solid ${({theme}) => theme.color.greyFont};;
 `;
 
 const AppInfo = styled.div`
