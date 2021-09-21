@@ -1,0 +1,22 @@
+.customTheme {
+    color: #000 !important;
+    background-color: #E0E5E0 !important;
+    /* border: 2px solid #5B5B5B !important; */
+    opacity: 1 !important;
+}
+
+.__react_component_tooltip.place-left::after {
+    border-left: 8px solid #E0E5E0 !important;
+}
+
+.__react_component_tooltip.place-right::after {
+    border-right: 8px solid #E0E5E0 !important;
+}
+
+.__react_component_tooltip.place-top::after {
+    border-top: 8px solid #E0E5E0 !important;
+}
+
+.__react_component_tooltip.place-bottom::after {
+    border-bottom: 8px solid #E0E5E0 !important;
+}

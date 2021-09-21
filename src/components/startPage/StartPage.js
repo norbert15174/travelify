@@ -35,7 +35,7 @@ const StartPage = () => {
                         Travelify &copy;2021<br/><br/>
                         Praca inżynierska<br/>
                         Celem pracy było stworzenie aplikacji internetowej pozwalającej na integrację osób zainteresowanych podróżami.<br/>
-                        Twórcy: Norbert Faron, Mikołaj Telec - studenci III roku Elektroniki i Telekomunikacji na wydziale Informatyki, Elektroniki i Telekomunikacji w AGH w Krakowie<br/>
+                        Twórcy: Norbert Faron, Mikołaj Telec - studenci Elektroniki i Telekomunikacji na wydziale Informatyki, Elektroniki i Telekomunikacji Akademii Górniczo-Hutniczej im. Stanisława Staszica w Krakowie<br/>
                         Promotor: dr hab. inż. Mikołaj Leszczuk<br/>
                         Wykorzystane technologie: Spring Boot, Hibernate, MySQL, Google Cloud Platform, React, JavaScript, CSS, Google Maps Platform, Figma<br/><br/>
                         <a href="https://forms.gle/wJbqTVawXYZLwdNW7" target="_blank" rel="noopener noreferrer">Zgłaszanie błędów</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://forms.gle/jKofK3JwQNFousM59" target="_blank" rel="noopener noreferrer">Ankieta</a>
