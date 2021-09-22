@@ -172,7 +172,6 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
         })
         .then((response) => {               
             console.log(response); 
-            setShareAddFinished(true);
         })
         .catch((error) => {
             console.log(error);

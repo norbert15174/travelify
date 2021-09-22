@@ -13,17 +13,14 @@ const PinFriendThumbnail = ({friend, photoId}) => {
     const reduxTags = useSelector(selectTags);
     const tags = reduxTags.find((item) => item.photoId === photoId).tags
 
-    const [ error, setError ] = useState(false);
-    const [ pinFinished, setPinFinished ] = useState(false);
-    const [ putting, setPutting ] = useState(false);
+    const [ updating, setUpdating ] = useState(false);
     const albumType = useSelector(selectAlbumType);
     const friendId = (albumType === albumTypes.private ? friend.userId : friend.id);
-    const [alreadyChosen, setAlreadyChosen ] = useState(tags.find((item) => item.userId === friendId ? true : false));
+    const [ alreadyChosen, setAlreadyChosen ] = useState(tags.find((item) => item.userId === friendId ? true : false));
+    const [ buttonText, setButtonText ] = useState(!alreadyChosen ? "Wybierz" : "Oznaczony");
 
     async function tagPersonOnPhoto() {
-        setError(null);
-        setPinFinished(false);
-        setPutting(true);
+        setUpdating(true);
         await axios({
             method: "put",
                 url: endpoints.tagPersonOnPhoto + photoId,
@@ -40,23 +37,47 @@ const PinFriendThumbnail = ({friend, photoId}) => {
                 },
         })
         .then((response) => {           
-            setAlreadyChosen(true)
+            setAlreadyChosen(true);
+            setButtonText("Oznaczony");
         })
         .catch((error) => {
-            setError(error);
+            console.error(error);
         })
         .finally(() => {
-            setPinFinished(true);
-            setPutting(false);
+            setUpdating(false);
         });
+    };
+
+    async function deleteTag() {
+        setUpdating(true);
+        setButtonText("Wybierz");
+        setUpdating(false);
     };
 
     return (
         <Friend>
             <Photo src={friend.profilePicture || friend.photo || noProfilePictureIcon}/>
             <h1>{friend.name + " " + (friend.lastName || friend.surName)}</h1>
-            <ChooseButton disabled={alreadyChosen || (pinFinished && !error)} onClick={tagPersonOnPhoto}>
-                {alreadyChosen || (pinFinished && !error) ? "Oznaczony" : putting ? "Oznaczanie..." : "Wybierz"}
+            <ChooseButton 
+                onClick={() => {
+                    if (!alreadyChosen) {
+                        tagPersonOnPhoto()
+                    } else {
+                        deleteTag();
+                    }
+                }}
+                onMouseEnter={() => {
+                    if (alreadyChosen) {
+                        setButtonText("Usunąć?")
+                    }
+                }}
+                onMouseLeave={() => {
+                    if (alreadyChosen) {
+                        setButtonText("Oznaczony")
+                    }
+                }}
+            >
+                {updating ? "Oznaczanie..." : buttonText}
             </ChooseButton>
         </Friend>
     );
@@ -81,7 +102,7 @@ const Friend = styled.div`
         font-size: 8px;
     }
     @media only screen and (max-width: 510px) {
-        font-size: 7px;
+        font-size: 6px;
     }
 `;
 
@@ -94,39 +115,42 @@ const Photo = styled.img`
     @media only screen and (max-width: 1425px) {
         width: 30px;
         height: 30px;
-        margin-right: 5px;
+        margin-right: 10px;
     };
     @media only screen and (max-width: 1060px) {
         width: 25px;
         height: 25px;
+        border: 1px solid ${({theme}) => theme.color.lightTurquise};
+        margin-right: 5px;
     }
     @media only screen and (max-width: 510px) {
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
-    }
+        width: 20px;
+        height: 20px;
+    };
 `;
 
 const ChooseButton = styled(Button)`
-    font-size: 18px;
+    font-size: 14px;
     border-radius: 5px;
-    width: fit-content;
+    width: 80px;
     padding: 0px 5px 0px 5px;
-    height: 35px;
+    height: 30px;
     margin: 0 15px 0 auto;
     @media only screen and (max-width: 1425px) {
-        font-size: 12px;
+        font-size: 10px;
         height: 25px;
+        width: 60px;
     };
     @media only screen and (max-width: 1060px) {
-        font-size: 10px;
+        font-size: 8px;
         height: 20px;
-        margin: 0 10px 0 auto;
+        width: 50px;
     }
     @media only screen and (max-width: 510px) {
-        font-size: 7px;
+        font-size: 6px;
+        width: 40px;
         height: 15px;
-        margin: 0 5px 0 10px;
+        margin: 0 5px 0 auto;
     }
 `;
 

@@ -20,7 +20,7 @@
 }
 
 .scroll_two::-webkit-scrollbar {
-    width: 1px;
+    width: 5px;
 }
 
 .scroll_two::-webkit-scrollbar-track {
@@ -28,10 +28,12 @@
 }
   .scroll_two::-webkit-scrollbar-thumb {
     background: #E0E5E0;
+    border-radius: 5px;
 }
 
 .scroll_two::-webkit-scrollbar-thumb:hover {
   background: #E0E5E0;
+  border-radius: 5px;
 }
 
 

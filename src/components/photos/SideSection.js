@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
+import ScrollableFeed from 'react-scrollable-feed';
 import ButtonIcon from "../trinkets/ButtonIcon";
 import AddComment from "./AddComment";
 import tagWhiteIcon from "./assets/tagWhiteIcon.svg";
@@ -30,6 +31,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 
     const [ tags, setTags ] = useState(reduxTags.find((item) => item.photoId === photoId).tags);
     const [ comments, setComments ] = useState([]);
+    const commentsEndRef = useRef(null);
     const [ loadingComments, setLoadingComments ] = useState(false);
     const [ loadingTags, setLoadingTags ] = useState(false);
     const [ editing, setEditing ] = useState(false);
@@ -137,12 +139,13 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 text: comment,
                 time: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + minutes + ":" + seconds,
                 userId: sessionStorage.getItem("loggedUserId"),
-            }
+            };
             setComments((prevState) => [ ...prevState, temp]);
 		}).catch((error) => {
             console.log(error);
 		})
     };
+
 
     if (redirectToProfile.active) {
         document.body.style.overflow = "";
@@ -242,29 +245,33 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 !loadingComments ? (
                     comments.length !== 0 
                     ? 
-                    comments.map((item) => (
-                        <>
-                            <CommentContainer key={item.commentId}>
-                                <UserPhoto src={item.photo} onClick={() => {
-                                    document.body.style.overflow = "";
-                                    setRedirectToProfile({active: true, userId: item.userId})
-                                }}/>
-                                <span>
-                                    <p onClick={() => {
-                                            document.body.style.overflow = "";
-                                            setRedirectToProfile({active: true, userId: item.userId})
-                                        }}
-                                    >
-                                        {item.name + " " + item.surName} 
-                                    </p>
-                                    {item.text}
-                                </span>
-                            </CommentContainer>
-                            <CommentDate key={'_' + Math.random().toString(36).substr(2, 9)}>
-                                {item.time.split(" ")[1].substring(0,5) + "  " + getDate(item.time.split(" ")[0])}
-                            </CommentDate>
-                        </>
-                    ))
+                    <ScrollableFeed className="scroll_two">
+                    {
+                        comments.map((item, index) => (
+                            <>
+                                <CommentContainer key={item.commentId} ref={index + 1 === comments.length ? commentsEndRef : null}>
+                                    <UserPhoto src={item.photo} onClick={() => {
+                                        document.body.style.overflow = "";
+                                        setRedirectToProfile({active: true, userId: item.userId})
+                                    }}/>
+                                    <span>
+                                        <p onClick={() => {
+                                                document.body.style.overflow = "";
+                                                setRedirectToProfile({active: true, userId: item.userId})
+                                            }}
+                                        >
+                                            {item.name + " " + item.surName} 
+                                        </p>
+                                        {item.text}
+                                    </span>
+                                </CommentContainer>
+                                <CommentDate key={'_' + Math.random().toString(36).substr(2, 9)}>
+                                    {item.time.split(" ")[1].substring(0,5) + "  " + getDate(item.time.split(" ")[0])}
+                                </CommentDate>
+                            </>
+                        ))
+                    }
+                    </ScrollableFeed>
                     : 
                     <NoCommments>
                         Sekcja komentarzy jest pusta...<br/>
@@ -639,9 +646,5 @@ const TagButton = styled(ButtonIcon)`
         margin-top: 5px;
     }
 `;
-
-
-
-var link = "https://www.youtube.com/watch?v=ObJLIsNcOZ4";
 
 export default SideSection;

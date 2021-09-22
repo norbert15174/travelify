@@ -135,7 +135,7 @@ const Box = styled.div`
         height: 40%;
         left: 50%;
     }
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 540px) {
         padding-bottom: 10px;
         height: 300px;
         min-height: 300px;
@@ -154,9 +154,9 @@ const Header = styled.div`
         height: 40px;
         min-height: 40px;
     };
-    @media only screen and (max-width: 510px) {
-       height: 20px;
-       min-height: 20px;
+    @media only screen and (max-width: 540px) {
+       height: 25px;
+       min-height: 25px;
     }
 `;
 
@@ -170,7 +170,7 @@ const Heading = styled.h1`
     @media only screen and (max-width: 720px) {
         font-size: 20px;
     };
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 540px) {
         font-size: 16px;
     };
 `;
@@ -191,7 +191,7 @@ const CloseButton = styled.img`
         height: 12px;
         margin-right: 10px;
     };
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 540px) {
         width: 10px;
         height: 10px;
         margin-right: 5px;
@@ -203,7 +203,7 @@ const Search = styled(Input)`
     @media only screen and (max-width: 1140px) {
         font-size: 12px;
     };
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 540px) {
         background-size: 8px;
         padding: 5px 10px 5px 25px;
         font-size: 8px;
@@ -213,17 +213,14 @@ const Search = styled(Input)`
 const List = styled.div`
     display: grid; 
     grid-auto-rows: auto;
-    margin: 25px 30px 0px 50px;
+    margin: 25px 5px 0px 15px;
     grid-row-gap: 20px;
     overflow-y: scroll;
-    @media only screen and (max-width: 770px) {
-        margin: 25px 15px 0px 15px;
-    }
     @media only screen and (max-width: 720px) {
-        margin: 15px 15px 0px 15px;
+        margin: 20px 5px 0px 10px;
     }
-    @media only screen and (max-width: 510px) {
-        margin: 10px 10px 0px 10px;
+    @media only screen and (max-width: 540px) {
+        margin: 15px 5px 0px 10px;
         grid-row-gap: 10px;
     }
 `;
@@ -233,7 +230,7 @@ const NoResults = styled.h1`
     @media only screen and (max-width: 1140px) {
         font-size: 16px;
     };
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 540px) {
         font-size: 12px;
     }
 `;

@@ -242,20 +242,14 @@ const Search = styled(Input)`
 const List = styled.div`
     display: grid; 
     grid-auto-rows: auto;
-    margin: 25px 30px 0px 35px;
+    margin: 25px 5px 0px 15px;
     grid-row-gap: 15px;
     overflow-y: scroll;
-    @media only screen and (max-width: 1635px) {
-        margin: 25px 25px 0px 25px;
-    }
-    @media only screen and (max-width: 1425px) {
-        margin: 20px 20px 0px 20px;
-    };
     @media only screen and (max-width: 1060px) {
-        margin: 15px 15px 0px 15px;
+        margin-top: 20px 5px 0px 10px;
     };
     @media only screen and (max-width: 510px) {
-        margin: 10px 10px 0px 10px;  
+        margin-top: 15px 5px 0px 10px;
         grid-row-gap: 10px;
     }
 `;
