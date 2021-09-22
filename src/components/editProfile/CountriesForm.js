@@ -96,7 +96,7 @@ const CountriesForm = ({visitedCountries}) => {
         <>
             <Container>
                 <AddSection>
-                    <CountrySelect type="country" isMulti={true} options={JSON.parse(localStorage.getItem("countryList"))} value={selectedCountries} setState={setSelectedCountries}/>
+                    <CountrySelect type="country" isMulti={true} options={JSON.parse(sessionStorage.getItem("countryList"))} value={selectedCountries} setState={setSelectedCountries}/>
                     <AddButton disabled={selectedCountries.length === 0 ? true : false} icon={addIcon} onClick={addCountry}/>
                 </AddSection>
                 {errorMessage.length !== 0 && selectedCountries && <ErrorMessage type="error">{errorMessage}</ErrorMessage>}

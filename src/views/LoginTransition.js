@@ -49,7 +49,6 @@ const LoginTransition = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then((response) => {
-            console.log(response);
             if (response.data.photo !== undefined) {
                 dispatch(setProfilePicture(response.data.photo));
             }
@@ -75,16 +74,15 @@ const LoginTransition = () => {
             url: endpoints.getCountriesList,
             headers: {
                 "Content-Type": "application/json",
-                // there's no need for auth when we need countries :O
             },
         }).then(({data}) => {
+            console.log(data);
             data.shift();
             let countries = [];
             for (let i = 0; i < 206; i++) {
                 countries.push(data[i]);
             }
-            localStorage.setItem("countryList", JSON.stringify(countries));
-            mapCountriesToSelect();
+            mapCountriesToSelect(countries);
         }).catch((error) => {
             setError(error);
         }).finally(() => {
@@ -104,7 +102,6 @@ const LoginTransition = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then((response) => {
-            console.log("getFriends success");
         }).catch((error) => {
             setError(error);
         }).finally(() => {

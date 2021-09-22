@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
+import ScrollableFeed from 'react-scrollable-feed';
 import "./friends.css";
 import Emoji from "../menu/assets/emoji";
 import Send from "../menu/assets/send";
@@ -101,12 +102,14 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 				</CloseContainer>
       		</TopMessageHeader>
       		<SendContainer className="scroll_two">
-				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-				<SingleMessage url={user.profilePicture} side="right"/>
-				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-				<SingleMessage url={user.profilePicture} side="right"/>
-				<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				<ScrollableFeed className="scroll_two">
+					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+					<SingleMessage url={user.profilePicture} side="right"/>
+					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+					<SingleMessage url={user.profilePicture} side="right"/>
+					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+				</ScrollableFeed>
       		</SendContainer>
       		<BottomPanel>
 				<MessageInputContainer>
@@ -153,11 +156,9 @@ const CloseContainer = styled.div`
 `;
 
 const SendContainer = styled.div`
-	margin-top: 10px;
-	padding: 5px 0px;
 	width: 330px;
 	margin-left: 10px;
-	height: calc(100% - 140px);
+	height: 86.5%;
 	overflow-x: hidden;
 	overflow-y: visible;
 `;

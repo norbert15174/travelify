@@ -15,7 +15,6 @@ import { albumCreator, albumTypes } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
 import { endpoints } from "../../url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
-import { selectBasicInfo } from "../../redux/albumCreatorSlice";
 
 const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
 
@@ -28,7 +27,6 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
     const [ redirectToCreatedAlbum ,setRedirectToCreatedAlbum ] = useState({active: false, createdAlbumId: null});
 
     const blurState = useSelector((state) => state.blur.value);
-    const basicInfoooo = useSelector(selectBasicInfo);
 
     // BasicInfo submitted data, used at album creation, at editing it won't be used
     const [ basicInfo, setBasicInfo ] = useState({
@@ -69,7 +67,6 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
     }
 
     useEffect(() => {
-        console.log(basicInfoooo);
         // checking if album will be edited or created, setting albumId we are editing
         if (deleteBox && albumCreator.edition === creatorType) {
             if (confirmDeletingAlbum) {
@@ -121,7 +118,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
             data: {
                 coordinate: {
                     country: {
-                          id: localization.countryId,
+                        id: localization.countryId,
                     },
                     lang: localization.lng,
                     lat: localization.lat,
@@ -179,7 +176,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
                         <Icon src={localizationIcon}/>
                         <h1>Lokalizacja</h1>
                     </Header>
-                    <Localization creatorType={creatorType} setForm={setLocalization}/>
+                    <Localization editedAlbumId={editedAlbumId} creatorType={creatorType} setForm={setLocalization}/>
                 </SectionContainer>
                 {
                     creatorType === albumCreator.edition

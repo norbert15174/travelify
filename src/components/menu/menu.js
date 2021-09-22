@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { routes } from "../../miscellanous/Routes";
 import { Link, Redirect } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 import styled from "styled-components";
+import Tooltip from "../trinkets/Tooltip";
 import UserProfilePicture from "./UserProfilePicture";
 import Friends from "../messenger/Friends";
 import ButtonIcon from "../trinkets/ButtonIcon";
@@ -57,46 +59,94 @@ const Menu = () => {
 // <Link to={{pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId")), state: { loggedUserProfile: true }}}>
   	return (
     	<>
-			{logoutBox && <ConfirmationBox children={"Czy na pewno chcesz się wylogować?"} confirm={setConfirmLogout} refuse={setRefuseLogout}/>}
+			{
+				logoutBox && 
+				<ConfirmationBox 
+					children={"Czy na pewno chcesz się wylogować?"} 
+					confirm={setConfirmLogout} 
+					refuse={setRefuseLogout}
+				/>
+			}
       		<Container isVisible={isVisible} blurState={blurState}>
         		<ButtonList>
           			<li>
-						<Link to={{pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId")), state: { loggedUserProfile: true }}}>
-							<UserProfileContainer>
+						<Link to={{
+								pathname: routes.user.replace(/:id/i, sessionStorage.getItem("loggedUserId")), 
+								state: { loggedUserProfile: true }
+							}}
+						>
+							<UserProfileContainer data-tip data-for="userTip">
 								<UserProfilePicture/>
-							</UserProfileContainer>	
+							</UserProfileContainer>
+							<Tooltip id="userTip" place="bottom" text="Panel użytkownika"/>	
 						</Link>
           			</li>
           			<li>
-            			<ButtonIcon icon={notificationIcon} onClick={() => menuToExpand === "notifications" ? setMenuToExpand("") : setMenuToExpand("notifications")}/>
+            			<ButtonIcon 
+							icon={notificationIcon} 
+							onClick={() => menuToExpand === "notifications" ? setMenuToExpand("") : setMenuToExpand("notifications")}
+							data-tip
+							data-for="notifTip"
+						/>
+						<Tooltip id="notifTip" place="bottom" text="Powiadomienia"/>	
           			</li>
           			<li>
 						<Link to={routes.news}>
-							<ButtonIcon icon={newsIcon}/>
+							<ButtonIcon 
+								icon={newsIcon}
+								data-tip
+								data-for="newsTip"
+							/>
+							<Tooltip id="newsTip" place="bottom" text="Aktualności"/>
 						</Link>	
 					</li>
 					<li>
-						<ButtonIcon icon={messageIcon} onClick={() => menuToExpand === "friends" ? setMenuToExpand("") : setMenuToExpand("friends")}/>
+						<ButtonIcon 
+							icon={messageIcon} 
+							onClick={() => menuToExpand === "friends" ? setMenuToExpand("") : setMenuToExpand("friends")}
+							data-tip
+							data-for="friendsTip"
+						/>
+						<Tooltip id="friendsTip" place="bottom" text="Znajomi"/>
 					</li>
 					<li>
 						<Link to={routes.albums}>
-							<ButtonIcon icon={albumsIcon}/>
+							<ButtonIcon 
+								icon={albumsIcon}
+								data-tip
+								data-for="albumsTip"
+							/>
+							<Tooltip id="albumsTip" place="bottom" text="Twoje albumy"/>
 						</Link>
 					</li>
 					<li>
 						<Link to={routes.groups}>
-							<ButtonIcon icon={groupsIcon}/>
+							<ButtonIcon 
+								icon={groupsIcon}
+								data-tip
+								data-for="groupsTip"
+							/>
+							<Tooltip id="groupsTip" place="bottom" text="Grupy"/>
 						</Link>	
 					</li>
 					<li>
 						<Link to={routes.search}>
-							<ButtonIcon icon={searchIcon}/>
+							<ButtonIcon 
+								icon={searchIcon}
+								data-tip
+								data-for="searchTip"
+							/>
+							<Tooltip id="searchTip" place="bottom" text="Wyszukiwarka"/>
 						</Link>
 					</li>
         		</ButtonList>
-				<Logout icon={logoutIcon} onClick={() => {
-					setLogoutBox(!logoutBox);
-				}}/>
+				<Logout 
+					icon={logoutIcon} 
+					onClick={() => setLogoutBox(!logoutBox)}
+					data-tip
+					data-for="logoutTip"
+				/>
+				<Tooltip id="logoutTip" place="bottom" text="Wyloguj się"/>
       		</Container>
 
 			<VisibilityButton icon={expandIcon} isVisible={isVisible} onClick={() => toggleMenuBar()} blurState={blurState}/>

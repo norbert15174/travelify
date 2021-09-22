@@ -18,7 +18,7 @@ const UserTemplate = ({children, notLogged=false}) => {
 };
 
 const Container = styled.div`
-    width: calc(100% - 120px); // 120px => Menu sidebar width;
+    width: ${({notLogged}) => !notLogged ? "calc(100% - 120px)" : "100%"}; // 120px => Menu sidebar width;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

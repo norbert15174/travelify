@@ -40,7 +40,7 @@ export const groupTypes = {
 export function getCountryData(input) {
     let output = [];
     let parsedInput = input.split(",");
-    let list = JSON.parse(localStorage.getItem("countryList"));
+    let list = JSON.parse(sessionStorage.getItem("countryList"));
     for ( let i = 0; i < list.length; i++) {
         for ( let j = 0; j < parsedInput.length; j++) {
             if (list[i].country === parsedInput[j]) {
@@ -58,8 +58,8 @@ export function getCountryData(input) {
 /*
     Function for 
 */
-export function mapCountriesToSelect() {
-    let list = JSON.parse(localStorage.getItem("countryList"));
+export function mapCountriesToSelect(countries) {
+    let list = countries;
     let newList = [];
     for (let i = 0; i < list.length; i++) {
         newList.push({
@@ -71,7 +71,7 @@ export function mapCountriesToSelect() {
             id: list[i].id,
         })
     }
-    localStorage.setItem("countryList", JSON.stringify(newList));    
+    sessionStorage.setItem("countryList", JSON.stringify(newList));    
 }
 
 export function mapFriendsToSelect(input, type=null) {
@@ -103,14 +103,27 @@ export function mapFriendsToSelect(input, type=null) {
 }
 
 export function getCountryId(countryName) {
-    let list = JSON.parse(localStorage.getItem("countryList"));
-    let foundId = 141;
+    let list = JSON.parse(sessionStorage.getItem("countryList"));
+    let foundId = null;
     for (let i = 0; i < list.length; i++) {
         if (list[i].country === countryName) {
             foundId = list[i].id;
         }
     }
     return foundId;
+}
+
+export function getCountryName(countryId) {
+    console.log(countryId)
+    let list = JSON.parse(sessionStorage.getItem("countryList"));
+    let found = "";
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].id === countryId) {
+            found = list[i].country;
+        }
+    }
+    console.log(found);
+    return found;
 }
 
 export const getDate = (input) => {

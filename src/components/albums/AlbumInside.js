@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import axios from "axios";
 import PhotoSection from "../photos/PhotoSection";
 import Button from "../trinkets/Button";
@@ -34,11 +34,14 @@ const AlbumInside = ({albumId}) => {
     const [ sharePinBox, setSharePinBox ] = useState(false);
     const [ photoPreview, setPhotoPreview ] = useState({visible: false, index: null});
 
-    const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectToStartPage, setRedirectToStartPage ] = useState(false);
     const [ redirectToAlbumsCreator, setRedirectToAlbumsCreator ] = useState({
        active: false,
        albumId: null,
+    });
+    const [ redirectToProfile, setRedirectToProfile ] = useState({
+        active: false,
+        userId: null,
     });
 
     const dispatch = useDispatch();
@@ -47,7 +50,6 @@ const AlbumInside = ({albumId}) => {
     const info = useSelector(selectInfo);
     const albumType = useSelector(selectAlbumType);
     const rights = useSelector(selectRights);
-    const history = useHistory();
 
     useEffect(() => {
         if (rights === albumRights.owner && albumType === albumTypes.private) {
@@ -72,12 +74,6 @@ const AlbumInside = ({albumId}) => {
         });
     };
 
-    // goes back
-    if (redirectToAlbums) {
-        //return <Redirect to={{pathname: routes.albums}}/>
-        history.goBack();
-    }
-
     // goes to album edit screen
     if (redirectToAlbumsCreator.active) {
         return <Redirect to={{
@@ -94,6 +90,15 @@ const AlbumInside = ({albumId}) => {
     if (redirectToStartPage) {
         return <Redirect to={{pathname: routes.startPage}}/>
     }
+
+    if (redirectToProfile.active) {
+        return <Redirect 
+					push to={{
+                    	pathname: routes.user.replace(/:id/i, redirectToProfile.userId), 
+                    	state: { selectedUser: { selectIsTrue: true, id: redirectToProfile.userId, isHeFriend: false} }
+					}}
+        		/>
+	}
 
     return (
         <>
@@ -143,8 +148,13 @@ const AlbumInside = ({albumId}) => {
                         <Line/>
                         <Footer>
                             <AlbumInfo>
-                                <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
-                                <p>{owner.name + " " + owner.surName}</p>   
+                                <ProfilePhoto 
+                                    src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}
+                                    onClick={() => setRedirectToProfile({active: true, userId: owner.id})}
+                                />
+                                <p style={{cursor: "pointer"}}onClick={() => setRedirectToProfile({active: true, userId: owner.id})}>
+                                    {owner.name + " " + owner.surName}
+                                </p>   
                             </AlbumInfo>
                             <AlbumInfo>
                                 <Icon src={ albumType === albumTypes.public ? publicAlbumBlueIcon : albumType === albumTypes.private ? privateAlbumBlueIcon : null}/>
@@ -404,6 +414,7 @@ const ProfilePhoto = styled.img`
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
+    cursor: pointer;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     @media only screen and (max-width: 1025px) {
         width: 30px;

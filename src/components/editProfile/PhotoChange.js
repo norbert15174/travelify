@@ -45,6 +45,7 @@ const PhotoChange = ({type, photo}) => {
                 }
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [image]);
 
     const onChangeHandler = (e) => {

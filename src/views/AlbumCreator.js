@@ -7,7 +7,7 @@ import { errorTypes } from "../miscellanous/Errors";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { mapFriendsToSelect, albumCreator } from "../miscellanous/Utils";
-import { clearStore, setAlbumPhotosRedux, setMainPhotoRedux, setBasicInfo, setCoordinate } from "../redux/albumCreatorSlice";
+import { clearStore, setAlbumPhotosRedux, setMainPhotoRedux, setBasicInfo, setCoordinate, setSharedPersonList } from "../redux/albumCreatorSlice";
 import { useDispatch } from "react-redux";
 
 const AlbumCreator = () => {
@@ -59,9 +59,9 @@ const AlbumCreator = () => {
 			dispatch(setBasicInfo({
 				public: data.album.public,
 				name: data.album.name,
-				sharedPersonList: temp,
 				description: data.album.description,
 			}));
+			dispatch(setSharedPersonList(temp));
 			dispatch(setCoordinate(data.album.coordinate));
 		}).catch((error) => {
 			setError(error);

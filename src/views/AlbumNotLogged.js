@@ -20,13 +20,11 @@ const AlbumNotLogged = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (sessionStorage.getItem("Login")) {
-            throw new Error(errorTypes.notFound);
-        } else {
+        
             dispatch(clearStore());
             setAlbumId(urlParams.id);
             getUserAlbum(urlParams.id);
-        }
+        
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [urlParams.id]);
 

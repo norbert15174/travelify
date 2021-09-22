@@ -42,7 +42,6 @@ const AlbumDetails = () => {
             console.log(data);
             let tempPhotos = [];
             let tempTags = [];
-            //let tempComments = [];
             for (let i=0; i < data.photosDTOS.length; i++) {
                 tempPhotos.push({
                     index: i + 1,
