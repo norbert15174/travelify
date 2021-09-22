@@ -171,7 +171,7 @@ const PersonalInfoForm = ({personalData}) => {
                                 type="country"
                                 name="nationality" 
                                 id="nationality" 
-                                options={JSON.parse(localStorage.getItem("countryList"))} 
+                                options={JSON.parse(sessionStorage.getItem("countryList"))} 
                                 onChange={formik.setFieldValue} 
                                 value={formik.values.nationality}  
                                 onBlur={formik.setFieldTouched}

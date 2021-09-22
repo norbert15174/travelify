@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCoordinate, setCoordinate } from "../../redux/albumCreatorSlice";
 import FormInput from "../trinkets/FormInput";
@@ -8,8 +9,9 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
 import { albumCreator } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
 
-const Localization = ({creatorType, setForm}) => {
+const Localization = ({editedAlbumId, creatorType, setForm}) => {
 
     const coordinate = useSelector(selectCoordinate);
     const dispatch = useDispatch();
@@ -67,6 +69,73 @@ const Localization = ({creatorType, setForm}) => {
     const [ submitError, setSubmitError ] = useState("");
     const [ formSubmitted, setFormSubmitted ] = useState(false);
 
+    const formHandler = () => {
+
+        setSubmitMessage("");
+        setSubmitError("");
+
+        if (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") {
+            setSubmitError("Popraw występujące błędy!");
+            return;
+        }
+        
+        if (localization.place === "") {
+            setSubmitError("Nazwa miejsca jest wymagana!");
+            return;
+        }
+
+        if (creatorType === albumCreator.creation) {
+            setForm(localization)
+            setSubmitMessage("Informacje zostały dodane do formularza.");
+            setFormSubmitted(true);
+        } else if (creatorType === albumCreator.edition) {
+            editLocalization();
+        }
+        
+    }
+
+    async function editLocalization() {
+        setSubmitMessage("Zapisywanie zmian...")
+        await axios({
+            method: "put",
+            url: endpoints.editAlbum + editedAlbumId,
+            data: {
+                coordinate: {
+                    country: {
+                        country: localization.countryName,
+                    },
+                    lang: localization.lng,
+                    lat: localization.lat,
+                    place: localization.place,
+                },
+            },
+            headers: {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                withCredentials: true,
+            },
+        })
+        .then((response) => {               
+            dispatch(setCoordinate({
+                country: {
+                    id: localization.countryId,
+                    country: localization.countryName,
+                },
+                lang: localization.lng,
+                lat: localization.lat,
+                place: localization.place,
+            }));
+            setSubmitMessage("Zmiany zostały zapisane!");
+            setIsDirty(false);
+        })
+        .catch((error) => {
+            setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
+        });
+    };
+
     const clearForm = () => {
         if (creatorType === albumCreator.creation) {
             setPlace("");
@@ -99,43 +168,6 @@ const Localization = ({creatorType, setForm}) => {
             setSubmitError("");
             setIsDirty(false);
         }
-    }
-
-    const formHandler = () => {
-
-        setSubmitMessage("");
-        setSubmitError("");
-
-        if (localization.countryName === "Brak informacji" || localization.place === "Brak informacji") {
-            setSubmitError("Popraw występujące błędy!");
-            return;
-        }
-        
-        if (localization.place === "") {
-            setSubmitError("Nazwa miejsca jest wymagana!");
-            return;
-        }
-
-        if (creatorType === albumCreator.creation) {
-            setForm(localization)
-            setSubmitMessage("Informacje zostały dodane do formularza.");
-            setFormSubmitted(true);
-        } else if (creatorType === albumCreator.edition) {
-            setSubmitMessage("Zapisywanie zmian...")
-            setSubmitMessage("Zmiany zostały zapisane!");
-            dispatch(setCoordinate({
-                country: {
-                    id: localization.countryId,
-                    country: localization.countryName,
-                },
-                lang: localization.lng,
-                lat: localization.lat,
-                place: localization.place,
-            }))
-            setIsDirty(false);
-            setSubmitError("");
-        }
-        
     }
 
     return (
@@ -194,7 +226,7 @@ const Localization = ({creatorType, setForm}) => {
                     }}
                     type={creatorType === albumCreator.edition ? albumCreator.edition : albumCreator.creation}
                     setLocalization={setLocalization}
-                    deleteMarker={(creatorType === albumCreator.creation && localization.lat === "" && localization.lng === "") ? true : false}
+                    deleteMarker={(creatorType === albumCreator.creation && !localization.lat && !localization.lng) ? true : false}
                 />
                 </MapContainer>}
         </Container>
@@ -203,8 +235,8 @@ const Localization = ({creatorType, setForm}) => {
             {submitError !== "" && <SubmitError type="error">{submitError}</SubmitError>}
             <Submit 
                 disabled={
-                   (creatorType === albumCreator.creation && (( localization.lat === "" 
-                    && localization.lng === "" && localization.place === "" && localization.countryName === "") 
+                   (creatorType === albumCreator.creation && (( !localization.lat 
+                    && !localization.lng && localization.place === "" && localization.countryName === "") 
                     || formSubmitted ? true : false)) || (creatorType === albumCreator.edition && !isDirty) 
                 }
                 type="submit"
@@ -214,8 +246,8 @@ const Localization = ({creatorType, setForm}) => {
             </Submit>
             <Cancel 
                 disabled={
-                    (creatorType === albumCreator.creation && (( localization.lat === "" 
-                     && localization.lng === "" && localization.place === "" && localization.countryName === "") 
+                    (creatorType === albumCreator.creation && (( !localization.lat
+                     && !localization.lng && localization.place === "" && localization.countryName === "") 
                      || formSubmitted ? true : false)) || (creatorType === albumCreator.edition && !isDirty) 
                  }
                 onClick={clearForm}

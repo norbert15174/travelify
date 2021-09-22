@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { routes } from "../../miscellanous/Routes";
 import { selectOwner, selectAlbumPhotos, selectRights, selectTags } from "../../redux/albumDetailsSlice";
 import { selectUserData, setProfilePicture, setUserData } from "../../redux/userDataSlice";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, widthDelimiter}) => {
 
@@ -35,7 +36,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
     const [ loadingComments, setLoadingComments ] = useState(false);
     const [ loadingTags, setLoadingTags ] = useState(false);
     const [ editing, setEditing ] = useState(false);
-    const [ description, setDescription ] = useState(currentPhotoDetail.description);
+    const [ description, setDescription ] = useState("");
     const [ redirectToProfile, setRedirectToProfile ] = useState({
         active: false,
         userId: null,
@@ -57,6 +58,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         if (!pinBox) {
             getTags();
         }
+        setDescription(currentPhotoDetail.description);
         getComments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPhotoIndex, userData.id, pinBox]);
@@ -146,6 +148,24 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 		})
     };
 
+    async function updatePhotoDescription() {
+        await axios({
+			method: "put",
+			url: endpoints.updatePhotoDescription + photoId,
+            data: {
+                description: description,
+            },
+			headers: {
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		}).then((response) => {
+		}).catch((error) => {
+            setDescription(currentPhotoDetail.description);
+		}).finally(() => {
+            setEditing(false);
+        });
+    }
 
     if (redirectToProfile.active) {
         document.body.style.overflow = "";
@@ -167,8 +187,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         if (!editing) {
                             setEditing(true);
                         } else {
-                            setDescription(description);
-                            setEditing(false);
+                            updatePhotoDescription();
                         }
                     }}
                 />
@@ -185,7 +204,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
             }
             <Header>
                 <Heading>
-                    <OwnerPhoto src={owner.photo} onClick={() => {
+                    <OwnerPhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon} onClick={() => {
                         document.body.style.overflow = "";
                         setRedirectToProfile({active: true, userId: owner.id})
                     }}/>
@@ -200,7 +219,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                     >
                                         {owner.name + " " + owner.surName} 
                                     </p> 
-                                    {currentPhotoDetail.description}  
+                                    {description}  
                                 </span>
                             ) : (
                                 <AddDescription
@@ -226,7 +245,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                             document.body.style.overflow = "";
                                             setRedirectToProfile({active: true, userId: item.userId})
                                         }}>
-                                            <UserPhoto src={item.photo}/>
+                                            <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon}/>
                                             {item.name + " " + item.surName}
                                         </TaggedPerson>
                                     ))}
@@ -250,7 +269,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         comments.map((item, index) => (
                             <>
                                 <CommentContainer key={item.commentId} ref={index + 1 === comments.length ? commentsEndRef : null}>
-                                    <UserPhoto src={item.photo} onClick={() => {
+                                    <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon} onClick={() => {
                                         document.body.style.overflow = "";
                                         setRedirectToProfile({active: true, userId: item.userId})
                                     }}/>

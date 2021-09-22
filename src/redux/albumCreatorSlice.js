@@ -22,25 +22,12 @@ export const albumCreatorSlice = createSlice({
         setMainPhotoRedux: (state, action) => {
             state.mainPhoto = action.payload;
         },
-        setName: (state, action) => {
-            state.basicInfo.name = action.payload;
-        },
         setSharedPersonList: (state, action) => {
             state.basicInfo.sharedPersonList = action.payload;
-        },
-        setDescription: (state, action) => {
-            state.basicInfo.description = action.payload;
-        },
-        makePublic: (state) => {
-            state.basicInfo.public = true;
-        },
-        makePrivate: (state) => {
-            state.basicInfo.public = false;
         },
         setBasicInfo: (state, action) => {
             state.basicInfo.name = action.payload.name;
             state.basicInfo.public = action.payload.public;
-            state.basicInfo.sharedPersonList = action.payload.sharedPersonList;
             state.basicInfo.description = action.payload.description;
         },
         setCoordinate: (state, action) => {
@@ -67,7 +54,7 @@ export const albumCreatorSlice = createSlice({
 });
 
 // actions
-export const { setAlbumPhotosRedux, setCoordinate, setBasicInfo, setSharedPersonList, setName, makePrivate, makePublic, setMainPhotoRedux, clearStore, setDescription } = albumCreatorSlice.actions;
+export const { setAlbumPhotosRedux, setCoordinate, setBasicInfo, setSharedPersonList, setMainPhotoRedux, clearStore} = albumCreatorSlice.actions;
 
 // exporting selects
 export const selectAlbumPhotosRedux = (state) => state.albumCreator.albumPhotos;

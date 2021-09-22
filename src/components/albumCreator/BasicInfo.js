@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { selectBasicInfo, setName, setDescription, setSharedPersonList, makePrivate, makePublic, setBasicInfo } from "../../redux/albumCreatorSlice";
+import { selectBasicInfo, setSharedPersonList, setBasicInfo } from "../../redux/albumCreatorSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
@@ -37,11 +37,11 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
     const [ error, setError ] = useState(false);
     const [ formSubmitted, setFormSubmitted ] = useState(false);
 
-
     const [ shareDeleteFinished, setShareDeleteFinished ] = useState(false);
     const [ sharesToDelete, setSharesToDelete ] = useState([]); // share id's
     const [ shareAddFinished, setShareAddFinished ] = useState(false);
     const [ sharesToAdd, setSharesToAdd ] = useState([]); // user id's
+    const [ infoEditFinished, setInfoEditFinished ] = useState(false);
 
     useEffect(() => {
         if (firstRun) {
@@ -62,7 +62,7 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
             }
             setFirstRun(false);
         }
-        if (creatorType === albumCreator.edition && shareAddFinished && shareDeleteFinished) {
+        if (creatorType === albumCreator.edition && shareAddFinished && shareDeleteFinished && infoEditFinished) {
             if (error) {
                 setSubmitMessage("");
                 setSubmitError("Coś poszło nie tak... spróbuj ponownie");
@@ -72,10 +72,11 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
                 dispatch(setSharedPersonList(sharedFriends));
                 setShareAddFinished(false);
                 setShareDeleteFinished(false);
+                setInfoEditFinished(false);
                 setIsDirty(false);
             }
         }
-    }, [shareAddFinished, shareDeleteFinished]);
+    }, [shareAddFinished, shareDeleteFinished, infoEditFinished]);
 
     const addFriend = () => {
         selectedFriends.map((selectedFriend) => {
@@ -141,9 +142,10 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
             setFormSubmitted(true);
         } else if (creatorType === albumCreator.edition) {
             setSubmitMessage("Zapisywanie...");
-            if (sharesToDelete.length !== 0) {
+            let isPublic = visibility === albumTypes.public ? true : false;
+            if (sharesToDelete.length !== 0 || (isPublic && sharedFriends.length !== 0)) {
                 // we post if there was a change
-                deleteAlbumShare();
+                deleteAlbumShare(isPublic);
             } else {
                 // no change
                 setShareDeleteFinished(true);
@@ -152,6 +154,11 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
                 shareAlbum();
             } else {
                 setShareAddFinished(true);
+            }
+            if (name !== basicInfo.name || description !== basicInfo.description || isPublic !== basicInfo.public) {
+                editBasicInfo(isPublic);
+            } else {
+                setInfoEditFinished(true);
             }
         }
     };
@@ -182,11 +189,15 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
         });
     };
 
-    async function deleteAlbumShare() {
+    async function deleteAlbumShare(isPublic) {
+        let temp = sharesToDelete;
+        if (isPublic) {
+            temp = basicInfo.sharedPersonList.map((item) => item.id);            
+        }
         await axios({
             method: "delete",
             url: endpoints.deleteShare,
-            data: sharesToDelete,
+            data: temp,
             headers: {
                 "Access-Control-Allow-Headers": "*",
                 "Access-Control-Allow-Origin": "*",
@@ -207,6 +218,41 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
             setShareDeleteFinished(true);
         });
     }
+
+    async function editBasicInfo(isPublic) {
+        await axios({
+            method: "put",
+            url: endpoints.editAlbum + editedAlbumId,
+            data: {
+                name: name,
+                description: description,
+                public: isPublic,
+            },
+            headers: {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                withCredentials: true,
+            },
+        })
+        .then((response) => {               
+            console.log(response);
+            dispatch(setBasicInfo({
+                name: name,
+                description: description,
+                public: isPublic,
+            })); 
+        })
+        .catch((error) => {
+            console.log(error);
+            setError(true);
+        })
+        .finally(() => {
+            setInfoEditFinished(true);
+        });
+    };
 
     const clearForm = () => {
         if (creatorType === albumCreator.creation) {
