@@ -9,6 +9,7 @@ const initialState = {
     friendsList: null,
     info: null,
     tags: [],
+    photoTags: [],
 };
 
 export const albumDetailsSlice = createSlice({
@@ -33,6 +34,9 @@ export const albumDetailsSlice = createSlice({
         setInfo: (state, action) => {
             state.info = action.payload;
         },
+        setPhotoTags: (state, action) => {
+            state.photoTags = action.payload;
+        },
         clearStore: (state) => {
             state.info = null;
             state.albumPhotos = [];
@@ -56,7 +60,7 @@ export const {
     setOwner, setRights, setAlbumType, 
     setSharedPersonList, setAlbumPhotos,
     setInfo, setFriendsList,
-    setTags, clearStore 
+    setTags, clearStore, setPhotoTags 
 } = albumDetailsSlice.actions;
 
 // exporting selects
@@ -68,5 +72,6 @@ export const selectRights = (state) => state.albumDetails.rights;
 export const selectAlbumType = (state) => state.albumDetails.albumType;
 export const selectFriendsList = (state) => state.albumDetails.friendsList;
 export const selectTags = (state) => state.albumDetails.tags;
+export const selectPhotoTags = (state) => state.albumDetails.photoTags;
 
 export default albumDetailsSlice.reducer;

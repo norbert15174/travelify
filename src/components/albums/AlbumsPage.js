@@ -32,7 +32,6 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
         if (!searchList) {
             mapAlbumsToSearchCallback();
         }
-        console.log(albumIdSearch);
     }, []);
 
     const mapAlbumsToSearchCallback = useCallback(
@@ -76,7 +75,6 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
                 id: sharedAlbums[i].album.id,
             });
         };
-        console.log(searchList);
         setSearchList(searchList)
     };
 

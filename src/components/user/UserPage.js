@@ -24,7 +24,7 @@ const sections = {
     friends: "friends",  
 };
 
-const UserPage = ({personalData, individualAlbums, friendsList, userType, userId}) => {
+const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, userType, setUserType, userId}) => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
@@ -51,39 +51,33 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
         if (blurState) {
             dispatch(toggleBlur());
         }    
-            if (friendId !== null && userType === userTypes.logged) {
+            if ((friendId && userType === userTypes.logged) || deleteFriendBox) {
                 setDeleteFriendBox(true);
                 // when deleting friend was confirmed
                 if (confirm) {
-                    console.log("Friend with id " + friendId + " has been deleted");
-                    deleteFriend(friendId);
-                    //dispatch(setFriendToDeleteId(null));
-                    //setDeleteFriendBox(false);
-                    //setConfirm(false);
+                    // friendId when logged user panel is watched
+                    // userId when friend user panel is watched
+                    deleteFriend(friendId || userId);
                 } 
                 // when deleting friend was canceled
                 if (refuse) {
-                    console.log("Deleting friend with id " + friendId + " has been canceled");
                     dispatch(setFriendToDeleteId(null));
                     setDeleteFriendBox(false);
                     setRefuse(false);
                 }
             }
             
-            if (inviteBox  && userType === userTypes.unknown) {
+            if (inviteBox && userType === userTypes.unknown) {
                 if (confirm) {
-                    console.log("Invitation has been sent to user with id " + userId);
                     sendInvitation(userId);
                 }
                 if (refuse) {
-                    console.log("Invitation hasn't been sent to user with id " + userId);
                     setInvitationSend(false);
                     setInviteBox(false);
                     setRefuse(false);
                 }
             }
-
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deleteFriendBox, friendId, confirm, refuse, dispatch, userType, inviteBox, userId]);
 
     async function sendInvitation(id) {
@@ -98,14 +92,14 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
 			},
 		})
 		.then((response) => {
-            console.log(response)
+            console.log(response);
+            setInvitationSend(true);
 		})
 		.catch((error) => {
             console.log(error);
             setErrorAtInvitation(error);
 		})
         .finally(() => {
-            setInvitationSend(true);
             setInviteBox(false);
             setConfirm(false);
         })
@@ -114,50 +108,27 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
     async function deleteFriend(id) {
         setDeleteSend(false);
         setErrorAtDeletion(null);
-
-        /*
-             await axios.post(url, data, {
-            headers: {
-				"Content-Type": "multipart/form-data",
-				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-			},
-        }).
-
-        await axios.post({
-			method: "DELETE",
-			url: `http://localhost:8020/friends/delete/` + id,
-			headers: {
-                //crossdomain: true,
-                //crossorigin: true,
-                //"Access-Control-Allow-Origin": "true",
-                "Access-Control-Allow-Headers": "*",
-                //"Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "*",
-				"Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-                //withCredentials: true,
-                //credentials: 'same-origin',
-			},
-		})
-        */
 		await axios.delete("http://localhost:8020/friends/delete/" + id, {
             headers: {
-				//crossdomain: true,
-                //crossorigin: true,
-                //"Access-Control-Allow-Origin": "true",
                 "Access-Control-Allow-Headers": "*",
-                //"Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "*",
 				"Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-                //withCredentials: true,
-                //credentials: 'same-origin',
 			},
         })
 		.then((response) => {
-            console.log(response)
+            console.log(response);
+            let temp = [];
+            if (userType === userTypes.friend) {
+                // friend panel
+                setUserType(userTypes.unknown);
+                temp = friendsList.filter((item) => item.id.toString() !== sessionStorage.getItem("loggedUserId")); 
+            } else {
+                // logged user panel
+                temp = friendsList.filter((item) => item.id !== id); 
+            }
+            setFriendsList(temp);
 		})
 		.catch((error) => {
             console.log(error);
@@ -174,22 +145,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
     const [ redirect, setRedirect ] = useState(false);
 
     const sectionsToggle = (sectionName) => {
-        /*if (sectionName === sections.albums) {
-            setAlbumsActive(true);
-            setFriendsActive(false);
-        } else if ( sectionName === sections.friends) {
-            setAlbumsActive(false);
-            setFriendsActive(true);
-            setInfoActive(false);
-        } else if ( sectionName === sections.info) {
-            if ( friendsActive ) {
-                setAlbumsActive(true);
-                setFriendsActive(false);
-                setInfoActive(true);
-            } else {
-                setInfoActive(!infoActive);
-            }
-        }*/
         if (sectionName === sections.albums) {
             setAlbumsActive(true);
             setFriendsActive(false);
@@ -207,7 +162,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
 
     return (
         <>
-            {deleteFriendBox && userType === userTypes.logged && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
+            {deleteFriendBox && (userType === userTypes.logged || userType === userTypes.friend) && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
             {inviteBox && userType === userTypes.unknown && <ConfirmationBox children={"Czy na pewno chcesz zaprosić daną osobę do znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
             <Container blurState={blurState}>
                 <Header>
@@ -225,7 +180,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, userType, userId
                             userType === userTypes.logged && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                         }
                         {
-                            userType === userTypes.friend && <UserButton disabled icon={friendsIcon}>Znajomi</UserButton>
+                            userType === userTypes.friend && <UserButton icon={friendsIcon} onClick={() => setDeleteFriendBox(true)}>Znajomi</UserButton>
                         }
                         {
                             userType === userTypes.unknown && !invitationSend && <UserButton icon={addFriendIcon} onClick={() => setInviteBox(true)}>Dodaj</UserButton>

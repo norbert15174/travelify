@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import Button from "../trinkets/Button";
@@ -26,6 +26,8 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
     const [ errorAtPosting, setErrorAtPosting ] = useState(null);
     const [ redirectToCreatedAlbum ,setRedirectToCreatedAlbum ] = useState({active: false, createdAlbumId: null});
 
+    const createAlbumRef = useRef(null);
+
     const blurState = useSelector((state) => state.blur.value);
 
     // BasicInfo submitted data, used at album creation, at editing it won't be used
@@ -45,27 +47,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
         place: "",
     });
 
-    async function deleteAlbum() {
-        await axios({
-            method: "delete",
-            url: endpoints.deleteAlbum + editedAlbumId,
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-            },
-        })
-        .then((response) => {
-            setRedirectToAlbums(true);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-        .finally((error) => {
-            setDeleteBox(false);
-            setConfirmDeletingAlbum(false);
-        });
-    }
-
+    
     useEffect(() => {
         // checking if album will be edited or created, setting albumId we are editing
         if (deleteBox && albumCreator.edition === creatorType) {
@@ -80,6 +62,15 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
         }
     // eslint-disable-next-line
     }, [confirmDeletingAlbum, refuseDeletingAlbum]);
+
+    useEffect(() => {
+        if (creatorType === albumCreator.creation && basicInfo.name !== "" &&
+            localization.lat !== "" && localization.place !== "" ) 
+        {
+            createAlbumRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [basicInfo.name, localization.lat, localization.place]);
     
     const [ redirectToAlbums, setRedirectToAlbums ] = useState(false);
     const [ redirectBackToAlbum, setRedirectBackToAlbum ] = useState(false);
@@ -146,6 +137,28 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
         });
     };
 
+    function deleteAlbum() {
+        axios({
+            method: "delete",
+            url: endpoints.deleteAlbum + editedAlbumId,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        })
+        .then((response) => {
+            setRedirectToAlbums(true);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally((error) => {
+            setDeleteBox(false);
+            setConfirmDeletingAlbum(false);
+        });
+    }
+
+
     return (
         <>
             {deleteBox && creatorType === albumCreator.edition && <ConfirmationBox children={"Czy na pewno chcesz usunąć album?"} confirm={setConfirmDeletingAlbum} refuse={setRefuseDeletingAlbum}/>}
@@ -198,7 +211,7 @@ const AlbumCreatorPage = ({creatorType, editedAlbumId=null, friendsList}) => {
                         localization.place !== "" 
                     )
                     && 
-                    <SectionContainer>
+                    <SectionContainer ref={createAlbumRef}>
                         <End>
                             <Line errorAtPosting={errorAtPosting}/>
                             <StyledButton

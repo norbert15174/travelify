@@ -51,7 +51,6 @@ const AlbumCreator = () => {
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-			console.log(data);
 			let temp = [];
 			temp = mapFriendsToSelect(data.shared, "shared");
 			dispatch(setMainPhotoRedux(data.album.mainPhoto));

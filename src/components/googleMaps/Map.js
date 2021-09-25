@@ -35,7 +35,7 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 	}
 
 	const onMarkerLoad = (marker) => {
-		console.log("Marker placed on map: ", marker);
+		//console.log("Marker placed on map: ", marker);
 	};
 
 	
@@ -90,7 +90,6 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 					});
 				}, 
 				(error) => {
-					console.log(error);
 					setLocalization({
 						lat: marker.lat,
 						lng: marker.lng,

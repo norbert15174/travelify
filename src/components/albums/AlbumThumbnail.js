@@ -1,37 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
+import { routes } from "../../miscellanous/Routes";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import editIcon from "./assets/editIcon.svg";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectToAlbum, redirectToAlbumEdit=null}) => (
-    <Container>
-        { !notRealOwner && <EditButton icon={editIcon} onClick={redirectToAlbumEdit}/> }
-        <MainPhoto 
-            src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} 
-            alt={"albumMainPhoto " + album.id} 
-            onClick={redirectToAlbum}
-        />
-        { notRealOwner && 
-            <SharingPerson>
-                <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
-                <h3>{owner.name + " " + owner.surName}</h3>
-            </SharingPerson> 
-        }
-        <InfoContainer onClick={redirectToAlbum}>
-            <Text>
-                <Header>
-                    <Title>{album.name}</Title>
-                    <Localization>{album.coordinate.place + ", " + album.coordinate.country.country}</Localization>
-                </Header>
-                <Description>
-                    {album.description}
-                </Description>
-            </Text>
-        </InfoContainer>
-    </Container>
-);
+const AlbumThumbnail = ({album, owner=null, notRealOwner=false, redirectToAlbum, redirectToAlbumEdit=null}) => {
+
+    const [ redirectToProfile, setRedirectToProfile ] = useState({
+        active: false,
+        userId: null,
+    });
+
+    if (redirectToProfile.active) {
+        return <Redirect 
+					push to={{
+                    	pathname: routes.user.replace(/:id/i, redirectToProfile.userId), 
+                    	state: { selectedUser: { selectIsTrue: true, id: redirectToProfile.userId, isHeFriend: true} }
+					}}
+        		/>
+	}
+
+    return (
+        <Container>
+            { !notRealOwner && <EditButton icon={editIcon} onClick={redirectToAlbumEdit}/> }
+            <MainPhoto 
+                src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} 
+                alt={"albumMainPhoto " + album.id} 
+                onClick={redirectToAlbum}
+            />
+            { notRealOwner && 
+                <SharingPerson onClick={() => {
+                    setRedirectToProfile({active: true, userId: owner.id});
+                }}>
+                    <ProfilePhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}/>
+                    <h3>{owner.name + " " + owner.surName}</h3>
+                </SharingPerson> 
+            }
+            <InfoContainer onClick={redirectToAlbum}>
+                <Text>
+                    <Header>
+                        <Title>{album.name}</Title>
+                        <Localization>{album.coordinate.place + ", " + album.coordinate.country.country}</Localization>
+                    </Header>
+                    <Description>
+                        {album.description}
+                    </Description>
+                </Text>
+            </InfoContainer>
+        </Container>
+    )
+};
 
 const Container = styled.div`
     width: 100%;
@@ -95,6 +116,7 @@ const EditButton = styled(ButtonIcon)`
 `;
 
 const SharingPerson = styled.div`
+    cursor: pointer;
     padding: 5px 25px 5px 0px;
     border-radius: 50px;
     background: rgba(229, 229, 229, 0.8);

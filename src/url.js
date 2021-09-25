@@ -32,6 +32,9 @@ export const endpoints = {
     invitationHandler: url + "/friends?id=", // invitationId, for accept PUT, for decline DELETE
     editAlbum: url + "/albums/", // + albumId
     updatePhotoDescription: url + "/photos/modify/", // + photoId
+    getPhotoComments: url + "/photos/comments/", // + photoId
+    getPhotoTags: url + "/photos/tagged/", // + photoId
+    getPhotoDescription: url,
 }
 
 // http://localhost:8020/friends/delete/
