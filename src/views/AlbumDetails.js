@@ -67,7 +67,7 @@ const AlbumDetails = () => {
             } else {
                 dispatch(setAlbumType(albumTypes.private));
                 if (data.shared.find((item) => item.userId.toString() === sessionStorage.getItem("loggedUserId"))) {
-                    dispatch(setAlbumType(albumTypes.sharedPerson));
+                    dispatch(setRights(albumRights.sharedPerson));
                 }
             }
 		}).catch((error) => {

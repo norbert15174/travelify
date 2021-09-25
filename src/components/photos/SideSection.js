@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import ScrollableFeed from 'react-scrollable-feed';
@@ -12,12 +12,13 @@ import tagTurquiseIcon from "./assets/tagTurquiseIcon.svg";
 import { albumRights } from "../../miscellanous/Utils";
 import axios from "axios";
 import Spinner from "../trinkets/Spinner";
+import ReactLoading from 'react-loading';
 import { endpoints } from "../../url";
 import { getDate } from "../../miscellanous/Utils";
 import { useSelector, useDispatch } from "react-redux"
 import { routes } from "../../miscellanous/Routes";
-import { selectOwner, selectAlbumPhotos, selectRights, selectTags } from "../../redux/albumDetailsSlice";
-import { selectUserData, setProfilePicture, setUserData } from "../../redux/userDataSlice";
+import { selectOwner, selectAlbumPhotos, selectRights, selectTags, setPhotoTags } from "../../redux/albumDetailsSlice";
+// import { selectUserData, setProfilePicture, setUserData } from "../../redux/userDataSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, widthDelimiter}) => {
@@ -27,14 +28,14 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
     const rights = useSelector(selectRights)
     const currentPhotoDetail = photos[currentPhotoIndex].photo;
     const photoId = photos[currentPhotoIndex].photo.photoId;
-    const reduxTags = useSelector(selectTags);
+    const reduxTags = useSelector(selectTags); // tags from whole album
     const dispatch = useDispatch();
 
-    const [ tags, setTags ] = useState(reduxTags.find((item) => item.photoId === photoId).tags);
+    const [ tags, setTags ] = useState([]);
     const [ comments, setComments ] = useState([]);
-    const commentsEndRef = useRef(null);
     const [ loadingComments, setLoadingComments ] = useState(false);
     const [ loadingTags, setLoadingTags ] = useState(false);
+    const [ loadingDescription, setLoadingDescription ] = useState(false);
     const [ editing, setEditing ] = useState(false);
     const [ description, setDescription ] = useState("");
     const [ redirectToProfile, setRedirectToProfile ] = useState({
@@ -42,45 +43,83 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         userId: null,
     });
     
-    const userData = useSelector(selectUserData);
-    const [ basicUserData, setBasicUserData ] = useState({
+    /* const userData = useSelector(selectUserData); */
+    /* const [ basicUserData, setBasicUserData ] = useState({
         name: userData.name,
         surName: userData.surName,
         photo: userData.profilePicture,
         id: userData.id,
-    })
+    }) */
 
     useEffect(() => {
+        console.log("update tags, comments, description")
+        getTags();
+        if (!pinBox) {
+            setDescription(currentPhotoDetail.description);
+            getComments();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPhotoIndex, pinBox]);
+
+    /* useEffect(() => {
         if (!userData.id) {
-            // when store with user data has been reseted
             getBasicUserData();
         }
-        if (!pinBox) {
-            getTags();
-        }
-        setDescription(currentPhotoDetail.description);
-        getComments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPhotoIndex, userData.id, pinBox]);
+    }, [userData.id]); */
+
+    async function getDescription() {
+        setLoadingDescription(true);
+        setLoadingDescription(false);
+    };
     
-    const getTags = () => {
+    async function getTags() {
         setLoadingTags(true);
-        setTags(reduxTags.find((item) => item.photoId === photoId).tags);
-        setLoadingTags(false);
+        await axios({
+            method: "get",
+            url: endpoints.getPhotoTags + photoId,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+            setTags(data);
+            dispatch(setPhotoTags(data));
+        }).catch((error) => {
+            // tags from first opening of the album
+            setTags(reduxTags.find((item) => item.photoId === photoId).tags);
+            dispatch(setPhotoTags(reduxTags.find((item) => item.photoId === photoId).tags));
+        }).finally(() => {
+            setLoadingTags(false);        
+        });
+        
     }; 
     
-
-    const getComments = () => {
+    async function getComments() {
         setLoadingComments(true);
-        let temp = null;
-        for (let i = 0; i < photos.length; i++) {
-            if (photos[i].photo.photoId === photoId) {
-                temp = photos[i].photo.photoComments;
-                break;
+        await axios({
+            method: "get",
+            url: endpoints.getPhotoComments + photoId,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+            let temp = sortCommentsByTime(data);
+            setComments(temp);
+        }).catch((error) => {
+            // comments from first opening of the album
+            let temp = null;
+            for (let i = 0; i < photos.length; i++) {
+                if (photos[i].photo.photoId === photoId) {
+                    temp = photos[i].photo.photoComments;
+                    break;
+                }
             }
-        }
-        setComments(sortCommentsByTime(temp));
-        setLoadingComments(false);
+            setComments(sortCommentsByTime(temp));
+        }).finally(() => {
+            setLoadingComments(false);        
+        });
     }; 
 
     const sortCommentsByTime = (input) => {
@@ -92,7 +131,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         return input;
     };
 
-    async function getBasicUserData() {
+    /* async function getBasicUserData() {
 		await axios({
             method: "get",
             url: endpoints.getLoggedUserProfileBasic,
@@ -116,7 +155,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         }).catch((error) => {
             console.error(error);
         })
-	}
+	} */
 
     async function sendComment(comment) {
         await axios({
@@ -129,20 +168,23 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 				"Content-Type": "application/json",
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
-		}).then((response) => {
+		}).then(({data}) => {
+            /*
             let d = new Date();
             let minutes = d.getMinutes() < 9 ? "0" + d.getMinutes() : d.getMinutes();
             let seconds = d.getSeconds() < 9 ? "0" + d.getSeconds() : d.getSeconds();
             let temp = {
                 commentId: Math.random(),
-                photo: basicUserData.photo,
+                photo: basicUserData.photo !== undefined ? basicUserData.photo : noProfilePictureIcon,
                 name: basicUserData.name,
                 surName: basicUserData.surName,
                 text: comment,
                 time: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + minutes + ":" + seconds,
                 userId: sessionStorage.getItem("loggedUserId"),
-            };
-            setComments((prevState) => [ ...prevState, temp]);
+            }; 
+            */
+            let temp = sortCommentsByTime(data);
+            setComments(temp);
 		}).catch((error) => {
             console.log(error);
 		})
@@ -211,7 +253,6 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         {
                             !editing ? (
                                 <span>
-                                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                                     <p onClick={() => {
                                             document.body.style.overflow = "";
                                             setRedirectToProfile({active: true, userId: owner.id})
@@ -219,7 +260,11 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                     >
                                         {owner.name + " " + owner.surName} 
                                     </p> 
-                                    {description}  
+                                    {
+                                        !loadingDescription && !loadingTags ? 
+                                        description : 
+                                        <ReactLoading height={"8%"} width={"8%"} type={"bubbles"} color={"#0FA3B1"} />
+                                    }  
                                 </span>
                             ) : (
                                 <AddDescription
@@ -234,7 +279,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         }
                 </Heading>
                 {
-                    !loadingTags ? (
+                    !loadingTags && !loadingDescription && (
                         tags.length !== 0 && (
                         <TagsContainer>
                             <TagIcon src={tagTurquiseIcon}/>
@@ -252,10 +297,6 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                 </Tags>
                             }
                         </TagsContainer>)
-                    ) : (
-                        <TagsSpinner>
-                            <Spinner width={"15px"} height={"15px"} firstColor={"#12BFCE"} secondColor={"#0FA3B1"} border={"5px"}/>
-                        </TagsSpinner>
                     )
                 }
             </Header>
@@ -266,9 +307,9 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                     ? 
                     <ScrollableFeed className="scroll_two">
                     {
-                        comments.map((item, index) => (
+                        comments.map((item) => (
                             <>
-                                <CommentContainer key={item.commentId} ref={index + 1 === comments.length ? commentsEndRef : null}>
+                                <CommentContainer key={item.commentId}>
                                     <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon} onClick={() => {
                                         document.body.style.overflow = "";
                                         setRedirectToProfile({active: true, userId: item.userId})
@@ -327,10 +368,6 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 
 const CommentsSpinner = styled.div`
     margin: auto auto;
-`;
-
-const TagsSpinner = styled.div`
-    margin: 0px auto 5px 5px;
 `;
 
 const Container = styled.div`
@@ -472,13 +509,12 @@ const Tags = styled.div`
 `;
 
 const TagIcon = styled.img`
-    width: 24px;
-    height: 24px;
-    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
     @media only screen and (max-width: 1425px) {
         width: 16px;
         height: 16px;
-        margin-right: 10px;
     }
     @media only screen and (max-width: 1025px) {
         width: 12px;
@@ -491,9 +527,9 @@ const TaggedPerson = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: ${({theme}) => theme.fontWeight.bold};
-    margin: 5px 10px 0px 0px;
+    margin-right: 10px;
     @media only screen and (max-width: 1425px) {
         font-size: 12px;
     }
@@ -531,7 +567,7 @@ const CommentContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    font-size: 14px;
+    font-size: 12px;
     color: ${({theme}) => theme.color.greyFont};
     margin: 0 5px 5px 0;
     span {
@@ -563,8 +599,8 @@ const CommentDate = styled.p`
 `;
 
 const UserPhoto = styled.img`
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
     border-radius: 50%;
     margin-right: 5px;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { selectAlbumType, selectTags } from "../../redux/albumDetailsSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAlbumType, selectPhotoTags, setPhotoTags } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
@@ -10,8 +10,8 @@ import { albumTypes } from "../../miscellanous/Utils";
 
 const PinFriendThumbnail = ({friend, photoId}) => {
 
-    const reduxTags = useSelector(selectTags);
-    const tags = reduxTags.find((item) => item.photoId === photoId).tags
+    const tags = useSelector(selectPhotoTags);
+    const dispatch = useDispatch();
 
     const [ updating, setUpdating ] = useState(false);
     const albumType = useSelector(selectAlbumType);
@@ -36,7 +36,8 @@ const PinFriendThumbnail = ({friend, photoId}) => {
                     withCredentials: true,
                 },
         })
-        .then((response) => {           
+        .then(({data}) => {     
+            dispatch(setPhotoTags(data));    
             setAlreadyChosen(true);
             setButtonText("Oznaczony");
         })

@@ -2,18 +2,19 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCoordinate, setCoordinate } from "../../redux/albumCreatorSlice";
+import { selectAlbumVisibility, selectCoordinate, setCoordinate } from "../../redux/albumCreatorSlice";
 import FormInput from "../trinkets/FormInput";
 import Map from '../googleMaps/Map';
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
-import { albumCreator } from "../../miscellanous/Utils";
+import { albumCreator, albumTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 
 const Localization = ({editedAlbumId, creatorType, setForm}) => {
 
     const coordinate = useSelector(selectCoordinate);
+    const visibility = useSelector(selectAlbumVisibility);
     const dispatch = useDispatch();
     const [ firstRun, setFirstRun ] = useState(true);
     const [ isDirty, setIsDirty ] = useState(false);
@@ -95,7 +96,8 @@ const Localization = ({editedAlbumId, creatorType, setForm}) => {
     }
 
     async function editLocalization() {
-        setSubmitMessage("Zapisywanie zmian...")
+        setSubmitMessage("Zapisywanie zmian...");
+        // visibility must be passed because if null is send album will become private
         await axios({
             method: "put",
             url: endpoints.editAlbum + editedAlbumId,
@@ -108,6 +110,7 @@ const Localization = ({editedAlbumId, creatorType, setForm}) => {
                     lat: localization.lat,
                     place: localization.place,
                 },
+                public: visibility,
             },
             headers: {
                 "Access-Control-Allow-Headers": "*",

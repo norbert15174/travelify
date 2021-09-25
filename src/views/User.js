@@ -142,6 +142,8 @@ const User = () => {
 					personalData={personalData} 
 					individualAlbums={individualAlbums}
 					friendsList={friendsList}
+					setFriendsList={setFriendsList}
+					setUserType={setUserType}
 					userType={userType}
 					userId={urlParams.id}
 				/>

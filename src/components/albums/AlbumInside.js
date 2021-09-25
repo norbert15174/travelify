@@ -52,6 +52,8 @@ const AlbumInside = ({albumId}) => {
     const rights = useSelector(selectRights);
 
     useEffect(() => {
+        console.log("Album type: " + albumType);
+        console.log("Album rights: " + rights);
         if (rights === albumRights.owner && albumType === albumTypes.private) {
             getLoggedUserFriendsList();
         }

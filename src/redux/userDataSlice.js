@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// jeśli użytkownik nie jest zautoryzowany to nie będą mu się pojawiać ekrany
-
 const initialState = {
   id: null,
   name: null,

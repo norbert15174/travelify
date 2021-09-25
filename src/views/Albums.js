@@ -43,7 +43,6 @@ const Albums = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then((response) => {
-			console.log(response.data);
             if (response.data !== "") {
                 response.data.map((album) => {   
                     if (album.public) {
@@ -57,7 +56,6 @@ const Albums = () => {
             setPublicAlbums(publAlbums);
             setPrivateAlbums(privAlbums);
 		}).catch((error) => {
-            console.log(error);
 			setError(error);
 		}).finally(() => {
 			setUserAlbumsFetchFinished(true);
@@ -77,10 +75,8 @@ const Albums = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-			console.log(data);
             setSharedAlbums(data);
 		}).catch((error) => {
-            console.log(error);
 			setError(error);
 		}).finally(() => {
 			setSharedAlbumsFetchFinished(true);

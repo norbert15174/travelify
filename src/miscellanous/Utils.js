@@ -141,7 +141,7 @@ export const getDate = (input) => {
         'listopada',
         'grudnia'
     ];
-    const days = [
+    /* const days = [
         'Niedz',
         'Pon',
         'Wt',
@@ -149,8 +149,9 @@ export const getDate = (input) => {
         'Czw',
         'Pt',
         'Sb'
-    ]
+    ] */
     let temp = new Date(input);
-    let output = days[temp.getDay()] + " " + temp.getDate() + " " + months[temp.getMonth()] + " " + temp.getFullYear();
+    // days[temp.getDay()] + " " + 
+    let output = temp.getDate() + " " + months[temp.getMonth()] + " " + temp.getFullYear();
     return output;
 };

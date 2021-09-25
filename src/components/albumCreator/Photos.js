@@ -134,6 +134,8 @@ const Photos = ({editedAlbumId}) => {
 
   const deleteImageFromAlbum = (imageToDelete, type) => {
     setIsDirty(true);
+    setErrorMessage("");
+    setSubmitMessage("");
     document.getElementById('single').checked = false;
     document.getElementById('multi').checked = false;
     document.getElementById('main').checked = false;
