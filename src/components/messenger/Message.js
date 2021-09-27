@@ -4,8 +4,8 @@ import styled from "styled-components";
 import ScrollableFeed from 'react-scrollable-feed';
 import "./friends.css";
 import Emoji from "../menu/assets/emoji";
-import Send from "../menu/assets/send";
-import Close from "../menu/assets/close";
+import closeIcon from "./assets/closeIcon.svg";
+import sendIcon from "./assets/sendIcon.svg";
 import SingleMessage from "./SingleMessage";
 import Picker from 'emoji-picker-react';
 import "./messageEmojiPicker.css"; 
@@ -95,11 +95,12 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 				>
 					<Name>{user.name + " " + user.lastName}</Name>
 				</NameContainer>
-				<CloseContainer onClick={e => {
-					closeMessenger(null);
-				}}>
-					<Close width="20px" height="20px"></Close>
-				</CloseContainer>
+				<CloseContainer 
+					icon={closeIcon}
+					onClick={e => {
+						closeMessenger(null);
+					}}
+				/>
       		</TopMessageHeader>
       		<SendContainer className="scroll_two">
 				<ScrollableFeed className="scroll_two">
@@ -136,61 +137,20 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 						</div>
                 	}
 				</MessageInputContainer>
-				<SendIcon onClick={() => {
-					if (message !== "") {
-						// SEND MESSAGE
-						setMessage("");
-						setShowEmoji(false);
-					}
-				}}>
-					<Send/>
-				</SendIcon>
+				<SendIcon 
+					icon={sendIcon}
+					onClick={() => {
+						if (message !== "") {
+							// SEND MESSAGE
+							setMessage("");
+							setShowEmoji(false);
+						}
+					}}
+				/>
       		</BottomPanel>
     	</Container>
   	);
 };
-
-const CloseContainer = styled.div`
-  	cursor: pointer;
-	margin-left: auto;
-`;
-
-const SendContainer = styled.div`
-	width: 330px;
-	margin-left: 10px;
-	height: 86.5%;
-	overflow-x: hidden;
-	overflow-y: visible;
-`;
-
-const EmojiIcon = styled.div`
-  position: absolute;
-  z-index: 1200;
-  bottom: 9px;
-  left: 250px;
-  &:hover {
-        opacity: 0.5;
-    }
-`;
-
-const SendIcon = styled.div`
-  position: absolute;
-  z-index: 1300;
-  bottom: 8px;
-  left: 298px;
-  &:hover {
-        opacity: 0.5;
-    }
-`;
-
-const Icon = styled.img`
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	margin-right: 10px;
-	border: 1px solid ${({theme}) => theme.color.lightBackground};
-	cursor: pointer;
-`;
 
 const Container = styled.div`
 	filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
@@ -198,13 +158,48 @@ const Container = styled.div`
 	position: fixed;
 	width: 350px;
 	height: 460px;
-	background-color: #f2f7f2;
-	right: 542px;
+	background-color: ${({theme}) => theme.color.lightBackground};
+	right: 547px;
 	bottom: 0;
 	z-index: 10;
 	-webkit-box-shadow: 5px 5px 15px 1px rgba(0, 0, 0, 0.74);
 	box-shadow: 5px 5px 15px 1px rgba(0, 0, 0, 0.74);
 	border-top-left-radius: 10px;
+	@media only screen and (max-width: 1000px) {
+        right: 422px;
+		width: 300px;
+		height: 410px;
+    }
+	@media only screen and (max-height: 720px) {
+		right: 527px;
+	}
+	@media only screen and (max-height: 640px) {
+		right: 517px;
+	}
+	@media only screen and (max-height: 560px) {
+		right: 507px;
+	}
+	@media only screen and (max-height: 480px) {
+		right: 497px;
+	}
+	@media only screen and (max-height: 400px) {
+		right: 487px;
+	}
+	@media only screen and (max-width: 1000px) and (max-height: 720px) {
+        right: 402px;
+    }
+	@media only screen and (max-width: 1000px) and (max-height: 640px) {
+        right: 392px;
+    }
+	@media only screen and (max-width: 1000px) and (max-height: 560px) {
+        right: 382px;
+    }
+	@media only screen and (max-width: 1000px) and (max-height: 480px) {
+        right: 372px;
+    }
+	@media only screen and (max-width: 1000px) and (max-height: 400px) {
+        right: 362px;
+    }
 `;
 
 const TopMessageHeader = styled.div`
@@ -217,6 +212,74 @@ const TopMessageHeader = styled.div`
 	flex-direction: row;
 	align-items: center;
 	padding: 7.5px 10px;
+	@media only screen and (max-width: 1000px) {
+		padding: 5px 7.5px;
+        font-size: 14px;
+    }
+`;
+
+const Name = styled.p`
+	display: inline-block;
+	text-align: center;
+  	align-self: center;
+`;
+
+const Icon = styled.img`
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 10px;
+	border: 1px solid ${({theme}) => theme.color.lightBackground};
+	cursor: pointer;
+	@media only screen and (max-width: 1000px) {
+        width: 30px;
+		height: 30px;
+    }
+`;
+
+const NameContainer = styled.div`
+    cursor: pointer;
+    width: max-content;
+`;
+
+const CloseContainer = styled.div`
+  	cursor: pointer;
+	margin-left: auto;
+	background-image: url(${({icon}) => icon});
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+	@media only screen and (max-width: 1000px) {
+        width: 15px;
+		height: 15px;
+		background-size: 15px;
+    }
+`;
+
+const SendContainer = styled.div`
+	width: 330px;
+	margin-left: 10px;
+	height: 86.5%;
+	overflow-x: hidden;
+	overflow-y: visible;
+	@media only screen and (max-width: 1000px) {
+        width: 280px;
+    }
+`;
+
+const EmojiIcon = styled.div`
+	position: absolute;
+	z-index: 1200;
+	bottom: 9px;
+	left: 250px;
+	&:hover {
+			opacity: 0.5;
+	}
+	@media only screen and (max-width: 1000px) {
+        left: 200px;
+    }	
 `;
 
 const BottomPanel = styled.div`
@@ -236,7 +299,7 @@ const MessageInputContainer = styled.div`
 	resize: none;
 	padding-right: 30px;
 	vertical-align: auto;
-	background-color: #e0e5e0;
+	background-color: ${({theme}) => theme.color.darkBackground};
 	border: none;
 	border-radius: 40px;
 	color: #5b5c5c;
@@ -244,6 +307,9 @@ const MessageInputContainer = styled.div`
 	outline-style: none;
 	margin-bottom: 5px;
 	margin-left: 10px;
+	@media only screen and (max-width: 1000px) {
+        width: 201px;
+    }
 `;
 
 const MessageInput = styled.textarea`
@@ -257,28 +323,32 @@ const MessageInput = styled.textarea`
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
 	border-radius: 40px;
-	color: #5b5c5c;
 	font-weight: 600;
 	outline-style: none;
 	position: relative;
 	&::placeholder {
-		font-size: 18px;
 		overflow: hidden;
 		vertical-align: auto;
 	}
 `;
 
-const NameContainer = styled.div`
-    cursor: pointer;
-    width: max-content;
+const SendIcon = styled.div`
+	position: absolute;
+	z-index: 1300;
+	bottom: 10px;
+	left: 298px;
+	background-image: url(${({icon}) => icon});
+	width: 36px;
+	height: 36px;
+	background-size: 36px;
+	background-repeat: 50% 50%;
+	background-repeat: no-repeat;
+	&:hover {
+		opacity: 0.5;
+	}
+	@media only screen and (max-width: 1000px) {
+		left: 248px;
+	}
 `;
-
-const Name = styled.p`
-	display: inline-block;
-	text-align: center;
-  	align-self: center;
-	
-`;
-
 
 export default Message;

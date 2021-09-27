@@ -5,6 +5,7 @@ const initialState = {
   name: null,
   surName: null,
   profilePicture: null,
+  friendsList: null,
 };
 
 export const userDataSlice = createSlice({
@@ -19,15 +20,26 @@ export const userDataSlice = createSlice({
     setProfilePicture: (state, action) => {
       state.profilePicture = action.payload;
     },
+    setFriendsList: (state, action) => {
+      state.friendsList = action.payload;
+    }, 
+    clearStore: (state) => {
+      state.id = null;
+      state.name = null;
+      state.surName = null;
+      state.profilePicture = null;
+      state.friendsList = null;
+    },
   },
 });
 
 // actions
-export const { setProfilePicture, setUserData } = userDataSlice.actions;
+export const { setProfilePicture, setUserData, setFriendsList, clearStore } = userDataSlice.actions;
 
 // exporting selects
 export const selectUserData = (state) => state.userData;
 export const selectProfilePicture = (state) => state.userData.profilePicture;
+export const selectFriendsList = (state) => state.userData.friendsList;
 
 
 export default userDataSlice.reducer;

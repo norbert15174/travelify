@@ -9,7 +9,17 @@ const Auth = () => {
   return (
     <Container>
       <BlurContainer>
-        {value === "no" ? <Login pos={value} val={setValue}></Login> : <Register pos={value} val={setValue}></Register>}
+        {
+          value === "no" ? 
+          <Login 
+            pos={value} 
+            val={setValue}
+          /> : 
+          <Register 
+            pos={value} 
+            val={setValue}
+          />
+        }
       </BlurContainer>
     </Container>
   );

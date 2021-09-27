@@ -5,7 +5,7 @@ import { routes } from "../miscellanous/Routes";
 import Button from "../components/trinkets/Button";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setProfilePicture, setUserData } from "../redux/userDataSlice";
+import { clearStore, setUserData, setProfilePicture } from "../redux/userDataSlice";
 import { endpoints } from "../url";
 import { errorTypes } from "../miscellanous/Errors";
 import somethingWentWrongIcon from "../assets/somethingWentWrongIcon.svg";
@@ -29,7 +29,7 @@ const LoginTransition = () => {
         if (!sessionStorage.getItem("Login")) {
             throw new Error(errorTypes.noAccess);
         } else {
-            dispatch(setProfilePicture(""));
+            dispatch(clearStore());
             getUserData();
             getCountries();
             getFriends();

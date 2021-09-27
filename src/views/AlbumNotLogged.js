@@ -20,11 +20,9 @@ const AlbumNotLogged = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        
-            dispatch(clearStore());
-            setAlbumId(urlParams.id);
-            getUserAlbum(urlParams.id);
-        
+        dispatch(clearStore());
+        setAlbumId(urlParams.id);
+        getUserAlbum(urlParams.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [urlParams.id]);
 
@@ -65,6 +63,10 @@ const AlbumNotLogged = () => {
 			setAlbumDetailsFetchFinished(true);
 		});
     };
+
+    if (error === 404) {
+        throw new Error(errorTypes.notFound);
+    }
 
     return (
         <UserTemplate notLogged={true}>

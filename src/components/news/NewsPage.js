@@ -200,6 +200,7 @@ const NewsPage = () => {
         } else {
             setNoMoreNews(true);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     const handleObserver = (entities) => {
