@@ -1,7 +1,6 @@
-const Close = ({ width, height }) => (
-  <svg
-    width={width}
-    height={height}
+<svg
+    width="25"
+    height="25"
     viewBox="0 0 17 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -13,5 +12,3 @@ const Close = ({ width, height }) => (
       fill="#F2F7F2"
     />
   </svg>
-);
-export default Close;

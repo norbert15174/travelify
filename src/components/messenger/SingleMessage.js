@@ -35,6 +35,9 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: ${({side}) => side === "right" ? '100%' : "60px 180px"};
   position: relative;
+  @media only screen and (max-width: 1000px) {
+    grid-template-columns: ${({side}) => side === "right" ? '100%' : "50px 180px"};
+  }
 `;
 
 const TextContainer = styled.div`
@@ -45,17 +48,21 @@ const TextContainer = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
   border-radius: 15px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: ${({theme}) => theme.fontWeight.light};
   overflow-wrap: break-word;
 `;
 
 const ProfileIcon = styled.img`
-  width: 34px;
+  width: 36px;
   height: 36px;
-  border-radius: 100%;
+  border-radius: 50px;
   margin-top: 10px;
   position: relative;
   cursor: pointer;
+  @media only screen and (max-width: 1000px) {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 export default SingleMessage;

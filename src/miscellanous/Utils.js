@@ -1,9 +1,3 @@
-/*
-* Returns urlUserName
-*/
-export function getUrlUsername(firstname, lastname) {
-    return (firstname + "." + lastname).toLowerCase();
-}
 
 export const userTypes = {
     logged: "logged",

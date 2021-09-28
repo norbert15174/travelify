@@ -46,15 +46,8 @@ const Login = ({ pos, val }) => {
 			sessionStorage.setItem("Bearer", response.data.token);
 			sessionStorage.setItem("Login", response.data.login);
 			setLogged(true);
-			// const createHistory = require("history").createBrowserHistory;
-			// createHistory().push("/resources");
-			// let pathUrl = window.location.href;
-			// window.location.href = pathUrl;
 		})
 		.catch((error) => {
-			//console.error("Log failed :(")
-			//console.log(error.response.status);
-			//console.log({...error})
 			if (error.response !== undefined) {
 				if (error.response.status === 404) {
 					setErrorMessage(errors.wrongCredentials);
@@ -223,7 +216,6 @@ const Apply = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   cursor: pointer;
-
   @media screen and (max-width: 1400px) {
     width: 400px;
   }

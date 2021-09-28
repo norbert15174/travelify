@@ -17,6 +17,7 @@ import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteF
 import { userTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 import { toggleBlur } from "../../redux/blurSlice";
+import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
 
 const sections = {
     info: "info",
@@ -24,7 +25,7 @@ const sections = {
     friends: "friends",  
 };
 
-const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, userType, setUserType, userId}) => {
+const UserPage = ({personalData, individualAlbums, friendsList, setFriends, userType, setUserType, userId}) => {
 
     const [ infoActive, setInfoActive ] = useState(false);
     const [ albumsActive, setAlbumsActive ] = useState(true);
@@ -33,12 +34,12 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
     const blurState = useSelector((state) => state.blur.value);
     // id of friend we want to delete
     const friendId = useSelector(selectFriendToDeleteId);
+    const loggedUserFriends = useSelector(selectFriendsList);
     const dispatch = useDispatch();   
 
     // box for deleting friend
     const [ deleteFriendBox, setDeleteFriendBox ] = useState(false);
-    const [ deleteSend, setDeleteSend ] = useState(false);
-    const [ errorAtDeletion, setErrorAtDeletion ] = useState(null);
+
     // box for inviting user
     const [ inviteBox, setInviteBox ] = useState(false);
     const [ invitationSend, setInvitationSend ] = useState(false);
@@ -47,38 +48,48 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
     const [ confirm , setConfirm ] = useState(false);
     const [ refuse, setRefuse ] = useState(false);
 
+    // redirects to edit profile page
+    const [ redirect, setRedirect ] = useState(false);
+
     useEffect(() => {
         if (blurState) {
             dispatch(toggleBlur());
-        }    
-            if ((friendId && userType === userTypes.logged) || deleteFriendBox) {
-                setDeleteFriendBox(true);
-                // when deleting friend was confirmed
-                if (confirm) {
-                    // friendId when logged user panel is watched
-                    // userId when friend user panel is watched
-                    deleteFriend(friendId || userId);
-                } 
-                // when deleting friend was canceled
-                if (refuse) {
-                    dispatch(setFriendToDeleteId(null));
-                    setDeleteFriendBox(false);
-                    setRefuse(false);
-                }
-            }
-            
-            if (inviteBox && userType === userTypes.unknown) {
-                if (confirm) {
-                    sendInvitation(userId);
-                }
-                if (refuse) {
-                    setInvitationSend(false);
-                    setInviteBox(false);
-                    setRefuse(false);
-                }
-            }
+        }        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [deleteFriendBox, friendId, confirm, refuse, dispatch, userType, inviteBox, userId]);
+    }, [deleteFriendBox, inviteBox, confirm, refuse]);
+
+    useEffect(() => {
+        if (inviteBox && userType === userTypes.unknown) {
+            if (confirm) {
+                sendInvitation(userId);
+            }
+            if (refuse) {
+                setInvitationSend(false);
+                setInviteBox(false);
+                setRefuse(false);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inviteBox, confirm, refuse]);
+
+    useEffect(() => {
+        if ((friendId && userType === userTypes.logged) || deleteFriendBox) {
+            setDeleteFriendBox(true);
+            // when deleting friend was confirmed
+            if (confirm) {
+                // friendId when logged user panel is watched
+                // userId when friend user panel is watched
+                deleteFriend(friendId || userId);
+            } 
+            // when deleting friend was canceled
+            if (refuse) {
+                dispatch(setFriendToDeleteId(null));
+                setDeleteFriendBox(false);
+                setRefuse(false);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [friendId, deleteFriendBox, confirm, refuse])
 
     async function sendInvitation(id) {
         setInvitationSend(false);
@@ -106,8 +117,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
     }
 
     async function deleteFriend(id) {
-        setDeleteSend(false);
-        setErrorAtDeletion(null);
 		await axios.delete("http://localhost:8020/friends/delete/" + id, {
             headers: {
                 "Access-Control-Allow-Headers": "*",
@@ -118,7 +127,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
 			},
         })
 		.then((response) => {
-            console.log(response);
             let temp = [];
             if (userType === userTypes.friend) {
                 // friend panel
@@ -126,13 +134,13 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
                 temp = friendsList.filter((item) => item.id.toString() !== sessionStorage.getItem("loggedUserId")); 
             } else {
                 // logged user panel
-                temp = friendsList.filter((item) => item.id !== id); 
+                temp = loggedUserFriends.filter((item) => item.id !== id); 
+                dispatch(setFriendsList(temp));
             }
-            setFriendsList(temp);
+            setFriends(temp);
 		})
 		.catch((error) => {
             console.log(error);
-            setErrorAtDeletion(error);
 		})
         .finally(() => {
             dispatch(setFriendToDeleteId(null));
@@ -141,9 +149,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
         })
     }
 
-    // redirects to edit profile page
-    const [ redirect, setRedirect ] = useState(false);
-
+    
     const sectionsToggle = (sectionName) => {
         if (sectionName === sections.albums) {
             setAlbumsActive(true);
@@ -162,8 +168,14 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
 
     return (
         <>
-            {deleteFriendBox && (userType === userTypes.logged || userType === userTypes.friend) && <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
-            {inviteBox && userType === userTypes.unknown && <ConfirmationBox children={"Czy na pewno chcesz zaprosić daną osobę do znajomych?"} confirm={setConfirm} refuse={setRefuse}/>}
+            {
+                deleteFriendBox && (userType === userTypes.logged || userType === userTypes.friend) && 
+                <ConfirmationBox children={"Czy na pewno chcesz usunąć daną osobę ze znajomych?"} confirm={setConfirm} refuse={setRefuse}/>
+            }
+            {
+                inviteBox && userType === userTypes.unknown && 
+                <ConfirmationBox children={"Czy na pewno chcesz zaprosić daną osobę do znajomych?"} confirm={setConfirm} refuse={setRefuse}/>
+            }
             <Container blurState={blurState}>
                 <Header>
                     <Images>
@@ -177,16 +189,20 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
                         <Button active={albumsActive ? true : false} onClick={() => sectionsToggle(sections.albums)}>Albumy</Button>
                         <Button active={friendsActive ? true : false} onClick={() => sectionsToggle(sections.friends)}>Znajomi</Button>
                         {
-                            userType === userTypes.logged && <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
+                            userType === userTypes.logged && 
+                            <UserButton icon={editIcon} onClick={() => setRedirect(true)}>Edytuj profil</UserButton>
                         }
                         {
-                            userType === userTypes.friend && <UserButton icon={friendsIcon} onClick={() => setDeleteFriendBox(true)}>Znajomi</UserButton>
+                            userType === userTypes.friend && 
+                            <UserButton icon={friendsIcon} onClick={() => setDeleteFriendBox(true)}>Znajomi</UserButton>
                         }
                         {
-                            userType === userTypes.unknown && !invitationSend && <UserButton icon={addFriendIcon} onClick={() => setInviteBox(true)}>Dodaj</UserButton>
+                            userType === userTypes.unknown && !invitationSend && 
+                            <UserButton icon={addFriendIcon} onClick={() => setInviteBox(true)}>Dodaj</UserButton>
                         }
                         {
-                            userType === userTypes.unknown && invitationSend && errorAtInvitation === null && <StyledDiv>Zaproszenie wysłane!</StyledDiv>
+                            userType === userTypes.unknown && invitationSend && errorAtInvitation === null && 
+                            <StyledDiv>Zaproszenie wysłane!</StyledDiv>
                         }
                     </Options>
                 </Header>
@@ -201,10 +217,12 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriendsList, 
                             />
                     }
                     {
-                        albumsActive && <GridSection userType={userType} sectionType={sections.albums} data={individualAlbums}/>
+                        albumsActive && 
+                        <GridSection userType={userType} sectionType={sections.albums} data={individualAlbums}/>
                     }
                     {
-                        friendsActive && <GridSection userType={userType} sectionType={sections.friends} data={friendsList}/>
+                        friendsActive && 
+                        <GridSection userType={userType} sectionType={sections.friends} data={userType === userTypes.logged ? loggedUserFriends : friendsList}/>
                     }
                 </InnerContainer>
             </Container>

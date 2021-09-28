@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import UserTemplate from "../templates/UserTemplate";
 import UserPage from "../components/user/UserPage";
@@ -7,25 +8,25 @@ import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { errorTypes } from "../miscellanous/Errors";
 import { userTypes } from "../miscellanous/Utils";
+import { setFriendsList } from "../redux/userDataSlice";
 
 const User = () => {
 	
 	const [ personalData, setPersonalData ] = useState(null);
   	const [ individualAlbums, setInvidualAlbums ] = useState(null);
 	const [ userType, setUserType ] = useState(null);
-	const [ friendsList, setFriendsList ] = useState(null);
+	const [ friends, setFriends ] = useState(null);
 	const [ userDataFetchFinished, setUserDataFetchFinished ] = useState(false)
 	const [ userFriendsFetchFinished, setUserFriendsFetchFinished ] = useState(false)
 	const [ error, setError ] = useState(null);
 	const location = useLocation();
 	const urlParams = useParams();
+	const dispatch = useDispatch();
 	  
   	useEffect(() => {
-
 		setUserDataFetchFinished(false);
 		setUserFriendsFetchFinished(false);
 		setError(null);
-
     	if (!sessionStorage.getItem("Login")) {
       		throw new Error(errorTypes.noAccess);
     	} else {
@@ -51,6 +52,7 @@ const User = () => {
 				throw new Error(errorTypes.notFound)
 			}
 		}
+  	// eslint-disable-next-line react-hooks/exhaustive-deps
   	}, [location.state, urlParams.id]);
 
 	async function getLoggedUserProfile() {
@@ -62,7 +64,6 @@ const User = () => {
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-			console.log(data)
 			setPersonalData(data.personalDataDTO);
 			setInvidualAlbums(data.individualAlbumDTO);
 		}).catch((error) => {
@@ -81,8 +82,8 @@ const User = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then(({data}) => {
-			console.log(data);
-			setFriendsList(data);
+			setFriends(data);
+			dispatch(setFriendsList(data));
         }).catch((error) => {
             setError(error);
         }).finally(() => {
@@ -125,7 +126,7 @@ const User = () => {
 			} else {
 				setUserType(userTypes.unknown);
 			}
-			setFriendsList(data);
+			setFriends(data);
         }).catch((error) => {
             setError(error);
         }).finally(() => {
@@ -141,8 +142,8 @@ const User = () => {
 				<UserPage 
 					personalData={personalData} 
 					individualAlbums={individualAlbums}
-					friendsList={friendsList}
-					setFriendsList={setFriendsList}
+					friendsList={friends}
+					setFriendsList={setFriends}
 					setUserType={setUserType}
 					userType={userType}
 					userId={urlParams.id}

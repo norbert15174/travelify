@@ -1,29 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
+import { routes } from "../../miscellanous/Routes";
 import styled from "styled-components";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-// redirectTo => set states redirect to album
+const AlbumThumbnail = ({album, redirectToAlbum}) => {
+ 
+    const [ redirectToProfile, setRedirectToProfile ] = useState({
+        active: false,
+        userId: null,
+    });
 
-const AlbumThumbnail = ({album, redirectTo}) => (
-    <Container onClick={redirectTo}>
-        <MainPhoto src={album.image} alt="albumMainPhoto"/>
-        <Owner>
-            <ProfilePhoto src={album.url}/>
-            <h3>{album.name}</h3>
-        </Owner> 
-        <InfoContainer>
-            <Text>
-                <Header>
-                    <Title>{album.title}</Title>
-                    <Localization>{album.localization}</Localization>
-                </Header>
-                <Description>
-                    {album.description}
-                </Description>
-            </Text>
-        </InfoContainer>
-    </Container>
+    if (redirectToProfile.active) {
+        return <Redirect 
+					push to={{
+                    	pathname: routes.user.replace(/:id/i, redirectToProfile.userId), 
+                    	state: { selectedUser: { selectIsTrue: true, id: redirectToProfile.userId, isHeFriend: false} }
+					}}
+        		/>
+	}
 
-);
+    return (
+        <Container>
+            <MainPhoto 
+                src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon} 
+                onClick={redirectToAlbum}
+                alt="albumMainPhoto"
+            />
+            <Owner 
+                onClick={() => {
+                    setRedirectToProfile({active: true, userId: album.personalInformationDTO.id});
+                }}
+            >
+                <ProfilePhoto src={album.personalInformationDTO.photo !== undefined ? album.personalInformationDTO.photo : noProfilePictureIcon}/>
+                <h3>{album.personalInformationDTO.name + " " + album.personalInformationDTO.surName}</h3>
+            </Owner> 
+            <InfoContainer onClick={redirectToAlbum}>
+                <Text>
+                    <Header>
+                        <Title>{album.name}</Title>
+                        <Localization>{album.coordinate.place + ", " + album.coordinate.country.country}</Localization>
+                    </Header>
+                    <Description>
+                        {album.description}
+                    </Description>
+                </Text>
+            </InfoContainer>
+        </Container>
+    )
+    
+};
 
 const Container = styled.div`
     width: 100%;
@@ -57,6 +84,7 @@ const InfoContainer = styled.div`
 `;
 
 const Owner = styled.div`
+    cursor: pointer;
     padding: 5px 25px 5px 0px;
     border-radius: 50px;
     background: rgba(229, 229, 229, 0.8);
@@ -68,12 +96,6 @@ const Owner = styled.div`
     flex-direction: row;
     align-items: center;
     font-size: 24px;
-    h3 {
-        display: inline-block;
-        word-wrap: break-word;
-        width: 100%;
-        white-space: normal;
-    }
     @media only screen and (max-width: 1400px) {
         font-size: 20px;
         max-width: 350px;

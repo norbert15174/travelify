@@ -48,11 +48,11 @@ const Register = ({ pos, val }) => {
         }
 
         if ( values.surname && (/\d/g).test(values.surname)) {
-            errors.surname = "Imię nie powinno zawierać cyfr/znaków specjalnych !";
+            errors.surname = "Naziwsko nie powinno zawierać cyfr/znaków specjalnych !";
         } else if ( values.surname && (/[^a-zA-Z\d]/).test(values.surname)) {
-            errors.surname = "Imię nie powinno zawierać cyfr/znaków specjalnych !";
+            errors.surname = "Naziwsko nie powinno zawierać cyfr/znaków specjalnych !";
         } else if ( values.surname && values.surname.length < 2) {
-            errors.firstname = "Nazwisko powinno składać się z minimum 2 znaków !";
+            errors.surname = "Nazwisko powinno składać się z minimum 2 znaków !";
         }
 
 		if ( values.email && (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))) {
@@ -91,9 +91,11 @@ const Register = ({ pos, val }) => {
         },
         validate,
         onSubmit: async (values, actions) => {
-            if (!values.name || !values.surname || !values.password || !values.repeatPassword || !values.login || !values.email || !values.nationality || !values.date) {
+            if (!values.name || !values.surname || !values.password 
+				|| !values.repeatPassword || !values.login || !values.email 
+				|| !values.nationality || values.nationality === "noCountry" || !values.date
+			) {
 				setError(errors.emptyForm);
-				console.log(errors.emptyForm);
 			} else {
 				setError(null);
 				setRegisterSuccess(false);
@@ -240,6 +242,7 @@ const Register = ({ pos, val }) => {
 								<Input
 									type="text"
 									name="surname"
+									id="surname"
 									value={formik.values.surname}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
@@ -251,16 +254,15 @@ const Register = ({ pos, val }) => {
 								Pochodzenie:
 								<div className="custom__select">
 									<select className="select" name="nationality" id="nationality" value={formik.values.nationality} onChange={formik.handleChange} onBlur={formik.handleBlur}>
-									{
-										
-										countryList.length !== 0 && 
+									<>
+										<CustomOption style={{color: "#5B5B5B"}} value={"noCountry"}>-- Wybierz kraj --</CustomOption>
+										{countryList.length !== 0 && 
 										(countryList.map((country) => (
-											<CustomOption key={country.id} value={country.id} selectedValue={141}>
-													{country.country}
+											<CustomOption key={country.id} value={country.id}>
+												{country.country}
 											</CustomOption>
-										)))
-										
-									}
+										)))}
+									</>
 									</select>	
 								</div>
 							</Label>

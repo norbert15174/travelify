@@ -5,7 +5,7 @@ import { routes } from "../miscellanous/Routes";
 import Button from "../components/trinkets/Button";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setProfilePicture, setUserData } from "../redux/userDataSlice";
+import { clearStore, setUserData, setProfilePicture, setFriendsList } from "../redux/userDataSlice";
 import { endpoints } from "../url";
 import { errorTypes } from "../miscellanous/Errors";
 import somethingWentWrongIcon from "../assets/somethingWentWrongIcon.svg";
@@ -29,7 +29,7 @@ const LoginTransition = () => {
         if (!sessionStorage.getItem("Login")) {
             throw new Error(errorTypes.noAccess);
         } else {
-            dispatch(setProfilePicture(""));
+            dispatch(clearStore());
             getUserData();
             getCountries();
             getFriends();
@@ -76,7 +76,6 @@ const LoginTransition = () => {
                 "Content-Type": "application/json",
             },
         }).then(({data}) => {
-            console.log(data);
             data.shift();
             let countries = [];
             for (let i = 0; i < 206; i++) {
@@ -101,7 +100,8 @@ const LoginTransition = () => {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
-        }).then((response) => {
+        }).then(({data}) => {
+            dispatch(setFriendsList(data));
         }).catch((error) => {
             setError(error);
         }).finally(() => {

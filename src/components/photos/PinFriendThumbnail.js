@@ -50,9 +50,36 @@ const PinFriendThumbnail = ({friend, photoId}) => {
     };
 
     async function deleteTag() {
+        const tagToDelete = tags.find((item) => item.userId === friendId).taggedId;
+        console.log(tagToDelete);
         setUpdating(true);
-        setButtonText("Wybierz");
-        setUpdating(false);
+        await axios({
+            method: "delete",
+                url: endpoints.deleteTag + photoId,
+                data: [
+                    tagToDelete
+                ],
+                headers: {
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+                    withCredentials: true,
+                },
+        })
+        .then((response) => {
+            console.log(response)     
+            dispatch(setPhotoTags(response.data));    
+            setAlreadyChosen(false);
+            setButtonText("Wybierz");
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            setUpdating(false);
+        });
     };
 
     return (

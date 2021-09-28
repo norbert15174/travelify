@@ -1,53 +1,93 @@
 import React from "react";
 import styled from "styled-components";
 import "./friends.css";
-import MessageIcon from "../account/svg/messageIcon";
-const FriendItem = ({user, selectFriend}) => {
+import noMessageIcon from "./assets/noMessageIcon.svg";
+import underConstructionIcon from "./assets/underConstructionIcon.svg";
+
+const FriendItem = ({user, selectFriend, chatBlock}) => {
 
 	return (
-    	<Container className="font" onClick={e => selectFriend(user)}>
-      		<Icon
+    	<Container 
+        chatBlock={chatBlock} 
+        className="font" 
+        onClick={(e) => {
+          if (!chatBlock) {
+            selectFriend(user)
+          }
+        }}
+      >
+      		<Photo
         		src={user.profilePicture}
         		alt="User Photo"
       		/>
       		<Name>
 				{user.name + " " + user.lastName}
 			</Name>
-      		<MessageIcon/>
+      {
+        !chatBlock ? 
+        <Icon src={
+          noMessageIcon
+        }
+        /> : <Communicate>Czat nie jest zooptymalizowany dla ekranów o takich wymiarach.</Communicate>
+      }
     	</Container>
   	);
 };
 
-const Icon = styled.img`
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 5px;
+  padding: 0px 5px;
+  &:hover{
+    border-radius:  ${({chatBlock}) => !chatBlock ? "30px" : ""};
+    background: ${({chatBlock}) => !chatBlock ? "rgba(18, 191, 206, 0.4)" : ""};
+    transition:  ${({chatBlock}) => !chatBlock ?  "background-color 0.2s" : ""};
+  }
+`;
+
+const Photo = styled.img`
   width: 64px;
   height: 64px;
   border-radius: 100%;
-  margin-left: 16px;
+  margin-right: 10px;
   border: 2px solid ${({theme}) => theme.color.lightTurquise}; 
-`;
-
-const Container = styled.div`
-  margin-bottom: 10px;
-  padding-top: 5px;
-  width: 377.5px;
-  height: 55px;
-  padding-bottom: 15px;
-  display: grid;
-  grid-template-columns: 90px 220px 70px;
-  border-radius: 30px;
-  margin-left: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  &:hover{
-    background-color: #98E1E4;
+  @media only screen and (max-width: 1000px) {
+    width: 42px;
+    height: 42px;
   }
 `;
 
 const Name = styled.div`
   font-size: 16px;
-  font-weight: 700;
-  position: relative;
-  top: 18px;
+  font-weight: ${({theme}) => theme.fontWeight.bold};
+  @media only screen and (max-width: 1000px) {
+    font-size: 12px;
+  }
+`;
+
+const Icon = styled.img`
+  width: 48px;
+  height: 48px;
+  margin: 0 10px 0 auto;
+  @media only screen and (max-width: 1000px) {
+    width: 36px;
+    height: 36px;
+  }
+`
+
+const Communicate = styled.p`
+  display: inline-block;
+  width: 35%;
+  text-align: center;
+  margin-left: auto;
+  font-weight: ${({theme}) => theme.fontWeight.bold};
+  color: ${({theme}) => theme.color.redAlert};
+  @media only screen and (max-width: 400px) {
+    font-size: 8px;
+  }
 `;
 
 export default FriendItem;

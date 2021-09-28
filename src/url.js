@@ -27,14 +27,19 @@ export const endpoints = {
     deletePhotosFromAlbum: url + "/photos/delete",
     deleteAlbum: url + "/albums?id=",
     tagPersonOnPhoto: url + "/photos/add/tagged/", // + photoId
+    deleteTag: url + "/photos/tagged/", // + photoId
     addComment: url + "/photos/comment/", // + photoId
     getFriendsRequests: url + "/friends/requests",
-    invitationHandler: url + "/friends?id=", // invitationId, for accept PUT, for decline DELETE
+    invitationHandler: url + "/friends?id=", // invitationId, for accept PUT // senderId, for decline DELETE
     editAlbum: url + "/albums/", // + albumId
     updatePhotoDescription: url + "/photos/modify/", // + photoId
     getPhotoComments: url + "/photos/comments/", // + photoId
     getPhotoTags: url + "/photos/tagged/", // + photoId
     getPhotoDescription: url,
+    getPhoto: url + "/photos/", // + photoId
+    getNews: url + "/news?page=", // page number
+    getMarkersWithAlbums: url + "/public", 
+    getPreviewAlbum: url + "/public/", // + public album id 
 }
 
 // http://localhost:8020/friends/delete/

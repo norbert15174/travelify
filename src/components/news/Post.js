@@ -1,56 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Redirect } from 'react-router-dom';
 import NewsThumbnail from "./NewsThumbnail";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import { getDate } from "../../miscellanous/Utils";
+import { routes } from "../../miscellanous/Routes";
 
-const profilePhoto = "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x";
+const Post = ({news}) => {
 
-const Post = ({news}) => (
-    <Container>
-        <Header>
-            <ProfilePhoto src={profilePhoto !== undefined ? profilePhoto : noProfilePictureIcon} alt="profilePhoto"/>
-            <h1>{news.name}</h1>
-        </Header>
-        <NewsThumbnail news={news}/> 
-    </Container>
-);
+    const date = news.date;
+    const [ formattedDate, setFormattedDate ] = useState("");
+    const [ redirectToProfile, setRedirectToProfile ] = useState({
+        active: false,
+        userId: null,
+    });
+
+    useEffect(() => {
+        let temp = getDate(date.split(" ")[0]);
+        temp = temp.substring(0, temp.length - 5);
+        setFormattedDate(temp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    if (redirectToProfile.active) {
+        return <Redirect 
+					push to={{
+                    	pathname: routes.user.replace(/:id/i, redirectToProfile.userId), 
+                    	state: { selectedUser: { selectIsTrue: true, id: redirectToProfile.userId, isHeFriend: false} }
+					}}
+        		/>
+	}
+
+    return (
+        <Container>
+            <Header>
+                <ProfilePhoto 
+                    src={news.personalInformationDTO.photo !== undefined ? news.personalInformationDTO.photo : noProfilePictureIcon} 
+                    alt="Profile picture"
+                    onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}
+                />
+                <Name onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}>
+                    {news.personalInformationDTO.name + " " + news.personalInformationDTO.surName}
+                </Name>
+                <DateInfo>Dodano {formattedDate}</DateInfo>
+            </Header>
+            <NewsThumbnail news={news}/>
+        </Container>
+    )
+};
 
 const Container = styled.div`
     border-radius: 15px;
     background-color: ${({theme}) => theme.color.lightBackground};
-    padding: 30px 0;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    height: 831px;
-    @media only screen and (max-width: 1400px) {
-        height: 731px;
-    }
-    @media only screen and (max-width: 1100px) {
-        height: 500px;
-    }
+    padding: 30px 25px;
     @media only screen and (max-width: 800px) {
-        height: 335px;
-        padding: 15px 0;
+        padding: 20px 15px;
     }
     @media only screen and (max-width: 500px) {
-        height: 250px;
+        padding: 15px 10px;
     }
 `;
 
 const Header = styled.div`
-    margin-left: 4%;
-    margin-bottom: 15px;
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-size: 16px;
+    margin-bottom: 10px;
+    @media only screen and (max-width: 500px) {
+        margin-bottom: 5px;
+    }
+`;
+
+const Name = styled.h1`
+    cursor: pointer;
+    font-size: 30px;
     @media only screen and (max-width: 1100px) {
-        font-size: 12px;
-        margin-bottom: 12px;
+        font-size: 25px;
     }
     @media only screen and (max-width: 800px) {
-        font-size: 10px;
-        margin-bottom: 10px;
+        font-size: 20px
+    }
+    @media only screen and (max-width: 500px) {
+        font-size: 15px;
+    }
+`;
+
+const DateInfo = styled.h1`
+    margin-left: auto;
+    margin-right: 10px;
+    font-size: 24px;
+    color: ${({theme}) => theme.color.greyFont};
+    @media only screen and (max-width: 1100px) {
+        font-size: 19px;
+    }
+    @media only screen and (max-width: 800px) {
+        font-size: 14px;
+    }
+    @media only screen and (max-width: 500px) {
+        font-size: 9px;
     }
 `;
 
@@ -67,6 +118,11 @@ const ProfilePhoto = styled.img`
     @media only screen and (max-width: 800px) {
         width: 40px;
         height: 40px;
+    }
+    @media only screen and (max-width: 500px) {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
     }
 `;
 

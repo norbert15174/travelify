@@ -11,7 +11,6 @@ const Notifications = ({notificationsDisplay}) => {
 
     const blurState = useSelector((state) => state.blur.value); 
     const [ friendsRequests, setFriendsRequests ] = useState([]);
-    const [ error, setError ] = useState(null);
 
     useEffect(() => {
         axios({
@@ -27,7 +26,7 @@ const Notifications = ({notificationsDisplay}) => {
   			setFriendsRequests(data);
 		})
 		.catch((error) => {
-			setError(error);
+            console.log(error);
 		});
     }, []);
 
@@ -45,7 +44,8 @@ const Notifications = ({notificationsDisplay}) => {
                     ?
                     friendsRequests.map((item) => (
                         <NotificationsItem 
-                            key={item.id} 
+                            key={item.id}
+                            senderId={item.senderId} 
                             firstName={item.firstName} 
                             surName={item.lastName} 
                             photo={item.photo} 
@@ -56,9 +56,9 @@ const Notifications = ({notificationsDisplay}) => {
                     : 
                     null
                 }
-                <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
+                {/* <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
                 <NotificationsItem firstName="Jaś" surName="Fasola" type="share"/>
-                <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/> */}
             </NotificationsList>
         </Container>
     );
@@ -69,7 +69,7 @@ const Container = styled.div`
     filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     -webkit-filter: ${({blurState}) => blurState === true ? "blur(15px)" : "none" };
     position: fixed;
-    width: 420px;
+    width: 425px;
     background-color: ${({theme}) => theme.color.lightBackground};
     right: 121px;
     top: 0;
@@ -83,6 +83,36 @@ const Container = styled.div`
     @media only screen and (max-width: 720px) {
         width: calc(100vw - 120px);
     }
+    @media only screen and (max-width: 720px) and (max-height: 720px) {
+        width: calc(100vw - 100px);
+    }
+    @media only screen and (max-height: 720px) {
+		right: 101px;
+	}
+    @media only screen and (max-width: 720px) and (max-height: 640px) {
+        width: calc(100vw - 90px);
+    }
+	@media only screen and (max-height: 640px) {
+		right: 91px;
+	}
+    @media only screen and (max-width: 720px) and (max-height: 560px) {
+        width: calc(100vw - 80px);
+    }
+	@media only screen and (max-height: 560px) {
+		right: 81px;
+	}
+    @media only screen and (max-width: 720px) and (max-height: 480px) {
+        width: calc(100vw - 70px);
+    }
+	@media only screen and (max-height: 480px) {
+		right: 71px;
+	}
+    @media only screen and (max-width: 720px) and (max-height: 400px) {
+        width: calc(100vw - 60px);
+    }
+	@media only screen and (max-height: 400px) {
+		right: 61px;
+	}
 `;
 
 const Header = styled.div`
