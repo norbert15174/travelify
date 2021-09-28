@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Geocode from "react-geocode";
-import styled from "styled-components";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
 
@@ -123,30 +122,27 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 			})}
 		>
 			<>
-				{markers && type === "StartPage" ? markers.list.map((user) => (
+				{markers && type === "StartPage" ? markers.map((item) => (
 					<Marker
-						key={user.id}
+						key={item.id}
 						position={{
-							lat: user.position.lat,
-							lng: user.position.lng,
+							lat: item.coordinate.lat,
+							lng: item.coordinate.lang,
 						}}
-						onClick={() => setSelected(user)}
+						onClick={() => setSelected(item)}
 						onLoad={onMarkerLoad}
 					/>
 				)) : null}
 				{selected && type === "StartPage" ? (
 					<InfoWindow
 						position={{
-							lat: selected.position.lat + 3,
-							lng: selected.position.lng,
+							lat: selected.coordinate.lat + 3,
+							lng: selected.coordinate.lang,
 						}}
 						onCloseClick={() => setSelected(null)}	
 					>
 						<MarkerInfo
-							name={selected.name}
-							url={selected.url}
-							title={selected.title}
-							country={selected.country}
+							details={selected}
 						/>
 					</InfoWindow>
 				) : null}

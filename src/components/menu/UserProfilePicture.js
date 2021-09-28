@@ -35,7 +35,7 @@ const UserProfilePicture = () => {
 
 	return (
 		<Container
-			src={(profilePicture !== undefined && profilePicture !== "") ? profilePicture : noProfilePictureIcon}
+			src={(profilePicture !== undefined && profilePicture) ? profilePicture : noProfilePictureIcon}
 			alt="Profile picture"
   		/>
 	)

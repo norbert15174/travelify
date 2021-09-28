@@ -52,6 +52,7 @@ const User = () => {
 				throw new Error(errorTypes.notFound)
 			}
 		}
+  	// eslint-disable-next-line react-hooks/exhaustive-deps
   	}, [location.state, urlParams.id]);
 
 	async function getLoggedUserProfile() {

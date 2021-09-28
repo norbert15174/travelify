@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Redirect } from 'react-router-dom';
 import styled from "styled-components";
+import axios from "axios";
 import FoundAlbumThumbnail from "./FoundAlbumThumbnail";
 import FoundPersonThumbnail from "./FoundPersonThumbnail";
-import Spinner from "../trinkets/Spinner";
 import japonia1 from "./assets/Japonia.jpg";
 import japonia2 from "./assets/japonia2.jpg";
+import { endpoints } from "../../url";
 
-const data = [
+const fake = [
     {
         id: 1,
         url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
@@ -149,19 +151,20 @@ const data = [
 
 const Filler = ({searchType}) => {
 
-    const [ albumList, setAlbumList ] = useState(data);
-    const [ peopleList, setPeopleList ] = useState(data);
-    const [ page, setPage ] = useState(1); // page number
-    const [ noMore, setNoMore ] = useState(false);
+    const [ albumList, setAlbumList ] = useState([]);
+    const [ peopleList, setPeopleList ] = useState(fake);
+    const [ page, setPage ] = useState(0); // page number
     const loader = useRef(null);
 
+    const [ redirectToAlbum, setRedirectToAlbum ] = useState({
+        active: false, 
+        albumId: "",
+    });
+
     useEffect(() => {
-        // fetch 
-        setAlbumList(data);
-        setPeopleList(data);
         const observer = new IntersectionObserver(handleObserver, {
             root: null,
-            rootMargin: "20px",
+            rootMargin: "5px",
             threshold: 0.25,
         });
         if (loader.current) {
@@ -171,18 +174,9 @@ const Filler = ({searchType}) => {
 
     // when page changes
     useEffect(() => {
-        setTimeout(() => {
-            if (searchType === "albums") {
-                const newItemList = albumList.concat([data[2], data[3]]);
-                setAlbumList(newItemList);
-            } else if (searchType === "people") {
-                const newItemList = peopleList.concat([data[2], data[3]]);
-                setPeopleList(newItemList);
-            } else {
-                // when end has been reached
-                setNoMore(true);
-            }
-        }, 1000);  
+        if (searchType === "albums") {
+            getAlbums();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
@@ -193,6 +187,35 @@ const Filler = ({searchType}) => {
         }
     }
 
+    async function getAlbums() {
+        axios({
+			url: endpoints.getNews + page,
+			method: "get",
+			headers: {
+		  		"Content-Type": "application/json",
+		  		Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		})
+		.then(({data}) => {
+            console.log(data);
+            for (let i=0; i < data.length; i++) {
+                if (data[i].public) {
+                    setAlbumList((prevState) => [...prevState, data[i]]);
+                }
+            }           
+		})
+		.catch((error) => {
+            console.error(error);
+		});
+    }
+
+    // redirection to chosen album
+    if (redirectToAlbum.active) {
+        return <Redirect push to={{
+            pathname: `album/${redirectToAlbum.albumId}`, 
+        }}/>
+    }
+
     return (
         <Container>
             <Header>
@@ -201,55 +224,32 @@ const Filler = ({searchType}) => {
             <Line/>
             {
                searchType === "albums" &&  
-               (albumList.length > 0 ?
                 <AlbumGrid className="scroll">
-                {
-                    albumList.map((album) => 
-                        <FoundAlbumThumbnail
-                            key={album.id}
-                            album={album}
-                            redirectTo={() => null}
-                        />
-                    )  
-                }
-                    <InnerContainer ref={loader}>
                     {
-                        !noMore &&
-                        (<Spinner 
-                            width={"30px"} 
-                            height={"30px"} 
-                            border={"6px"} 
-                            firstColor={({theme}) => theme.color.darkTurquise} 
-                            secondColor={({theme}) => theme.color.lightTurquise}
-                        />)
+                        albumList.length > 0 && albumList.map((album) => 
+                            <FoundAlbumThumbnail
+                                key={album.id}
+                                album={album}
+                                redirectToAlbum={() => setRedirectToAlbum({
+                                    active: true, 
+                                    albumId: album.id,
+                                })}
+                            />
+                        )  
                     }
-                    </InnerContainer> 
+                    <InnerContainer ref={loader}/>
                 </AlbumGrid>
-                : <h1 style={{color: "#5B5B5B", marginTop: "15px"}}>Brak albumów...</h1>) 
             } 
             {
                 searchType === "people" && 
-                (peopleList.length > 0 ?
-                <PeopleGrid className="scroll">
-                {
-                    peopleList.map((person) => 
-                        <FoundPersonThumbnail person={person}/>
-                    )  
-                }
-                    <InnerContainer ref={loader}>
+                (<PeopleGrid className="scroll">
                     {
-                        !noMore &&
-                        (<Spinner 
-                            width={"30px"} 
-                            height={"30px"} 
-                            border={"6px"} 
-                            firstColor={({theme}) => theme.color.darkTurquise} 
-                            secondColor={({theme}) => theme.color.lightTurquise}
-                        />)
+                        peopleList.length > 0 && peopleList.map((person) => 
+                            <FoundPersonThumbnail person={person}/>
+                        )  
                     }
-                    </InnerContainer>    
-                </PeopleGrid>
-                : <h1 style={{color: "#5B5B5B", marginTop: "15px"}}>Brak użytkowników...</h1>)
+                    <InnerContainer ref={loader}/>
+                </PeopleGrid>)   
             }
         </Container>
     );
@@ -304,6 +304,7 @@ const AlbumGrid = styled.div`
     grid-auto-rows: 350px;
     max-height: 500px;
     overflow-y: scroll;
+    overflow-x: hidden;
     @media only screen and (max-width: 1400px) {
         grid-template-columns: repeat(2, 400px);
         grid-auto-rows: 300px;

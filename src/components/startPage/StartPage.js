@@ -1,21 +1,42 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import axios from "axios";
 import styled from 'styled-components';
 import appLogo from './svg/Logo.svg';
 import Button from '../trinkets/Button';
 import Map from '../googleMaps/Map';
-import { FriendsListArray as markers } from "../googleMaps/data";
+import { endpoints } from "../../url";
 
 const StartPage = () => {
 
-    const [redirect, setRedirect] = useState('no');
+    const [ redirect, setRedirect ] = useState('no');
+    const [ markers, setMarkers ] = useState(null);
 
     const options = {
         disableDefaultUI: true, // disables little yellow guy and satellite view
         zoomControl: true, // enables zoom in/out tool
-        gestureHandling: "cooperative", // "none" < "cooperative" < "greedy"
+        gestureHandling: "greedy", // "none" < "cooperative" < "greedy"
         maxZoom: 3,
-      };
+    };
+
+    useEffect(() => {
+        getMarkers();
+    }, []);
+
+    async function getMarkers() {
+        await axios({
+            method: "get",
+            url: endpoints.getMarkersWithAlbums,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).then(({data}) => {
+            console.log(data);
+            setMarkers(data)
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
 
     if (redirect === "yes") {
         return <Redirect push to={{pathname: '/auth'}}/>

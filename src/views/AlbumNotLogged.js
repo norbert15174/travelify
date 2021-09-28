@@ -8,6 +8,7 @@ import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { useDispatch } from "react-redux";
 import { setOwner, setAlbumPhotos, setInfo, setTags, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
+import { clearStore as clearUserStore } from '../redux/userDataSlice';
 import { errorTypes } from '../miscellanous/Errors';
 
 const AlbumNotLogged = () => {
@@ -21,20 +22,21 @@ const AlbumNotLogged = () => {
 
     useEffect(() => {
         dispatch(clearStore());
+        dispatch(clearUserStore());
         setAlbumId(urlParams.id);
-        getUserAlbum(urlParams.id);
+        getPreviewAlbum(urlParams.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [urlParams.id]);
 
-    async function getUserAlbum(id) {
+    async function getPreviewAlbum(id) {
         await axios({
-			method: "get",
-			url: endpoints.getAlbumDetails + id,
-			headers: {
-				"Content-Type": "application/json",
-				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-			},
-		}).then(({data}) => {
+            method: "get",
+            url: endpoints.getPreviewAlbum + id,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
             console.log(data);
             let tempPhotos = [];
             let tempTags = [];
@@ -55,14 +57,14 @@ const AlbumNotLogged = () => {
             dispatch(setAlbumPhotos(tempPhotos));
             dispatch(setRights(albumRights.notLogged));
             dispatch(setAlbumType(albumTypes.public));
-		}).catch((error) => {
+        }).catch((error) => {
             if (error.response !== undefined) {
                 setError(error.response.status);
             }
-		}).finally(() => {
+        }).finally(() => {
 			setAlbumDetailsFetchFinished(true);
 		});
-    };
+    }
 
     if (error === 404) {
         throw new Error(errorTypes.notFound);

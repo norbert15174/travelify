@@ -33,9 +33,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
 
     const [ tags, setTags ] = useState([]);
     const [ comments, setComments ] = useState([]);
-    const [ loadingComments, setLoadingComments ] = useState(false);
-    const [ loadingTags, setLoadingTags ] = useState(false);
-    const [ loadingDescription, setLoadingDescription ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
     const [ editing, setEditing ] = useState(false);
     const [ description, setDescription ] = useState("");
     const [ redirectToProfile, setRedirectToProfile ] = useState({
@@ -43,71 +41,31 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         userId: null,
     });
     
-    /* const userData = useSelector(selectUserData); */
-    /* const [ basicUserData, setBasicUserData ] = useState({
-        name: userData.name,
-        surName: userData.surName,
-        photo: userData.profilePicture,
-        id: userData.id,
-    }) */
-
     useEffect(() => {
-        console.log("update tags, comments, description")
-        getTags();
         if (!pinBox) {
-            setDescription(currentPhotoDetail.description);
-            getComments();
+            getPhotoDetails();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPhotoIndex, pinBox]);
 
-    /* useEffect(() => {
-        if (!userData.id) {
-            getBasicUserData();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userData.id]); */
-
-    async function getDescription() {
-        setLoadingDescription(true);
-        setLoadingDescription(false);
-    };
-    
-    async function getTags() {
-        setLoadingTags(true);
+    async function getPhotoDetails() {
+        setLoading(true);
         await axios({
             method: "get",
-            url: endpoints.getPhotoTags + photoId,
+            url: endpoints.getPhoto + photoId,
             headers: {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then(({data}) => {
-            setTags(data);
-            dispatch(setPhotoTags(data));
+            setTags(data.taggedList);
+            dispatch(setPhotoTags(data.taggedList));
+            let temp = sortCommentsByTime(data.photoComments);
+            setComments(temp);
+            setDescription(data.description);
         }).catch((error) => {
-            // tags from first opening of the album
             setTags(reduxTags.find((item) => item.photoId === photoId).tags);
             dispatch(setPhotoTags(reduxTags.find((item) => item.photoId === photoId).tags));
-        }).finally(() => {
-            setLoadingTags(false);        
-        });
-        
-    }; 
-    
-    async function getComments() {
-        setLoadingComments(true);
-        await axios({
-            method: "get",
-            url: endpoints.getPhotoComments + photoId,
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-            },
-        }).then(({data}) => {
-            let temp = sortCommentsByTime(data);
-            setComments(temp);
-        }).catch((error) => {
             // comments from first opening of the album
             let temp = null;
             for (let i = 0; i < photos.length; i++) {
@@ -117,10 +75,11 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 }
             }
             setComments(sortCommentsByTime(temp));
+            setDescription(currentPhotoDetail.description);
         }).finally(() => {
-            setLoadingComments(false);        
+            setLoading(false);
         });
-    }; 
+    }
 
     const sortCommentsByTime = (input) => {
         input = input.slice().sort((a, b) => {
@@ -130,32 +89,6 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
         });
         return input;
     };
-
-    /* async function getBasicUserData() {
-		await axios({
-            method: "get",
-            url: endpoints.getLoggedUserProfileBasic,
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-            },
-        }).then(({data}) => {
-            dispatch(setProfilePicture(data.photo));
-            dispatch(setUserData({
-                id: data.id,
-                name: data.name,
-                surName: data.surName,
-            }))
-            setBasicUserData({
-                name: data.name,
-                surName: data.surName,
-                photo: data.photo,
-                id: data.id,
-            })
-        }).catch((error) => {
-            console.error(error);
-        })
-	} */
 
     async function sendComment(comment) {
         await axios({
@@ -261,7 +194,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                         {owner.name + " " + owner.surName} 
                                     </p> 
                                     {
-                                        !loadingDescription && !loadingTags ? 
+                                        !loading ? 
                                         description : 
                                         <ReactLoading height={"8%"} width={"8%"} type={"bubbles"} color={"#0FA3B1"} />
                                     }  
@@ -279,7 +212,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         }
                 </Heading>
                 {
-                    !loadingTags && !loadingDescription && (
+                    !loading && (
                         tags.length !== 0 && (
                         <TagsContainer>
                             <TagIcon src={tagTurquiseIcon}/>
@@ -302,7 +235,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
             </Header>
             <CommentsSection className="scroll_two">
             {   
-                !loadingComments ? (
+                !loading ? (
                     comments.length !== 0 
                     ? 
                     <ScrollableFeed className="scroll_two">

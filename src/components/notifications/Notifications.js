@@ -11,7 +11,6 @@ const Notifications = ({notificationsDisplay}) => {
 
     const blurState = useSelector((state) => state.blur.value); 
     const [ friendsRequests, setFriendsRequests ] = useState([]);
-    const [ error, setError ] = useState(null);
 
     useEffect(() => {
         axios({
@@ -27,7 +26,7 @@ const Notifications = ({notificationsDisplay}) => {
   			setFriendsRequests(data);
 		})
 		.catch((error) => {
-			setError(error);
+            console.log(error);
 		});
     }, []);
 
@@ -45,7 +44,8 @@ const Notifications = ({notificationsDisplay}) => {
                     ?
                     friendsRequests.map((item) => (
                         <NotificationsItem 
-                            key={item.id} 
+                            key={item.id}
+                            senderId={item.senderId} 
                             firstName={item.firstName} 
                             surName={item.lastName} 
                             photo={item.photo} 
@@ -56,9 +56,9 @@ const Notifications = ({notificationsDisplay}) => {
                     : 
                     null
                 }
-                <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
+                {/* <NotificationsItem firstName="Jaś" surName="Fasola" type="comment"/>
                 <NotificationsItem firstName="Jaś" surName="Fasola" type="share"/>
-                <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/>
+                <NotificationsItem firstName="Jaś" surName="Fasola" type="tag"/> */}
             </NotificationsList>
         </Container>
     );

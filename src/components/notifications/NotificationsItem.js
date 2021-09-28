@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-//import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
-//import { setFriendsList } from "../../redux/userDataSlice";
+import { setFriendsList } from "../../redux/userDataSlice";
 
 const notificationsMaleVersion = {
     "tag": " oznaczył cię na zdjęciu",
@@ -21,11 +21,11 @@ const notificationsFemaleVersion = {
     "share": " udostępniła Ci swój album",
 }
 
-const NotificationsItem = ({type, firstName, surName, photo=undefined, invitationId=null}) => {
+const NotificationsItem = ({type, senderId, firstName, surName, photo=undefined, invitationId=null}) => {
 
     const [ accepted, setAccepted ] = useState(false);
     const [ notClicked, setNotClicked ] = useState(true);
-    //const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     // my super detection of users gender. Unfortunately works only for polish names :/ .
     const notifier = firstName.replace(/ /g, "").substring(firstName.length - 1) === "a" ? notificationsFemaleVersion : notificationsMaleVersion;
@@ -38,9 +38,8 @@ const NotificationsItem = ({type, firstName, surName, photo=undefined, invitatio
 				"Content-Type": "application/json",
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
-		}).then((response) => {
-            console.log(response);
-            //dispatch(setFriendsList())
+		}).then(({data}) => {
+            dispatch(setFriendsList(data))
             if (type === "accept") {
                 setAccepted(true);
                 setNotClicked(false);

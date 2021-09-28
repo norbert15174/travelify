@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-const MarkerInfo = ({name, surname, url, title, country}) => {
+const MarkerInfo = ({details}) => {
 
-    const [redirect, setRedirect] = useState('no');
+    const [ redirectToAlbum, setRedirectToAlbum ] = useState({
+        active: false, 
+        albumId: "",
+    });
 
-    // TODO specific album, not login and register screen
-    if (redirect === "yes") {
-        return <Redirect to={{pathname: '/auth'}}/>
+    // redirection to chosen album
+    if (redirectToAlbum.active) {
+        return <Redirect push to={{
+            pathname: `/albumPreview/${redirectToAlbum.albumId}`, 
+        }}/>
     }
 
     return (
         <Container>
-            <Picture src={url} alt="profilePhoto"/>
+            <Picture src={details.personalInformationDTO.photo !== undefined ? details.personalInformationDTO.photo : noProfilePictureIcon} alt="profilePhoto"/>
             <InnerContainer>
-                <Header>{name + surname}</Header>
-                <Name>{title}</Name>
-                <Country>{country}</Country>
-                <Link onClick={() => setRedirect('yes')}>Wyświetl album</Link>
+                <Header>{details.personalInformationDTO.name + " " + details.personalInformationDTO.surName}</Header>
+                <Name>{details.name}</Name>
+                <Country>{details.coordinate.country.country + ", " + details.coordinate.place}</Country>
+                <Link onClick={() => setRedirectToAlbum({active: true, albumId: details.id})}>Wyświetl album</Link>
             </InnerContainer>
         </Container>
     );
@@ -28,7 +34,7 @@ const MarkerInfo = ({name, surname, url, title, country}) => {
 const Container = styled.div`
     display: grid;
     grid-template-columns: 153px 1fr;
-    padding: 35px 25px;
+    padding: 25px 15px;
     @media only screen and (max-width: 1020px) {
         padding: 0px; 
         grid-template-columns: 107px 1fr;
@@ -36,13 +42,13 @@ const Container = styled.div`
 `; 
 
 const Picture = styled.img`
-    width: 138px;
-    height: 153px;
-    border-radius: 30%;
-  
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid ${({theme}) => theme.color.lightTurquise};
     @media only screen and (max-width: 1020px) {
-        width: 90%;
-        height: 70%;
+        width: 105px;
+        height: 105px;
         margin: auto;
     }
 

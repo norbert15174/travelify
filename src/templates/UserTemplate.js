@@ -2,15 +2,12 @@ import React from "react";
 import Menu from "../components/menu/Menu";
 import styled from "styled-components";
 
-// <Menu/> adds Menu sidebar
-// <Container/> adds div for app sections like UserPage, News etc
-
 const UserTemplate = ({children, notLogged=false}) => {
 
     return (
         <>
             {!notLogged && <Menu/>}
-            <Container notLogged={notLogged}>
+            <Container>
                 {children}
             </Container>
         </>    
