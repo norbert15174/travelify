@@ -226,6 +226,10 @@ const StyledDiv = styled.div`
 	background-size: 60%;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
+	&:hover {
+		border: 2px solid ${({theme}) => theme.color.lightBackground};
+		box-sizing: border-box;
+	}
 	@media only screen and (max-height: 720px) {
 		width: 70px;
 		height: 70px;
@@ -264,6 +268,10 @@ const Logout = styled(ButtonIcon)`
 	background-repeat: no-repeat;
 	margin: auto 0 5px 0;
 	filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+	&:hover {
+		border: 2px solid ${({theme}) => theme.color.lightBackground};
+		box-sizing: border-box;
+	}
 	@media only screen and (max-height: 720px) {
 		width: 70px;
 		height: 70px;

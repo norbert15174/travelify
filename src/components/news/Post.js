@@ -3,10 +3,14 @@ import styled from "styled-components";
 import { Redirect } from 'react-router-dom';
 import NewsThumbnail from "./NewsThumbnail";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import Tooltip from "../trinkets/Tooltip";
 import { getDate } from "../../miscellanous/Utils";
 import { routes } from "../../miscellanous/Routes";
+import { newsTypes } from "../../miscellanous/Utils";
+import friendsIcon from "./assets/friendsIcon.svg";
+import communityIcon from "./assets/communityIcon.svg";
 
-const Post = ({news}) => {
+const Post = ({news, type}) => {
 
     const date = news.date;
     const [ formattedDate, setFormattedDate ] = useState("");
@@ -39,10 +43,19 @@ const Post = ({news}) => {
                     alt="Profile picture"
                     onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}
                 />
-                <Name onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}>
-                    {news.personalInformationDTO.name + " " + news.personalInformationDTO.surName}
-                </Name>
-                <DateInfo>Dodano {formattedDate}</DateInfo>
+                <InnerContainer>
+                    <Name onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}>
+                        {news.personalInformationDTO.name + " " + news.personalInformationDTO.surName}
+                    </Name>
+                    <DateInfo>{formattedDate}</DateInfo>
+                </InnerContainer>
+                <Icon
+                    data-tip
+                    data-for={type === newsTypes.friends ? "friendsTip" : "commTip"} 
+                    icon={type === newsTypes.friends ? friendsIcon : communityIcon}
+                />
+                <Tooltip id="friendsTip" place="left" text="Album należący do ciebie, bądź twojego znajomego."/>
+                <Tooltip id="commTip" place="left" text="Album użytkownika aplikacji"/> 
             </Header>
             <NewsThumbnail news={news}/>
         </Container>
@@ -64,8 +77,16 @@ const Container = styled.div`
     }
 `;
 
+const InnerContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    @media only screen and (max-width: 800px) {
+        margin-left: 7.5px;
+    }
+`;
+
 const Header = styled.div`
-    cursor: pointer;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -89,16 +110,14 @@ const Name = styled.h1`
     }
 `;
 
-const DateInfo = styled.h1`
-    margin-left: auto;
-    margin-right: 10px;
-    font-size: 24px;
+const DateInfo = styled.p`
+    font-size: 20px;
     color: ${({theme}) => theme.color.greyFont};
     @media only screen and (max-width: 1100px) {
-        font-size: 19px;
+        font-size: 15px;
     }
     @media only screen and (max-width: 800px) {
-        font-size: 14px;
+        font-size: 12px;
     }
     @media only screen and (max-width: 500px) {
         font-size: 9px;
@@ -106,11 +125,11 @@ const DateInfo = styled.h1`
 `;
 
 const ProfilePhoto = styled.img`
+    cursor: pointer;
     width: 80px;
     height: 80px;
     border-radius: 100%;
     border: 1px solid ${({theme}) => theme.color.lightTurquise};
-    margin-right: 15px;
     @media only screen and (max-width: 1100px) {
         width: 60px;
         height: 60px;
@@ -122,7 +141,31 @@ const ProfilePhoto = styled.img`
     @media only screen and (max-width: 500px) {
         width: 30px;
         height: 30px;
-        margin-right: 10px;
+    }
+`;
+
+const Icon = styled.div`
+    width: 50px;
+    height: 50px;
+    background-size: 50px;
+    margin-left: auto;
+    background-image: url(${({icon}) => icon});
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    @media only screen and (max-width: 1100px) {
+        width: 40px;
+        height: 40px;
+        background-size: 40px;
+    }
+    @media only screen and (max-width: 800px) {
+        width: 30px;
+        height: 30px;
+        background-size: 30px;
+    }
+    @media only screen and (max-width: 500px) {
+        width: 20px;
+        height: 20px;
+        background-size: 20px;
     }
 `;
 

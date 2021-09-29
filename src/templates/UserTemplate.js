@@ -7,7 +7,7 @@ const UserTemplate = ({children, notLogged=false}) => {
     return (
         <>
             {!notLogged && <Menu/>}
-            <Container>
+            <Container notLogged={notLogged}>
                 {children}
             </Container>
         </>    

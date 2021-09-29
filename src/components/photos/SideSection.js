@@ -179,16 +179,24 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
             }
             <Header>
                 <Heading>
-                    <OwnerPhoto src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon} onClick={() => {
-                        document.body.style.overflow = "";
-                        setRedirectToProfile({active: true, userId: owner.id})
-                    }}/>
+                    <OwnerPhoto 
+                        src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon} 
+                        onClick={() => {
+                            if (rights !== albumRights.notLogged) {
+                                document.body.style.overflow = "";
+                                setRedirectToProfile({active: true, userId: owner.id})
+                            }
+                        }}
+                    />
                         {
                             !editing ? (
                                 <span>
-                                    <p onClick={() => {
-                                            document.body.style.overflow = "";
-                                            setRedirectToProfile({active: true, userId: owner.id})
+                                    <p 
+                                        onClick={() => {
+                                            if (rights !== albumRights.notLogged) {
+                                                document.body.style.overflow = "";
+                                                setRedirectToProfile({active: true, userId: owner.id});
+                                            }
                                         }}
                                     >
                                         {owner.name + " " + owner.surName} 
@@ -219,10 +227,15 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                             {
                                 <Tags className="scroll_two">
                                     {tags.map((item) => (
-                                        <TaggedPerson key={item.userId} onClick={() => {
-                                            document.body.style.overflow = "";
-                                            setRedirectToProfile({active: true, userId: item.userId})
-                                        }}>
+                                        <TaggedPerson 
+                                            key={item.userId} 
+                                            onClick={() => {
+                                                if (rights !== albumRights.notLogged) {
+                                                    document.body.style.overflow = "";
+                                                    setRedirectToProfile({active: true, userId: item.userId});
+                                                }
+                                            }}
+                                        >
                                             <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon}/>
                                             {item.name + " " + item.surName}
                                         </TaggedPerson>
@@ -243,14 +256,22 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                         comments.map((item) => (
                             <>
                                 <CommentContainer key={item.commentId}>
-                                    <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon} onClick={() => {
-                                        document.body.style.overflow = "";
-                                        setRedirectToProfile({active: true, userId: item.userId})
-                                    }}/>
-                                    <span>
-                                        <p onClick={() => {
+                                    <UserPhoto 
+                                        src={item.photo !== undefined ? item.photo : noProfilePictureIcon} 
+                                        onClick={() => {
+                                            if (rights !== albumRights.notLogged) {
                                                 document.body.style.overflow = "";
                                                 setRedirectToProfile({active: true, userId: item.userId})
+                                            }
+                                        }}
+                                    />
+                                    <span>
+                                        <p 
+                                            onClick={() => {
+                                                if (rights !== albumRights.notLogged) {
+                                                    document.body.style.overflow = "";
+                                                    setRedirectToProfile({active: true, userId: item.userId});
+                                                }
                                             }}
                                         >
                                             {item.name + " " + item.surName} 
