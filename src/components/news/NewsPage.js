@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import friendsIcon from "./assets/friendsIcon.svg";
-import communityIcon from "./assets/communityIcon.svg";
 import { endpoints } from "../../url";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -10,20 +8,14 @@ import scrollBackIcon from "./assets/scrollBackIcon.svg";
 import Spinner from "../trinkets/Spinner";
 import { selectFriendsList } from "../../redux/userDataSlice";
 import ButtonIcon from "../trinkets/ButtonIcon";
-
-const types = {
-    friends: "friends",
-    community: "community"
-}
+import { newsTypes } from "../../miscellanous/Utils";
 
 const NewsPage = () => {
 
-    const [newsType, setNewsType] = useState(types.friends);
     const blurState = useSelector((state) => state.blur.value);
     const friendsList = useSelector(selectFriendsList);
 
-    const [ friendsNews, setFriendsNews ] = useState([]);
-    const [ communityNews, setCommunityNews ] = useState([]);
+    const [ newsList, setNewsList ] = useState([]);
     const [ page, setPage ] = useState(0);
     const [ noMoreNews, setNoMoreNews ] = useState(false);
     const loader = useRef(null);
@@ -57,24 +49,24 @@ const NewsPage = () => {
 			},
 		})
 		.then(({data}) => {
-            console.log(data);
             if (data.length === 0) {
                 setNoMoreNews(true);
             } else {
                 for (let i=0; i < data.length; i++) {
-                    if (data[i].public) {
-                        if (friendsList.find((item) => item.id === data[i].personalInformationDTO.id) !== undefined) {
-                            setFriendsNews((prevState) => [...prevState, data[i]]);
-                        } else if (data[i].personalInformationDTO.id.toString() === sessionStorage.getItem("loggedUserId")) {
-                            setFriendsNews((prevState) => [...prevState, data[i]]);
+                    let temp = data[i];
+                    if (temp.public) {
+                        if (friendsList.find((item) => item.id === temp.personalInformationDTO.id) !== undefined) {
+                            setNewsList((prevState) => [...prevState, { type: newsTypes.friends, news: temp}]);
+                        } else if (temp.personalInformationDTO.id.toString() === sessionStorage.getItem("loggedUserId")) {
+                            setNewsList((prevState) => [...prevState, { type: newsTypes.friends, news: temp}]);
                         } else {
-                            setCommunityNews((prevState) => [...prevState, data[i]]);
+                            setNewsList((prevState) => [...prevState, { type: newsTypes.community, news: temp}]);
                         }
-                    } else if (!data[i].public) {
-                        if (data[i].sharedAlbumList.find((item) => item.userId.toString() === sessionStorage.getItem("loggedUserId")) !== undefined) {
-                            setFriendsNews((prevState) => [...prevState, data[i]]);
-                        } else if (data[i].personalInformationDTO.id.toString() === sessionStorage.getItem("loggedUserId")) {
-                            setFriendsNews((prevState) => [...prevState, data[i]]);
+                    } else if (!temp.public) {
+                        if (temp.sharedAlbumList.find((item) => item.userId.toString() === sessionStorage.getItem("loggedUserId")) !== undefined) {
+                            setNewsList((prevState) => [...prevState, { type: newsTypes.friends, news: temp}]);
+                        } else if (temp.personalInformationDTO.id.toString() === sessionStorage.getItem("loggedUserId")) {
+                            setNewsList((prevState) => [...prevState, { type: newsTypes.friends, news: temp}]);
                         } 
                     }
                 }
@@ -82,7 +74,10 @@ const NewsPage = () => {
 		})
 		.catch((error) => {
             setNoMoreNews(true);
-		});
+		})
+        .finally(() => {
+            console.log(newsList); 
+        });
     }
 
     const handleObserver = (entities) => {
@@ -97,36 +92,11 @@ const NewsPage = () => {
             <Header ref={scrollBack}>
                 <Heading>Aktualności</Heading>
             </Header>
-            <NewsNavigation>
-                <NewsSwitch>
-                    <NewsOption 
-                        icon={friendsIcon} 
-                        active={newsType === types.friends ? true : false } 
-                        onClick={() => setNewsType(types.friends)}
-                    >
-                        Znajomi
-                    </NewsOption>
-                    <NewsOption 
-                        icon={communityIcon} 
-                        active={newsType === types.community ? true : false } 
-                        onClick={() => setNewsType(types.community)}
-                    >
-                        Społeczność
-                    </NewsOption>
-                </NewsSwitch>
-            </NewsNavigation>
             {
-                newsType === types.friends && friendsNews.length > 0 && friendsNews.map((news) => 
-                    <Post key={news.id} news={news}/>
+                newsList &&  newsList.map((item) => 
+                    <Post key={item.news.id} news={item.news} type={item.type}/>
                 )
-            }
-            {
-                newsType === types.community && communityNews.length > 0 && communityNews.map((news) => 
-                    <Post key={news.id} news={news}/>
-                )
-                
-            }
-            
+            }       
             <InnerContainer ref={loader}>
             {
                 !noMoreNews 

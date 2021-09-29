@@ -152,9 +152,20 @@ const AlbumInside = ({albumId}) => {
                             <AlbumInfo>
                                 <ProfilePhoto 
                                     src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}
-                                    onClick={() => setRedirectToProfile({active: true, userId: owner.id})}
+                                    onClick={() => {
+                                            if (rights !== albumRights.notLogged) {
+                                                setRedirectToProfile({active: true, userId: owner.id})
+                                            }
+                                        }}
                                 />
-                                <p style={{cursor: "pointer"}}onClick={() => setRedirectToProfile({active: true, userId: owner.id})}>
+                                <p 
+                                    style={{cursor: "pointer"}} 
+                                    onClick={() => {
+                                            if (rights !== albumRights.notLogged) {
+                                                setRedirectToProfile({active: true, userId: owner.id})
+                                            }
+                                        }}
+                                    >
                                     {owner.name + " " + owner.surName}
                                 </p>   
                             </AlbumInfo>

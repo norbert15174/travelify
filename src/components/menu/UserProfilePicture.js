@@ -47,8 +47,11 @@ const Container = styled.img`
     margin-top: 5px;
     border-radius: 50%;
     cursor: pointer;
-    border: 1.5px solid ${({theme}) => theme.color.lightBackground};
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+	&:hover {
+		border: 2px solid ${({theme}) => theme.color.lightBackground};
+		box-sizing: border-box;
+	}
     @media only screen and (max-height: 720px) {
 		width: 70px;
 		height: 70px;

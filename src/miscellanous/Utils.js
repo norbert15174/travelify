@@ -28,6 +28,11 @@ export const groupTypes = {
     notMember: "notMember"
 }
 
+export const newsTypes = {
+    friends: "friends",
+    community: "community"
+}
+
 /*
     Function for parsing string with country names to array with objects.
 */
