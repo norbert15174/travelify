@@ -17,7 +17,7 @@ import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteF
 import { userTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 import { toggleBlur } from "../../redux/blurSlice";
-import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
+import { selectFriendsList, setFriendsList, selectUserData, selectProfilePicture } from "../../redux/userDataSlice";
 
 const sections = {
     info: "info",
@@ -25,9 +25,9 @@ const sections = {
     friends: "friends",  
 };
 
-const UserPage = ({personalData, individualAlbums, friendsList, setFriends, userType, setUserType, userId}) => {
+const UserPage = ({personalData, individualAlbums, friendsList, setFriends, userType, setUserType, userId, requestFromUser, setRequestFromUser, requestToUser}) => {
 
-    const [ infoActive, setInfoActive ] = useState(false);
+    const [ infoActive, setInfoActive ] = useState(true);
     const [ albumsActive, setAlbumsActive ] = useState(true);
     const [ friendsActive, setFriendsActive ] = useState(false);
 
@@ -35,6 +35,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
     // id of friend we want to delete
     const friendId = useSelector(selectFriendToDeleteId);
     const loggedUserFriends = useSelector(selectFriendsList);
+    const loggedUserData = useSelector(selectUserData);
     const dispatch = useDispatch();   
 
     // box for deleting friend
@@ -44,6 +45,8 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
     const [ inviteBox, setInviteBox ] = useState(false);
     const [ invitationSend, setInvitationSend ] = useState(false);
     const [ errorAtInvitation, setErrorAtInvitation ] = useState(null);
+
+    const [ requestBox, setRequestBox ] = useState(null);
 
     const [ confirm , setConfirm ] = useState(false);
     const [ refuse, setRefuse ] = useState(false);
@@ -56,7 +59,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
             dispatch(toggleBlur());
         }        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [deleteFriendBox, inviteBox, confirm, refuse]);
+    }, [deleteFriendBox, inviteBox, requestBox, confirm, refuse]);
 
     useEffect(() => {
         if (inviteBox && userType === userTypes.unknown) {
@@ -90,6 +93,20 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [friendId, deleteFriendBox, confirm, refuse])
+
+    useEffect(() => {
+        if (userType === userTypes.unknown && requestBox) {
+            if (confirm) {
+                requestHandler("accept");
+            }
+            if (refuse) {
+                requestHandler("decline");
+                setRequestBox(false);
+                setRefuse(false);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [requestBox, confirm, refuse])
 
     async function sendInvitation(id) {
         setInvitationSend(false);
@@ -149,6 +166,38 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
         })
     }
 
+    async function requestHandler(type) {
+        await axios({
+			method: type === "accept" ? "put" : "delete",
+			url: endpoints.invitationHandler + requestFromUser.id,
+			headers: {
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		}).then(({data}) => {
+            dispatch(setFriendsList(data));
+            if (type === "accept") {
+                setUserType(userTypes.friend);
+                // adding loggedUser to displayed user friends list
+                setFriends((prevState) => 
+                    [...prevState, { 
+                        id: loggedUserData.id, 
+                        name: loggedUserData.name, 
+                        lastName: loggedUserData.surName, 
+                        profilePicture: loggedUserData.profilePicture
+                    }]
+                )
+            } else if (type === "decline") {
+                setUserType(userTypes.unknown);
+            }
+            setRequestFromUser(null);
+		}).catch((error) => {
+            console.error(error);
+		}).finally(() => {
+            setRequestBox(false);
+            setConfirm(false);
+        });
+    }
     
     const sectionsToggle = (sectionName) => {
         if (sectionName === sections.albums) {
@@ -176,6 +225,10 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
                 inviteBox && userType === userTypes.unknown && 
                 <ConfirmationBox children={"Czy na pewno chcesz zaprosić daną osobę do znajomych?"} confirm={setConfirm} refuse={setRefuse}/>
             }
+            {
+                requestBox && userType === userTypes.unknown && 
+                <ConfirmationBox children={"Czy chcesz zaakceptować zaproszenie?"} confirm={setConfirm} refuse={setRefuse}/>
+            }
             <Container blurState={blurState}>
                 <Header>
                     <Images>
@@ -197,13 +250,18 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
                             <UserButton icon={friendsIcon} onClick={() => setDeleteFriendBox(true)}>Znajomi</UserButton>
                         }
                         {
-                            userType === userTypes.unknown && !invitationSend && 
+                            userType === userTypes.unknown && !requestFromUser && !invitationSend && !requestToUser && 
                             <UserButton icon={addFriendIcon} onClick={() => setInviteBox(true)}>Dodaj</UserButton>
                         }
                         {
-                            userType === userTypes.unknown && invitationSend && errorAtInvitation === null && 
+                            userType === userTypes.unknown && requestFromUser && 
+                            <UserButton icon={addFriendIcon} onClick={() => setRequestBox(true)}>Masz zaproszenie</UserButton>
+                        }
+                        {
+                            userType === userTypes.unknown && ((invitationSend && errorAtInvitation === null) || requestToUser) && !requestFromUser && 
                             <StyledDiv>Zaproszenie wysłane!</StyledDiv>
                         }
+
                     </Options>
                 </Header>
                 <InnerContainer>
@@ -408,7 +466,7 @@ const Button = styled.div`
 `;
 
 const UserButton = styled(ButtonIcon)`
-    width: 160px;
+    width: 200px;
     height: 39px;
     border-radius: 5px;
     margin: 0;
@@ -421,18 +479,18 @@ const UserButton = styled(ButtonIcon)`
     background-position: 8% 50%;
     background-size: 15%;
     @media only screen and (max-width: 1080px) {
-        width: 130px;
+        width: 170px;
         height: 30px;
         font-size: 14px;  
     }
     @media only screen and (max-width: 830px) {
-        width: 110px;
+        width: 150px;
         height: 20px;
         padding-left: 15px;
         font-size: 10px;
     }
     @media only screen and (max-width: 560px) {
-        width: 70px;
+        width: 110px;
         font-size: 8px;
     }
     &:hover, &:focus {

@@ -40,6 +40,7 @@ export const endpoints = {
     getNews: url + "/news?page=", // page number
     getMarkersWithAlbums: url + "/public", 
     getPreviewAlbum: url + "/public/", // + public album id 
+    getRequestsStatus: url + "/friends/requests/sent",
 }
 
 // http://localhost:8020/friends/delete/

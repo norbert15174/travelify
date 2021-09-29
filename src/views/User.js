@@ -8,7 +8,7 @@ import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { errorTypes } from "../miscellanous/Errors";
 import { userTypes } from "../miscellanous/Utils";
-import { setFriendsList } from "../redux/userDataSlice";
+import { setFriendsList, setProfilePicture, setUserData } from "../redux/userDataSlice";
 
 const User = () => {
 	
@@ -16,16 +16,24 @@ const User = () => {
   	const [ individualAlbums, setInvidualAlbums ] = useState(null);
 	const [ userType, setUserType ] = useState(null);
 	const [ friends, setFriends ] = useState(null);
-	const [ userDataFetchFinished, setUserDataFetchFinished ] = useState(false)
-	const [ userFriendsFetchFinished, setUserFriendsFetchFinished ] = useState(false)
+	const [ userDataFetchFinished, setUserDataFetchFinished ] = useState(false);
+	const [ userFriendsFetchFinished, setUserFriendsFetchFinished ] = useState(false);
+	const [ friendsRequestsFetchFinished, setFriendsRequestsFetchFinished ] = useState(false);
+	const [ requestsStatusFetchFinished, setRequestsStatusFetchFinished ] = useState(false); 
+	const [ requestFromUser, setRequestFromUser ] = useState(null);
+	const [ requestToUser, setRequestToUser ] = useState(null);
+	const [ getUserDataFinished, setGetUserDataFinished ] = useState(false);
 	const [ error, setError ] = useState(null);
 	const location = useLocation();
 	const urlParams = useParams();
 	const dispatch = useDispatch();
-	  
+
   	useEffect(() => {
 		setUserDataFetchFinished(false);
 		setUserFriendsFetchFinished(false);
+		setFriendsRequestsFetchFinished(false);
+		setRequestsStatusFetchFinished(false);
+		setGetUserDataFinished(false);
 		setError(null);
     	if (!sessionStorage.getItem("Login")) {
       		throw new Error(errorTypes.noAccess);
@@ -34,10 +42,11 @@ const User = () => {
 			if ((location.state !== undefined && location.state.loggedUserProfile) || 
 					urlParams.id === sessionStorage.getItem("loggedUserId"))
 			{
-				
 				setUserType(userTypes.logged);
 				getLoggedUserProfile();
 				getLoggedUserFriendsList();
+				setFriendsRequestsFetchFinished(true);
+				setRequestsStatusFetchFinished(true);
 
             } else if ((location.state !== undefined && location.state.selectedUser.selectIsTrue) || urlParams.id) {
 				if (location.state !== undefined && location.state.selectedUser.isHeFriend) {
@@ -48,9 +57,12 @@ const User = () => {
 				getSelectedUserProfle(urlParams.id);
 				// this function also checks if logged user is friend of selected user
 				getSelectedUserFriendsList(urlParams.id);
+				getFriendRequests(urlParams.id);
+				getRequestsStatus(urlParams.id);
 			} else {
 				throw new Error(errorTypes.notFound)
 			}
+			getUserData();
 		}
   	// eslint-disable-next-line react-hooks/exhaustive-deps
   	}, [location.state, urlParams.id]);
@@ -67,6 +79,7 @@ const User = () => {
 			setPersonalData(data.personalDataDTO);
 			setInvidualAlbums(data.individualAlbumDTO);
 		}).catch((error) => {
+			console.log(error);
 			setError(error);
 		}).finally(() => {
 			setUserDataFetchFinished(true);
@@ -85,6 +98,7 @@ const User = () => {
 			setFriends(data);
 			dispatch(setFriendsList(data));
         }).catch((error) => {
+			console.error(error);
             setError(error);
         }).finally(() => {
 			setUserFriendsFetchFinished(true);
@@ -100,10 +114,10 @@ const User = () => {
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-			console.log(data)
 			setPersonalData(data.personalDataDTO);
 			setInvidualAlbums(data.individualAlbumDTO);
 		}).catch((error) => {
+			console.error(error);
 			setError(error);
 		}).finally(() => {
 			setUserDataFetchFinished(true);
@@ -119,7 +133,6 @@ const User = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then(({data}) => {
-			console.log(data);
 			// eslint-disable-next-line eqeqeq
 			if (data.find((item) => item.id == sessionStorage.getItem("loggedUserId"))) {
 				setUserType(userTypes.friend);
@@ -134,17 +147,100 @@ const User = () => {
         })
 	}
 
+	async function getFriendRequests(id) {
+		await axios({
+			url: endpoints.getFriendsRequests,
+			method: "get",
+			headers: {
+		  		"Content-Type": "application/json",
+		  		Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		})
+		.then(({data}) => {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].senderId.toString() === id) {
+					setRequestFromUser(data[i]);
+				} else {
+					setRequestFromUser(null);
+				}
+			}
+		})
+		.catch((error) => {
+            console.error(error);
+		})
+		.finally(() => {
+			setFriendsRequestsFetchFinished(true);
+		});
+	}
+
+	async function getRequestsStatus(id) {
+		setRequestsStatusFetchFinished(false);
+		await axios({
+            method: "get",
+            url: endpoints.getRequestsStatus,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then(({data}) => {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].userId.toString() === id) {
+					setRequestToUser(data[i]);
+				} else {
+					setRequestToUser(null);
+				}
+			}
+        }).catch((error) => {
+			console.error(error);
+            setError(error);
+        }).finally(() => {
+            setRequestsStatusFetchFinished(true);
+        })
+	}
+
+	async function getUserData() {
+        await axios({
+            method: "get",
+            url: endpoints.getLoggedUserProfileBasic,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
+            },
+        }).then((response) => {
+            if (response.data.photo !== undefined) {
+                dispatch(setProfilePicture(response.data.photo));
+            }
+            dispatch(setUserData({
+                id: response.data.id,
+                name: response.data.name,
+                surName: response.data.surName,
+            }))
+            sessionStorage.setItem("loggedUserId", response.data.id);
+        }).catch((error) => {
+            setError(error);
+        }).finally(() => {
+            setGetUserDataFinished(true);
+        })
+    }
+
   	return (
     	<UserTemplate>
       	{
-			(userDataFetchFinished && userFriendsFetchFinished && error === null) 
+			(
+				userDataFetchFinished && userFriendsFetchFinished 
+				&& requestsStatusFetchFinished && friendsRequestsFetchFinished 
+				&& getUserDataFinished && error === null
+			) 
 			?
 				<UserPage 
 					personalData={personalData} 
 					individualAlbums={individualAlbums}
 					friendsList={friends}
-					setFriendsList={setFriends}
+					setFriends={setFriends}
 					setUserType={setUserType}
+					requestFromUser={requestFromUser}
+					setRequestFromUser={setRequestFromUser}
+					requestToUser={requestToUser}
 					userType={userType}
 					userId={urlParams.id}
 				/>
