@@ -17,7 +17,7 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 
 	const { isLoaded } = useJsApiLoader({
     	id: "google-map-script",
-    	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
+    	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   	});
 
 	// eslint-disable-next-line
@@ -42,7 +42,7 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 		if (marker != null) {
 			let country = "";
 			let place = "";
-			Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_KEY);
+			Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 			Geocode.setLanguage("en");
 			Geocode.fromLatLng(marker.lat, marker.lng).then(
 				(response) => {
