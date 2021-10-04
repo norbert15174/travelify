@@ -55,7 +55,11 @@ const NotificationsItem = ({type, senderId, firstName, surName, photo=undefined,
     return (
         <Container>
             <InnerContainer>
-                <UserPhoto src={photo !== undefined ? photo : noProfilePictureIcon}/>
+                <UserPhoto 
+                    src={photo !== undefined ? photo : noProfilePictureIcon}
+                    alt="Profile picture"
+                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                />
                 <span>
                     <p>{firstName} {surName}</p> 
                     {notifier[type]}            

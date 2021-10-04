@@ -112,8 +112,8 @@ const PhotoChange = ({type, photo}) => {
     return (
         <Container>
             <Header>{type === "profile" ? "Zdjęcie profilowe" : "Zdjęcie w tle"}</Header>
-            {type === "profile" && <Profile src={preview} alt="Profile photo"/>}
-            {type === "background" && <Background src={preview} alt="Profile background"/>  }
+            {type === "profile" && <Profile src={preview} alt="Profile photo" onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}/>}
+            {type === "background" && <Background src={preview} alt="Profile background" onError={(e) => {e.target.onError = null; e.target.src=noBackgroundPicture;}}/>  }
             <Input>
                 <input 
                     className="file__upload" 

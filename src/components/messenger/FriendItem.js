@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import "./friends.css";
 import noMessageIcon from "./assets/noMessageIcon.svg";
-import underConstructionIcon from "./assets/underConstructionIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const FriendItem = ({user, selectFriend, chatBlock}) => {
 
@@ -17,8 +17,9 @@ const FriendItem = ({user, selectFriend, chatBlock}) => {
         }}
       >
       		<Photo
-        		src={user.profilePicture}
-        		alt="User Photo"
+        		src={user.profilePicture !== undefined && user.profilePicture ? user.profilePicture : noProfilePictureIcon}
+        		alt="Profile picture"
+            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
       		/>
       		<Name>
 				{user.name + " " + user.lastName}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const SingleMessage = ({ url, side=null, friendId=null, friendDisplay=null }) => {
 
@@ -19,7 +20,15 @@ const SingleMessage = ({ url, side=null, friendId=null, friendDisplay=null }) =>
 
   return (
     <Container side={side}>
-      {side === "right" ? null : <ProfileIcon src={url} alt="User Photo" onClick={() => setRedirectToProfile(true)}/>}
+      {
+        side === "right" ? null : 
+        <ProfileIcon 
+          src={url !== undefined && url ? url : noProfilePictureIcon} 
+          alt="Profile picture"
+          onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}} 
+          onClick={() => setRedirectToProfile(true)}
+        />
+      }
       <TextContainer side={side}>
         Lorem Ipsum is simply dummy text of the printing and typesetting
         industry. Lorem Ipsum has been the industry's standard dummy text ever

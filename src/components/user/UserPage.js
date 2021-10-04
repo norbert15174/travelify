@@ -175,7 +175,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-            dispatch(setFriendsList(data));
             if (type === "accept") {
                 setUserType(userTypes.friend);
                 // adding loggedUser to displayed user friends list
@@ -187,6 +186,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
                         profilePicture: loggedUserData.profilePicture
                     }]
                 )
+                dispatch(setFriendsList(data));
             } else if (type === "decline") {
                 setUserType(userTypes.unknown);
             }
@@ -232,8 +232,16 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
             <Container blurState={blurState}>
                 <Header>
                     <Images>
-                        <ProfileBackground src={personalData.backgroundPicture !== undefined ? personalData.backgroundPicture : noBackgroundPicture} alt="Profile background"/>
-                        <ProfilePhoto src={personalData.profilePicture !== undefined ? personalData.profilePicture : noProfilePictureIcon} alt="Profile photo"/>
+                        <ProfileBackground 
+                            src={personalData.backgroundPicture !== undefined ? personalData.backgroundPicture : noBackgroundPicture} 
+                            alt="Profile background"
+                            onError={(e) => {e.target.onError = null; e.target.src=noBackgroundPicture;}}
+                        />
+                        <ProfilePhoto 
+                            src={personalData.profilePicture !== undefined ? personalData.profilePicture : noProfilePictureIcon} 
+                            alt="Profile photo"
+                            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                        />
                     </Images> 
                     <Name>{personalData.firstName + " " + personalData.surName}</Name>
                     <Line/>

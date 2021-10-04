@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import closeIcon from "./assets/closeIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { setFriendToDeleteId } from "../../redux/deleteFriendSlice";
 import { useDispatch } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
@@ -12,7 +13,6 @@ const FriendThumbnail = ({userType, friend}) => {
     const [ redirectToProfile, setRedirectToProfile ] = useState(false);
     const dispatch = useDispatch();
 
-    // routes.user.replace(/:name/i, sessionStorage.getItem("urlUserName")),
     if (redirectToProfile) {
         return <Redirect 
                     push to={{
@@ -26,8 +26,9 @@ const FriendThumbnail = ({userType, friend}) => {
             <Container>
                 <PhotoContainer onClick={() => setRedirectToProfile(true)}>
                     <Photo 
-                        src={friend.profilePicture} 
-                        alt="Profile photo"
+                        src={friend.profilePicture !== undefined && friend.profilePicture ? friend.profilePicture : noProfilePictureIcon}
+                        onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}} 
+                        alt="Profile picture"
                     />
                 </PhotoContainer>
                 <NameContainer onClick={() => setRedirectToProfile(true)}>

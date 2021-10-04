@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Select, { components } from "react-select";
-
-
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const SelectValue = ({options, type, isMulti=false, setState=null, formik=false, id=null, name=null, onChange=null, onBlur=null, value=null}) => {
     
@@ -41,7 +40,16 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
         <Option {...props}>
             <ValueContainer>
                 {
-                    type === "country" ? <CountryFlag src={props.data.icon}/> : <ProfilePhoto src={props.data.icon}/>
+                    type === "country" ? 
+                    <CountryFlag 
+                        src={props.data.icon}
+                        alt="Flag"
+                    /> : 
+                    <ProfilePhoto 
+                        src={props.data.icon}
+                        onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                        alt="Profile picture"
+                    />
                 }  
                 <p>{props.data.label}</p>
             </ValueContainer>
@@ -51,7 +59,16 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
     const CustomSelectValue = props => (
         <ValueContainer>
             {
-                type === "country" ? <CountryFlag src={props.data.icon}/> : <ProfilePhoto src={props.data.icon}/>
+                type === "country" ? 
+                <CountryFlag 
+                    src={props.data.icon}
+                    alt="Flag"
+                /> : 
+                <ProfilePhoto 
+                    src={props.data.icon}
+                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                    alt="Profile picture"
+                />
             }
             <p>{props.data.label}</p>
         </ValueContainer>

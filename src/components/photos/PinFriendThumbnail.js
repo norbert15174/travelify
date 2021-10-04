@@ -84,7 +84,11 @@ const PinFriendThumbnail = ({friend, photoId}) => {
 
     return (
         <Friend>
-            <Photo src={friend.profilePicture || friend.photo || noProfilePictureIcon}/>
+            <Photo 
+                src={friend.profilePicture || friend.photo || noProfilePictureIcon}
+                alt="Profile picture"
+                onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+            />
             <h1>{friend.name + " " + (friend.lastName || friend.surName)}</h1>
             <ChooseButton 
                 onClick={() => {

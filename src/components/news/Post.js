@@ -41,6 +41,7 @@ const Post = ({news, type}) => {
                 <ProfilePhoto 
                     src={news.personalInformationDTO.photo !== undefined ? news.personalInformationDTO.photo : noProfilePictureIcon} 
                     alt="Profile picture"
+                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
                     onClick={() => setRedirectToProfile({active: true, userId: news.personalInformationDTO.id})}
                 />
                 <InnerContainer>
