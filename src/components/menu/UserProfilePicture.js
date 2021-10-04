@@ -5,6 +5,7 @@ import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { selectProfilePicture, setProfilePicture } from "../../redux/userDataSlice";
 import { endpoints } from "../../url";
+import { errorTypes } from "../../miscellanous/Errors";
 
 const UserProfilePicture = () => {
 
@@ -37,6 +38,7 @@ const UserProfilePicture = () => {
 		<Container
 			src={(profilePicture !== undefined && profilePicture) ? profilePicture : noProfilePictureIcon}
 			alt="Profile picture"
+			onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
   		/>
 	)
 };

@@ -19,7 +19,11 @@ const MarkerInfo = ({details}) => {
 
     return (
         <Container>
-            <Picture src={details.personalInformationDTO.photo !== undefined ? details.personalInformationDTO.photo : noProfilePictureIcon} alt="profilePhoto"/>
+            <Picture 
+                src={details.personalInformationDTO.photo !== undefined ? details.personalInformationDTO.photo : noProfilePictureIcon} 
+                alt="Profile picture"
+                onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+            />
             <InnerContainer>
                 <Header>{details.personalInformationDTO.name + " " + details.personalInformationDTO.surName}</Header>
                 <Name>{details.name}</Name>

@@ -1,11 +1,16 @@
 import React from "react";
 import styled from "styled-components";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const FoundPersonThumbnail = ({person}) => {
     return (
         <>
             <Container>
-                <Photo src={person.url} alt="Profile photo"/>
+                <Photo 
+                    src={person.url !== undefined && person.url ? person.url : noProfilePictureIcon} 
+                    alt="Profile picture" 
+                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                />
                 <Name>{person.name}</Name>
             </Container>
         </>
