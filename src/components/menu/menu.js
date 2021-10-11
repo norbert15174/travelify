@@ -79,7 +79,7 @@ const Menu = () => {
 				</UserProfileContainer>
 				<Tooltip id="userTip" place="bottom" text="Panel użytkownika" />
 			</Link>
-			<StyledDiv
+			<NavButton
 				icon={notifs}
 				onClick={() =>
 					menuToExpand === "notifications"
@@ -91,10 +91,10 @@ const Menu = () => {
 			/>
 			<Tooltip id="notifTip" place="bottom" text="Powiadomienia" />
 			<Link to={routes.news}>
-				<StyledDiv icon={news} data-tip data-for="newsTip" />
+				<NavButton icon={news} data-tip data-for="newsTip" />
 				<Tooltip id="newsTip" place="bottom" text="Aktualności" />
 			</Link>
-			<StyledDiv
+			<NavButton
 				icon={friends}
 				onClick={() =>
 					menuToExpand === "friends"
@@ -106,15 +106,15 @@ const Menu = () => {
 			/>
 			<Tooltip id="friendsTip" place="bottom" text="Znajomi" />
 			<Link to={routes.albums}>
-				<StyledDiv icon={albums} data-tip data-for="albumsTip" />
+				<NavButton icon={albums} data-tip data-for="albumsTip" />
 				<Tooltip id="albumsTip" place="bottom" text="Twoje albumy" />
 			</Link>
 			<Link to={routes.groups}>
-				<StyledDiv icon={groups} data-tip data-for="groupsTip" />
+				<NavButton icon={groups} data-tip data-for="groupsTip" />
 				<Tooltip id="groupsTip" place="bottom" text="Grupy" />
 			</Link>
 			<Link to={routes.search}>
-				<StyledDiv icon={search} data-tip data-for="searchTip" />
+				<NavButton icon={search} data-tip data-for="searchTip" />
 				<Tooltip id="searchTip" place="bottom" text="Wyszukiwarka" />
 			</Link>
 			<Logout
@@ -214,7 +214,7 @@ const VisibilityButton = styled(ButtonIcon)`
 	}
 `;
 
-const StyledDiv = styled.div`
+const NavButton = styled.div`
 	cursor: pointer;
 	border-radius: 50%;
 	margin-top: 10px;

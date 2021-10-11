@@ -32,12 +32,14 @@ const AlbumsPage = ({privateAlbums, publicAlbums, sharedAlbums}) => {
         if (!searchList) {
             mapAlbumsToSearchCallback();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const mapAlbumsToSearchCallback = useCallback(
         () => {
             mapAlbumsToSearch();
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [privateAlbums, publicAlbums, sharedAlbums]
     )
 

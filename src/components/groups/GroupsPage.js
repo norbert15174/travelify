@@ -9,9 +9,6 @@ import Button from "../trinkets/Button";
 import "./groupsScrollbar.css"
 import addGroupIcon from "./assets/addGroupIcon.svg";
 
-import jap1 from "../../assets/Japonia.jpg";
-import jap2 from "../../assets/japonia2.jpg";
-
 const fakeGroups = [ "1", "2", "3", "4", "5", "6", "7", "8"];
 
 const GroupsPage = () => {

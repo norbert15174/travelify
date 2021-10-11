@@ -26,6 +26,7 @@ const CountriesForm = ({visitedCountries}) => {
             setInitialCountries(getCountryData(visitedCountries));
             setCountry(getCountryData(visitedCountries));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const addCountry = () => {

@@ -76,6 +76,7 @@ const BasicInfo = ({editedAlbumId, creatorType, setForm, friendsList}) => {
                 setIsDirty(false);
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [shareAddFinished, shareDeleteFinished, infoEditFinished]);
 
     const addFriend = () => {

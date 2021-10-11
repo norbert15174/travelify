@@ -317,7 +317,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 {
                     rights !== albumRights.notLogged 
                     &&
-                    <AddComment currentPhotoIndex={currentPhotoIndex} add={sendComment}/>
+                    <AddComment add={sendComment}/>
                 } 
             </Footer>
         </Container>
