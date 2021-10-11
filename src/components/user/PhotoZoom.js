@@ -84,38 +84,38 @@ const ImageContainer = styled.div`
 const Photo = styled.img`
     object-fit: contain;
     min-width: 700px;
-    max-width: 1000px;
+    max-width: 1300px;
     min-height: 700px;
     max-height: 800px;
     background-color: #000;
     border: 2px solid ${({theme}) => theme.color.darkTurquise};
     @media only screen and (max-width: 1440px) {
         min-width: 600px;
-        max-width: 900px;
+        max-width: 980px;
         min-height: 600px;
         max-height: 700px;
     }
     @media only screen and (max-width: 1080px) {
         min-width: 500px;
-        max-width: 750px;
+        max-width: 730px;
         min-height: 500px;
         max-height: 600px;
     }
     @media only screen and (max-width: 830px) {
         min-width: 450px;
-        max-width: 655px;
+        max-width: 635px;
         min-height: 450px;
         max-height: 550px;
     }
     @media only screen and (max-width: 735px) {
         min-width: 400px;
-        max-width: 490px;
+        max-width: 460px;
         min-height: 400px;
         max-height: 500px;
     }
     @media only screen and (max-width: 560px) {
         min-width: 350px;
-        max-width: 350px;
+        max-width: 310px;
         min-height: 350px;
         max-height: 450px;
     }

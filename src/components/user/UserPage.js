@@ -17,7 +17,7 @@ import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteF
 import { userTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 import { toggleBlur } from "../../redux/blurSlice";
-import { selectFriendsList, setFriendsList, selectUserData, selectProfilePicture } from "../../redux/userDataSlice";
+import { selectFriendsList, setFriendsList, selectUserData } from "../../redux/userDataSlice";
 import PhotoZoom from "./PhotoZoom";
 
 const sections = {

@@ -8,7 +8,7 @@ import Map from '../googleMaps/Map';
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
-import { albumCreator, albumTypes } from "../../miscellanous/Utils";
+import { albumCreator } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 
 const Localization = ({editedAlbumId, creatorType, setForm}) => {
