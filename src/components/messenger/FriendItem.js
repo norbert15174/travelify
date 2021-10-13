@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import styled, { useTheme } from "styled-components";
 import "./friends.css";
 import noMessageIcon from "./assets/noMessageIcon.svg";
@@ -7,8 +7,15 @@ import underConstructionIcon from "./assets/underConstructionIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 
-const FriendItem = ({user, selectFriend, chatBlock}) => {
+const FriendItem = ({user, selectFriend, chatBlock, newMessages, setNewMessages}) => {
 const [messageNew, setMessageNew] = useState(user.messagesNew);
+useEffect(() => {
+  if(newMessages.size > 0 && newMessages.has(user.friendId)){
+    setMessageNew(true);
+    newMessages.delete(user.friendId);
+    setNewMessages(newMessages);
+  };
+},[newMessages])
 	return (
     	<Container 
         chatBlock={chatBlock} 

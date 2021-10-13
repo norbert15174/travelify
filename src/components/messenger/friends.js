@@ -10,10 +10,14 @@ import closeIcon from "./assets/closeIcon.svg";
 import { endpoints } from "../../url";
 import { theme } from "../../miscellanous/GlobalTheme";
 import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
+import {Stomp} from "@stomp/stompjs";
+
+
 
 const Friends = ({friendDisplay}) => {
   
 	const [ selectedFriend, setSelectedFriend ] = useState(null);
+	const [ newMessages, setNewMessages ] = useState([]);
 	const [ chatBlock, setChatBlock ] = useState(false);
 	const [ error, setError ] = useState(false);
 	
@@ -24,6 +28,7 @@ const Friends = ({friendDisplay}) => {
 	const blurState = useSelector((state) => state.blur.value);
 	const friendsList = useSelector(selectFriendsList);
 
+	
   	useEffect(() => {
 		getFriends();
 		window.addEventListener('resize', chatBlockHandler);
@@ -41,6 +46,20 @@ const Friends = ({friendDisplay}) => {
 			}
 		}
 	}, [friendsList]);
+
+	useEffect(() => {
+	}, [newMessages]);
+
+	useEffect(() => {
+		var client = Stomp.client('ws://localhost:8020/chat');
+		let userId = sessionStorage.getItem("loggedUserId");
+		client.connect({}, function () {
+			client.subscribe("/topic/" + userId, function(message){
+				var friendId = JSON.parse(message.body).friendId;
+				setNewMessages((prevState) => new Set([...prevState, friendId]));
+			});
+		},)
+	},[])
 
 	function chatBlockHandler (e) {
         if (!chatBlock && window.innerWidth < 720) {
@@ -106,14 +125,14 @@ const Friends = ({friendDisplay}) => {
 							(friendsList.length !== 0 && searchContent.length === 0)
             				? 
 							friendsList.map((friend) => (
-								<FriendItem key={friend.id} user={friend} selectFriend={setSelectedFriend} chatBlock={chatBlock}/>
+								<FriendItem key={friend.id} user={friend} selectFriend={setSelectedFriend} chatBlock={chatBlock} newMessages={newMessages} setNewMessages={setNewMessages}/>
               				))
             				: null
 						) || (
 							(searchContent.length !== 0 && found.length !== 0) 
 							?
 							found.map((friend) => (
-								<FriendItem key={friend.id} user={friend} selectFriend={setSelectedFriend} chatBlock={chatBlock}/>
+								<FriendItem key={friend.id} user={friend} selectFriend={setSelectedFriend} chatBlock={chatBlock} newMessages={newMessages} setNewMessages={setNewMessages}/>
 							))
 							: null
 						) || (
@@ -130,6 +149,8 @@ const Friends = ({friendDisplay}) => {
     	
   	);
 };
+
+
 
 const Container = styled.div`
 	filter: ${({ blurState }) => (blurState === true ? "blur(15px)" : "none")};

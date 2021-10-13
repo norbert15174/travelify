@@ -5,6 +5,7 @@
   "dependencies": {
     "@react-google-maps/api": "^2.2.0",
     "@reduxjs/toolkit": "^1.6.1",
+    "@stomp/stompjs": "^6.1.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -25,7 +26,8 @@
     "react-select": "^4.3.1",
     "react-tooltip": "^4.2.21",
     "styled-components": "^5.3.0",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "websocket": "^1.0.34"
   },
   "scripts": {
     "start": "react-scripts start",

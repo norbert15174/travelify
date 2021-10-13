@@ -71,21 +71,29 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
         //commentInputRef.current.selectionEnd = cursorPos; // 
         // eslint-disable-next-line 
     }, [showEmoji])
-
+ 
 	useEffect(() => {
 		getMessages()
     }, [user])
 
 	async function sendMessage(){
 	await axios
-      .post(endpoints.sendMessage + user.friendId, {"text" : message, "friendsId" : user.friendId}, {
+      .post(endpoints.sendMessage + user.friendId, {"text" : message, "friendsId" : user.friendId, "date" : givenMessages.length > 0 ? givenMessages[0].date : null}, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
         },
       })
       .then((response) => {
-		setGivenMessages((prevState) => [response.data, ...prevState]);
+		let lastId = new Set(givenMessages.map(e => e.id));
+		console.log(response.data);
+		let responseToSave = [];
+		for(let i=0; i<response.data.length; i++){
+			if(!lastId.has(response.data[i].id)){
+				responseToSave.push(response.data[i]);
+			}
+		}
+		setGivenMessages((prevState) => [...responseToSave, ...prevState]);
       })
       .catch((error) => {
       })
@@ -104,7 +112,7 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 			},
 		})
 		.then(({data}) => {
-  			setGivenMessages(data)
+  			setGivenMessages(data);
 		})
 		.catch((error) => {
 			
@@ -129,7 +137,7 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 					alt="Profile picture"
 					onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
 					onClick={() => {
-						setRedirectToProfile(true);
+						setRedirectToProfile(true)
 					}}
 				/>
 				<NameContainer 
@@ -148,12 +156,7 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
       		</TopMessageHeader>
       		<SendContainer className="scroll_two">
 				<ScrollableFeed className="scroll_two">
-					{/* <SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-					<SingleMessage url={user.profilePicture} side="right"/>
-					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
-					<SingleMessage url={user.profilePicture} side="right"/>
-					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/> */}
+
 					{givenMessages && givenMessages.slice(0).reverse().map(item => 
 						item.senderId === user.id ? <SingleMessage key={item.date} message={item.text} url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/> : <SingleMessage key={item.date} message={item.text} url={user.profilePicture} side="right"/>
 					)}
