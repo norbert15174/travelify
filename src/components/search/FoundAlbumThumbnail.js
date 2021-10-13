@@ -33,7 +33,11 @@ const AlbumThumbnail = ({album, redirectToAlbum}) => {
                     setRedirectToProfile({active: true, userId: album.personalInformationDTO.id});
                 }}
             >
-                <ProfilePhoto src={album.personalInformationDTO.photo !== undefined ? album.personalInformationDTO.photo : noProfilePictureIcon}/>
+                <ProfilePhoto 
+                    src={album.personalInformationDTO.photo !== undefined ? album.personalInformationDTO.photo : noProfilePictureIcon}
+                    alt="Profile picture"
+                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                />
                 <h3>{album.personalInformationDTO.name + " " + album.personalInformationDTO.surName}</h3>
             </Owner> 
             <InfoContainer onClick={redirectToAlbum}>

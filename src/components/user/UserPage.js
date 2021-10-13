@@ -17,7 +17,8 @@ import { setFriendToDeleteId, selectFriendToDeleteId } from "../../redux/deleteF
 import { userTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 import { toggleBlur } from "../../redux/blurSlice";
-import { selectFriendsList, setFriendsList, selectUserData, selectProfilePicture } from "../../redux/userDataSlice";
+import { selectFriendsList, setFriendsList, selectUserData } from "../../redux/userDataSlice";
+import PhotoZoom from "./PhotoZoom";
 
 const sections = {
     info: "info",
@@ -50,6 +51,8 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
 
     const [ confirm , setConfirm ] = useState(false);
     const [ refuse, setRefuse ] = useState(false);
+
+    const [ photoZoom, setPhotoZoom ] = useState(null);
 
     // redirects to edit profile page
     const [ redirect, setRedirect ] = useState(false);
@@ -175,7 +178,6 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-            dispatch(setFriendsList(data));
             if (type === "accept") {
                 setUserType(userTypes.friend);
                 // adding loggedUser to displayed user friends list
@@ -187,6 +189,7 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
                         profilePicture: loggedUserData.profilePicture
                     }]
                 )
+                dispatch(setFriendsList(data));
             } else if (type === "decline") {
                 setUserType(userTypes.unknown);
             }
@@ -229,11 +232,29 @@ const UserPage = ({personalData, individualAlbums, friendsList, setFriends, user
                 requestBox && userType === userTypes.unknown && 
                 <ConfirmationBox children={"Czy chcesz zaakceptować zaproszenie?"} confirm={setConfirm} refuse={setRefuse}/>
             }
+            {
+                photoZoom === "profile" && 
+                <PhotoZoom url={personalData.profilePicture} type="profile" close={setPhotoZoom}/>
+            }
+            {
+                photoZoom === "background" && 
+                <PhotoZoom url={personalData.backgroundPicture} type="background" close={setPhotoZoom}/>
+            }
             <Container blurState={blurState}>
                 <Header>
                     <Images>
-                        <ProfileBackground src={personalData.backgroundPicture !== undefined ? personalData.backgroundPicture : noBackgroundPicture} alt="Profile background"/>
-                        <ProfilePhoto src={personalData.profilePicture !== undefined ? personalData.profilePicture : noProfilePictureIcon} alt="Profile photo"/>
+                        <ProfileBackground 
+                            src={personalData.backgroundPicture !== undefined ? personalData.backgroundPicture : noBackgroundPicture} 
+                            alt="Profile background"
+                            onError={(e) => {e.target.onError = null; e.target.src=noBackgroundPicture;}}
+                            onClick={() => setPhotoZoom("background")}
+                        />
+                        <ProfilePhoto 
+                            src={personalData.profilePicture !== undefined ? personalData.profilePicture : noProfilePictureIcon} 
+                            alt="Profile photo"
+                            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                            onClick={() => setPhotoZoom("profile")}
+                        />
                     </Images> 
                     <Name>{personalData.firstName + " " + personalData.surName}</Name>
                     <Line/>
@@ -319,6 +340,7 @@ const ProfileBackground = styled.img`
     height: 250px;
     width: 1300px;
     object-fit: cover;
+    cursor: pointer;
     display: block;
     margin: 0 auto;
     border-left: 2px solid ${({theme}) => theme.color.darkTurquise};
@@ -352,6 +374,7 @@ const ProfilePhoto = styled.img`
     height: 208px;
     width: 208px;
     top: 62%;
+    cursor: pointer;
     left: 50%;
     border-radius: 50%;
     border: 3px solid ${({theme}) => theme.color.lightTurquise};

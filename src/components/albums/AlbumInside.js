@@ -152,6 +152,7 @@ const AlbumInside = ({albumId}) => {
                             <AlbumInfo>
                                 <ProfilePhoto 
                                     src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}
+                                    onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
                                     onClick={() => {
                                             if (rights !== albumRights.notLogged) {
                                                 setRedirectToProfile({active: true, userId: owner.id})

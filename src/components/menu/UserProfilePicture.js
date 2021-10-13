@@ -37,6 +37,7 @@ const UserProfilePicture = () => {
 		<Container
 			src={(profilePicture !== undefined && profilePicture) ? profilePicture : noProfilePictureIcon}
 			alt="Profile picture"
+			onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
   		/>
 	)
 };

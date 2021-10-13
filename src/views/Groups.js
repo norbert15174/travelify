@@ -16,6 +16,7 @@ const Groups = () => {
         } else {
             setTimeout(() => {
                 setLoadingFinished(true);
+                setError(null);
             }, 1000);
         }
     }, []);

@@ -6,8 +6,6 @@ import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
 import { getCountryData } from "../../miscellanous/Utils";
 
-// TODO - FIX VISITED COUNTRIES
-
 const InfoSection = ({nationality, about, interest, visitedCountries}) => {
     
     const [ mappedVisitedCountries, setMappedVisitedCountries ] = useState(null);
@@ -16,6 +14,7 @@ const InfoSection = ({nationality, about, interest, visitedCountries}) => {
         if (visitedCountries !== undefined) {
             setMappedVisitedCountries(getCountryData(visitedCountries));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     return (

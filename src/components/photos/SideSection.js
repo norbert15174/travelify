@@ -180,7 +180,8 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
             <Header>
                 <Heading>
                     <OwnerPhoto 
-                        src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon} 
+                        src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}
+                        onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}} 
                         onClick={() => {
                             if (rights !== albumRights.notLogged) {
                                 document.body.style.overflow = "";
@@ -236,7 +237,10 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                                                 }
                                             }}
                                         >
-                                            <UserPhoto src={item.photo !== undefined ? item.photo : noProfilePictureIcon}/>
+                                            <UserPhoto 
+                                                src={item.photo !== undefined ? item.photo : noProfilePictureIcon}
+                                                onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                                            />
                                             {item.name + " " + item.surName}
                                         </TaggedPerson>
                                     ))}
@@ -257,7 +261,8 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                             <>
                                 <CommentContainer key={item.commentId}>
                                     <UserPhoto 
-                                        src={item.photo !== undefined ? item.photo : noProfilePictureIcon} 
+                                        src={item.photo !== undefined ? item.photo : noProfilePictureIcon}
+                                        onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}} 
                                         onClick={() => {
                                             if (rights !== albumRights.notLogged) {
                                                 document.body.style.overflow = "";
@@ -312,7 +317,7 @@ const SideSection = ({currentPhotoIndex, setPinBox, pinBox, heightDelimiter, wid
                 {
                     rights !== albumRights.notLogged 
                     &&
-                    <AddComment currentPhotoIndex={currentPhotoIndex} add={sendComment}/>
+                    <AddComment add={sendComment}/>
                 } 
             </Footer>
         </Container>

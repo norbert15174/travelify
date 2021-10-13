@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes"; 
 import { endpoints } from "../../url";
 import axios from "axios";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 let emoji = new JSEMOJI();
 emoji.replace_mode = 'unified';
@@ -124,8 +125,9 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
     	<Container blurState={blurState}>
       		<TopMessageHeader>
         		<Icon 
-					src={user.profilePicture} 
-					alt="User Photo"
+					src={user.profilePicture !== undefined && user.profilePicture ? user.profilePicture : noProfilePictureIcon} 
+					alt="Profile picture"
+					onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
 					onClick={() => {
 						setRedirectToProfile(true);
 					}}

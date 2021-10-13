@@ -35,6 +35,7 @@ const AlbumThumbnail = ({album}) => {
 
 const Container = styled.div`
     width: 100%;
+    cursor: pointer;
     position: relative;
 `;
 

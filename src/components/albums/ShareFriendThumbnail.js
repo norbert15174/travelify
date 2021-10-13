@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { selectSharedPersonList, setSharedPersonList } from "../../redux/albumDetailsSlice";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Button from "../trinkets/Button";
 import {endpoints} from "../../url";
 
@@ -88,7 +89,11 @@ const ShareFriendThumbnail = ({friend, albumId}) => {
 
     return (
         <Friend>
-            <Photo src={friend.profilePicture}/>
+            <Photo 
+                src={friend.profilePicture}
+                alt="Profile picture"
+                onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+            />
             <h1>{friend.name + " " + friend.lastName}</h1>
             <ChooseButton
                 onClick={() => {

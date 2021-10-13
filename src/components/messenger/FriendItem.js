@@ -4,6 +4,8 @@ import "./friends.css";
 import noMessageIcon from "./assets/noMessageIcon.svg";
 import messageAvailableIcon from "./assets/messageAvailableIcon.svg";
 import underConstructionIcon from "./assets/underConstructionIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+
 
 const FriendItem = ({user, selectFriend, chatBlock}) => {
 const [messageNew, setMessageNew] = useState(user.messagesNew);
@@ -19,8 +21,9 @@ const [messageNew, setMessageNew] = useState(user.messagesNew);
         }}
       >
       		<Photo
-        		src={user.profilePicture}
-        		alt="User Photo"
+        		src={user.profilePicture !== undefined && user.profilePicture ? user.profilePicture : noProfilePictureIcon}
+        		alt="Profile picture"
+            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
       		/>
       		<Name>
 				{user.name + " " + user.lastName}

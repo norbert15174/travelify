@@ -152,6 +152,7 @@ const fake = [
 const Filler = ({searchType}) => {
 
     const [ albumList, setAlbumList ] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [ peopleList, setPeopleList ] = useState(fake);
     const [ page, setPage ] = useState(0); // page number
     const loader = useRef(null);

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Select, { components } from "react-select";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 /*
     Dropdown search is used at AlbumsPage
@@ -20,7 +21,11 @@ const AlbumSelectOption = props => (
                 {
                     props.data.owner !== undefined &&
                     <User>
-                        <Profile src={props.data.owner.photo}/>
+                        <Profile 
+                            src={props.data.owner.photo}
+                            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                            alt="Profile picture"
+                        />
                         <Name>{props.data.owner.name + " " + props.data.owner.surName}</Name>
                     </User>
                 } 
@@ -40,7 +45,11 @@ const AlbumSelectValue = props => (
                 {
                     props.data.owner !== undefined &&
                     <User>
-                        <Profile src={props.data.owner.photo}/>
+                        <Profile 
+                            src={props.data.owner.photo}
+                            onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
+                            alt="Profile picture"
+                        />
                         <Name>{props.data.owner.name + " " + props.data.owner.surName}</Name>
                     </User>
                 } 

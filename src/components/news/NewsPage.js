@@ -220,44 +220,4 @@ const Heading = styled.h1`
     }
 `;
 
-const NewsNavigation = styled.div`
-    height: auto;
-    padding: 25px 0px;
-    border-radius: 15px;
-    background-color: ${({theme}) => theme.color.lightBackground};
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-`;
-
-
-const NewsSwitch = styled.div`
-    margin: 0px auto;
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-column-gap: 5vw;
-`;
-
-const NewsOption = styled.div`
-    background: ${({active}) => active ? "rgba(18, 191, 206, 0.4)" : ""};
-    -webkit-transition: all 0.1s ease-in-out;
-    -o-transition: all 0.1s ease-in-out;
-    -moz-transition: all 0.1s ease-in-out;
-    transition: all 0.1s ease-in-out;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 24px;
-    padding: 10px 20px 10px 80px;
-    background-image: url(${({icon}) => icon}); 
-    background-size: 34px;
-    background-position: 10% 50%;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    @media only screen and (max-width: 800px) {
-        font-size: 16px;
-        background-size: 24px;
-        padding: 10px 10px 10px 50px;
-    }
-`;
-
 export default NewsPage;

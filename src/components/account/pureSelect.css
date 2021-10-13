@@ -1,67 +1,66 @@
 .select {
-    -webkit-appearance: none;
-	-moz-appearance: none;
-	outline: 0;
-	box-shadow: none;
-	border: 0 !important;
-	background: rgba(255, 255, 255, 0.0);
-	background-image: none;
-    flex: 1;
-    padding: 0 0.5em;
-    color: #F2F7F2;
-    cursor: pointer;
-    font-size: 18px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: rgba(255, 255, 255, 0);
+  background-image: none;
+  flex: 1;
+  padding: 0 0.5em;
+  color: #f2f7f2;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .select::-webkit-scrollbar {
-    width: 10px;
-  }
-.select::-webkit-scrollbar-track {
-    background: #fff;
+  width: 10px;
 }
-  .select::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-  }
-  .select::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  
+.select::-webkit-scrollbar-track {
+  background: #fff;
+}
+.select::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.select::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 .select::-ms-expand {
-    display: none;
+  display: none;
 }
 
 .custom__select {
-    position: relative;
-    display: flex;
-    background-color:rgba(255, 255, 255, 0.15);
-    width: 90%;
-    overflow: hidden;
-    border-radius: 40px;
-    padding: 15px 20px 15px 20px;
-    height: 25px;
-    margin-top: 5px;
-    overflow: hidden;
+  position: relative;
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 90%;
+  overflow: hidden;
+  border-radius: 40px;
+  padding: 15px 20px 15px 20px;
+  height: 25px;
+  margin-top: 5px;
+  overflow: hidden;
 }
 
 .custom__option {
-    color: #000;
+  color: #000;
 }
 
 /*Arrow*/
 .custom__select::after {
-    content: "\25BC";
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    pad: 0 1em;
-    background: rgba(255, 255, 255, 0.0);
-    cursor: pointer;
-    pointer-events: none;
-    transition: 0.1s all ease;
-  }
-  /*Transition*/
-  .custom__select:hover::after {
-    color: #12BFCE;
-  }
+  content: "\25BC";
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  pad: 0 1em;
+  background: rgba(255, 255, 255, 0);
+  cursor: pointer;
+  pointer-events: none;
+  transition: 0.1s all ease;
+}
+/*Transition*/
+.custom__select:hover::after {
+  color: #12bfce;
+}
