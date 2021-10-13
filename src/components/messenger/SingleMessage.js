@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
 
-const SingleMessage = ({ url, side=null, friendId=null, friendDisplay=null }) => {
+const SingleMessage = ({ url, side=null, friendId=null, friendDisplay=null, message }) => {
 
   const [ redirectToProfile, setRedirectToProfile ] = useState(false);
 
@@ -21,9 +21,7 @@ const SingleMessage = ({ url, side=null, friendId=null, friendDisplay=null }) =>
     <Container side={side}>
       {side === "right" ? null : <ProfileIcon src={url} alt="User Photo" onClick={() => setRedirectToProfile(true)}/>}
       <TextContainer side={side}>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-  
+        {message}
       </TextContainer>
     </Container>
   );

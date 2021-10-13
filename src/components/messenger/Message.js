@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import ScrollableFeed from 'react-scrollable-feed';
 import "./friends.css";
 import Emoji from "../menu/assets/emoji";
@@ -12,6 +12,8 @@ import "./messageEmojiPicker.css";
 import JSEMOJI from 'emoji-js';
 import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes"; 
+import { endpoints } from "../../url";
+import axios from "axios";
 
 let emoji = new JSEMOJI();
 emoji.replace_mode = 'unified';
@@ -25,6 +27,7 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
     const [ message, setMessage ] = useState("");
     const [ showEmoji, setShowEmoji ] = useState(false);
     const [ cursorPos, setCursorPos ] = useState(null);
+	const [ givenMessages, setGivenMessages ] = useState(null);
 
 	const [ redirectToProfile, setRedirectToProfile ] = useState(false);
 	const blurState = useSelector((state) => state.blur.value);
@@ -68,6 +71,45 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
         // eslint-disable-next-line 
     }, [showEmoji])
 
+	useEffect(() => {
+		getMessages()
+    }, [user])
+
+	async function sendMessage(){
+	await axios
+      .post(endpoints.sendMessage + user.friendId, {"text" : message, "friendsId" : user.friendId}, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        },
+      })
+      .then((response) => {
+		setGivenMessages((prevState) => [response.data, ...prevState]);
+      })
+      .catch((error) => {
+      })
+      .finally(() => {
+		  setMessage("");
+      });
+	}
+
+	async function getMessages(){
+		await axios({
+			url: endpoints.getMessage + user.friendId + "?page=0",
+			method: "get",
+			headers: {
+		  		"Content-Type": "application/json",
+		  		Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+			},
+		})
+		.then(({data}) => {
+  			setGivenMessages(data)
+		})
+		.catch((error) => {
+			
+		});
+	}
+
 	if (redirectToProfile) {
 		friendDisplay("");
         return <Redirect 
@@ -104,12 +146,15 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
       		</TopMessageHeader>
       		<SendContainer className="scroll_two">
 				<ScrollableFeed className="scroll_two">
-					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+					{/* <SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
 					<SingleMessage url={user.profilePicture} side="right"/>
 					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
 					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
 					<SingleMessage url={user.profilePicture} side="right"/>
-					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/>
+					<SingleMessage url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/> */}
+					{givenMessages && givenMessages.slice(0).reverse().map(item => 
+						item.senderId === user.id ? <SingleMessage key={item.date} message={item.text} url={user.profilePicture} friendId={user.id} friendDisplay={friendDisplay}/> : <SingleMessage key={item.date} message={item.text} url={user.profilePicture} side="right"/>
+					)}
 				</ScrollableFeed>
       		</SendContainer>
       		<BottomPanel>
@@ -142,8 +187,8 @@ const Message = ({ user, closeMessenger, friendDisplay}) => {
 					onClick={() => {
 						if (message !== "") {
 							// SEND MESSAGE
-							setMessage("");
 							setShowEmoji(false);
+							sendMessage();
 						}
 					}}
 				/>

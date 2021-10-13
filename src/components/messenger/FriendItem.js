@@ -1,17 +1,19 @@
-import React from "react";
-import styled from "styled-components";
+import React, {useState} from "react";
+import styled, { useTheme } from "styled-components";
 import "./friends.css";
 import noMessageIcon from "./assets/noMessageIcon.svg";
+import messageAvailableIcon from "./assets/messageAvailableIcon.svg";
 import underConstructionIcon from "./assets/underConstructionIcon.svg";
 
 const FriendItem = ({user, selectFriend, chatBlock}) => {
-
+const [messageNew, setMessageNew] = useState(user.messagesNew);
 	return (
     	<Container 
         chatBlock={chatBlock} 
         className="font" 
         onClick={(e) => {
           if (!chatBlock) {
+            setMessageNew(false)
             selectFriend(user)
           }
         }}
@@ -24,11 +26,11 @@ const FriendItem = ({user, selectFriend, chatBlock}) => {
 				{user.name + " " + user.lastName}
 			</Name>
       {
-        !chatBlock ? 
-        <Icon src={
-          noMessageIcon
-        }
-        /> : <Communicate>Czat nie jest zooptymalizowany dla ekranów o takich wymiarach.</Communicate>
+        !chatBlock ?
+          <Icon src={ messageNew ? 
+            messageAvailableIcon : noMessageIcon
+          }/>
+         : <Communicate>Czat nie jest zooptymalizowany dla ekranów o takich wymiarach.</Communicate>
       }
     	</Container>
   	);

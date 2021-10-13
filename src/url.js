@@ -41,6 +41,8 @@ export const endpoints = {
     getMarkersWithAlbums: url + "/public", 
     getPreviewAlbum: url + "/public/", // + public album id 
     getRequestsStatus: url + "/friends/requests/sent",
+    getMessage: url + "/friends/message/", //+ friends id, page
+    sendMessage: url + "/friends/message/", //+ friends id
 }
 
 // http://localhost:8020/friends/delete/

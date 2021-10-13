@@ -17,7 +17,7 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 
 	const { isLoaded } = useJsApiLoader({
     	id: "google-map-script",
-    	googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
+    	googleMapsApiKey: "AIzaSyCE-uXzErQ9sEzMwWb1GLSiPZ8uo890r40",
   	});
 
 	// eslint-disable-next-line
