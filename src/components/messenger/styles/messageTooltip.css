@@ -1,0 +1,23 @@
+.message-tooltip {
+  color: #000 !important;
+  background-color: #e0e5e0 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0px 0.5px 0.5px #5b5b5b);
+  font-size: 10px;
+}
+
+.message-tooltip.__react_component_tooltip.place-left::after {
+  border-left: 0 solid #e0e5e0 !important;
+}
+
+.message-tooltip.__react_component_tooltip.place-right::after {
+  border-right: 0 solid #e0e5e0 !important;
+}
+
+.message-tooltip.__react_component_tooltip.place-top::after {
+  border-top: 0 solid #e0e5e0 !important;
+}
+
+.message-tooltip.__react_component_tooltip.place-bottom::after {
+  border-bottom: 0 solid #e0e5e0 !important;
+}
