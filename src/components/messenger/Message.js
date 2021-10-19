@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
+import TextareaAutosize from "react-textarea-autosize";
 import styled from "styled-components";
-import ScrollableFeed from "react-scrollable-feed";
+import InfiniteScroll from "react-infinite-scroll-component";
 import "./styles/friends.css";
 import Emoji from "../menu/assets/emoji";
 import closeIcon from "./assets/closeIcon.svg";
@@ -10,6 +11,7 @@ import SingleMessage from "./SingleMessage";
 import Picker from "emoji-picker-react";
 import "./styles/messageEmojiPicker.css";
 import JSEMOJI from "emoji-js";
+import ReactLoading from "react-loading";
 import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
 import { endpoints } from "../../url";
@@ -21,45 +23,22 @@ emoji.replace_mode = "unified";
 emoji.allow_native = true;
 
 const Message = ({ user, closeMessenger, friendDisplay }) => {
-  const messageInputRef = useRef(null);
-  const emojiWindowRef = useRef(null);
-  const emojiButtonRef = useRef(null);
   const [message, setMessage] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [cursorPos, setCursorPos] = useState(null);
   const [givenMessages, setGivenMessages] = useState(null);
+  const [sending, setSending] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const messageInputRef = useRef(null);
+  const emojiWindowRef = useRef(null);
+  const emojiButtonRef = useRef(null);
+  const newestMessageRef = useRef(null);
 
   const [redirectToProfile, setRedirectToProfile] = useState(false);
   const blurState = useSelector((state) => state.blur.value);
-
-  // when emoji is added manually
-  const onEmojiClick = (event, emojiObject) => {
-    const ref = messageInputRef.current;
-    ref.focus();
-    const start = message.substring(0, ref.selectionStart);
-    const end = message.substring(ref.selectionStart);
-    //console.log(emojiObject)
-    setMessage(start + emojiObject.emoji + end);
-    setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
-  };
-
-  // when emoji is typed in the comment ... :smile:
-  const onChangeHandler = (event) => {
-    let text = emoji.replace_colons(event.target.value);
-    setMessage(text);
-  };
-
-  // emoji window will be closed on outside click
-  function onEmojiWindowOutsideClick(e) {
-    if (!emojiWindowRef.current || emojiWindowRef.current.contains(e.target)) {
-      return;
-    }
-    document.removeEventListener("mousedown", onEmojiWindowOutsideClick, true);
-    if (!emojiButtonRef.current.contains(e.target)) {
-      // EmojiButton onClick event toggles showEmoji
-      setShowEmoji(false);
-    }
-  }
 
   useEffect(() => {
     // emoji window display
@@ -72,10 +51,16 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
   }, [showEmoji]);
 
   useEffect(() => {
+    setPageNumber(1);
+    setMessage("");
+    setSending(false);
+    setGivenMessages(null);
     getMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   async function sendMessage() {
+    setSending(true);
     await axios
       .post(
         endpoints.sendMessage + user.friendId,
@@ -101,16 +86,28 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
           }
         }
         setGivenMessages((prevState) => [...responseToSave, ...prevState]);
+        setSending(false);
+        scrollToBottom();
       })
-      .catch((error) => {})
+      .catch((error) => {
+        console.error(error);
+      })
       .finally(() => {
         setMessage("");
       });
   }
 
-  async function getMessages() {
+  async function getMessages(type = "firstRun") {
+    setLoading(true);
+    if (type === "update") {
+      setPageNumber((prevPageNumber) => prevPageNumber + 1);
+    }
     await axios({
-      url: endpoints.getMessage + user.friendId + "?page=0",
+      url:
+        endpoints.getMessage +
+        user.friendId +
+        "?page=" +
+        (type === "firstRun" ? 0 : pageNumber),
       method: "get",
       headers: {
         "Content-Type": "application/json",
@@ -118,10 +115,32 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
       },
     })
       .then(({ data }) => {
-        setGivenMessages(data);
+        console.log(data);
+        if (data.length > 0) setHasMore(true);
+        else setHasMore(false);
+        if (givenMessages && type !== "firstRun") {
+          // prevState must be iterable!
+          setGivenMessages((prevState) => [...prevState, ...data]);
+        } else {
+          setGivenMessages(data);
+          scrollToBottom();
+        }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
+
+  const scrollToBottom = () => {
+    if (newestMessageRef.current) {
+      newestMessageRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  };
+
+  useEffect(scrollToBottom, []);
 
   if (redirectToProfile) {
     friendDisplay("");
@@ -138,9 +157,48 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
     );
   }
 
+  const onEmojiClick = (event, emojiObject) => {
+    const ref = messageInputRef.current;
+    ref.focus();
+    const start = message.substring(0, ref.selectionStart);
+    const end = message.substring(ref.selectionStart);
+    //console.log(emojiObject)
+    setMessage(start + emojiObject.emoji + end);
+    setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
+  };
+
+  const onChangeHandler = (event) => {
+    if (event.nativeEvent.inputType === "insertLineBreak") {
+      // when enter is pressed without input
+      return;
+    }
+    let text = emoji.replace_colons(event.target.value);
+    setMessage(text);
+  };
+
+  function onEmojiWindowOutsideClick(e) {
+    if (!emojiWindowRef.current || emojiWindowRef.current.contains(e.target)) {
+      return;
+    }
+    document.removeEventListener("mousedown", onEmojiWindowOutsideClick, true);
+    if (!emojiButtonRef.current.contains(e.target)) {
+      setShowEmoji(false);
+    }
+  }
+
+  const onEnter = (e) => {
+    if (e.key === "Enter") {
+      if (message !== "") {
+        console.log(message);
+        setShowEmoji(false);
+        sendMessage();
+      }
+    }
+  };
+
   return (
     <Container blurState={blurState}>
-      <TopMessageHeader>
+      <ChatHeader>
         <Icon
           src={
             user.profilePicture !== undefined && user.profilePicture
@@ -169,39 +227,64 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
             closeMessenger(null);
           }}
         />
-      </TopMessageHeader>
-      <SendContainer className="scroll_two">
-        <ScrollableFeed className="scroll_two">
+      </ChatHeader>
+      <MessagesContainer
+        id="messageContainer"
+        className="scroll_two"
+        style={{
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+      >
+        <InfiniteScroll
+          dataLength={givenMessages ? givenMessages.length : 20}
+          next={() => getMessages("update")}
+          style={{ display: "flex", flexDirection: "column-reverse" }}
+          inverse={true}
+          hasMore={hasMore}
+          loader={
+            <Loading
+              height={"8%"}
+              width={"8%"}
+              type={"spin"}
+              color={"#0FA3B1"}
+            />
+          }
+          scrollableTarget="messageContainer"
+        >
           {givenMessages &&
-            givenMessages
-              .slice(0)
-              .reverse()
-              .map((item) =>
-                item.senderId === user.id ? (
-                  <SingleMessage
-                    key={item.date}
-                    message={item.text}
-					messageDate={item.date}
-                    url={user.profilePicture}
-                    friendId={user.id}
-                    friendDisplay={friendDisplay}
-                  />
-                ) : (
-                  <SingleMessage
-                    key={item.date}
-                    message={item.text}
-					messageDate={item.date}
-                    url={user.profilePicture}
-                    side="right"
-                  />
-                )
-              )}
-        </ScrollableFeed>
-      </SendContainer>
-      <BottomPanel>
-        <MessageInputContainer>
+            givenMessages.map((item, index) =>
+              item.senderId === user.id ? (
+                <SingleMessage
+                  key={index}
+                  newestMessageRef={1 === index + 1 ? newestMessageRef : null}
+                  message={item.text}
+                  messageId={item.id}
+                  messageDate={item.date}
+                  url={user.profilePicture}
+                  friendId={user.id}
+                  friendDisplay={friendDisplay}
+                />
+              ) : (
+                <SingleMessage
+                  key={index}
+                  newestMessageRef={1 === index + 1 ? newestMessageRef : null}
+                  message={item.text}
+                  messageId={item.id}
+                  messageDate={item.date}
+                  url={user.profilePicture}
+                  side="right"
+                />
+              )
+            )}
+        </InfiniteScroll>
+      </MessagesContainer>
+      <ChatFooter>
+        <InputContainer>
           <MessageInput
             ref={messageInputRef}
+            disabled={sending}
             placeholder="Aa :smile:"
             id="message"
             className="scroll_two"
@@ -209,12 +292,18 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
             wrap="soft"
             value={message}
             onChange={(e) => onChangeHandler(e)}
+            minRows={1}
+            maxRows={3}
+            onKeyDown={onEnter}
+            maxLength={250}
           />
           <EmojiIcon
             ref={emojiButtonRef}
             onClick={() => {
-              messageInputRef.current.focus();
-              setShowEmoji(!showEmoji);
+              if (!loading) {
+                messageInputRef.current.focus();
+                setShowEmoji(!showEmoji);
+              }
             }}
           >
             <Emoji />
@@ -232,18 +321,21 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
               />
             </div>
           )}
-        </MessageInputContainer>
-        <SendIcon
-          icon={sendIcon}
-          onClick={() => {
-            if (message !== "") {
-              // SEND MESSAGE
-              setShowEmoji(false);
-              sendMessage();
-            }
-          }}
-        />
-      </BottomPanel>
+        </InputContainer>
+        {!sending ? (
+          <SendIcon
+            icon={sendIcon}
+            onClick={() => {
+              if (message !== "" && !sending) {
+                setShowEmoji(false);
+                sendMessage();
+              }
+            }}
+          />
+        ) : (
+          <Sending height={"9%"} width={"9%"} type={"spin"} color={"#0FA3B1"} />
+        )}
+      </ChatFooter>
     </Container>
   );
 };
@@ -253,6 +345,8 @@ const Container = styled.div`
   -webkit-filter: ${({ blurState }) =>
     blurState === true ? "blur(15px)" : "none"};
   position: fixed;
+  display: flex;
+  flex-direction: column;
   width: 350px;
   height: 460px;
   background-color: ${({ theme }) => theme.color.lightBackground};
@@ -299,7 +393,7 @@ const Container = styled.div`
   }
 `;
 
-const TopMessageHeader = styled.div`
+const ChatHeader = styled.div`
   font-size: 16px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   background-color: ${({ theme }) => theme.color.darkTurquise};
@@ -355,96 +449,83 @@ const CloseContainer = styled.div`
   }
 `;
 
-const SendContainer = styled.div`
+const MessagesContainer = styled.div`
   width: 330px;
   padding: 3px 10px;
-  height: 86.5%;
+  height: 100%;
   overflow-x: hidden;
-  overflow-y: visible;
+  overflow-y: scroll;
   @media only screen and (max-width: 1000px) {
     width: 280px;
   }
 `;
 
-const EmojiIcon = styled.div`
-  position: absolute;
-  z-index: 1200;
-  bottom: 9px;
-  left: 250px;
-  &:hover {
-    opacity: 0.5;
-  }
-  @media only screen and (max-width: 1000px) {
-    left: 200px;
-  }
+const Loading = styled(ReactLoading)`
+  margin: 0 auto;
 `;
 
-const BottomPanel = styled.div`
+const Sending = styled(ReactLoading)`
+  margin: 1.5px auto auto auto;
+`;
+
+const ChatFooter = styled.div`
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  height: 53px;
+  margin: auto 0 0 0;
+  padding: 10px 0px 5px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
-const MessageInputContainer = styled.div`
-  position: relative;
-  width: 251px;
-  font-size: 16px;
-  height: 22px;
-  padding-top: 10px;
-  padding-bottom: 12px;
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 280px;
+  padding: 5px 0px;
   resize: none;
-  padding-right: 30px;
-  vertical-align: auto;
   background-color: ${({ theme }) => theme.color.darkBackground};
   border: none;
   border-radius: 40px;
   color: #5b5c5c;
-  font-weight: 600;
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
   outline-style: none;
-  margin-bottom: 5px;
-  margin-left: 10px;
+  margin: 0px 0px 5px 10px;
   @media only screen and (max-width: 1000px) {
-    width: 201px;
+    width: 230px;
   }
 `;
 
-const MessageInput = styled.textarea`
-  width: 190px;
-  font-size: 16px;
-  height: 22px;
+const MessageInput = styled(TextareaAutosize)`
+  width: 93%;
+  font-size: 14px;
   resize: none;
-  padding-left: 15px;
-  padding-right: 30px;
+  margin-left: 15px;
   vertical-align: auto;
   background-color: rgba(0, 0, 0, 0);
   border: none;
-  border-radius: 40px;
-  font-weight: 600;
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
   outline-style: none;
-  position: relative;
-  &::placeholder {
-    overflow: hidden;
-    vertical-align: auto;
+  overflow-y: scroll;
+`;
+
+const EmojiIcon = styled.div`
+  margin: 2px 8px 0px 0px;
+  &:hover {
+    opacity: 0.5;
   }
 `;
 
 const SendIcon = styled.div`
-  position: absolute;
-  z-index: 1300;
-  bottom: 10px;
-  left: 298px;
+  margin: 0px auto 2px auto;
   background-image: url(${({ icon }) => icon});
-  width: 36px;
-  height: 36px;
-  background-size: 36px;
+  width: 34px;
+  height: 34px;
+  background-size: 34px;
   background-repeat: 50% 50%;
   background-repeat: no-repeat;
   &:hover {
     opacity: 0.5;
-  }
-  @media only screen and (max-width: 1000px) {
-    left: 248px;
   }
 `;
 

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import "./photosScrollbar.css";
+import "./styles/photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { selectAlbumPhotos } from "../../redux/albumDetailsSlice";
 

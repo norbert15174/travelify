@@ -2,8 +2,9 @@
   color: #000 !important;
   background-color: #e0e5e0 !important;
   opacity: 1 !important;
-  filter: drop-shadow(0px 0.5px 0.5px #5b5b5b);
-  font-size: 10px;
+  filter: drop-shadow(0px 0.75px 0.75px #0fa3b1);
+  font-size: 12px !important;
+  padding: 5px !important;
 }
 
 .message-tooltip.__react_component_tooltip.place-left::after {

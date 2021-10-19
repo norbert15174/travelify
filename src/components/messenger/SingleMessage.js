@@ -10,10 +10,12 @@ import "moment/locale/pl";
 
 const SingleMessage = ({
   url,
+  newestMessageRef,
   side = null,
   friendId = null,
   friendDisplay = null,
   message,
+  messageId,
   messageDate,
 }) => {
   const [redirectToProfile, setRedirectToProfile] = useState(false);
@@ -42,7 +44,7 @@ const SingleMessage = ({
   }
 
   return (
-    <Container side={side}>
+    <Container side={side} ref={newestMessageRef}>
       {side === "right" ? null : (
         <ProfileIcon
           src={url !== undefined && url ? url : noProfilePictureIcon}
@@ -56,14 +58,14 @@ const SingleMessage = ({
       )}
       <TextContainer
         data-tip
-        data-for={"messageTip-" + messageDate}
+        data-for={"messageTip-" + messageDate + "-" + messageId}
         side={side}
       >
         {message}
       </TextContainer>
       <ReactTooltip
-        id={"messageTip-" + messageDate}
-        place={side === "right" ? "left" : "right"}
+        id={"messageTip-" + messageDate + "-" + messageId}
+        place={"left"}
         effect="solid"
         delayShow={250}
         className="message-tooltip"
@@ -79,7 +81,7 @@ const Container = styled.div`
   margin-bottom: 20px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: ${({ side }) =>
     side === "right" ? "flex-end" : "flex-start"};
   position: relative;

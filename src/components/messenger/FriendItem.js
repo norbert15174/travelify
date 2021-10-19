@@ -19,6 +19,7 @@ const FriendItem = ({
       newMessages.delete(user.friendId);
       setNewMessages(newMessages);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newMessages]);
   return (
     <Container
@@ -27,6 +28,7 @@ const FriendItem = ({
       onClick={(e) => {
         if (!chatBlock) {
           setMessageNew(false);
+          selectFriend(null);
           selectFriend(user);
         }
       }}

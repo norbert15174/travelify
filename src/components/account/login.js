@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import Logo from "./svg/logo";
+import Logo from "./assets/logo";
 import { routes } from "../../miscellanous/Routes";
 import { endpoints } from "../../url";
 import StatusMessage from "../trinkets/StatusMessage";
-import "./input.css";
+import "./styles/input.css";
 
 const errors = {
 	wrongCredentials: "Podana nazwa użytkownika lub hasło jest nieodpowiednia !!!",

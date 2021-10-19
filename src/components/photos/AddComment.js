@@ -3,8 +3,8 @@ import styled from "styled-components";
 import sendIcon from "./assets/sendIcon.svg";
 import emojiIcon from "./assets/emojiIcon.svg";
 import Picker from 'emoji-picker-react';
-import "./photosScrollbar.css";
-import "./commentEmojiPicker.css"; 
+import "./styles/photosScrollbar.css";
+import "./styles/commentEmojiPicker.css"; 
 import JSEMOJI from 'emoji-js';
 
 let emoji = new JSEMOJI();
