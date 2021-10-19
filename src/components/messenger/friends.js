@@ -17,7 +17,7 @@ const Friends = ({ friendDisplay }) => {
   const [newMessages, setNewMessages] = useState([]);
   const [chatBlock, setChatBlock] = useState(false);
   const [error, setError] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
 
@@ -47,6 +47,7 @@ const Friends = ({ friendDisplay }) => {
   }, [friendsList]);
 
   useEffect(() => {}, [newMessages]);
+
 
   /*
     websocket connection
@@ -82,6 +83,7 @@ const Friends = ({ friendDisplay }) => {
     })
       .then(({ data }) => {
         dispatch(setFriendsList(data));
+        setLoading(false);
       })
       .catch((error) => {
         setError(error);
@@ -124,7 +126,8 @@ const Friends = ({ friendDisplay }) => {
         onChange={handleSearchBarChange}
       />
       <FriendsList className="scroll">
-        {friendsList !== null && !error ? (
+        {loading === true ? null : <>
+          {friendsList !== null && !error ? (
           (friendsList.length !== 0 && searchContent.length === 0
             ? friendsList.map((friend) => (
                 <FriendItem
@@ -154,6 +157,8 @@ const Friends = ({ friendDisplay }) => {
         ) : (
           <h1 style={{ color: theme.color.greyFont }}>Brak znajomych</h1>
         )}
+        </>}
+
       </FriendsList>
       {selectedFriend && !chatBlock && (
         <Message
