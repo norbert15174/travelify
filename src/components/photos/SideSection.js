@@ -292,7 +292,7 @@ const SideSection = ({
       <CommentsSection className="scroll_two">
         {!loading ? (
           comments.length !== 0 ? (
-            <ScrollableFeed className="scroll_two">
+            <ScrollableFeed className="scroll_two" forceScroll={true}>
               {comments.map((item) => (
                 <>
                   <CommentContainer key={item.commentId}>

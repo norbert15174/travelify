@@ -3,10 +3,10 @@ import styled from "styled-components";
 import axios from "axios";
 import { useFormik } from "formik";
 import StatusMessage from "../trinkets/StatusMessage";
-import "./pureSelect.css";
+import "./styles/pureSelect.css";
 import { endpoints } from "../../url";
-import Logo from "./svg/logo";
-import "./input.css";
+import Logo from "./assets/logo";
+import "./styles/input.css";
 
 const errors = {
 	emptyForm: "Wszystkie pola są wymagane !!!",

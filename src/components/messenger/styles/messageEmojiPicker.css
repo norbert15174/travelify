@@ -1,93 +1,98 @@
 .emoji-window-message .emoji-picker-react div {
-    background-color: #e0e5e0; 
-  }
-  
-  
-  .emoji-window-message .emoji-picker-react .emoji-search {
-    background-color: #e0e5e0;
-  }
-  
-  .emoji-window-message .emoji-picker-react input.emoji-search {
-    border: 1px solid #f2f7f2;
-  }
-  
-  .emoji-window-message .emoji-picker-react input.emoji-search:focus {
-    border: 1px solid #5b5b5b;
-  }
-  
-  .emoji-window-message .emoji-categories {
-    background-color: #e0e5e0;
-  }
-  
-  .emoji-window-message .emoji-picker-react .emoji-group:before {
-    background-color: #e0e5e0;
-  }
-  
-  /* CUSTOM CONTAINER */
-  .emoji-window-message {
-    position: absolute;
-    margin-bottom: 42px;
-    bottom: 0;
-    right: 0;
-    margin-right: 18px;
-  }
-  
-  /* WHOLE CONTAINIER */
-  .emoji-window-message aside.emoji-picker-react {
-    box-shadow: none;
-    width: 250px;
-    height: 200px;
-  }
-  
-  /* EMOJI ICONS */
-  .emoji-window-message .emoji-picker-react .native {
-    height: 12px;
-    width: 12px;
-    font-size: 12px;
-  }
-  
-  /* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
-  .emoji-window-message .emoji-picker-react .emoji-group:before  {
-    font-size: 10px;
-    height: 25px;
-    line-height: 25px;
-    margin: 0px;
-  }
-  
-  /* TEXT DESCRIPTION OF SELECTED EMOJI */
-  .emoji-window-message aside.emoji-picker-react .content-wrapper:before {
-    content: "";
-  }
-  
-  /* INNER CONTAINER WITH EMOJIS */
-  .emoji-window-message .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
-    height: 130px;
-  }  
+  background-color: #e0e5e0;
+}
 
-   /* EMOJI SEARCH INPUT */
-  .emoji-window-message .emoji-picker-react input.emoji-search {
-    height: 22px;
-    padding: 0px;
-  }
+.emoji-window-message .emoji-picker-react .emoji-search {
+  background-color: #e0e5e0;
+}
 
-  
-  
-  /* 
+.emoji-window-message .emoji-picker-react input.emoji-search {
+  border: 1px solid #f2f7f2;
+}
+
+.emoji-window-message .emoji-picker-react input.emoji-search:focus {
+  border: 1px solid #5b5b5b;
+}
+
+.emoji-window-message .emoji-categories {
+  background-color: #e0e5e0;
+}
+
+.emoji-window-message .emoji-picker-react .emoji-group:before {
+  background-color: #e0e5e0;
+}
+
+/* CUSTOM CONTAINER */
+.emoji-window-message {
+  position: absolute;
+  margin-bottom: 44px;
+  bottom: 0;
+  right: 0;
+  margin-right: 75px;
+}
+
+/* WHOLE CONTAINIER */
+.emoji-window-message aside.emoji-picker-react {
+  box-shadow: none;
+  width: 250px;
+  height: 200px;
+}
+
+/* EMOJI ICONS */
+.emoji-window-message .emoji-picker-react .native {
+  height: 12px;
+  width: 12px;
+  font-size: 12px;
+}
+
+/* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
+.emoji-window-message .emoji-picker-react .emoji-group:before {
+  font-size: 10px;
+  height: 25px;
+  line-height: 25px;
+  margin: 0px;
+}
+
+/* TEXT DESCRIPTION OF SELECTED EMOJI */
+.emoji-window-message aside.emoji-picker-react .content-wrapper:before {
+  content: "";
+}
+
+/* INNER CONTAINER WITH EMOJIS */
+.emoji-window-message
+  .emoji-picker-react
+  .content-wrapper
+  .emoji-scroll-wrapper {
+  height: 130px;
+}
+
+/* EMOJI SEARCH INPUT */
+.emoji-window-message .emoji-picker-react input.emoji-search {
+  height: 22px;
+  padding: 0px;
+}
+
+/* 
     SCROLLBAR
   */
-  
-  .emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar {
-    width: 8px;
+
+.emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-track {
+  background: #e0e5e0;
+}
+.emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media only screen and (max-width: 1000px) {
+  /* WHOLE CONTAINIER */
+  .emoji-window-message aside.emoji-picker-react {
+    width: 200px;
   }
-  .emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-track {
-    background: #e0e5e0;
-  }
-  .emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-  }
-  .emoji-window-message .emoji-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  
-  
+}

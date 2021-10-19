@@ -18,7 +18,7 @@ const Post = ({ news, type }) => {
   });
 
   useEffect(() => {
-    moment.locale('pl');
+    moment.locale("pl");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -74,11 +74,13 @@ const Post = ({ news, type }) => {
               " " +
               news.personalInformationDTO.surName}
           </Name>
-          <DateInfo data-tip data-for={"dateTip-" + news.date + news.id}>{moment(news.date).fromNow()}</DateInfo>
+          <DateInfo data-tip data-for={"dateTip-" + news.date + news.id}>
+            {moment(news.date).fromNow()}
+          </DateInfo>
           <Tooltip
             id={"dateTip-" + news.date + news.id}
             place="left"
-            text={moment(news.date).format('H:mm, MMMM Do YYYY')}
+            text={moment(news.date).format("H:mm, MMMM Do YYYY")}
           />
         </InnerContainer>
         <Icon

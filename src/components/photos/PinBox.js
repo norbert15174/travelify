@@ -4,7 +4,7 @@ import closeIcon from "./assets/closeIcon.svg";
 import Input from "../trinkets/Input";
 import FriendThumbnail from "./PinFriendThumbnail";
 import axios from "axios";
-import "./photosScrollbar.css";
+import "./styles/photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { albumTypes } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
@@ -32,7 +32,6 @@ const PinBox = ({setClose, heightDelimiter, photoId}) => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
 
     async function getLoggedUserFriendsList() {
         await axios({

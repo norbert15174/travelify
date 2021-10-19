@@ -43,6 +43,7 @@ const Friends = ({ friendDisplay }) => {
         setSelectedFriend(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendsList]);
 
   useEffect(() => {}, [newMessages]);
@@ -87,7 +88,6 @@ const Friends = ({ friendDisplay }) => {
       });
   }
 
-  
   const handleSearchBarChange = (e) => {
     setSearchContent(e.target.value);
     setFound(

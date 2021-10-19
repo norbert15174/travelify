@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Login from "./login";
 import Register from "./register";
 import styled from "styled-components";
+import BackgroundImage from "./assets/BackgroundImage.jpg";
 
 const Auth = () => {
   const [value, setValue] = useState("no");
@@ -28,7 +29,7 @@ const Auth = () => {
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url("http://www.myamazingtrip.com/images/sd1.jpg");
+  background-image: url(${() => BackgroundImage});
   background-size: cover;
   background-position: bottom left;
   position: fixed;

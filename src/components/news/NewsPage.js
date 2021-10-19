@@ -4,7 +4,7 @@ import Post from "./Post";
 import { endpoints } from "../../url";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import scrollBackIcon from "./assets/scrollBackIcon.svg";
+import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Spinner from "../trinkets/Spinner";
 import { selectFriendsList } from "../../redux/userDataSlice";
 import ButtonIcon from "../trinkets/ButtonIcon";
