@@ -43,6 +43,7 @@ export const endpoints = {
     getRequestsStatus: url + "/friends/requests/sent",
     getMessage: url + "/friends/message/", //+ friends id, page
     sendMessage: url + "/friends/message/", //+ friends id
+    getNotifications: url + "/news/notification"
 }
 
 // http://localhost:8020/friends/delete/

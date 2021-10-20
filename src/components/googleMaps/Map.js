@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Geocode from "react-geocode";
+import "./styles/markerInfo.css";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import { indyStyle } from "./MapStyle";
 
@@ -74,6 +75,8 @@ function Map({ width, height, options, markers=null, initialCoordinates, type, s
 							}
 						}
 					}
+					console.log(country);
+					console.log(place);
 					if (place === "") {
 						place = "Brak informacji";
 					}

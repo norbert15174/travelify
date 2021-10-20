@@ -43,6 +43,10 @@ const Container = styled.div`
         padding: 0px; 
         grid-template-columns: 107px 1fr;
     }
+    button  {
+        width:  100px;
+        height:  100px;
+    }
 `; 
 
 const Picture = styled.img`

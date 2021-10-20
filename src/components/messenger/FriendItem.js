@@ -7,20 +7,25 @@ import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const FriendItem = ({
   user,
-  selectFriend,
+  selectedFriend,
+  setSelectedFriend,
   chatBlock,
-  newMessages,
-  setNewMessages,
+  messageNotifications,
+  setMessageNotifications,
 }) => {
   const [messageNew, setMessageNew] = useState(user.messagesNew);
   useEffect(() => {
-    if (newMessages.size > 0 && newMessages.has(user.friendId)) {
-      setMessageNew(true);
-      newMessages.delete(user.friendId);
-      setNewMessages(newMessages);
+    if (messageNotifications.size > 0 && messageNotifications.has(user.friendId)) {
+      if (selectedFriend && messageNotifications.has(selectedFriend.friendId)) {
+        setMessageNew(false);
+      } else {
+        setMessageNew(true);
+      }
+      messageNotifications.delete(user.friendId);
+      setMessageNotifications(messageNotifications);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newMessages]);
+  }, [messageNotifications]);
   return (
     <Container
       chatBlock={chatBlock}
@@ -28,8 +33,8 @@ const FriendItem = ({
       onClick={(e) => {
         if (!chatBlock) {
           setMessageNew(false);
-          selectFriend(null);
-          selectFriend(user);
+          setSelectedFriend(null);
+          setSelectedFriend(user);
         }
       }}
     >
@@ -63,7 +68,7 @@ const Container = styled.div`
   align-items: center;
   cursor: pointer;
   margin-top: 5px;
-  padding: 0px 5px;
+  padding: 5px;
   &:hover {
     border-radius: ${({ chatBlock }) => (!chatBlock ? "30px" : "")};
     background: ${({ chatBlock }) =>
