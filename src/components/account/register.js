@@ -21,7 +21,8 @@ const Register = ({ pos, val }) => {
 	const [ registerSuccess, setRegisterSuccess ] = useState(false);
 
 	useEffect(() => {
-		if (JSON.parse(sessionStorage.getItem("countryList"))) {
+		let list = JSON.parse(sessionStorage.getItem("countryList"));
+		if (list) {
 			setCountryList(JSON.parse(sessionStorage.getItem("countryList")));
 		} else {
 			getCountries();

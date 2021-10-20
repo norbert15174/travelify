@@ -14,7 +14,8 @@ import { Stomp } from "@stomp/stompjs";
 
 const Friends = ({ friendDisplay }) => {
   const [selectedFriend, setSelectedFriend] = useState(null);
-  const [newMessages, setNewMessages] = useState([]);
+  const [chatUpdate, setChatUpdate] = useState([]);
+  const [messageNotifications, setMessageNotifications] = useState([]);
   const [chatBlock, setChatBlock] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -46,7 +47,10 @@ const Friends = ({ friendDisplay }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendsList]);
 
-  useEffect(() => {}, [newMessages]);
+  /*
+    IF SOMETHING STOPPED WORKING UNCOMMENT THIS LINE
+  */
+  useEffect(() => {}, [messageNotifications, chatUpdate]);
 
 
   /*
@@ -58,7 +62,8 @@ const Friends = ({ friendDisplay }) => {
     client.connect({}, function () {
       client.subscribe("/topic/" + userId, function (message) {
         var friendId = JSON.parse(message.body).friendId;
-        setNewMessages((prevState) => new Set([...prevState, friendId]));
+        setMessageNotifications((prevState) => new Set([...prevState, friendId]));
+        setChatUpdate((prevState) => new Set([...prevState, friendId]));
       });
     });
   }, []);
@@ -133,10 +138,11 @@ const Friends = ({ friendDisplay }) => {
                 <FriendItem
                   key={friend.id}
                   user={friend}
-                  selectFriend={setSelectedFriend}
+                  selectedFriend={selectedFriend}
+                  setSelectedFriend={setSelectedFriend}
                   chatBlock={chatBlock}
-                  newMessages={newMessages}
-                  setNewMessages={setNewMessages}
+                  messageNotifications={messageNotifications}
+                  setMessageNotifications={setMessageNotifications}
                 />
               ))
             : null) ||
@@ -145,10 +151,11 @@ const Friends = ({ friendDisplay }) => {
                 <FriendItem
                   key={friend.id}
                   user={friend}
-                  selectFriend={setSelectedFriend}
+                  selectedFriend={selectedFriend}
+                  setSelectedFriend={setSelectedFriend}
                   chatBlock={chatBlock}
-                  newMessages={newMessages}
-                  setNewMessages={setNewMessages}
+                  messageNotifications={messageNotifications}
+                  setMessageNotifications={setMessageNotifications}
                 />
               ))
             : null) || (
@@ -163,6 +170,8 @@ const Friends = ({ friendDisplay }) => {
       {selectedFriend && !chatBlock && (
         <Message
           user={selectedFriend}
+          chatUpdate={chatUpdate}
+          setChatUpdate={setChatUpdate}
           closeMessenger={setSelectedFriend}
           friendDisplay={friendDisplay}
         />

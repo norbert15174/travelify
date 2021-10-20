@@ -22,13 +22,13 @@ let emoji = new JSEMOJI();
 emoji.replace_mode = "unified";
 emoji.allow_native = true;
 
-const Message = ({ user, closeMessenger, friendDisplay }) => {
+const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdate }) => {
   const [message, setMessage] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [cursorPos, setCursorPos] = useState(null);
   const [givenMessages, setGivenMessages] = useState(null);
   const [sending, setSending] = useState(false);
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +41,26 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
   const blurState = useSelector((state) => state.blur.value);
 
   useEffect(() => {
+    if (chatUpdate.size > 0 && chatUpdate.has(user.friendId)) {
+      console.log(chatUpdate);
+      if (givenMessages) {
+        chatUpdate.delete(user.friendId);
+        setChatUpdate(chatUpdate);
+        getMessages("update");
+      }
+    }
+  }, [chatUpdate]);
+
+  useEffect(() => {
+    setPageNumber(1);
+    setMessage("");
+    setSending(false);
+    setGivenMessages(null);
+    getMessages("firstRun");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
     // emoji window display
     if (showEmoji) {
       document.addEventListener("mousedown", onEmojiWindowOutsideClick, true);
@@ -49,15 +69,6 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
     //commentInputRef.current.selectionEnd = cursorPos; //
     // eslint-disable-next-line
   }, [showEmoji]);
-
-  useEffect(() => {
-    setPageNumber(1);
-    setMessage("");
-    setSending(false);
-    setGivenMessages(null);
-    getMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   async function sendMessage() {
     setSending(true);
@@ -97,9 +108,9 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
       });
   }
 
-  async function getMessages(type = "firstRun") {
+  async function getMessages(type) {
     setLoading(true);
-    if (type === "update") {
+    if (type === "scrollUpdate") {
       setPageNumber((prevPageNumber) => prevPageNumber + 1);
     }
     await axios({
@@ -107,7 +118,7 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
         endpoints.getMessage +
         user.friendId +
         "?page=" +
-        (type === "firstRun" ? 0 : pageNumber),
+        (type === "firstRun" || type === "update" ? 0 : pageNumber),
       method: "get",
       headers: {
         "Content-Type": "application/json",
@@ -115,13 +126,15 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
+        /* console.log(pageNumber);
+        console.log(data); */
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
-        if (givenMessages && type !== "firstRun") {
+        if (givenMessages && type === "scrollUpdate") {
           // prevState must be iterable!
           setGivenMessages((prevState) => [...prevState, ...data]);
-        } else {
+        } else if (type === "firstRun" || type === "update") {
+          setPageNumber(1);
           setGivenMessages(data);
           scrollToBottom();
         }
@@ -239,7 +252,7 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
       >
         <InfiniteScroll
           dataLength={givenMessages ? givenMessages.length : 20}
-          next={() => getMessages("update")}
+          next={() => getMessages("scrollUpdate")}
           style={{ display: "flex", flexDirection: "column-reverse" }}
           inverse={true}
           hasMore={hasMore}
@@ -280,9 +293,11 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
             )}
         </InfiniteScroll>
       </MessagesContainer>
-      <ChatFooter>
-        <InputContainer>
+      <ChatFooter key="chatFooter">
+        <InputContainer key="inputContainer">
           <MessageInput
+            key="messageInput"
+            autoFocus
             ref={messageInputRef}
             disabled={sending}
             placeholder="Aa :smile:"
@@ -295,9 +310,10 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
             minRows={1}
             maxRows={3}
             onKeyDown={onEnter}
-            maxLength={250}
+            maxLength={255}
           />
           <EmojiIcon
+            key="emojiIcon"
             ref={emojiButtonRef}
             onClick={() => {
               if (!loading) {
@@ -306,10 +322,11 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
               }
             }}
           >
-            <Emoji />
+            <Emoji key="emoji"/>
           </EmojiIcon>
           {showEmoji && (
             <div
+              key="emojiWindow"
               ref={emojiWindowRef}
               id="emojiWindow"
               className="emoji-window-message"
@@ -324,6 +341,7 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
         </InputContainer>
         {!sending ? (
           <SendIcon
+            key="sendIcon"
             icon={sendIcon}
             onClick={() => {
               if (message !== "" && !sending) {
@@ -333,7 +351,7 @@ const Message = ({ user, closeMessenger, friendDisplay }) => {
             }}
           />
         ) : (
-          <Sending height={"9%"} width={"9%"} type={"spin"} color={"#0FA3B1"} />
+          <Sending key="sending" height={"9%"} width={"9%"} type={"spin"} color={"#0FA3B1"} />
         )}
       </ChatFooter>
     </Container>

@@ -6,6 +6,7 @@ import { routes } from "../../miscellanous/Routes";
 import infoIcon from "./assets/infoIcon.svg";
 import localizationIcon from "./assets/localizationIcon.svg";
 import photoIcon from "./assets/photoIcon.svg";
+import ButtonIcon from "../trinkets/ButtonIcon";
 import deleteAlbumIcon from "./assets/deleteAlbumIcon.svg";
 import BasicInfo from "./BasicInfo";
 import Localization from "./Localization";
@@ -15,6 +16,8 @@ import { albumCreator, albumTypes } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
 import { endpoints } from "../../url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
+import scrollBackIcon from "../../assets/scrollBackIcon.svg";
+import Tooltip from "../trinkets/Tooltip";
 
 const AlbumCreatorPage = ({
   creatorType,
@@ -281,25 +284,39 @@ const AlbumCreatorPage = ({
             <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
           </SectionContainer>
         )}
-        {creatorType === albumCreator.edition && (
-          <SectionContainer>
-            <End>
-              <Line />
-              <StyledButton
-                onClick={() =>
-                  scrollBack.current.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Wróć do góry
-              </StyledButton>
-              <Line />
-            </End>
-          </SectionContainer>
-        )}
       </Container>
+      <ScrollBack
+        data-tip
+        data-for="scrollBack"
+        icon={scrollBackIcon}
+        onClick={() =>
+          scrollBack.current.scrollIntoView({ behavior: "smooth" })
+        }
+      />
+      <Tooltip
+        id="scrollBack"
+        place="top"
+        text="Wróć do góry"
+      />
     </>
   );
 };
+
+const ScrollBack = styled(ButtonIcon)`
+  background-color: ${({ theme }) => theme.color.lightBackground};
+  position: fixed;
+  transform: rotate(180deg);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  bottom: 0;
+  margin-bottom: 15px;
+  right: 0;
+  margin-right: 145px;
+  @media only screen and (max-width: 720px) {
+    margin-right: 16px;
+  }
+`;
 
 const Container = styled.div`
   width: 90%;

@@ -33,6 +33,13 @@ export const newsTypes = {
     community: "community"
 }
 
+export const notification = {
+    share: "ALBUM_SHARE",
+    comment: "COMMENT",
+    tag: "PHOTO_TAG",
+    request: "FRIEND_REQUEST"
+}
+
 /*
     Function for parsing string with country names to array with objects.
 */
@@ -52,7 +59,6 @@ export function getCountryData(input) {
     }
     return output;
 }
-
 
 /*
     Function for 

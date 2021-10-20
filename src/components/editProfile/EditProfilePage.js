@@ -7,6 +7,7 @@ import changePasswordIcon from "./assets/changePasswordIcon.svg";
 import descriptionIcon from "./assets/descriptionIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import countriesIcon from "./assets/countriesIcon.svg";
+import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import deleteAccountIcon from "./assets/deleteAccountIcon.svg";
 import PhotoChange from "./PhotoChange";
 import PersonalInfoForm from "./PersonalInfoForm";
@@ -17,6 +18,8 @@ import DeleteAccountForm from "./DeleteAcountForm";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector } from "react-redux";
+import ButtonIcon from "../trinkets/ButtonIcon";
+import Tooltip from "../trinkets/Tooltip";
 
 const EditProfilePage = ({ personalData }) => {
   const [redirect, setRedirect] = useState(false);
@@ -127,23 +130,39 @@ const EditProfilePage = ({ personalData }) => {
           </Header>
           <DeleteAccountForm setDeleteBox={setDeleteBox} />
         </SectionContainer>
-        <PageFooter>
-          <End>
-            <Line />
-            <StyledButton
-              onClick={() =>
-                scrollBack.current.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Wroć do góry
-            </StyledButton>
-            <Line />
-          </End>
-        </PageFooter>
       </Container>
+      <ScrollBack
+        data-tip
+        data-for="scrollBack"
+        icon={scrollBackIcon}
+        onClick={() =>
+          scrollBack.current.scrollIntoView({ behavior: "smooth" })
+        }
+      />
+      <Tooltip
+        id="scrollBack"
+        place="top"
+        text="Wróć do góry"
+      />
     </>
   );
 };
+
+const ScrollBack = styled(ButtonIcon)`
+  background-color: ${({ theme }) => theme.color.lightBackground};
+  position: fixed;
+  transform: rotate(180deg);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  bottom: 0;
+  margin-bottom: 15px;
+  right: 0;
+  margin-right: 125px;
+  @media only screen and (max-width: 720px) {
+    margin-right: 17px;
+  }
+`;
 
 const Container = styled.div`
   width: 95%;
@@ -301,44 +320,6 @@ const SectionContainer = styled.div`
   @media only screen and (max-width: 560px) {
     padding: 10px;
   }
-`;
-
-const PageFooter = styled.div`
-  background-color: ${({ theme }) => theme.color.lightBackground};
-  border-radius: 15px;
-  padding: 20px 40px;
-  grid-template-rows: repeat(2, auto);
-  @media only screen and (max-width: 1440px) {
-    padding: 20px;
-  }
-  @media only screen and (max-width: 870px) {
-    padding: 15px;
-  }
-  @media only screen and (max-width: 560px) {
-    padding: 10px;
-  }
-`;
-
-const End = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-`;
-
-const StyledButton = styled(Button)`
-    width: 200px;
-    padding: 5px 15px;
-    margin: 0px 15px 0px 15px;
-    background-color: ${({theme, errorAtPosting}) => !errorAtPosting ? theme.color.darkTurquise : "#B90E0A"};
-    &:hover, &:focus {
-        background-color: ${({theme, errorAtPosting}) => !errorAtPosting ? theme.color.lightTurquise : theme.color.redAlert};
-    }
-`;
-
-const Line = styled.div`
-    width: 40%;
-    border-top: 2px solid${({theme, errorAtPosting}) => !errorAtPosting ? theme.color.darkTurquise : "#B90E0A"};
 `;
 
 export default EditProfilePage;
