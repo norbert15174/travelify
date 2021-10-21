@@ -293,17 +293,12 @@ const AlbumCreatorPage = ({
           scrollBack.current.scrollIntoView({ behavior: "smooth" })
         }
       />
-      <Tooltip
-        id="scrollBack"
-        place="top"
-        text="Wróć do góry"
-      />
+      <Tooltip id="scrollBack" place="top" text="Wróć do góry" />
     </>
   );
 };
 
 const ScrollBack = styled(ButtonIcon)`
-  background-color: ${({ theme }) => theme.color.lightBackground};
   position: fixed;
   transform: rotate(180deg);
   width: 36px;
@@ -312,9 +307,9 @@ const ScrollBack = styled(ButtonIcon)`
   bottom: 0;
   margin-bottom: 15px;
   right: 0;
-  margin-right: 145px;
+  margin-right: 120px;
   @media only screen and (max-width: 720px) {
-    margin-right: 16px;
+    margin-right: 26px;
   }
 `;
 
@@ -462,11 +457,11 @@ const StyledButton = styled(Button)`
   padding: 5px 15px;
   margin: 0px 15px 0px 15px;
   background-color: ${({ theme, errorAtPosting }) =>
-    !errorAtPosting ? theme.color.darkTurquise : "#B90E0A"};
+    !errorAtPosting ? theme.color.dark : "#B90E0A"};
   &:hover,
   &:focus {
     background-color: ${({ theme, errorAtPosting }) =>
-      !errorAtPosting ? theme.color.lightTurquise : theme.color.redAlert};
+      !errorAtPosting ? theme.color.light : theme.color.redAlert};
   }
 `;
 
@@ -474,7 +469,7 @@ const Line = styled.div`
   width: 40%;
   border-top: 2px solid
     ${({ theme, errorAtPosting }) =>
-      !errorAtPosting ? theme.color.darkTurquise : "#B90E0A"};
+      !errorAtPosting ? theme.color.dark : "#B90E0A"};
 `;
 
 const DeleteButton = styled(Button)`

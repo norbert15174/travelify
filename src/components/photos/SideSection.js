@@ -8,7 +8,7 @@ import tagWhiteIcon from "./assets/tagWhiteIcon.svg";
 import editPencilIcon from "./assets/editPencilIcon.svg";
 import acceptIcon from "./assets/acceptIcon.svg";
 import close2Icon from "./assets/close2Icon.svg";
-import tagTurquiseIcon from "./assets/tagTurquiseIcon.svg";
+import tagTurquiseIcon from "./assets/tagIcon.svg";
 import { albumRights } from "../../miscellanous/Utils";
 import axios from "axios";
 import Spinner from "../trinkets/Spinner";
@@ -237,7 +237,7 @@ const SideSection = ({
                   height={"8%"}
                   width={"8%"}
                   type={"bubbles"}
-                  color={"#0FA3B1"}
+                  color={"#064045"}
                 />
               )}
             </span>
@@ -361,8 +361,8 @@ const SideSection = ({
             <Spinner
               width={"30px"}
               height={"30px"}
-              firstColor={"#12BFCE"}
-              secondColor={"#0FA3B1"}
+              firstColor={"#075459"}
+              secondColor={"#064045"}
               border={"8px"}
             />
           </CommentsSpinner>
@@ -416,7 +416,7 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid ${({ theme }) => theme.color.darkTurquise};
+  border-bottom: 1px solid ${({ theme }) => theme.color.dark};
 `;
 
 const Heading = styled.div`
@@ -451,7 +451,7 @@ const Heading = styled.div`
 const OwnerPhoto = styled.img`
   width: 40px;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 1px solid ${({ theme }) => theme.color.light};
   border-radius: 50%;
   margin-right: 10px;
   cursor: pointer;
@@ -616,7 +616,7 @@ const CommentDate = styled.p`
 const UserPhoto = styled.img`
   width: 25px;
   height: 25px;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 1px solid ${({ theme }) => theme.color.light};
   border-radius: 50%;
   margin-right: 5px;
   cursor: pointer;
@@ -632,7 +632,7 @@ const UserPhoto = styled.img`
 
 const Footer = styled.div`
   max-height: 120px;
-  border-top: 1px solid ${({ theme }) => theme.color.darkTurquise};
+  border-top: 1px solid ${({ theme }) => theme.color.dark};
 `;
 
 const EditDescriptionButton = styled(ButtonIcon)`
@@ -647,7 +647,7 @@ const EditDescriptionButton = styled(ButtonIcon)`
   background-size: 75%;
   background-position: 50% 50%;
   &:hover {
-    background-color: ${({ theme }) => theme.color.lightTurquise};
+    background-color: ${({ theme }) => theme.color.light};
   }
   @media only screen and (max-width: 1225px) {
     width: 20px;
@@ -672,7 +672,7 @@ const CloseEditing = styled(ButtonIcon)`
   background-size: 75%;
   background-position: 50% 50%;
   &:hover {
-    background-color: ${({ theme }) => theme.color.lightTurquise};
+    background-color: ${({ theme }) => theme.color.light};
   }
   @media only screen and (max-width: 1225px) {
     width: 20px;
@@ -697,7 +697,7 @@ const TagButton = styled(ButtonIcon)`
   margin-top: 15px;
   padding: 5px 0px 5px 20px;
   &:hover {
-    background-color: ${({ theme }) => theme.color.lightTurquise};
+    background-color: ${({ theme }) => theme.color.light};
   }
   @media only screen and (max-width: 1225px) {
     width: 100px;

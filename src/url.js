@@ -43,6 +43,7 @@ export const endpoints = {
     getRequestsStatus: url + "/friends/requests/sent",
     getMessage: url + "/friends/message/", //+ friends id, page
     sendMessage: url + "/friends/message/", //+ friends id
+    refreshMessages: url + "/friends/message/new/", //+ friends id
     getNotifications: url + "/news/notification"
 }
 

@@ -210,7 +210,11 @@ const Apply = styled.div`
   padding: 20px 30px 20px 30px;
   border-radius: 40px;
   font-size: 18px;
-  background-color: ${({theme}) => theme.color.lightTurquise};
+  background-color: ${({theme}) => theme.color.dark};
+  &:hover,
+  &:focus {
+    background-color: ${({ theme }) => theme.color.light};
+  }
   border: none;
   color: white;
   margin-top: 20px;

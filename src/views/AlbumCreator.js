@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import AlbumCreatorPage from "../components/albumCreator/AlbumCreatorPage";
 import UserTemplate from "../templates/UserTemplate";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { mapFriendsToSelect, albumCreator } from "../miscellanous/Utils";

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import UserTemplate from '../templates/UserTemplate';
 import SearchPage from "../components/search/SearchPage";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 
 // UserTemplate adds Menu sidebar
 

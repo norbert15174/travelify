@@ -23,7 +23,7 @@ const NewsPage = () => {
 
   useEffect(() => {
     getNews("firstRun");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const observer = useRef(null);
@@ -136,8 +136,8 @@ const NewsPage = () => {
             width={"30px"}
             height={"30px"}
             border={"6px"}
-            firstColor={({ theme }) => theme.color.darkTurquise}
-            secondColor={({ theme }) => theme.color.lightTurquise}
+            firstColor={({ theme }) => theme.color.dark}
+            secondColor={({ theme }) => theme.color.light}
           />
         ) : (
           <Info>

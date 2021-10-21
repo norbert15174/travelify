@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import refreshIcon from "../assets/refreshIcon.svg"
+import refreshIcon from "../assets/refreshIcon.svg";
 
 export const Loading = () => (
   <LoadingContainer>
@@ -12,25 +12,23 @@ export const Loading = () => (
 );
 
 export const ErrorAtLoading = () => (
-    <LoadingContainer>
-        <LoadingSpinner active={false} />
-        <Messages>
-            <h1>Coś poszło nie tak ...</h1>
-            <InnerContainer>
-                <h2>Odśwież stronę</h2>
-                <Refresh onClick={() => window.location.reload(false)}/>
-            </InnerContainer>
-        </Messages>
-    </LoadingContainer>
+  <LoadingContainer>
+    <LoadingSpinner active={false} />
+    <Messages>
+      <h1>Coś poszło nie tak ...</h1>
+      <InnerContainer>
+        <h2>Odśwież stronę</h2>
+        <Refresh onClick={() => window.location.reload(false)} />
+      </InnerContainer>
+    </Messages>
+  </LoadingContainer>
 );
 
-
-
 const InnerContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 2.5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 2.5px;
 `;
 
 const LoadingContainer = styled.div`
@@ -49,19 +47,19 @@ const LoadingContainer = styled.div`
 `;
 
 const Refresh = styled.div`
-    margin-left: 10px;
-    width: 25px;
-    height: 25px;
-    background-image: url(${() => refreshIcon});
-    background-size: 25px;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    cursor: pointer;
-    @media only screen and (max-width: 720px) {
-        width: 20px;
-        height: 20px;
-        background-size: 20px;
-    }
+  margin-left: 10px;
+  width: 25px;
+  height: 25px;
+  background-image: url(${() => refreshIcon});
+  background-size: 25px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  cursor: pointer;
+  @media only screen and (max-width: 720px) {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+  }
 `;
 
 const Messages = styled.div`
@@ -100,8 +98,8 @@ const LoadingSpinner = styled.div`
   width: 30px;
   height: 30px;
   margin-right: 15px;
-  border: 12px solid ${({ theme }) => theme.color.lightTurquise};
-  border-top: 12px solid ${({ theme }) => theme.color.darkTurquise};
+  border: 12px solid ${({ theme }) => theme.color.light};
+  border-top: 12px solid ${({ theme }) => theme.color.dark};
   border-radius: 50%;
   animation-name: ${({ active }) => (active ? rotate : "none")};
   animation-duration: 1s;
@@ -113,7 +111,7 @@ const LoadingSpinner = styled.div`
     max-width: 20px;
     width: 20px;
     height: 20px;
-    border: 8px solid ${({ theme }) => theme.color.lightTurquise};
-    border-top: 8px solid ${({ theme }) => theme.color.darkTurquise};
+    border: 8px solid ${({ theme }) => theme.color.light};
+    border-top: 8px solid ${({ theme }) => theme.color.dark};
   }
 `;

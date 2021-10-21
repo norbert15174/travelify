@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import UserTemplate from "../templates/UserTemplate";
 import AlbumInside from "../components/albums/AlbumInside";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 import { useDispatch } from "react-redux";
 import {
   setOwner,
@@ -16,6 +16,7 @@ import {
   setTags,
   setRights,
   setAlbumType,
+  setNotificationPhoto,
 } from "../redux/albumDetailsSlice";
 
 const AlbumDetails = () => {
@@ -23,7 +24,7 @@ const AlbumDetails = () => {
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
     useState(false);
   const [error, setError] = useState(null);
-  const location = useLocation();
+  const history = useHistory();
 
   const urlParams = useParams(); // params straight from url
   const dispatch = useDispatch();
@@ -33,9 +34,10 @@ const AlbumDetails = () => {
       throw new Error(errorTypes.noAccess);
     } else {
       setAlbumId(urlParams.id);
-      if (location.state !== undefined && location.state.photoId) {
-        // photoId for comments and tags notifs
-        console.log("photoId: " + location.state.photoId);
+      if (history.location.state !== undefined && history.location.state.photoId) {
+        console.log("photoId: " + history.location.state.photoId);
+      } else {
+        dispatch(setNotificationPhoto(null));
       }
       getUserAlbum(urlParams.id);
     }
@@ -60,6 +62,14 @@ const AlbumDetails = () => {
             index: i + 1,
             photo: data.photosDTOS[i],
           });
+          if (
+            history.location.state !== undefined &&
+            history.location.state.photoId &&
+            data.photosDTOS[i].photoId === history.location.state.photoId
+          ) {
+            console.log("TAK")
+            dispatch(setNotificationPhoto(tempPhotos[i].index));
+          }
           tempTags.push({
             photoId: data.photosDTOS[i].photoId,
             tags: data.photosDTOS[i].taggedList,
@@ -98,6 +108,7 @@ const AlbumDetails = () => {
         }
       })
       .finally(() => {
+        history.replace({ state: {} })
         setAlbumDetailsFetchFinished(true);
       });
   }

@@ -158,9 +158,9 @@ const ScrollBack = styled(ButtonIcon)`
   bottom: 0;
   margin-bottom: 15px;
   right: 0;
-  margin-right: 125px;
+  margin-right: 95px;
   @media only screen and (max-width: 720px) {
-    margin-right: 17px;
+    margin-right: 26px;
   }
 `;
 

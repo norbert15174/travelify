@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { routes } from "../../miscellanous/Routes";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "../trinkets/Tooltip";
 import UserProfilePicture from "./UserProfilePicture";
@@ -20,11 +20,13 @@ import Notifications from "../notifications/Notifications";
 
 const Menu = () => {
   const [menuToExpand, setMenuToExpand] = useState("");
+  const [currentUrl, setCurrentUrl] = useState("");
   const [isVisible, toggleVisibility] = useState(true);
   const [logoutBox, setLogoutBox] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [refuseLogout, setRefuseLogout] = useState(false);
   const [logoutRedirect, setLogoutRedirect] = useState(false);
+  const location = useLocation();
 
   const blurState = useSelector((state) => state.blur.value);
 
@@ -32,6 +34,22 @@ const Menu = () => {
     setMenuToExpand("");
     toggleVisibility(!isVisible);
   };
+
+  useEffect(() => {
+    if (location.pathname === routes.news) {
+      setCurrentUrl(routes.news);
+    } else if (location.pathname === routes.search) {
+      setCurrentUrl(routes.search);
+    } else if (location.pathname.includes("userProfile") && location.pathname.slice(-1) === sessionStorage.getItem("loggedUserId")) {
+      setCurrentUrl("loggedUserProfile");
+    } else if (location.pathname.includes("group")) {
+      setCurrentUrl("group");
+    } else if (location.pathname.includes("album")) {
+      setCurrentUrl("album");
+    } else {
+      setCurrentUrl("");
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (logoutBox) {
@@ -74,12 +92,13 @@ const Menu = () => {
           }}
         >
           <UserProfileContainer data-tip data-for="userTip">
-            <UserProfilePicture />
+            <UserProfilePicture active={currentUrl === "loggedUserProfile" ? true : false}/>
           </UserProfileContainer>
           <Tooltip id="userTip" place="bottom" text="Panel użytkownika" />
         </Link>
         <NavButton
           icon={notifs}
+          active={menuToExpand === "notifications" ? true : false}
           onClick={() =>
             menuToExpand === "notifications"
               ? setMenuToExpand("")
@@ -90,11 +109,12 @@ const Menu = () => {
         />
         <Tooltip id="notifTip" place="bottom" text="Powiadomienia" />
         <Link to={routes.news}>
-          <NavButton icon={news} data-tip data-for="newsTip" />
+          <NavButton icon={news} active={currentUrl === routes.news ? true : false} data-tip data-for="newsTip" />
           <Tooltip id="newsTip" place="bottom" text="Aktualności" />
         </Link>
         <NavButton
           icon={friends}
+          active={menuToExpand === "friends" ? true : false}
           onClick={() =>
             menuToExpand === "friends"
               ? setMenuToExpand("")
@@ -105,15 +125,15 @@ const Menu = () => {
         />
         <Tooltip id="friendsTip" place="bottom" text="Znajomi" />
         <Link to={routes.albums}>
-          <NavButton icon={albums} data-tip data-for="albumsTip" />
+          <NavButton icon={albums} active={currentUrl === "album" ? true : false} data-tip data-for="albumsTip" />
           <Tooltip id="albumsTip" place="bottom" text="Twoje albumy" />
         </Link>
         <Link to={routes.groups}>
-          <NavButton icon={groups} data-tip data-for="groupsTip" />
+          <NavButton icon={groups} active={currentUrl === "group" ? true : false} data-tip data-for="groupsTip" />
           <Tooltip id="groupsTip" place="bottom" text="Grupy" />
         </Link>
         <Link to={routes.search}>
-          <NavButton icon={search} data-tip data-for="searchTip" />
+          <NavButton icon={search} active={currentUrl === routes.search ? true : false} data-tip data-for="searchTip" />
           <Tooltip id="searchTip" place="bottom" text="Wyszukiwarka" />
         </Link>
         <Logout
@@ -147,12 +167,12 @@ const Container = styled.div`
   filter: ${({ blurState }) => (blurState === true ? "blur(15px)" : "none")};
   -webkit-filter: ${({ blurState }) =>
     blurState === true ? "blur(15px)" : "none"};
-  background-color: ${({ theme }) => theme.color.darkTurquise};
+  background-color: ${({ theme }) => theme.color.dark};
   top: 0;
   right: 0;
   height: 100vh;
   min-height: 400px;
-  width: 120px;
+  width: 90px;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -163,12 +183,6 @@ const Container = styled.div`
   @media only screen and (max-width: 720px) {
     visibility: ${({ isVisible }) => (isVisible ? "" : "hidden")};
     z-index: 1;
-  }
-  @media only screen and (max-height: 720px) {
-    width: 100px;
-  }
-  @media only screen and (max-height: 640px) {
-    width: 90px;
   }
   @media only screen and (max-height: 560px) {
     width: 80px;
@@ -192,52 +206,44 @@ const VisibilityButton = styled(ButtonIcon)`
     width: 40px;
     height: 40px;
     top: 0;
-    right: ${({ isVisible }) => (isVisible ? "102px" : "15px")};
+    right: ${({ isVisible }) => (isVisible ? "72px" : "25px")};
     transform: ${({ isVisible }) =>
       isVisible ? "rotate(180deg)" : "rotate(0deg)"};
     background-color: transparent;
     z-index: 10000;
   }
-  @media only screen and (max-height: 720px) {
-    right: ${({ isVisible }) => (isVisible ? "82px" : "15px")};
-  }
-  @media only screen and (max-height: 640px) {
-    right: ${({ isVisible }) => (isVisible ? "72px" : "15px")};
-  }
   @media only screen and (max-height: 560px) {
-    right: ${({ isVisible }) => (isVisible ? "62px" : "15px")};
+    width: 35px;
+    height: 35px;
+    right: ${({ isVisible }) => (isVisible ? "67px" : "15px")};
   }
   @media only screen and (max-height: 480px) {
-    right: ${({ isVisible }) => (isVisible ? "52px" : "15px")};
+    width: 30px;
+    height: 30px;
+    right: ${({ isVisible }) => (isVisible ? "57px" : "15px")};
   }
   @media only screen and (max-height: 400px) {
-    right: ${({ isVisible }) => (isVisible ? "42px" : "15px")};
+    width: 25px;
+    height: 25px;
+    right: ${({ isVisible }) => (isVisible ? "47px" : "15px")};
   }
 `;
 
 const NavButton = styled.div`
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 15px;
   margin-top: 10px;
-  background-color: ${({ theme }) => theme.color.lightTurquise};
-  width: 80px;
-  height: 80px;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 60px;
+  height: 60px;
   background-image: url(${({ icon }) => icon});
   background-size: 60%;
   background-position: 50% 50%;
   background-repeat: no-repeat;
+  transition: background-color 0.1s ease-in;
+  background-color: ${({ active, theme }) =>
+    active ? theme.color.light : null};
   &:hover {
-    border: 2px solid ${({ theme }) => theme.color.lightBackground};
-    box-sizing: border-box;
-  }
-  @media only screen and (max-height: 720px) {
-    width: 70px;
-    height: 70px;
-  }
-  @media only screen and (max-height: 640px) {
-    width: 60px;
-    height: 60px;
+    background-color: ${({ theme }) => theme.color.light};
   }
   @media only screen and (max-height: 560px) {
     width: 50px;
@@ -259,27 +265,17 @@ const UserProfileContainer = styled.div`
 
 const Logout = styled(ButtonIcon)`
   cursor: pointer;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.color.lightTurquise};
-  width: 80px;
-  height: 80px;
+  border-radius: 15px;
+  width: 60px;
+  height: 60px;
   background-image: url(${({ icon }) => icon});
   background-size: 60%;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   margin: auto 0 5px 0;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: background-color 0.1s ease-in;
   &:hover {
-    border: 2px solid ${({ theme }) => theme.color.lightBackground};
-    box-sizing: border-box;
-  }
-  @media only screen and (max-height: 720px) {
-    width: 70px;
-    height: 70px;
-  }
-  @media only screen and (max-height: 640px) {
-    width: 60px;
-    height: 60px;
+    background-color: ${({ theme }) => theme.color.light};
   }
   @media only screen and (max-height: 560px) {
     width: 50px;
@@ -292,7 +288,7 @@ const Logout = styled(ButtonIcon)`
   @media only screen and (max-height: 400px) {
     width: 30px;
     height: 30px;
-    margin: 10px 0 5px 0;
+    margin: 10px 0 10px 0;
   }
 `;
 

@@ -40,13 +40,13 @@ const CustomStyles = {
     control: (provided) => ({
         ...provided,
         background: "#F2F7F2",
-        border: "1px solid #0FA3B1",
+        border: "1px solid #075459",
         boxShadow: "none",
         "&:hover": {
-            border: "1px solid #0FA3B1",
+            border: "1px solid #075459",
         },
         "&:focus": {
-            border: "1px solid #0FA3B1",
+            border: "1px solid #075459",
         }
     }),
     menuList: (provided) => ({

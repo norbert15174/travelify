@@ -22,7 +22,13 @@ let emoji = new JSEMOJI();
 emoji.replace_mode = "unified";
 emoji.allow_native = true;
 
-const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdate }) => {
+const Message = ({
+  user,
+  closeMessenger,
+  friendDisplay,
+  chatUpdate,
+  setChatUpdate,
+}) => {
   const [message, setMessage] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [cursorPos, setCursorPos] = useState(null);
@@ -46,9 +52,10 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
       if (givenMessages) {
         chatUpdate.delete(user.friendId);
         setChatUpdate(chatUpdate);
-        getMessages("update");
+        refreshMessages();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatUpdate]);
 
   useEffect(() => {
@@ -118,7 +125,7 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
         endpoints.getMessage +
         user.friendId +
         "?page=" +
-        (type === "firstRun" || type === "update" ? 0 : pageNumber),
+        (type === "firstRun" ? 0 : pageNumber),
       method: "get",
       headers: {
         "Content-Type": "application/json",
@@ -126,18 +133,53 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
       },
     })
       .then(({ data }) => {
-        /* console.log(pageNumber);
-        console.log(data); */
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
         if (givenMessages && type === "scrollUpdate") {
           // prevState must be iterable!
           setGivenMessages((prevState) => [...prevState, ...data]);
-        } else if (type === "firstRun" || type === "update") {
+        } else if (type === "firstRun") {
           setPageNumber(1);
           setGivenMessages(data);
           scrollToBottom();
         }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  async function refreshMessages() {
+    setLoading(true);
+    await axios
+      .post(
+        endpoints.refreshMessages + user.friendId,
+        {
+          friendsId: user.friendId,
+          date: givenMessages.length > 0 ? givenMessages[0].date : null,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+          },
+        }
+      )
+      .then((response) => {
+        let lastId = new Set(givenMessages.map((e) => e.id));
+        console.log(response.data);
+        let responseToSave = [];
+        for (let i = 0; i < response.data.length; i++) {
+          if (!lastId.has(response.data[i].id)) {
+            responseToSave.push(response.data[i]);
+          }
+        }
+        setGivenMessages((prevState) => [...responseToSave, ...prevState]);
+        setSending(false);
+        scrollToBottom();
       })
       .catch((error) => {
         console.error(error);
@@ -261,7 +303,7 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
               height={"8%"}
               width={"8%"}
               type={"spin"}
-              color={"#0FA3B1"}
+              color={"#075459"}
             />
           }
           scrollableTarget="messageContainer"
@@ -271,6 +313,7 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
               item.senderId === user.id ? (
                 <SingleMessage
                   key={index}
+                  friendName={user.name + " " + user.lastName}
                   newestMessageRef={1 === index + 1 ? newestMessageRef : null}
                   message={item.text}
                   messageId={item.id}
@@ -322,7 +365,7 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
               }
             }}
           >
-            <Emoji key="emoji"/>
+            <Emoji key="emoji" />
           </EmojiIcon>
           {showEmoji && (
             <div
@@ -351,7 +394,13 @@ const Message = ({ user, closeMessenger, friendDisplay, chatUpdate, setChatUpdat
             }}
           />
         ) : (
-          <Sending key="sending" height={"9%"} width={"9%"} type={"spin"} color={"#0FA3B1"} />
+          <Sending
+            key="sending"
+            height={"9%"}
+            width={"9%"}
+            type={"spin"}
+            color={"#075459"}
+          />
         )}
       </ChatFooter>
     </Container>
@@ -368,22 +417,16 @@ const Container = styled.div`
   width: 350px;
   height: 460px;
   background-color: ${({ theme }) => theme.color.lightBackground};
-  right: 547px;
+  right: 517px;
   bottom: 0;
   z-index: 10;
   -webkit-box-shadow: 5px 5px 15px 1px rgba(0, 0, 0, 0.74);
   box-shadow: 5px 5px 15px 1px rgba(0, 0, 0, 0.74);
   border-top-left-radius: 10px;
   @media only screen and (max-width: 1000px) {
-    right: 422px;
+    right: 392px;
     width: 300px;
     height: 410px;
-  }
-  @media only screen and (max-height: 720px) {
-    right: 527px;
-  }
-  @media only screen and (max-height: 640px) {
-    right: 517px;
   }
   @media only screen and (max-height: 560px) {
     right: 507px;
@@ -393,12 +436,6 @@ const Container = styled.div`
   }
   @media only screen and (max-height: 400px) {
     right: 487px;
-  }
-  @media only screen and (max-width: 1000px) and (max-height: 720px) {
-    right: 402px;
-  }
-  @media only screen and (max-width: 1000px) and (max-height: 640px) {
-    right: 392px;
   }
   @media only screen and (max-width: 1000px) and (max-height: 560px) {
     right: 382px;
@@ -414,7 +451,7 @@ const Container = styled.div`
 const ChatHeader = styled.div`
   font-size: 16px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
-  background-color: ${({ theme }) => theme.color.darkTurquise};
+  background-color: ${({ theme }) => theme.color.dark};
   border-top-left-radius: 10px;
   color: ${({ theme }) => theme.color.lightBackground};
   display: flex;

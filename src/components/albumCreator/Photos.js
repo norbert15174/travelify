@@ -11,13 +11,18 @@ import StatusMessage from "../trinkets/StatusMessage";
 import { endpoints } from "../../url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import axios from "axios";
-import { selectAlbumPhotosRedux, setAlbumPhotosRedux, selectMainPhotoRedux, setMainPhotoRedux } from "../../redux/albumCreatorSlice";
+import {
+  selectAlbumPhotosRedux,
+  setAlbumPhotosRedux,
+  selectMainPhotoRedux,
+  setMainPhotoRedux,
+} from "../../redux/albumCreatorSlice";
 
-const Photos = ({editedAlbumId}) => {
+const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
   const mainPhoto = useSelector(selectMainPhotoRedux);
   const dispatch = useDispatch();
-  
+
   const [addType, setAddType] = useState("");
   const [description, setDescription] = useState("");
   const [singleImage, setSingleImage] = useState(undefined);
@@ -41,7 +46,6 @@ const Photos = ({editedAlbumId}) => {
     setImagePreview([]);
 
     Array.from(files).every((file) => {
-
       if (file === undefined) {
         setMultipleImages([]);
         document.getElementById(addType + "__input").value = null;
@@ -78,7 +82,6 @@ const Photos = ({editedAlbumId}) => {
 
       return true;
     });
-
   };
 
   const singleFileHandler = (e) => {
@@ -136,9 +139,9 @@ const Photos = ({editedAlbumId}) => {
     setIsDirty(true);
     setErrorMessage("");
     setSubmitMessage("");
-    document.getElementById('single').checked = false;
-    document.getElementById('multi').checked = false;
-    document.getElementById('main').checked = false;
+    document.getElementById("single").checked = false;
+    document.getElementById("multi").checked = false;
+    document.getElementById("main").checked = false;
     if (type === "multiPreview") {
       // deleting image with specific url from imagePreview state
       let images = imagePreview.filter(
@@ -161,7 +164,9 @@ const Photos = ({editedAlbumId}) => {
       }
     } else if (type === "album") {
       // deleting images with specific id from album
-      let images = albumImages.filter((photo) => photo.photoId !== imageToDelete);
+      let images = albumImages.filter(
+        (photo) => photo.photoId !== imageToDelete
+      );
       setAddType("delete");
       setAlbumImages(images);
       setPhotosToDelete((prevState) => [...prevState, imageToDelete]);
@@ -171,7 +176,7 @@ const Photos = ({editedAlbumId}) => {
   const clearForm = () => {
     if (document.getElementById(addType + "__input") !== null) {
       document.getElementById(addType + "__input").value = null;
-    };
+    }
     setSingleImage(undefined);
     setMultipleImages([]);
     setDescription("");
@@ -237,20 +242,20 @@ const Photos = ({editedAlbumId}) => {
         document.getElementById(addType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
-      });      
+      });
   }
 
   async function deletePhotos() {
     setSubmitMessage("Usuwanie....");
     await axios({
-        method: "delete",
-        url: endpoints.deletePhotosFromAlbum,
-        data: photosToDelete,
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-        },
-      })
+      method: "delete",
+      url: endpoints.deletePhotosFromAlbum,
+      data: photosToDelete,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
       .then((response) => {
         setSubmitMessage("Zmiany zostały zapisane!");
         dispatch(setAlbumPhotosRedux(albumImages));
@@ -269,7 +274,7 @@ const Photos = ({editedAlbumId}) => {
   async function addMultiPhotos() {
     const data = new FormData();
     for (let i = 0; i < multipleImages.length; i++) {
-        data.append("files", multipleImages[i]);
+      data.append("files", multipleImages[i]);
     }
     setSubmitMessage("Dodawanie zdjęć...");
     await axios
@@ -293,7 +298,7 @@ const Photos = ({editedAlbumId}) => {
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
       });
-  };
+  }
 
   return (
     <>
@@ -305,9 +310,24 @@ const Photos = ({editedAlbumId}) => {
             clearForm();
           }}
         >
-          <RadioButton name="radio" id="main" value="main" label="Zdjęcie główne"/>
-          <RadioButton name="radio" id="single" value="single" label="Pojedyncze zdjęcie"/>
-          <RadioButton name="radio" id="multi" value="multi" label="Wiele zdjęć"/>
+          <RadioButton
+            name="radio"
+            id="main"
+            value="main"
+            label="Zdjęcie główne"
+          />
+          <RadioButton
+            name="radio"
+            id="single"
+            value="single"
+            label="Pojedyncze zdjęcie"
+          />
+          <RadioButton
+            name="radio"
+            id="multi"
+            value="multi"
+            label="Wiele zdjęć"
+          />
         </RadioContainer>
         {addType === "single" && (
           <>
@@ -318,7 +338,8 @@ const Photos = ({editedAlbumId}) => {
               placeholder="Opis zdjęcia zawierający maksymalnie 250 znaków..."
               maxLength={250}
             />
-          </>)}
+          </>
+        )}
         {(addType === "single" ||
           addType === "multi" ||
           addType === "main") && (
@@ -343,7 +364,7 @@ const Photos = ({editedAlbumId}) => {
             </FileInput>
           </>
         )}
-        <Line/>
+        <Line />
         <InnerContainer>
           {addType === "single" || addType === "main" ? (
             <>
@@ -370,10 +391,10 @@ const Photos = ({editedAlbumId}) => {
               <PhotoContainer>
                 {imagePreview[0].url !== "" ? (
                   imagePreview.map((preview) => (
-                    <MultiImageContainer key={new Date().getTime() + preview.url.substr()}>
-                      <MultiImage
-                        src={preview.url}
-                      />
+                    <MultiImageContainer
+                      key={new Date().getTime() + preview.url.substr()}
+                    >
+                      <MultiImage src={preview.url} />
                       <DeleteButton
                         src={deleteWhiteIcon}
                         onClick={() =>
@@ -390,9 +411,8 @@ const Photos = ({editedAlbumId}) => {
           ) : null}
           <h3>Zdjęcia w albumie:</h3>
           <PhotoContainer>
-            { 
-              albumImages !== undefined && (albumImages.length !== 0) ? 
-              (albumImages.map((photo) => (
+            {albumImages !== undefined && albumImages.length !== 0 ? (
+              albumImages.map((photo) => (
                 <MultiImageContainer key={photo.photoId}>
                   <MultiImage src={photo.photoUrl} />
                   <DeleteButton
@@ -400,8 +420,10 @@ const Photos = ({editedAlbumId}) => {
                     onClick={() => deleteImageFromAlbum(photo.photoId, "album")}
                   />
                 </MultiImageContainer>
-              ))) : (<p>Brak zdjęć w albumie...</p>)
-            }
+              ))
+            ) : (
+              <p>Brak zdjęć w albumie...</p>
+            )}
           </PhotoContainer>
         </InnerContainer>
         <Line />
@@ -502,7 +524,7 @@ const FileInput = styled.div`
 `;
 
 const Line = styled.div`
-  border-top: 2px solid ${({ theme }) => theme.color.darkTurquise};
+  border-top: 2px solid ${({ theme }) => theme.color.dark};
 `;
 
 const InnerContainer = styled.div`
@@ -553,7 +575,7 @@ const MultiImageContainer = styled.div`
 const MultiImage = styled.img`
   width: 100px;
   height: 100px;
-  border: 2px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 2px solid ${({ theme }) => theme.color.light};
   object-fit: cover;
   @media only screen and (max-width: 910px) {
     width: 70px;

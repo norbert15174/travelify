@@ -9,7 +9,7 @@ import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { useDispatch } from "react-redux";
 import { setOwner, setAlbumPhotos, setInfo, setTags, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
 import { clearStore as clearUserStore } from '../redux/userDataSlice';
-import { errorTypes } from '../miscellanous/Errors';
+import { errorTypes } from '../miscellanous/Utils';
 
 const AlbumNotLogged = () => {
 

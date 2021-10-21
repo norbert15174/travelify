@@ -4,7 +4,7 @@ import AlbumsPage from "../components/albums/AlbumsPage";
 import axios from "axios";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 
 // UserTemplate adds Menu sidebar
 
