@@ -167,7 +167,7 @@ const ProfilePhoto = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 100%;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 1px solid ${({ theme }) => theme.color.light};
   @media only screen and (max-width: 1100px) {
     width: 60px;
     height: 60px;

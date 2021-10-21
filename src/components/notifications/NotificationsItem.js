@@ -7,6 +7,7 @@ import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
+import { setNotificationPhoto } from "../../redux/albumDetailsSlice";
 
 const notificationsMaleVersion = {
   PHOTO_TAG: " oznaczył cię na zdjęciu",
@@ -32,6 +33,7 @@ const NotificationsItem = ({
   invitationId = null,
   photoId = null,
   albumId = null,
+  date,
 }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
@@ -73,7 +75,8 @@ const NotificationsItem = ({
     notificationsDisplay("");
     return (
       <Redirect
-        push to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
+        push
+        to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
       />
     );
   }
@@ -87,6 +90,7 @@ const NotificationsItem = ({
             status === "PHOTO_TAG" ||
             status === "COMMENT"
           ) {
+            dispatch(setNotificationPhoto(null));
             setRedirectToAlbum(true);
           }
         }}
@@ -101,12 +105,15 @@ const NotificationsItem = ({
             e.target.src = noProfilePictureIcon;
           }}
         />
-        <span>
-          <p>
-            {name} {surName}
-          </p>
-          {notifier[status]}
-        </span>
+        <TextContainer>
+          <span>
+            <p>
+              {name} {surName}
+            </p>
+            {notifier[status]}
+          </span>
+          <Date>{date}</Date>
+        </TextContainer>
       </InnerContainer>
       {status === "FRIEND_REQUEST" && notClicked && (
         <Buttons>
@@ -135,8 +142,7 @@ const NotificationsItem = ({
 };
 
 const Container = styled.div`
-  width: 365px;
-  margin: 0px 0px 15px 0px;
+  margin: 0px 5px 15px 0px;
   font-size: 20px;
   span {
     display: inline-block;
@@ -163,14 +169,28 @@ const Container = styled.div`
   }
 `;
 
-const InnerContainer = styled.div`
+const TextContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+`;
+
+const Date = styled.p`
+  color: ${({ theme }) => theme.color.greyFont};
+  font-size: 14px;
+  margin: 5px auto 0 0;
+`;
+
+const InnerContainer = styled.div`
+  display: grid;
+  grid-template-columns: 79px 1fr;
   padding: 5px 0px 5px 5px;
   &:hover {
     border-radius: 25px;
     background: rgba(18, 191, 206, 0.4);
     transition: background-color 0.2s;
+  }
+  @media only screen and (max-width: 1000px) {
+    grid-template-columns: 63px 1fr;
   }
 `;
 
@@ -213,14 +233,14 @@ const Status = styled.p`
   margin-top: 10px;
   height: 30px;
   width: 250px;
-  color: ${({ theme }) => theme.color.lightTurquise};
+  color: ${({ theme }) => theme.color.light};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   text-align: center;
   margin: 10px 0 0 35px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   line-height: 30px;
   font-size: 15px;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 1px solid ${({ theme }) => theme.color.light};
   @media only screen and (max-width: 1000px) {
     font-size: 10px;
     height: 25px;
@@ -236,8 +256,8 @@ const UserPhoto = styled.img`
   width: 64px;
   height: 64px;
   border-radius: 100%;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
-  margin-right: 10px;
+  border: 1px solid ${({ theme }) => theme.color.light};
+  margin-right: 15px;
   flex-shrink: 1;
   @media only screen and (max-width: 1000px) {
     width: 48px;

@@ -3,7 +3,7 @@ import axios from "axios";
 import EditProfilePage from "../components/editProfile/EditProfilePage"
 import UserTemplate from "../templates/UserTemplate";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 import { endpoints } from "../url";
 
 const EditProfile = () => {

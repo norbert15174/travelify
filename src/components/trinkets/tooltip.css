@@ -2,7 +2,7 @@
     color: #000 !important;
     background-color: #F2F7F2 !important;
     opacity: 1 !important;
-    filter: drop-shadow(0px 0.75px 0.75px #0FA3B1);
+    filter: drop-shadow(0px 0.75px 0.75px #075459);
 }
 
 .__react_component_tooltip.place-left::after {

@@ -39,7 +39,7 @@
   width: 20px;
   background-color: #e0e5e0;
   border-radius: 50%;
-  border: 1px solid #12bfce;
+  border: 1px solid #075459;
 }
 
 .container:hover input ~ .custom {
@@ -47,7 +47,7 @@
 }
 
 .container input:checked ~ .custom {
-  background-color: #12bfce;
+  background-color: #075459;
 }
 
 .custom:after {

@@ -52,7 +52,6 @@ const Friends = ({ friendDisplay }) => {
   */
   useEffect(() => {}, [messageNotifications, chatUpdate]);
 
-
   /*
     websocket connection
   */
@@ -62,7 +61,9 @@ const Friends = ({ friendDisplay }) => {
     client.connect({}, function () {
       client.subscribe("/topic/" + userId, function (message) {
         var friendId = JSON.parse(message.body).friendId;
-        setMessageNotifications((prevState) => new Set([...prevState, friendId]));
+        setMessageNotifications(
+          (prevState) => new Set([...prevState, friendId])
+        );
         setChatUpdate((prevState) => new Set([...prevState, friendId]));
       });
     });
@@ -131,41 +132,44 @@ const Friends = ({ friendDisplay }) => {
         onChange={handleSearchBarChange}
       />
       <FriendsList className="scroll">
-        {loading === true ? null : <>
-          {friendsList !== null && !error ? (
-          (friendsList.length !== 0 && searchContent.length === 0
-            ? friendsList.map((friend) => (
-                <FriendItem
-                  key={friend.id}
-                  user={friend}
-                  selectedFriend={selectedFriend}
-                  setSelectedFriend={setSelectedFriend}
-                  chatBlock={chatBlock}
-                  messageNotifications={messageNotifications}
-                  setMessageNotifications={setMessageNotifications}
-                />
-              ))
-            : null) ||
-          (searchContent.length !== 0 && found.length !== 0
-            ? found.map((friend) => (
-                <FriendItem
-                  key={friend.id}
-                  user={friend}
-                  selectedFriend={selectedFriend}
-                  setSelectedFriend={setSelectedFriend}
-                  chatBlock={chatBlock}
-                  messageNotifications={messageNotifications}
-                  setMessageNotifications={setMessageNotifications}
-                />
-              ))
-            : null) || (
-            <h1 style={{ color: theme.color.greyFont }}>Brak znajomych...</h1>
-          )
-        ) : (
-          <h1 style={{ color: theme.color.greyFont }}>Brak znajomych</h1>
+        {loading === true ? null : (
+          <>
+            {friendsList !== null && !error ? (
+              (friendsList.length !== 0 && searchContent.length === 0
+                ? friendsList.map((friend) => (
+                    <FriendItem
+                      key={friend.id}
+                      user={friend}
+                      selectedFriend={selectedFriend}
+                      setSelectedFriend={setSelectedFriend}
+                      chatBlock={chatBlock}
+                      messageNotifications={messageNotifications}
+                      setMessageNotifications={setMessageNotifications}
+                    />
+                  ))
+                : null) ||
+              (searchContent.length !== 0 && found.length !== 0
+                ? found.map((friend) => (
+                    <FriendItem
+                      key={friend.id}
+                      user={friend}
+                      selectedFriend={selectedFriend}
+                      setSelectedFriend={setSelectedFriend}
+                      chatBlock={chatBlock}
+                      messageNotifications={messageNotifications}
+                      setMessageNotifications={setMessageNotifications}
+                    />
+                  ))
+                : null) || (
+                <h1 style={{ color: theme.color.greyFont }}>
+                  Brak znajomych...
+                </h1>
+              )
+            ) : (
+              <h1 style={{ color: theme.color.greyFont }}>Brak znajomych</h1>
+            )}
+          </>
         )}
-        </>}
-
       </FriendsList>
       {selectedFriend && !chatBlock && (
         <Message
@@ -189,7 +193,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.color.lightBackground};
-  right: 121px;
+  right: 91px;
   top: 0;
   height: 100vh;
   z-index: 800;
@@ -199,19 +203,7 @@ const Container = styled.div`
     width: 300px;
   }
   @media only screen and (max-width: 720px) {
-    width: calc(100vw - 120px);
-  }
-  @media only screen and (max-width: 720px) and (max-height: 720px) {
-    width: calc(100vw - 100px);
-  }
-  @media only screen and (max-height: 720px) {
-    right: 101px;
-  }
-  @media only screen and (max-width: 720px) and (max-height: 640px) {
     width: calc(100vw - 90px);
-  }
-  @media only screen and (max-height: 640px) {
-    right: 91px;
   }
   @media only screen and (max-width: 720px) and (max-height: 560px) {
     width: calc(100vw - 80px);
@@ -239,7 +231,7 @@ const FriendsHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme }) => theme.color.darkTurquise};
+  background-color: ${({ theme }) => theme.color.dark};
   @media only screen and (max-width: 1000px) {
     height: 55px;
   }

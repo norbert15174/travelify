@@ -12,6 +12,7 @@ const SingleMessage = ({
   url,
   newestMessageRef,
   side = null,
+  friendName = null,
   friendId = null,
   friendDisplay = null,
   message,
@@ -46,15 +47,28 @@ const SingleMessage = ({
   return (
     <Container side={side} ref={newestMessageRef}>
       {side === "right" ? null : (
-        <ProfileIcon
-          src={url !== undefined && url ? url : noProfilePictureIcon}
-          alt="Profile picture"
-          onError={(e) => {
-            e.target.onError = null;
-            e.target.src = noProfilePictureIcon;
-          }}
-          onClick={() => setRedirectToProfile(true)}
-        />
+        <>
+          <ProfileIcon
+            data-tip
+            data-for={"friendTip" + messageDate}
+            src={url !== undefined && url ? url : noProfilePictureIcon}
+            alt="Profile picture"
+            onError={(e) => {
+              e.target.onError = null;
+              e.target.src = noProfilePictureIcon;
+            }}
+            onClick={() => setRedirectToProfile(true)}
+          />
+          <ReactTooltip
+            id={"friendTip" + messageDate}
+            place={"left"}
+            effect="solid"
+            delayShow={250}
+            className="message-tooltip"
+          >
+            {friendName}
+          </ReactTooltip>
+        </>
       )}
       <TextContainer
         data-tip
@@ -114,7 +128,7 @@ const ProfileIcon = styled.img`
   border-radius: 50px;
   position: relative;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 1px solid ${({ theme }) => theme.color.light};
   @media only screen and (max-width: 1000px) {
     width: 34px;
     height: 34px;

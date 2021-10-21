@@ -7,17 +7,18 @@ import NotificationsItem from "./NotificationsItem";
 import "./notificationsScrollbar.css";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
+import moment from "moment";
+import "moment/locale/pl";
 
 const Notifications = ({ notificationsDisplay }) => {
-
   const blurState = useSelector((state) => state.blur.value);
-  const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getFriends();
     getNotifications();
+    moment.locale("pl");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -36,9 +37,6 @@ const Notifications = ({ notificationsDisplay }) => {
       .catch((error) => {
         console.error(error);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   }
 
   async function getNotifications() {
@@ -57,9 +55,6 @@ const Notifications = ({ notificationsDisplay }) => {
       .catch((error) => {
         console.error(error);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   }
 
   return (
@@ -85,6 +80,7 @@ const Notifications = ({ notificationsDisplay }) => {
                 albumId={item.albumId}
                 status={item.status}
                 invitationId={item.id}
+                date={moment(item.date).calendar()}
               />
             ))
           : null}
@@ -100,7 +96,7 @@ const Container = styled.div`
   position: fixed;
   width: 425px;
   background-color: ${({ theme }) => theme.color.lightBackground};
-  right: 121px;
+  right: 91px;
   top: 0;
   height: 100vh;
   z-index: 800;
@@ -110,19 +106,7 @@ const Container = styled.div`
     width: 300px;
   }
   @media only screen and (max-width: 720px) {
-    width: calc(100vw - 120px);
-  }
-  @media only screen and (max-width: 720px) and (max-height: 720px) {
-    width: calc(100vw - 100px);
-  }
-  @media only screen and (max-height: 720px) {
-    right: 101px;
-  }
-  @media only screen and (max-width: 720px) and (max-height: 640px) {
     width: calc(100vw - 90px);
-  }
-  @media only screen and (max-height: 640px) {
-    right: 91px;
   }
   @media only screen and (max-width: 720px) and (max-height: 560px) {
     width: calc(100vw - 80px);
@@ -150,7 +134,7 @@ const Header = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme }) => theme.color.darkTurquise};
+  background-color: ${({ theme }) => theme.color.dark};
   @media only screen and (max-width: 1000px) {
     height: 55px;
   }
@@ -191,9 +175,9 @@ const NotificationsList = styled.div`
   overflow-x: hidden; /* Hide horizontal scrollbar */
   overflow-y: scroll; /* Add vertical scrollbar */
   max-height: 100vh;
-  margin: 20px 10px 20px 20px;
+  margin: 20px 10px 20px 10px;
   @media only screen and (max-width: 1000px) {
-    margin: 15px 10px 15px 15px;
+    margin: 15px 5px 15px 5px;
   }
 `;
 

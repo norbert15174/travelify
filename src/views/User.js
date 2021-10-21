@@ -6,7 +6,7 @@ import UserPage from "../components/user/UserPage";
 import { endpoints } from "../url";
 import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 import { userTypes } from "../miscellanous/Utils";
 import { setFriendsList, setProfilePicture, setUserData } from "../redux/userDataSlice";
 

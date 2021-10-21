@@ -15,7 +15,10 @@ const FriendItem = ({
 }) => {
   const [messageNew, setMessageNew] = useState(user.messagesNew);
   useEffect(() => {
-    if (messageNotifications.size > 0 && messageNotifications.has(user.friendId)) {
+    if (
+      messageNotifications.size > 0 &&
+      messageNotifications.has(user.friendId)
+    ) {
       if (selectedFriend && messageNotifications.has(selectedFriend.friendId)) {
         setMessageNew(false);
       } else {
@@ -83,7 +86,7 @@ const Photo = styled.img`
   height: 64px;
   border-radius: 100%;
   margin-right: 10px;
-  border: 2px solid ${({ theme }) => theme.color.lightTurquise};
+  border: 2px solid ${({ theme }) => theme.color.light};
   @media only screen and (max-width: 1000px) {
     width: 42px;
     height: 42px;

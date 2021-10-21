@@ -15,17 +15,11 @@ const UserTemplate = ({children, notLogged=false}) => {
 };
 
 const Container = styled.div`
-    width: ${({notLogged}) => !notLogged ? "calc(100% - 120px)" : "100%"}; // 120px => Menu sidebar width;
+    width: ${({notLogged}) => !notLogged ? "calc(100% - 90px)" : "100%"}; // 120px => Menu sidebar width;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
-    @media only screen and (max-height: 720px) {
-        width: ${({notLogged}) => !notLogged ? "calc(100% - 100px)" : "100%"};
-    }
-    @media only screen and (max-height: 640px) {
-        width: ${({notLogged}) => !notLogged ? "calc(100% - 90px)" : "100%"};
-	}
     @media only screen and (max-height: 560px) {
         width: ${({notLogged}) => !notLogged ? "calc(100% - 80px)" : "100%"};
 	}

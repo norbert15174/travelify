@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import UserTemplate from "../templates/UserTemplate";
 import NewsPage from "../components/news/NewsPage";
-import { errorTypes } from "../miscellanous/Errors";
+import { errorTypes } from "../miscellanous/Utils";
 import { endpoints } from "../url";
 import { setFriendsList } from "../redux/userDataSlice";
 import axios from "axios";
