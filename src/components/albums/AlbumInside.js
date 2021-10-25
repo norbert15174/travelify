@@ -28,11 +28,10 @@ import {
   selectInfo,
   setFriendsList,
   selectAlbumType,
-  selectRights,
-  selectNotificationPhoto,
+  selectRights
 } from "../../redux/albumDetailsSlice";
 
-const AlbumInside = ({ albumId }) => {
+const AlbumInside = ({ albumId, notifPhoto }) => {
   // map options
   const options = {
     disableDefaultUI: true, // disables little yellow guy and satellite view
@@ -63,19 +62,18 @@ const AlbumInside = ({ albumId }) => {
   const info = useSelector(selectInfo);
   const albumType = useSelector(selectAlbumType);
   const rights = useSelector(selectRights);
-  const notificationPhoto = useSelector(selectNotificationPhoto);
 
   useEffect(() => {
-    console.log(notificationPhoto);
-    if (notificationPhoto !== null) {
-      console.log("TAKKKK");
-      setPhotoPreview({ visible: true, index: notificationPhoto });
+    if (!notifPhoto) {
+      console.log("photo preview cleared");
+      setPhotoPreview({ visible: false, index: null });
+    } else if (notifPhoto) {
+      console.log("photo preview set");
+      setPhotoPreview({ visible: true, index: notifPhoto });
     }
-  }, [albumId, notificationPhoto]);
+  }, [notifPhoto]);
 
   useEffect(() => {
-    console.log("Album type: " + albumType);
-    console.log("Album rights: " + rights);
     if (rights === albumRights.owner && albumType === albumTypes.private) {
       getLoggedUserFriendsList();
     }
@@ -96,7 +94,7 @@ const AlbumInside = ({ albumId }) => {
         console.log(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 

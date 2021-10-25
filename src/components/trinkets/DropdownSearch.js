@@ -63,6 +63,55 @@ const AlbumSelectValue = (props) => (
   </ValueContainer>
 );
 
+const GroupSelectOption = (props) => (
+  <Option {...props}>
+    <ValueContainer>
+      <Album src={props.data.groupPicture} />
+      <InnerContainer>
+        <MobileContainer>
+          <Title>{props.data.value}</Title>
+          <Place>{props.data.place}</Place>
+        </MobileContainer>
+        <User>
+          <Profile
+            src={props.data.owner.profilePicture}
+            onError={(e) => {
+              e.target.onError = null;
+              e.target.src = noProfilePictureIcon;
+            }}
+            alt="Profile picture"
+          />
+          <Name>{props.data.owner.name + " " + props.data.owner.surname}</Name>
+        </User>
+      </InnerContainer>
+    </ValueContainer>
+  </Option>
+);
+
+const GroupSelectValue = (props) => (
+  <ValueContainer>
+    <Album src={props.data.groupPicture} />
+    <InnerContainer>
+      <MobileContainer>
+        <Title>{props.data.value}</Title>
+        <Place>{props.data.place}</Place>
+      </MobileContainer>
+
+      <User>
+        <Profile
+          src={props.data.owner.photo}
+          onError={(e) => {
+            e.target.onError = null;
+            e.target.src = noProfilePictureIcon;
+          }}
+          alt="Profile picture"
+        />
+        <Name>{props.data.owner.name + " " + props.data.owner.surname}</Name>
+      </User>
+    </InnerContainer>
+  </ValueContainer>
+);
+
 const CustomTheme = (theme) => {
   return {
     ...theme,
@@ -138,15 +187,13 @@ const DropdownSearch = ({ options, setState, value, searchType }) => {
       onChange={setValueOnChange}
       value={value}
       components={{
-        Option: searchType === "albmus" ? AlbumSelectOption : AlbumSelectOption,
+        Option: searchType === "albums" ? AlbumSelectOption : GroupSelectOption,
         SingleValue:
-          searchType === "albmus" ? AlbumSelectValue : AlbumSelectValue,
+          searchType === "albums" ? AlbumSelectValue : GroupSelectValue,
       }}
     />
   );
 };
-
-/// Jakby w components zrobić if'a do sprawdzania czy albumy czy użytkownik
 
 const StyledSelect = styled(Select)`
   min-width: 50%;

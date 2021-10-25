@@ -22,10 +22,10 @@ let emoji = new JSEMOJI();
 emoji.replace_mode = "unified";
 emoji.allow_native = true;
 
-const Message = ({
+const Messenger = ({
   user,
   closeMessenger,
-  friendDisplay,
+  chatsDisplay,
   chatUpdate,
   setChatUpdate,
 }) => {
@@ -198,7 +198,7 @@ const Message = ({
   useEffect(scrollToBottom, []);
 
   if (redirectToProfile) {
-    friendDisplay("");
+    chatsDisplay("");
     return (
       <Redirect
         push
@@ -320,7 +320,7 @@ const Message = ({
                   messageDate={item.date}
                   url={user.profilePicture}
                   friendId={user.id}
-                  friendDisplay={friendDisplay}
+                  chatsDisplay={chatsDisplay}
                 />
               ) : (
                 <SingleMessage
@@ -584,4 +584,4 @@ const SendIcon = styled.div`
   }
 `;
 
-export default Message;
+export default Messenger;

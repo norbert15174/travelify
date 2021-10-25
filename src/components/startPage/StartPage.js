@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import appLogo from "./svg/Logo.svg";
+import appLogo from "./assets/Logo.svg";
 import Button from "../trinkets/Button";
 import Map from "../googleMaps/Map";
 import { endpoints } from "../../url";
+import LoginModal from "./LoginModal";
+import doubleArrowRightIcon from "./assets/doubleArrowRightIcon.svg";
+import Tooltip from "../trinkets/Tooltip";
 
 const StartPage = () => {
-  const [redirect, setRedirect] = useState("no");
+  const [showLogin, setShowLogin] = useState(false);
+  const [redirectToAuth, setRedirectToAuth] = useState(false);
+  const [redirectToLoginTransition, setRedirectToLoginTransition] =
+    useState(false);
   const [markers, setMarkers] = useState(null);
 
   const options = {
@@ -39,7 +45,7 @@ const StartPage = () => {
       });
   }
 
-  if (redirect === "yes") {
+  if (redirectToAuth) {
     return <Redirect push to={{ pathname: "/auth" }} />;
   }
 
@@ -47,9 +53,19 @@ const StartPage = () => {
     <Wrapper>
       <StyledHeader>
         <StyledLogo />
-        <StyledButton onClick={() => setRedirect("yes")}>
-          Przejdź dalej
-        </StyledButton>
+        <ButtonsContainer>
+          <ForwardButton
+            data-tip
+            data-for="forwardBtn"
+            icon={doubleArrowRightIcon}
+            onClick={() => setRedirectToAuth(true)}
+          />
+          <Tooltip id="forwardBtn" place="left" text="Przejdź dalej"/>
+          <LoginButton onClick={() => setShowLogin(true)}>
+            Zaloguj się
+          </LoginButton>
+        </ButtonsContainer>
+        {showLogin && <LoginModal setShowLogin={setShowLogin} />}
       </StyledHeader>
       <Map
         width={"100%"}
@@ -131,6 +147,7 @@ const StyledParagraph = styled.p`
 const StyledHeader = styled.div`
   display: grid;
   grid-template-columns: 420px 1fr;
+  position: relative;
   align-items: center;
   width: 100%;
   height: 140px;
@@ -161,25 +178,59 @@ const StyledLogo = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
-  font-size: 28px;
-  padding: 15px 30px;
-  height: auto;
-  width: auto;
-  margin-left: auto;
-  margin-right: 30px;
+const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+`;
+
+const LoginButton = styled(Button)`
+  font-size: 20px;
+  height: 53px;
+  width: 146px;
+  margin-right: 20px;
   @media only screen and (max-width: 763px) {
-    font-size: 21px;
+    font-size: 16px;
+    margin-right: 15px;
+    height: 43px;
+    width: 126px;
   }
   @media only screen and (max-width: 538px) {
-    padding: 7.5px 15px;
-    font-size: 14px;
-    margin-right: 20px;
+    font-size: 12px;
+    margin-right: 10px;
+    height: 33px;
+    width: 100px;
   }
   @media only screen and (max-width: 350px) {
     font-size: 10px;
-    padding: 5px 10px;
+    margin-right: 5px;
+    height: 23px;
+    width: 80px;
+  }
+`;
+
+const ForwardButton = styled(Button)`
+  background-image: url(${({icon}) => icon});
+  background-size: 70%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin-right: 20px;
+  height: 53px;
+  width: 53px;
+  @media only screen and (max-width: 763px) {
+    margin-right: 15px;
+    height: 43px;
+    width: 43px;
+  }
+  @media only screen and (max-width: 538px) {
     margin-right: 10px;
+    height: 33px;
+    width: 33px;
+  }
+  @media only screen and (max-width: 350px) {
+    margin-right: 5px;
+    height: 23px;
+    width: 23px;
   }
 `;
 

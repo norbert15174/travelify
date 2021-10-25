@@ -1,26 +1,42 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import Login from "./login";
 import Register from "./register";
 import styled from "styled-components";
 import BackgroundImage from "./assets/BackgroundImage.jpg";
 
+// no = login
+// yes = register
+
 const Auth = () => {
-  const [value, setValue] = useState("no");
+  const location = useLocation();
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState(
+    location.state === undefined
+      ? "login"
+      : location.state.toRegister
+      ? "register"
+      : "login"
+  );
 
   return (
     <Container>
       <BlurContainer>
-        {
-          value === "no" ? 
-          <Login 
-            pos={value} 
-            val={setValue}
-          /> : 
-          <Register 
-            pos={value} 
-            val={setValue}
+        {currentScreen === "login" ? (
+          <Login
+            currentScreen={currentScreen}
+            setCurrentScreen={setCurrentScreen}
+            registerSuccess={registerSuccess}
+            setRegisterSuccess={setRegisterSuccess}
           />
-        }
+        ) : (
+          <Register
+            currentScreen={currentScreen}
+            setCurrentScreen={setCurrentScreen}
+            registerSuccess={registerSuccess}
+            setRegisterSuccess={setRegisterSuccess}
+          />
+        )}
       </BlurContainer>
     </Container>
   );

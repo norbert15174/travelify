@@ -26,7 +26,7 @@ const Groups = () => {
         {
             (loadingFinished && error === null) 
             ?
-            <GroupsPage/>
+            <GroupsPage groups={[]}/>
             :
                 !error
                 ?

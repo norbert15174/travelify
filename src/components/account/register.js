@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import ReactLoading from "react-loading";
 import axios from "axios";
 import { useFormik } from "formik";
 import StatusMessage from "../trinkets/StatusMessage";
@@ -15,10 +16,15 @@ const errors = {
   apiError: "Coś poszło nie tak... Spróbuj ponownie",
 };
 
-const Register = ({ pos, val }) => {
+const Register = ({
+  currentScreen,
+  setCurrentScreen,
+  registerSuccess,
+  setRegisterSuccess,
+}) => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [countryList, setCountryList] = useState([]);
-  const [registerSuccess, setRegisterSuccess] = useState(false);
 
   useEffect(() => {
     let list = JSON.parse(sessionStorage.getItem("countryList"));
@@ -127,6 +133,7 @@ const Register = ({ pos, val }) => {
       } else {
         setError(null);
         setRegisterSuccess(false);
+        setLoading(true);
         let countryName = "";
         for (let i = 0; i < countryList.length; i++) {
           // eslint-disable-next-line
@@ -154,6 +161,7 @@ const Register = ({ pos, val }) => {
           .then((response) => {
             console.log(response);
             setRegisterSuccess(true);
+            setCurrentScreen("login");
           })
           .catch((error) => {
             if (error.response !== undefined) {
@@ -162,7 +170,12 @@ const Register = ({ pos, val }) => {
               } else {
                 setError(errors.apiError);
               }
+            } else {
+              setError(errors.apiError);
             }
+          })
+          .finally(() => {
+            setLoading(false);
           });
         //actions.setSubmitting(false); // not needed when onSubmit is async
         actions.resetForm();
@@ -358,22 +371,30 @@ const Register = ({ pos, val }) => {
             {error === errors.alreadyExists ? (
               <SubmitError type="error">{errors.alreadyExists}</SubmitError>
             ) : null}
-            {registerSuccess ? (
-              <SubmitSuccess>
-                Rejestracja zakończona sukcesem!
-                <br />
-                Aktywuj konto klikając w link otrzymany na skrzynkę
-              </SubmitSuccess>
-            ) : null}
             <Apply
               disabled={!formik.dirty || formik.isSubmitting}
               type="submit"
             >
-              Dołącz
+              {!loading ? (
+                "Dołącz"
+              ) : (
+                <Loading
+                  height={"20px"}
+                  width={"20px"}
+                  type={"spin"}
+                  color={"#F2F7F2"}
+                />
+              )}
             </Apply>
             <OrDiv> lub </OrDiv>
             <CreateAccount>
-              <Span onClick={(e) => val(pos === "yes" ? "no" : "yes")}>
+              <Span
+                onClick={(e) =>
+                  setCurrentScreen(
+                    currentScreen === "register" ? "login" : "register"
+                  )
+                }
+              >
                 Zaloguj się
               </Span>
             </CreateAccount>
@@ -437,29 +458,6 @@ const SubmitError = styled(StatusMessage)`
     font-size: 10px;
     max-width: 270px;
     bottom: 13.5%;
-  }
-`;
-
-const SubmitSuccess = styled(StatusMessage)`
-  font-size: 12px;
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  position: absolute;
-  bottom: 23.5%;
-  right: 0;
-  left: 0;
-  margin: 0 auto;
-  width: auto;
-  max-width: 300px;
-  @media screen and (max-width: 900px) {
-    font-size: 12px;
-    bottom: 13.5%;
-  }
-  @media screen and (max-width: 600px) {
-    font-size: 10px;
-    max-width: 270px;
-    bottom: 13%;
   }
 `;
 
@@ -616,6 +614,10 @@ const OrDiv = styled.div`
 
 const Span = styled.span`
   cursor: pointer;
+`;
+
+const Loading = styled(ReactLoading)`
+  margin: 0 auto;
 `;
 
 export default Register;

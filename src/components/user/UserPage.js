@@ -645,8 +645,7 @@ const StyledDiv = styled.div`
   width: 170px;
   height: 39px;
   border-radius: 5px;
-  margin: 0;
-  justify-self: end;
+  margin: 0 0 0 auto;
   color: ${({ theme }) => theme.color.lightBackground};
   font-size: 18px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
