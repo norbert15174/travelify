@@ -115,7 +115,7 @@ const Notifications = ({ notificationsDisplay }) => {
         {type === notificationsType.user && userNotifications.length !== 0
           ? userNotifications.map((item) => (
               <NotificationsItem
-                key={item.id}
+                key={item.id + item.date}
                 notificationsDisplay={notificationsDisplay}
                 senderId={item.user.id}
                 name={item.user.name}
@@ -135,7 +135,7 @@ const Notifications = ({ notificationsDisplay }) => {
         {type === notificationsType.group && groupNotifications.length !== 0
           ? userNotifications.map((item) => (
               <NotificationsItem
-                key={item.id}
+                key={item.id + item.date}
                 notificationsDisplay={notificationsDisplay}
                 senderId={item.user.id}
                 name={item.user.name}
@@ -288,7 +288,7 @@ const NotificationsList = styled.div`
 const NoItems = styled.h1`
   display: inline-block;
   margin: 10px auto;
-  color: ${({theme}) => theme.color.greyFont};
+  color: ${({ theme }) => theme.color.greyFont};
   @media only screen and (max-width: 1000px) {
     font-size: 16px;
   }

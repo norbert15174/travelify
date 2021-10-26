@@ -1,147 +1,77 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Redirect } from "react-router-dom";
-import Button from "../trinkets/Button";
-import { routes } from "../../miscellanous/Routes";
-import infoIcon from "./assets/infoIcon.svg";
-import localizationIcon from "./assets/localizationIcon.svg";
-import photoIcon from "./assets/photoIcon.svg";
-import ButtonIcon from "../trinkets/ButtonIcon";
-import deleteAlbumIcon from "./assets/deleteAlbumIcon.svg";
-import BasicInfo from "./BasicInfo";
-import Localization from "./Localization";
-import Photos from "./Photos";
-import axios from "axios";
-import { albumCreator, albumTypes } from "../../miscellanous/Utils";
-import { useSelector } from "react-redux";
-import { endpoints } from "../../url";
+import { groupCreator } from "../../miscellanous/Utils";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
+import Button from "../trinkets/Button";
+import ButtonIcon from "../trinkets/ButtonIcon";
+import infoIcon from "./assets/infoIcon.svg";
+import deleteGroupIcon from "./assets/deleteGroupIcon.svg";
+import photoIcon from "./assets/photoIcon.svg";
+import membersIcon from "./assets/membersIcon.svg";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
+import axios from "axios";
+import { endpoints } from "../../url";
+import { Redirect } from "react-router-dom";
+import { routes } from "../../miscellanous/Routes";
+import { useSelector } from "react-redux";
+import BasicGroupInfo from "./BasicGroupInfo";
+import Members from "./Members";
+import GroupPhoto from "./GroupPhoto";
 
-const AlbumCreatorPage = ({
-  creatorType,
-  editedAlbumId = null,
-  friendsList,
-}) => {
-  const [confirmDeletingAlbum, setConfirmDeletingAlbum] = useState(false);
-  const [refuseDeletingAlbum, setRefuseDeletingAlbum] = useState(false);
+const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
+  const [confirmDeletingGroup, setConfirmDeletingGroup] = useState(false);
+  const [refuseDeletingGroup, setRefuseDeletingGroup] = useState(false);
   const [deleteBox, setDeleteBox] = useState(false);
 
-  const [creatingAlbum, setCreatingAlbum] = useState(false);
-  const [errorAtPosting, setErrorAtPosting] = useState(null);
-  const [redirectToCreatedAlbum, setRedirectToCreatedAlbum] = useState({
-    active: false,
-    createdAlbumId: null,
-  });
-
-  const createAlbumRef = useRef(null);
-  const scrollBack = useRef(null);
-
-  const blurState = useSelector((state) => state.blur.value);
-
-  // BasicInfo submitted data, used at album creation, at editing it won't be used
   const [basicInfo, setBasicInfo] = useState({
     name: "",
     description: "",
-    visibility: "",
-    shared: null,
   });
 
-  // Localization submitted data, used at album creation, at editing it won't be used
-  const [localization, setLocalization] = useState({
-    lat: "",
-    lng: "",
-    countryName: "",
-    countryId: null,
-    place: "",
-  });
+  const [members, setMembers] = useState([]);
+
+  const [creatingGroup, setCreatingGroup] = useState(false);
+  const [errorAtPosting, setErrorAtPosting] = useState(null);
+
+  const [redirectBackToGroups, setRedirectBackToGroups] = useState(null);
+  const [redirectBackToGroup, setRedirectBackToGroup] = useState(null);
+
+  const scrollBack = useRef(null);
+  const blurState = useSelector((state) => state.blur.value);
 
   useEffect(() => {
     // checking if album will be edited or created, setting albumId we are editing
-    if (deleteBox && albumCreator.edition === creatorType) {
-      if (confirmDeletingAlbum) {
-        deleteAlbum();
-      }
-      if (refuseDeletingAlbum) {
-        console.log("Album hasn't been deleted!");
+    if (deleteBox && groupCreator.edition === creatorType) {
+      if (confirmDeletingGroup) {
+        console.log("Group deleted!");
         setDeleteBox(false);
-        setRefuseDeletingAlbum(false);
+      }
+      if (refuseDeletingGroup) {
+        console.log("Group not deleted!");
+        setDeleteBox(false);
+        setRefuseDeletingGroup(false);
+        setConfirmDeletingGroup(false);
       }
     }
     // eslint-disable-next-line
-  }, [confirmDeletingAlbum, refuseDeletingAlbum]);
+  }, [confirmDeletingGroup, refuseDeletingGroup]);
 
   useEffect(() => {
-    if (
-      creatorType === albumCreator.creation &&
-      basicInfo.name !== "" &&
-      localization.lat !== "" &&
-      localization.place !== ""
-    ) {
-      createAlbumRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [basicInfo.name, localization.lat, localization.place]);
+    console.log(basicInfo);
+    console.log(members);
+  }, [basicInfo, members]);
 
-  const [redirectToAlbums, setRedirectToAlbums] = useState(false);
-  const [redirectBackToAlbum, setRedirectBackToAlbum] = useState(false);
-
-  // CREATION or after album delete
-  if (redirectToAlbums) {
-    return <Redirect to={{ pathname: routes.albums }} />;
-  }
-
-  // when EDITION we are passing albumId to don't lose it
-  if (redirectBackToAlbum) {
-    return (
-      <Redirect
-        to={{
-          pathname: `album/${editedAlbumId}`,
-          state: { albumId: editedAlbumId },
-        }}
-      />
-    );
-  }
-
-  if (redirectToCreatedAlbum.active) {
-    return (
-      <Redirect
-        to={{ pathname: `album/${redirectToCreatedAlbum.createdAlbumId}` }}
-      />
-    );
-  }
-
-  // formHandler będzie wykorzystywany tylko przy tworzeniu albumu
-  const formHandler = () => {
-    createAlbum();
-  };
-
-  async function createAlbum() {
+  async function createGroup() {
     setErrorAtPosting(null);
-    setCreatingAlbum(true);
-    let sharedFriendList = [];
-    if (basicInfo.visibility === albumTypes.private) {
-      for (let i = 0; i < basicInfo.shared.length; i++) {
-        sharedFriendList.push({ userId: basicInfo.shared[i].id });
-      }
-    }
+    setCreatingGroup(true);
     await axios({
       method: "post",
-      url: endpoints.addAlbum,
+      url: endpoints.createGroup,
       data: {
-        coordinate: {
-          country: {
-            id: localization.countryId,
-          },
-          lang: localization.lng,
-          lat: localization.lat,
-          place: localization.place,
-        },
-        name: basicInfo.name,
+        groupName: basicInfo.name,
         description: basicInfo.description,
-        sharedAlbumList: sharedFriendList,
-        public: basicInfo.visibility === albumTypes.public ? true : false,
+        members: members.map((item) => item.id)
       },
       headers: {
         "Content-Type": "application/json",
@@ -149,63 +79,57 @@ const AlbumCreatorPage = ({
       },
     })
       .then((response) => {
-        setRedirectToCreatedAlbum({
-          active: true,
-          createdAlbumId: response.data.id,
-        });
+        console.log(response);
+        // setRedirect when group has been created
       })
       .catch((error) => {
         setErrorAtPosting(error);
         console.error(error);
       })
       .finally(() => {
-        setCreatingAlbum(false);
+        setCreatingGroup(false);
       });
   }
 
-  function deleteAlbum() {
-    axios({
-      method: "delete",
-      url: endpoints.deleteAlbum + editedAlbumId,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
-      },
-    })
-      .then((response) => {
-        setRedirectToAlbums(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally((error) => {
-        setDeleteBox(false);
-        setConfirmDeletingAlbum(false);
-      });
+  // CREATION or after group delete
+  if (redirectBackToGroups) {
+    return <Redirect to={{ pathname: routes.groups }} />;
+  }
+
+  // when EDITION we are passing groupId to don't lose it
+  if (redirectBackToGroup) {
+    /* return (
+      <Redirect
+        to={{
+          pathname: `groupId/${editedGroupId}`,
+          state: { groupId: editedGroupId },
+        }}
+      />
+    ); */
   }
 
   return (
     <>
-      {deleteBox && creatorType === albumCreator.edition && (
+      {deleteBox && creatorType === groupCreator.edition && (
         <ConfirmationBox
-          children={"Czy na pewno chcesz usunąć album?"}
-          confirm={setConfirmDeletingAlbum}
-          refuse={setRefuseDeletingAlbum}
+          children={"Czy na pewno chcesz usunąć grupę?"}
+          confirm={setConfirmDeletingGroup}
+          refuse={setRefuseDeletingGroup}
         />
       )}
       <Container blurState={blurState} ref={scrollBack}>
         <PageHeader>
           <Heading>
-            {creatorType === albumCreator.creation
-              ? "Stwórz album"
-              : "Edytuj album"}
+            {creatorType === groupCreator.creation
+              ? "Stwórz grupę"
+              : "Edytuj grupę"}
           </Heading>
           <GoBackButton
             onClick={() => {
-              if (creatorType === "creation") {
-                setRedirectToAlbums(true);
-              } else if (creatorType === "edition") {
-                setRedirectBackToAlbum(true);
+              if (creatorType === groupCreator.creation) {
+                setRedirectBackToGroups(true);
+              } else if (creatorType === groupCreator.edition) {
+                setRedirectBackToGroup(true);
               }
             }}
           >
@@ -217,48 +141,47 @@ const AlbumCreatorPage = ({
             <Icon src={infoIcon} />
             <h1>Podstawowe informacje</h1>
           </Header>
-          <BasicInfo
-            editedAlbumId={editedAlbumId}
+          <BasicGroupInfo
+            editedGroupId={editedGroupId}
             creatorType={creatorType}
             setForm={setBasicInfo}
-            friendsList={friendsList}
           />
         </SectionContainer>
         <SectionContainer>
           <Header>
-            <Icon src={localizationIcon} />
-            <h1>Lokalizacja</h1>
+            <Icon src={membersIcon} />
+            <h1>Członkowie</h1>
           </Header>
-          <Localization
-            editedAlbumId={editedAlbumId}
+          <Members
             creatorType={creatorType}
-            setForm={setLocalization}
+            editedGroupId={editedGroupId}
+            friendsList={friendsList}
+            setForm={setMembers}
           />
         </SectionContainer>
-        {creatorType === albumCreator.edition && (
+        {creatorType === groupCreator.edition && (
           <SectionContainer>
             <Header>
               <Icon src={photoIcon} />
-              <h1>Zdjęcia</h1>
+              <h1>Zdjęcie grupowe</h1>
             </Header>
-            <Photos editedAlbumId={editedAlbumId} />
+            <GroupPhoto editedGroupId={editedGroupId} />
           </SectionContainer>
         )}
-        {creatorType === albumCreator.creation &&
+        {creatorType === groupCreator.creation &&
           basicInfo.name !== "" &&
-          localization.lat !== "" &&
-          localization.place !== "" && (
-            <SectionContainer ref={createAlbumRef}>
+          basicInfo.description !== "" && (
+            <SectionContainer>
               <End>
                 <Line errorAtPosting={errorAtPosting} />
                 <StyledButton
                   type="submit"
-                  onClick={formHandler}
-                  disabled={creatingAlbum}
+                  onClick={() => createGroup()}
+                  disabled={creatingGroup}
                   errorAtPosting={errorAtPosting}
                 >
-                  {creatingAlbum && "Dodawanie albumu..."}
-                  {!creatingAlbum && !errorAtPosting && "Stwórz album"}
+                  {creatingGroup && "Tworzenie grupy..."}
+                  {!creatingGroup && !errorAtPosting && "Stwórz grupę"}
                   {errorAtPosting && (
                     <p>
                       Coś poszło nie tak...
@@ -271,15 +194,15 @@ const AlbumCreatorPage = ({
               </End>
             </SectionContainer>
           )}
-        {creatorType === albumCreator.edition && (
+        {creatorType === groupCreator.edition && (
           <SectionContainer>
             <Header>
-              <Icon src={deleteAlbumIcon} />
-              <h1>Usuń album</h1>
+              <Icon src={deleteGroupIcon} />
+              <h1>Usuń grupę</h1>
             </Header>
             <WarningMessage>
-              <p>Usuniętego albumu nie da się odzyskać!</p>
-              <p>Dodane zdjęcia zostaną trwale usunięte.</p>
+              <p>Usunięcie grupy jest nieodwracalne!</p>
+              <p>Stworzone albumy zostaną usunięte.</p>
             </WarningMessage>
             <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
           </SectionContainer>
@@ -307,7 +230,7 @@ const ScrollBack = styled(ButtonIcon)`
   bottom: 0;
   margin-bottom: 15px;
   right: 0;
-  margin-right: 120px;
+  margin-right: 110px;
   @media only screen and (max-width: 720px) {
     margin-right: 26px;
   }
@@ -514,4 +437,4 @@ const WarningMessage = styled.div`
   }
 `;
 
-export default AlbumCreatorPage;
+export default GroupCreatorPage;

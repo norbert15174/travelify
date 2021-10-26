@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Redirect } from "react-router-dom";
+import { routes } from "../../miscellanous/Routes";
+import { groupCreator } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
 import GroupSearch from "../trinkets/DropdownSearch";
 import Button from "../trinkets/Button";
@@ -8,165 +11,18 @@ import "./groupsScrollbar.css";
 import addGroupIcon from "./assets/addGroupIcon.svg";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 
-const tempGroups = [
-  {
-    id: 1,
-    groupName: "Kamanda pinka flojda",
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    groupPicture:
-      "https://m.media-amazon.com/images/I/31ddjyygRKL._AC_SY780_.jpg",
-    members: [
-      {
-        id: "m1",
-        name: "Mikołaj",
-        surname: "Telec",
-        profilePicture:
-          "http://zebza.net/wp-content/uploads/2017/09/example-interface.png",
-      },
-      {
-        id: "m2",
-        name: "Jan",
-        surname: "Nowak",
-        profilePicture:
-          "https://bestprofilepictures.com/wp-content/uploads/2021/04/Cool-Profile-Picture-986x1024.jpg",
-      },
-      {
-        id: "m3",
-        name: "Mateusz",
-        surname: "Kowalski",
-        profilePicture:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPjkW6L6Fi2RYRQtGGPZeDA_Qt0qADmENA6A&usqp=CAU",
-      },
-    ],
-    owner: {
-      id: "m1",
-      name: "Janusz",
-      surname: "Pan Janusz",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 2,
-    groupName: "Kamanda pinka flojda",
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    groupPicture:
-      "https://m.media-amazon.com/images/I/31ddjyygRKL._AC_SY780_.jpg",
-    members: [
-      {
-        id: "m1",
-        name: "Mikołaj",
-        surname: "Telec",
-        profilePicture:
-          "http://zebza.net/wp-content/uploads/2017/09/example-interface.png",
-      },
-      {
-        id: "m2",
-        name: "Jan",
-        surname: "Nowak",
-        profilePicture:
-          "https://bestprofilepictures.com/wp-content/uploads/2021/04/Cool-Profile-Picture-986x1024.jpg",
-      },
-      {
-        id: "m3",
-        name: "Mateusz",
-        surname: "Kowalski",
-        profilePicture:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPjkW6L6Fi2RYRQtGGPZeDA_Qt0qADmENA6A&usqp=CAU",
-      },
-    ],
-    owner: {
-      id: "m4",
-      name: "Janusz",
-      surname: "Pan Janusz",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 3,
-    groupName: "Podróżnicy",
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    groupPicture:
-      "https://m.media-amazon.com/images/I/31ddjyygRKL._AC_SY780_.jpg",
-    members: [
-      {
-        id: "m5",
-        name: "Mikołaj",
-        surname: "Telec",
-        profilePicture:
-          "http://zebza.net/wp-content/uploads/2017/09/example-interface.png",
-      },
-      {
-        id: "m6",
-        name: "Jan",
-        surname: "Nowak",
-        profilePicture:
-          "https://bestprofilepictures.com/wp-content/uploads/2021/04/Cool-Profile-Picture-986x1024.jpg",
-      },
-      {
-        id: "m7",
-        name: "Mateusz",
-        surname: "Kowalski",
-        profilePicture:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPjkW6L6Fi2RYRQtGGPZeDA_Qt0qADmENA6A&usqp=CAU",
-      },
-    ],
-    owner: {
-      id: "m8",
-      name: "Janusz",
-      surname: "Pan Janusz",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 4,
-    groupName: "Studenci EiT-u",
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    groupPicture:
-      "https://m.media-amazon.com/images/I/31ddjyygRKL._AC_SY780_.jpg",
-    members: [
-      {
-        id: "m9",
-        name: "Mikołaj",
-        surname: "Telec",
-        profilePicture:
-          "http://zebza.net/wp-content/uploads/2017/09/example-interface.png",
-      },
-      {
-        id: "m10",
-        name: "Jan",
-        surname: "Nowak",
-        profilePicture:
-          "https://bestprofilepictures.com/wp-content/uploads/2021/04/Cool-Profile-Picture-986x1024.jpg",
-      },
-      {
-        id: "m11",
-        name: "Mateusz",
-        surname: "Kowalski",
-        profilePicture:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPjkW6L6Fi2RYRQtGGPZeDA_Qt0qADmENA6A&usqp=CAU",
-      },
-    ],
-    owner: {
-      id: "m12",
-      name: "Janusz",
-      surname: "Pan Janusz",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-];
 
-const GroupsPage = ({groups}) => {
+
+
+const GroupsPage = ({ groups }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [searchList, setSearchList] = useState(null);
   const [groupIdSearch, setGroupIdSearch] = useState(null);
+  const [redirectToCreator, setRedirectToCreator] = useState(false);
+  const [redirectToGroup, setRedirectToGroup] = useState({
+    active: false,
+    groupId: "",
+  });
 
   useEffect(() => {
     setGroupIdSearch(null);
@@ -178,33 +34,55 @@ const GroupsPage = ({groups}) => {
 
   const mapGroupsToSearch = () => {
     let searchList = [];
-    for (let i = 0; i < tempGroups.length; i++) {
+    for (let i = 0; i < groups.length; i++) {
       searchList.push({
-        value: tempGroups[i].groupName,
-        label: tempGroups[i].groupName,
+        value: groups[i].groupName,
+        label: groups[i].groupName,
         groupPicture:
-          tempGroups[i].groupPicture !== undefined
-            ? tempGroups[i].groupPicture
+          groups[i].groupPicture !== undefined
+            ? groups[i].groupPicture
             : noAlbumPhotoIcon,
-        description: tempGroups[i].description,
-        owner: tempGroups[i].owner,
-        id: tempGroups[i].id
+        membersAmount: groups[i].members.length,
+        id: groups[i].id,
       });
     }
-    console.log(searchList);
     setSearchList(searchList);
   };
 
-  if (groupIdSearch) {
-    console.log(groupIdSearch);
-    /* return (
+  if (redirectToGroup.active) {
+    return (
       <Redirect
         push
         to={{
-          pathname: `album/${groupIdSearch}`,
+          pathname: `group/${redirectToGroup.groupId}`,
         }}
       />
-    ); */
+    );
+  }
+
+  if (groupIdSearch) {
+    console.log(groupIdSearch);
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: `group/${groupIdSearch}`,
+        }}
+      />
+    );
+  }
+
+  // redirection to album creator (CREATION)
+  if (redirectToCreator) {
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: routes.groupCreator,
+          state: { creatorType: groupCreator.creation },
+        }}
+      />
+    );
   }
 
   return (
@@ -222,13 +100,13 @@ const GroupsPage = ({groups}) => {
       </GroupsNavigation>
       <Groups>
         <Header>
-          <h1>Twoje grupy</h1>
-          <AddButton onClick={() => console.log(true)}>Stwórz grupę</AddButton>
+          <GridHeader>Twoje grupy</GridHeader>
+          <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz grupę</AddButton>
         </Header>
         <GridLine />
         <Grid className="scroll">
-          {tempGroups.map((item) => (
-            <GroupThumbnail key={item.id} group={item} />
+          {groups.map((item) => (
+            <GroupThumbnail key={item.id} group={item} redirectToGroup={() => setRedirectToGroup({active: true, groupId: item.id})}/>
           ))}
         </Grid>
       </Groups>
@@ -339,26 +217,12 @@ const Grid = styled.div`
   overflow-y: scroll;
   min-height: 100vh;
   padding-right: 25px;
-  @media only screen and (max-width: 1635px) {
-  }
-  @media only screen and (max-width: 1425px) {
-  }
-  @media only screen and (max-width: 1225px) {
-  }
-  @media only screen and (max-width: 1025px) {
-    h1 {
-      font-size: 16px;
-    }
-  }
   @media only screen and (max-width: 825px) {
     margin-top: 20px;
   }
   @media only screen and (max-width: 510px) {
-    grid-gap: 20px;
+    grid-gap: 15px;
     margin-top: 10px;
-    h1 {
-      font-size: 12px;
-    }
   }
 `;
 
@@ -370,6 +234,22 @@ const Header = styled.div`
   height: 45px;
   @media only screen and (max-width: 825px) {
     height: 30px;
+  }
+`;
+
+const GridHeader = styled.h1`
+  font-size: 34px;
+  @media only screen and (max-width: 1225px) {
+    font-size: 30px;
+  }
+  @media only screen and (max-width: 1025px) {
+    font-size: 26px;
+  }
+  @media only screen and (max-width: 825px) {
+    font-size: 22px;
+  }
+  @media only screen and (max-width: 510px) {
+    font-size: 18px;
   }
 `;
 

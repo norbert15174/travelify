@@ -72,17 +72,11 @@ const GroupSelectOption = (props) => (
           <Title>{props.data.value}</Title>
           <Place>{props.data.place}</Place>
         </MobileContainer>
-        <User>
-          <Profile
-            src={props.data.owner.profilePicture}
-            onError={(e) => {
-              e.target.onError = null;
-              e.target.src = noProfilePictureIcon;
-            }}
-            alt="Profile picture"
-          />
-          <Name>{props.data.owner.name + " " + props.data.owner.surname}</Name>
-        </User>
+        <MembersAmount>
+          {props.data.membersAmount > 1
+            ? props.data.membersAmount + " członków grupy"
+            : "1 członek grupy"}
+        </MembersAmount>
       </InnerContainer>
     </ValueContainer>
   </Option>
@@ -96,18 +90,11 @@ const GroupSelectValue = (props) => (
         <Title>{props.data.value}</Title>
         <Place>{props.data.place}</Place>
       </MobileContainer>
-
-      <User>
-        <Profile
-          src={props.data.owner.photo}
-          onError={(e) => {
-            e.target.onError = null;
-            e.target.src = noProfilePictureIcon;
-          }}
-          alt="Profile picture"
-        />
-        <Name>{props.data.owner.name + " " + props.data.owner.surname}</Name>
-      </User>
+      <MembersAmount>
+        {props.data.membersAmount > 1
+          ? props.data.membersAmount + " członków grupy"
+          : "1 członek grupy"}
+      </MembersAmount>
     </InnerContainer>
   </ValueContainer>
 );
@@ -326,6 +313,23 @@ const InnerContainer = styled.div`
 const MobileContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const MembersAmount = styled.h1`
+  color: ${({ theme }) => theme.color.greyFont};
+  font-size: 16px;
+  @media only screen and (max-width: 1110px) {
+    font-size: 14px;
+  }
+  @media only screen and (max-width: 905px) {
+    font-size: 12px;
+  }
+  @media only screen and (max-width: 760px) {
+    font-size: 10px;
+  }
+  @media only screen and (max-width: 435px) {
+    font-size: 8px;
+  }
 `;
 
 export default DropdownSearch;

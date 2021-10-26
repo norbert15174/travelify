@@ -27,6 +27,11 @@ export const albumCreator = {
   edition: "edition",
 };
 
+export const groupCreator = {
+  creation: "creation",
+  edition: "edition",
+}
+
 export const newsTypes = {
   friends: "friends",
   community: "community",

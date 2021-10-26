@@ -44,7 +44,8 @@ export const endpoints = {
     getMessage: url + "/friends/message/", //+ friends id, page
     sendMessage: url + "/friends/message/", //+ friends id
     refreshMessages: url + "/friends/message/new/", //+ friends id
-    getNotifications: url + "/news/notification"
+    getNotifications: url + "/news/notification",
+    createGroup: url + "/group", // POST
 }
 
 // http://localhost:8020/friends/delete/

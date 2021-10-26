@@ -71,8 +71,7 @@ const UserPage = ({
 
   const [photoZoom, setPhotoZoom] = useState(null);
 
-  // redirects to edit profile page
-  const [redirect, setRedirect] = useState(false);
+  const [redirectToEditProfile, setRedirectToEditProfile] = useState(false);
 
   useEffect(() => {
     if (blurState) {
@@ -239,7 +238,7 @@ const UserPage = ({
     }
   };
 
-  if (redirect) {
+  if (redirectToEditProfile) {
     return <Redirect push to={{ pathname: routes.editProfile }} />;
   }
 
@@ -333,7 +332,7 @@ const UserPage = ({
               Znajomi
             </Button>
             {userType === userTypes.logged && (
-              <EditButton icon={editIcon} onClick={() => setRedirect(true)}/>
+              <EditButton icon={editIcon} onClick={() => setRedirectToEditProfile(true)}/>
             )}
             {userType === userTypes.friend && (
               <UserButton
