@@ -91,7 +91,6 @@ const AlbumInside = ({ albumId, notifPhoto }) => {
     })
       .then(({ data }) => {
         dispatch(setFriendsList(data));
-        console.log(data);
       })
       .catch((error) => {
         console.error(error);

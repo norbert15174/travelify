@@ -26,6 +26,7 @@ import {
   selectUserData,
 } from "../../redux/userDataSlice";
 import PhotoZoom from "./PhotoZoom";
+import Tooltip from "../trinkets/Tooltip";
 
 const sections = {
   info: "info",
@@ -332,7 +333,19 @@ const UserPage = ({
               Znajomi
             </Button>
             {userType === userTypes.logged && (
-              <EditButton icon={editIcon} onClick={() => setRedirectToEditProfile(true)}/>
+              <>
+                <EditButton
+                  data-tip
+                  data-for="edit"
+                  icon={editIcon}
+                  onClick={() => setRedirectToEditProfile(true)}
+                />
+                <Tooltip
+                  id="edit"
+                  place="top"
+                  text="Kliknij, by edytować grupę"
+                />
+              </>
             )}
             {userType === userTypes.friend && (
               <UserButton
@@ -570,8 +583,6 @@ const Button = styled.div`
   border-radius: 5px;
   margin-right: 10px;
   color: ${({ active, theme }) => (active ? "#000" : theme.color.greyFont)};
-  font-weight: ${({ active, theme }) =>
-    active ? theme.fontWeight.bold : theme.fontWeight.medium};
   &:hover {
     background-color: rgba(18, 191, 206, 0.4);
     -webkit-transition: all 0.15s ease-in-out;

@@ -5,6 +5,7 @@ import userDataSlice from "./userDataSlice";
 import albumDetailsSlice from './albumDetailsSlice';
 import albumCreatorSlice from './albumCreatorSlice';
 import groupCreatorSlice from "./groupCreatorSlice";
+import groupDetailsSlice from './groupDetailsSlice';
 
 export default configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export default configureStore({
         userData: userDataSlice,
         albumDetails: albumDetailsSlice,
         albumCreator: albumCreatorSlice,
-        groupCreator: groupCreatorSlice
+        groupCreator: groupCreatorSlice,
+        groupDetails: groupDetailsSlice
     },
 })

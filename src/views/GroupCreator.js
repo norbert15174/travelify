@@ -32,11 +32,12 @@ const GroupCreator = () => {
       dispatch(clearStore());
       setError(null);
       if (location.state !== undefined && location.state.groupId) {
-        setCreatorType(location.state.creatorType);
+        console.log(location.state);
+        /* setCreatorType(location.state.creatorType);
         setEditedGroupId(location.state.groupId);
         getGroupToEdit(location.state.groupId);
         getFriends();
-        setCreatorType(groupCreator.edition);
+        setCreatorType(groupCreator.edition); */
       } else {
         setGroupToEditFetchFinished(true);
         getFriends();
