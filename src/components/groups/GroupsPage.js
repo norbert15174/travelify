@@ -1,19 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Redirect } from "react-router-dom";
+import { routes } from "../../miscellanous/Routes";
+import { groupCreator } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
-import { groupTypes } from "../../miscellanous/Utils";
 import GroupSearch from "../trinkets/DropdownSearch";
-import memberGroupIcon from "./assets/memberGroupIcon.svg";
-import notMemberGroupIcon from "./assets/notMemberGroupIcon.svg";
 import Button from "../trinkets/Button";
+import GroupThumbnail from "./GroupThumbnail";
 import "./groupsScrollbar.css";
 import addGroupIcon from "./assets/addGroupIcon.svg";
+import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 
-const fakeGroups = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
-const GroupsPage = () => {
+
+
+const GroupsPage = ({ groups }) => {
   const blurState = useSelector((state) => state.blur.value);
-  const [groupType, setGroupType] = useState(groupTypes.member);
+  const [searchList, setSearchList] = useState(null);
+  const [groupIdSearch, setGroupIdSearch] = useState(null);
+  const [redirectToCreator, setRedirectToCreator] = useState(false);
+  const [redirectToGroup, setRedirectToGroup] = useState({
+    active: false,
+    groupId: "",
+  });
+
+  useEffect(() => {
+    setGroupIdSearch(null);
+    if (!searchList) {
+      mapGroupsToSearch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const mapGroupsToSearch = () => {
+    let searchList = [];
+    for (let i = 0; i < groups.length; i++) {
+      searchList.push({
+        value: groups[i].groupName,
+        label: groups[i].groupName,
+        groupPicture:
+          groups[i].groupPicture !== undefined
+            ? groups[i].groupPicture
+            : noAlbumPhotoIcon,
+        membersAmount: groups[i].members.length,
+        id: groups[i].id,
+      });
+    }
+    setSearchList(searchList);
+  };
+
+  if (redirectToGroup.active) {
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: `group/${redirectToGroup.groupId}`,
+        }}
+      />
+    );
+  }
+
+  if (groupIdSearch) {
+    console.log(groupIdSearch);
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: `group/${groupIdSearch}`,
+        }}
+      />
+    );
+  }
+
+  // redirection to album creator (CREATION)
+  if (redirectToCreator) {
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: routes.groupCreator,
+          state: { creatorType: groupCreator.creation },
+        }}
+      />
+    );
+  }
 
   return (
     <Container blurState={blurState}>
@@ -21,53 +91,23 @@ const GroupsPage = () => {
         <Heading>Grupy</Heading>
       </PageHeader>
       <GroupsNavigation>
-        <GroupSearch />
-        <Line />
-        <GroupsSwitch>
-          <GroupOption
-            icon={memberGroupIcon}
-            active={groupType === groupTypes.member ? true : false}
-            onClick={() => setGroupType(groupTypes.member)}
-          >
-            Twoje grupy
-          </GroupOption>
-          <GroupOption
-            icon={notMemberGroupIcon}
-            active={groupType === groupTypes.notMember ? true : false}
-            onClick={() => setGroupType(groupTypes.notMember)}
-          >
-            Inne grupy
-          </GroupOption>
-        </GroupsSwitch>
+        <GroupSearch
+          searchType="groups"
+          options={searchList !== null ? searchList : null}
+          setState={setGroupIdSearch}
+          value={groupIdSearch}
+        />
       </GroupsNavigation>
       <Groups>
         <Header>
-          {groupType === groupTypes.member && <h1>Twoje grupy</h1>}
-          {groupType === groupTypes.notMember && <h1>Inne grupy</h1>}
-          {groupType !== groupTypes.notMember && (
-            <AddButton onClick={() => console.log(true)}>
-              Stwórz grupę
-            </AddButton>
-          )}
+          <GridHeader>Twoje grupy</GridHeader>
+          <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz grupę</AddButton>
         </Header>
         <GridLine />
         <Grid className="scroll">
-          {groupType === groupTypes.member &&
-            (fakeGroups.length !== 0 ? (
-              fakeGroups.map((item) => (
-                <img src={item} alt={"grupa nr " + item} />
-              ))
-            ) : (
-              <h1 style={{ color: "#5B5B5B" }}>Brak grup...</h1>
-            ))}
-          {groupType === groupTypes.notMember &&
-            (fakeGroups.length === 0 ? (
-              fakeGroups.map((item) => (
-                <img src={item} alt={"grupa nr " + item} />
-              ))
-            ) : (
-              <h1 style={{ color: "#5B5B5B" }}>Brak grup...</h1>
-            ))}
+          {groups.map((item) => (
+            <GroupThumbnail key={item.id} group={item} redirectToGroup={() => setRedirectToGroup({active: true, groupId: item.id})}/>
+          ))}
         </Grid>
       </Groups>
     </Container>
@@ -138,29 +178,9 @@ const Heading = styled.h1`
 `;
 
 const GroupsNavigation = styled.div`
+  height: 110px;
   border-radius: 15px;
   background-color: ${({ theme }) => theme.color.lightBackground};
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-`;
-
-const Line = styled.div`
-  border-top: 2px solid ${({ theme }) => theme.color.dark};
-  width: 60%;
-  margin: 25px auto 0 auto;
-  @media only screen and (max-width: 1430px) {
-    width: 70%;
-  }
-  @media only screen and (max-width: 1220px) {
-    width: 85%;
-  }
-  @media only screen and (max-width: 825px) {
-    width: 80%;
-  }
-  @media only screen and (max-width: 510px) {
-    width: 85%;
-  }
 `;
 
 const GridLine = styled.div`
@@ -168,51 +188,6 @@ const GridLine = styled.div`
   border-top: 2px solid ${({ theme }) => theme.color.dark};
   @media only screen and (max-width: 510px) {
     margin-top: 5px;
-  }
-`;
-
-const GroupsSwitch = styled.div`
-  margin: 25px auto 30px auto;
-  font-size: 24px;
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-column-gap: 5vw;
-  @media only screen and (max-width: 1025px) {
-    font-size: 18px;
-    grid-column-gap: 2.5vw;
-  }
-  @media only screen and (max-width: 825px) {
-    font-size: 14px;
-    grid-column-gap: 1vw;
-  }
-  @media only screen and (max-width: 510px) {
-    margin: 20px auto;
-    grid-column-gap: 0.75vw;
-    font-size: 10px;
-  }
-`;
-
-const GroupOption = styled.div`
-  background: ${({ active }) => (active ? "rgba(18, 191, 206, 0.4)" : "")};
-  -webkit-transition: all 0.1s ease-in-out;
-  -o-transition: all 0.1s ease-in-out;
-  -moz-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-  border-radius: 15px;
-  text-align: center;
-  padding: 10px 20px 10px 80px;
-  background-image: url(${({ icon }) => icon});
-  background-size: 34px;
-  background-position: 10% 50%;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  @media only screen and (max-width: 825px) {
-    background-size: 28px;
-    padding: 10px 10px 10px 45px;
-  }
-  @media only screen and (max-width: 510px) {
-    background-size: 22px;
-    padding: 10px 10px 10px 35px;
   }
 `;
 
@@ -236,42 +211,18 @@ const Grid = styled.div`
   display: grid;
   margin: 35px 0px 15px 0px;
   align-content: start;
-  grid-template-columns: repeat(2, 690px);
-  grid-auto-rows: 370px;
+  grid-auto-rows: auto;
   grid-gap: 30px;
   max-height: 1000px;
   overflow-y: scroll;
   min-height: 100vh;
-  @media only screen and (max-width: 1635px) {
-    grid-template-columns: repeat(2, 590px);
-  }
-  @media only screen and (max-width: 1425px) {
-    grid-template-columns: repeat(2, 490px);
-  }
-  @media only screen and (max-width: 1225px) {
-    grid-template-columns: repeat(2, 390px);
-    grid-auto-rows: 300px;
-  }
-  @media only screen and (max-width: 1025px) {
-    grid-template-columns: repeat(2, 290px);
-    grid-auto-rows: 230px;
-    h1 {
-      font-size: 16px;
-    }
-  }
+  padding-right: 25px;
   @media only screen and (max-width: 825px) {
     margin-top: 20px;
-    grid-template-columns: 420px;
-    grid-auto-rows: 282px;
   }
   @media only screen and (max-width: 510px) {
-    grid-template-columns: 240px;
-    grid-auto-rows: 162px;
-    grid-gap: 20px;
+    grid-gap: 15px;
     margin-top: 10px;
-    h1 {
-      font-size: 12px;
-    }
   }
 `;
 
@@ -283,6 +234,22 @@ const Header = styled.div`
   height: 45px;
   @media only screen and (max-width: 825px) {
     height: 30px;
+  }
+`;
+
+const GridHeader = styled.h1`
+  font-size: 34px;
+  @media only screen and (max-width: 1225px) {
+    font-size: 30px;
+  }
+  @media only screen and (max-width: 1025px) {
+    font-size: 26px;
+  }
+  @media only screen and (max-width: 825px) {
+    font-size: 22px;
+  }
+  @media only screen and (max-width: 510px) {
+    font-size: 18px;
   }
 `;
 

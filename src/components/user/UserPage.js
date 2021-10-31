@@ -26,6 +26,7 @@ import {
   selectUserData,
 } from "../../redux/userDataSlice";
 import PhotoZoom from "./PhotoZoom";
+import Tooltip from "../trinkets/Tooltip";
 
 const sections = {
   info: "info",
@@ -71,8 +72,7 @@ const UserPage = ({
 
   const [photoZoom, setPhotoZoom] = useState(null);
 
-  // redirects to edit profile page
-  const [redirect, setRedirect] = useState(false);
+  const [redirectToEditProfile, setRedirectToEditProfile] = useState(false);
 
   useEffect(() => {
     if (blurState) {
@@ -239,7 +239,7 @@ const UserPage = ({
     }
   };
 
-  if (redirect) {
+  if (redirectToEditProfile) {
     return <Redirect push to={{ pathname: routes.editProfile }} />;
   }
 
@@ -333,7 +333,19 @@ const UserPage = ({
               Znajomi
             </Button>
             {userType === userTypes.logged && (
-              <EditButton icon={editIcon} onClick={() => setRedirect(true)}/>
+              <>
+                <EditButton
+                  data-tip
+                  data-for="edit"
+                  icon={editIcon}
+                  onClick={() => setRedirectToEditProfile(true)}
+                />
+                <Tooltip
+                  id="edit"
+                  place="top"
+                  text="Kliknij, by edytować grupę"
+                />
+              </>
             )}
             {userType === userTypes.friend && (
               <UserButton
@@ -571,8 +583,6 @@ const Button = styled.div`
   border-radius: 5px;
   margin-right: 10px;
   color: ${({ active, theme }) => (active ? "#000" : theme.color.greyFont)};
-  font-weight: ${({ active, theme }) =>
-    active ? theme.fontWeight.bold : theme.fontWeight.medium};
   &:hover {
     background-color: rgba(18, 191, 206, 0.4);
     -webkit-transition: all 0.15s ease-in-out;
@@ -645,8 +655,7 @@ const StyledDiv = styled.div`
   width: 170px;
   height: 39px;
   border-radius: 5px;
-  margin: 0;
-  justify-self: end;
+  margin: 0 0 0 auto;
   color: ${({ theme }) => theme.color.lightBackground};
   font-size: 18px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};

@@ -48,6 +48,7 @@ const Photos = ({ editedAlbumId }) => {
     Array.from(files).every((file) => {
       if (file === undefined) {
         setMultipleImages([]);
+        setIsDirty(false);
         document.getElementById(addType + "__input").value = null;
         return false;
       }
@@ -95,6 +96,7 @@ const Photos = ({ editedAlbumId }) => {
     if (file === undefined) {
       setSingleImage(undefined);
       setMainImage(mainPhoto);
+      setIsDirty(false);
       document.getElementById(addType + "__input").value = null;
       return;
     }
@@ -241,6 +243,7 @@ const Photos = ({ editedAlbumId }) => {
       .finally(() => {
         document.getElementById(addType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
+        setDescription("");
         setIsDirty(false);
       });
   }

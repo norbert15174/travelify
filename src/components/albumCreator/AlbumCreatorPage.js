@@ -156,7 +156,7 @@ const AlbumCreatorPage = ({
       })
       .catch((error) => {
         setErrorAtPosting(error);
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setCreatingAlbum(false);

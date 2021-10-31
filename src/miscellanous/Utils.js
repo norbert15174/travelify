@@ -27,10 +27,10 @@ export const albumCreator = {
   edition: "edition",
 };
 
-export const groupTypes = {
-  member: "member",
-  notMember: "notMember",
-};
+export const groupCreator = {
+  creation: "creation",
+  edition: "edition",
+}
 
 export const newsTypes = {
   friends: "friends",

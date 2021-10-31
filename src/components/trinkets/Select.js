@@ -46,7 +46,7 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
                         alt="Flag"
                     /> : 
                     <ProfilePhoto 
-                        src={props.data.icon}
+                        src={props.data.icon ? props.data.icon : noProfilePictureIcon}
                         onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
                         alt="Profile picture"
                     />
@@ -65,7 +65,7 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
                     alt="Flag"
                 /> : 
                 <ProfilePhoto 
-                    src={props.data.icon}
+                    src={props.data.icon ? props.data.icon : noProfilePictureIcon}
                     onError={(e) => {e.target.onError = null; e.target.src=noProfilePictureIcon;}}
                     alt="Profile picture"
                 />

@@ -63,6 +63,42 @@ const AlbumSelectValue = (props) => (
   </ValueContainer>
 );
 
+const GroupSelectOption = (props) => (
+  <Option {...props}>
+    <ValueContainer>
+      <Album src={props.data.groupPicture} />
+      <InnerContainer>
+        <MobileContainer>
+          <Title>{props.data.value}</Title>
+          <Place>{props.data.place}</Place>
+        </MobileContainer>
+        <MembersAmount>
+          {props.data.membersAmount > 1
+            ? props.data.membersAmount + " członków grupy"
+            : "1 członek grupy"}
+        </MembersAmount>
+      </InnerContainer>
+    </ValueContainer>
+  </Option>
+);
+
+const GroupSelectValue = (props) => (
+  <ValueContainer>
+    <Album src={props.data.groupPicture} />
+    <InnerContainer>
+      <MobileContainer>
+        <Title>{props.data.value}</Title>
+        <Place>{props.data.place}</Place>
+      </MobileContainer>
+      <MembersAmount>
+        {props.data.membersAmount > 1
+          ? props.data.membersAmount + " członków grupy"
+          : "1 członek grupy"}
+      </MembersAmount>
+    </InnerContainer>
+  </ValueContainer>
+);
+
 const CustomTheme = (theme) => {
   return {
     ...theme,
@@ -138,15 +174,13 @@ const DropdownSearch = ({ options, setState, value, searchType }) => {
       onChange={setValueOnChange}
       value={value}
       components={{
-        Option: searchType === "albmus" ? AlbumSelectOption : AlbumSelectOption,
+        Option: searchType === "albums" ? AlbumSelectOption : GroupSelectOption,
         SingleValue:
-          searchType === "albmus" ? AlbumSelectValue : AlbumSelectValue,
+          searchType === "albums" ? AlbumSelectValue : GroupSelectValue,
       }}
     />
   );
 };
-
-/// Jakby w components zrobić if'a do sprawdzania czy albumy czy użytkownik
 
 const StyledSelect = styled(Select)`
   min-width: 50%;
@@ -279,6 +313,23 @@ const InnerContainer = styled.div`
 const MobileContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const MembersAmount = styled.h1`
+  color: ${({ theme }) => theme.color.greyFont};
+  font-size: 16px;
+  @media only screen and (max-width: 1110px) {
+    font-size: 14px;
+  }
+  @media only screen and (max-width: 905px) {
+    font-size: 12px;
+  }
+  @media only screen and (max-width: 760px) {
+    font-size: 10px;
+  }
+  @media only screen and (max-width: 435px) {
+    font-size: 8px;
+  }
 `;
 
 export default DropdownSearch;

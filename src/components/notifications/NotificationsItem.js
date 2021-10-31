@@ -7,7 +7,6 @@ import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
-import { setNotificationPhoto } from "../../redux/albumDetailsSlice";
 
 const notificationsMaleVersion = {
   PHOTO_TAG: " oznaczył cię na zdjęciu",
@@ -90,7 +89,6 @@ const NotificationsItem = ({
             status === "PHOTO_TAG" ||
             status === "COMMENT"
           ) {
-            dispatch(setNotificationPhoto(null));
             setRedirectToAlbum(true);
           }
         }}
@@ -177,7 +175,7 @@ const TextContainer = styled.div`
 const Date = styled.p`
   color: ${({ theme }) => theme.color.greyFont};
   font-size: 14px;
-  margin: 5px auto 0 0;
+  margin: auto auto 0 0;
 `;
 
 const InnerContainer = styled.div`

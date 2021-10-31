@@ -38,9 +38,6 @@ export const albumDetailsSlice = createSlice({
         setPhotoTags: (state, action) => {
             state.photoTags = action.payload;
         },
-        setNotificationPhoto: (state, action) => {
-            state.notificationPhoto = action.payload; // carousel index not photoId
-        },
         clearStore: (state) => {
             state.info = null;
             state.albumPhotos = [];
@@ -66,7 +63,6 @@ export const {
     setSharedPersonList, setAlbumPhotos,
     setInfo, setFriendsList,
     setTags, clearStore, setPhotoTags,
-    setNotificationPhoto 
 } = albumDetailsSlice.actions;
 
 // exporting selects
@@ -79,6 +75,5 @@ export const selectAlbumType = (state) => state.albumDetails.albumType;
 export const selectFriendsList = (state) => state.albumDetails.friendsList;
 export const selectTags = (state) => state.albumDetails.tags;
 export const selectPhotoTags = (state) => state.albumDetails.photoTags;
-export const selectNotificationPhoto = (state) => state.albumDetails.notificationPhoto;
 
 export default albumDetailsSlice.reducer;

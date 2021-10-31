@@ -96,7 +96,7 @@ const ShareFriendThumbnail = ({ friend, albumId }) => {
   return (
     <Friend>
       <Photo
-        src={friend.profilePicture}
+        src={friend.profilePicture !== undefined ? friend.profilePicture : noProfilePictureIcon}
         alt="Profile picture"
         onError={(e) => {
           e.target.onError = null;

@@ -1,23 +1,22 @@
 .customTheme {
-    color: #000 !important;
-    background-color: #F2F7F2 !important;
-    opacity: 1 !important;
-    filter: drop-shadow(0px 0.75px 0.75px #075459);
+  color: #000 !important;
+  background-color: #f2f7f2 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0px 0.75px 0.75px #075459);
 }
 
 .__react_component_tooltip.place-left::after {
-    border-left: 8px solid #F2F7F2 !important;
-
+  border-left: 8px solid #f2f7f2 !important;
 }
 
 .__react_component_tooltip.place-right::after {
-    border-right: 8px solid #F2F7F2 !important;
+  border-right: 8px solid #f2f7f2 !important;
 }
 
 .__react_component_tooltip.place-top::after {
-    border-top: 8px solid #F2F7F2 !important;
+  border-top: 8px solid #f2f7f2 !important;
 }
 
 .__react_component_tooltip.place-bottom::after {
-    border-bottom: 8px solid #F2F7F2 !important;
+  border-bottom: 8px solid #f2f7f2 !important;
 }

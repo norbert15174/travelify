@@ -12,16 +12,16 @@ const GridSection = ({ userType, data, sectionType }) => {
 
   // albums are searched by title, friends by name of course
   const handleSearchBarChange = (e) => {
-    setSearchContent(e.target.value);
     setFound(
       data.filter((item) => {
         return sectionType === "albums"
-          ? item.name.toLowerCase().includes(searchContent.toLowerCase())
+          ? item.name.toLowerCase().includes(e.target.value.toLowerCase())
           : (item.name + " " + item.lastName)
               .toLowerCase()
-              .includes(searchContent.toLowerCase());
+              .includes(e.target.value.toLowerCase());
       })
     );
+    setSearchContent(e.target.value);
   };
 
   return (
@@ -126,7 +126,7 @@ const animation = keyframes`
 `;
 
 const Search = styled(Input)`
-  width: 5%;
+  width: 25%;
   margin: 20px 0 25px 30px;
   &:focus {
     animation: ${animation};

@@ -4,7 +4,7 @@ import { Link, Redirect, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "../trinkets/Tooltip";
 import UserProfilePicture from "./UserProfilePicture";
-import Friends from "../messenger/Friends";
+import Chats from "../messenger/Chats";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import expandIcon from "./assets/expandIcon.svg";
 import notifs from "./assets/notifs.svg";
@@ -12,7 +12,7 @@ import search from "./assets/search.svg";
 import news from "./assets/news.svg";
 import logout from "./assets/logout.svg";
 import groups from "./assets/groups.svg";
-import friends from "./assets/friends.svg";
+import chats from "./assets/chats.svg";
 import albums from "./assets/albums.svg";
 import { useSelector } from "react-redux";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
@@ -113,17 +113,17 @@ const Menu = () => {
           <Tooltip id="newsTip" place="bottom" text="Aktualności" />
         </Link>
         <NavButton
-          icon={friends}
-          active={menuToExpand === "friends" ? true : false}
+          icon={chats}
+          active={menuToExpand === "chats" ? true : false}
           onClick={() =>
-            menuToExpand === "friends"
+            menuToExpand === "chats"
               ? setMenuToExpand("")
-              : setMenuToExpand("friends")
+              : setMenuToExpand("chats")
           }
           data-tip
-          data-for="friendsTip"
+          data-for="chatsTip"
         />
-        <Tooltip id="friendsTip" place="bottom" text="Znajomi" />
+        <Tooltip id="chatsTip" place="bottom" text="Znajomi" />
         <Link to={routes.albums}>
           <NavButton icon={albums} active={currentUrl === "album" ? true : false} data-tip data-for="albumsTip" />
           <Tooltip id="albumsTip" place="bottom" text="Twoje albumy" />
@@ -132,10 +132,10 @@ const Menu = () => {
           <NavButton icon={groups} active={currentUrl === "group" ? true : false} data-tip data-for="groupsTip" />
           <Tooltip id="groupsTip" place="bottom" text="Grupy" />
         </Link>
-        <Link to={routes.search}>
+        {/* <Link to={routes.search}>
           <NavButton icon={search} active={currentUrl === routes.search ? true : false} data-tip data-for="searchTip" />
           <Tooltip id="searchTip" place="bottom" text="Wyszukiwarka" />
-        </Link>
+        </Link> */}
         <Logout
           icon={logout}
           onClick={() => setLogoutBox(!logoutBox)}
@@ -152,8 +152,8 @@ const Menu = () => {
         blurState={blurState}
       />
 
-      {menuToExpand === "friends" ? (
-        <Friends friendDisplay={setMenuToExpand} />
+      {menuToExpand === "chats" ? (
+        <Chats chatsDisplay={setMenuToExpand} />
       ) : null}
 
       {menuToExpand === "notifications" ? (

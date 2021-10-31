@@ -5,10 +5,10 @@ import noMessageIcon from "./assets/noMessageIcon.svg";
 import messageAvailableIcon from "./assets/messageAvailableIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-const FriendItem = ({
+const ChatItem = ({
   user,
-  selectedFriend,
-  setSelectedFriend,
+  selectedChat,
+  setSelectedChat,
   chatBlock,
   messageNotifications,
   setMessageNotifications,
@@ -19,7 +19,7 @@ const FriendItem = ({
       messageNotifications.size > 0 &&
       messageNotifications.has(user.friendId)
     ) {
-      if (selectedFriend && messageNotifications.has(selectedFriend.friendId)) {
+      if (selectedChat && messageNotifications.has(selectedChat.friendId)) {
         setMessageNew(false);
       } else {
         setMessageNew(true);
@@ -36,8 +36,8 @@ const FriendItem = ({
       onClick={(e) => {
         if (!chatBlock) {
           setMessageNew(false);
-          setSelectedFriend(null);
-          setSelectedFriend(user);
+          setSelectedChat(null);
+          setSelectedChat(user);
         }
       }}
     >
@@ -123,4 +123,4 @@ const Communicate = styled.p`
   }
 `;
 
-export default FriendItem;
+export default ChatItem;

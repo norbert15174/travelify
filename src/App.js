@@ -17,6 +17,8 @@ import LoginTransition from "./views/LoginTransition";
 import ErrorPage from "./templates/ErrorPage";
 import ErrorBoundary from "./templates/ErrorBoundary";
 import AlbumNotLogged from "./views/AlbumNotLogged";
+import GroupCreator from "./views/GroupCreator";
+import GroupDetails from "./views/GroupDetails";
 
 function App() {
 	return (
@@ -35,6 +37,8 @@ function App() {
 						<Route exact path={routes.album} component={AlbumDetails}/>
 						<Route exact path={routes.albumCreator} component={AlbumCreator}/>
 						<Route exact path={routes.groups} component={Groups}/>
+						<Route exact path={routes.groupCreator} component={GroupCreator}/>
+						<Route exact path={routes.group} component={GroupDetails}/>
 						<Route exact path={routes.albumNotLogged} component={AlbumNotLogged}/>
 						<Route path="*" component={ErrorPage}/>
 					</Switch>

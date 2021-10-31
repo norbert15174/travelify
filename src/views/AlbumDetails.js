@@ -16,11 +16,11 @@ import {
   setTags,
   setRights,
   setAlbumType,
-  setNotificationPhoto,
 } from "../redux/albumDetailsSlice";
 
 const AlbumDetails = () => {
   const [albumId, setAlbumId] = useState(null);
+  const [notifPhoto, setNotifPhoto] = useState(null);
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
     useState(false);
   const [error, setError] = useState(null);
@@ -30,14 +30,20 @@ const AlbumDetails = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setAlbumDetailsFetchFinished(false);
+    setError(null);
     if (!sessionStorage.getItem("Login")) {
       throw new Error(errorTypes.noAccess);
     } else {
       setAlbumId(urlParams.id);
-      if (history.location.state !== undefined && history.location.state.photoId) {
+      if (
+        history.location.state !== undefined &&
+        history.location.state.photoId
+      ) {
         console.log("photoId: " + history.location.state.photoId);
       } else {
-        dispatch(setNotificationPhoto(null));
+        history.replace({ state: {} });
+        setNotifPhoto(null);
       }
       getUserAlbum(urlParams.id);
     }
@@ -67,8 +73,8 @@ const AlbumDetails = () => {
             history.location.state.photoId &&
             data.photosDTOS[i].photoId === history.location.state.photoId
           ) {
-            console.log("TAK")
-            dispatch(setNotificationPhoto(tempPhotos[i].index));
+            console.log("TAK");
+            setNotifPhoto(tempPhotos[i].index);
           }
           tempTags.push({
             photoId: data.photosDTOS[i].photoId,
@@ -106,9 +112,10 @@ const AlbumDetails = () => {
         if (error.response !== undefined) {
           setError(error.response.status);
         }
+        console.error(error);
       })
       .finally(() => {
-        history.replace({ state: {} })
+        history.replace({ state: {} });
         setAlbumDetailsFetchFinished(true);
       });
   }
@@ -124,7 +131,11 @@ const AlbumDetails = () => {
   return (
     <UserTemplate>
       {albumDetailsFetchFinished && error === null ? (
-        <AlbumInside albumId={albumId} />
+        <AlbumInside
+          key={"album" + new Date().getTime()}
+          albumId={albumId}
+          notifPhoto={notifPhoto}
+        />
       ) : !error ? (
         <Loading />
       ) : (
