@@ -13,7 +13,7 @@ import {
   setAlbumPhotos,
   setSharedPersonList,
   setInfo,
-  setTags,
+  setPhotoTags,
   setRights,
   setAlbumType,
 } from "../redux/albumDetailsSlice";
@@ -81,7 +81,7 @@ const AlbumDetails = () => {
             tags: data.photosDTOS[i].taggedList,
           });
         }
-        dispatch(setTags(tempTags));
+        dispatch(setPhotoTags(tempTags));
         dispatch(setOwner(data.owner));
         dispatch(setInfo(data.album));
         dispatch(setSharedPersonList(data.shared));

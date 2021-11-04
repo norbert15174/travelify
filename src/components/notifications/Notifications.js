@@ -29,6 +29,7 @@ const Notifications = ({ notificationsDisplay }) => {
   useEffect(() => {
     getFriends();
     getNotifications();
+    /* getGroupRequests(); */
     moment.locale("pl");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -66,6 +67,24 @@ const Notifications = ({ notificationsDisplay }) => {
       .then(({ data }) => {
         console.log(data);
         setUserNotifications(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async function getGroupRequests() {
+    axios({
+      url: endpoints.getUserGroupRequests,
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        /* setGroupNotifications(data); */
       })
       .catch((error) => {
         console.error(error);

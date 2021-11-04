@@ -76,6 +76,7 @@ const User = () => {
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
+			console.log(data);
 			setPersonalData(data.personalDataDTO);
 			setInvidualAlbums(data.individualAlbumDTO);
 		}).catch((error) => {

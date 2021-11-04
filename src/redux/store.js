@@ -6,6 +6,8 @@ import albumDetailsSlice from './albumDetailsSlice';
 import albumCreatorSlice from './albumCreatorSlice';
 import groupCreatorSlice from "./groupCreatorSlice";
 import groupDetailsSlice from './groupDetailsSlice';
+import groupAlbumDetailsSlice from './groupAlbumSlice';
+import groupAlbumCreatorSlice from './groupAlbumCreatorSlice';
 
 export default configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export default configureStore({
         albumDetails: albumDetailsSlice,
         albumCreator: albumCreatorSlice,
         groupCreator: groupCreatorSlice,
-        groupDetails: groupDetailsSlice
+        groupDetails: groupDetailsSlice,
+        groupAlbumDetails: groupAlbumDetailsSlice,
+        groupAlbumCreator: groupAlbumCreatorSlice
     },
 })

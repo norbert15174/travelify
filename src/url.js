@@ -46,6 +46,16 @@ export const endpoints = {
     refreshMessages: url + "/friends/message/new/", //+ friends id
     getNotifications: url + "/news/notification",
     createGroup: url + "/group", // POST
+    getGroups: url + "/group", // GET
+    getGroupDetails: url + "/group/", // + groupId, GET
+    inviteToGroup: url + "/group/", // membersToAdd: [...], PUT
+    removeMember: url + "/group/member/", // + groupId, DELETE
+    leaveGroup: url + "/group/:id/leave", // :id - groupId, DELETE
+    editGroup: url + "/group/", // PUT
+    deleteGroup: url + "/group/", // + groupId, DELETE
+    setGroupPicture: url + "/group/photo/", // + groupId, POST
+    changeOwner: url + "/group/owner/", // + groupId/?userId=:id, PUT
+    getUserGroupRequests: url + "/group/user/",
 }
 
 // http://localhost:8020/friends/delete/

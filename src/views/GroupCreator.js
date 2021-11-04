@@ -11,7 +11,12 @@ import {
 } from "../miscellanous/Utils";
 import GroupCreatorPage from "../components/groupCreator/GroupCreatorPage";
 import { useDispatch } from "react-redux";
-import { clearStore } from "../redux/groupCreatorSlice";
+import {
+  clearStore,
+  setBasicInfo,
+  setGroupPicture,
+  setMembers,
+} from "../redux/groupCreatorSlice";
 
 const GroupCreator = () => {
   const [userFriendsFetchFinished, setUserFriendsFetchFinished] =
@@ -31,23 +36,55 @@ const GroupCreator = () => {
     } else {
       dispatch(clearStore());
       setError(null);
+      getFriends();
       if (location.state !== undefined && location.state.groupId) {
         console.log(location.state);
-        /* setCreatorType(location.state.creatorType);
+        setCreatorType(location.state.creatorType);
         setEditedGroupId(location.state.groupId);
+        setCreatorType(groupCreator.edition);
         getGroupToEdit(location.state.groupId);
-        getFriends();
-        setCreatorType(groupCreator.edition); */
       } else {
         setGroupToEditFetchFinished(true);
-        getFriends();
         setCreatorType(groupCreator.creation);
       }
     }
   }, []);
 
   async function getGroupToEdit(id) {
-    setGroupToEditFetchFinished(true);
+    setGroupToEditFetchFinished(false);
+    await axios({
+      method: "get",
+      url: endpoints.getGroupDetails + location.state.groupId,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch(
+          setBasicInfo({
+            groupName: data.groupName,
+            groupPicture:
+              data.groupPicture !== undefined ? data.groupPicture : undefined,
+            description: data.description,
+            owner: data.owner,
+          })
+        );
+        dispatch(setMembers(mapFriendsToSelect(data.members, "shared")));
+        if (data.groupPicture !== undefined) {
+          dispatch(setGroupPicture(data.groupPicture));
+        }
+      })
+      .catch((error) => {
+        if (error.response !== undefined) {
+          setError(error.response.status);
+        }
+        console.error(error);
+      })
+      .finally(() => {
+        setGroupToEditFetchFinished(true);
+      });
   }
 
   async function getFriends() {
@@ -61,9 +98,7 @@ const GroupCreator = () => {
       },
     })
       .then(({ data }) => {
-        let temp = [];
-        temp = mapFriendsToSelect(data);
-        setFriendsList(temp);
+        setFriendsList(mapFriendsToSelect(data));
       })
       .catch((error) => {
         console.error(error);

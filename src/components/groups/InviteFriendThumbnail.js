@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Button from "../trinkets/Button";
+import { endpoints } from "../../url";
 
 /*
   POBIERZ REQUESTY I SPRAWDZ CZY JUZ NIE JEST ZAPROSZONA DANA OSOBA
@@ -20,6 +21,37 @@ const InviteFriendThumbnail = ({ friend, groupId }) => {
   );
   const dispatch = useDispatch();
 
+  async function inviteToGroup() {
+    setUpdating(true);
+    await axios({
+      method: "put",
+      url: endpoints.inviteToGroup,
+      data: {
+        id: groupId,
+        membersToAdd: [friend.id],
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        setAlreadyChosen(true);
+        setButtonText("Zaproszony");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setUpdating(false);
+      });
+  }
+
   return (
     <Friend>
       <Photo
@@ -35,11 +67,7 @@ const InviteFriendThumbnail = ({ friend, groupId }) => {
         }}
       />
       <h1>{friend.name + " " + friend.lastName}</h1>
-      <ChooseButton
-        onClick={() => {
-          setButtonText("Zaproszony")
-        }}
-      >
+      <ChooseButton onClick={inviteToGroup}>
         {updating ? "Zapisywanie..." : buttonText}
       </ChooseButton>
     </Friend>

@@ -22,7 +22,6 @@ import Tooltip from "../trinkets/Tooltip";
 const AlbumCreatorPage = ({
   creatorType,
   editedAlbumId = null,
-  friendsList,
 }) => {
   const [confirmDeletingAlbum, setConfirmDeletingAlbum] = useState(false);
   const [refuseDeletingAlbum, setRefuseDeletingAlbum] = useState(false);
@@ -87,18 +86,17 @@ const AlbumCreatorPage = ({
   const [redirectToAlbums, setRedirectToAlbums] = useState(false);
   const [redirectBackToAlbum, setRedirectBackToAlbum] = useState(false);
 
-  // CREATION or after album delete
+  // CREATION
   if (redirectToAlbums) {
     return <Redirect to={{ pathname: routes.albums }} />;
   }
 
-  // when EDITION we are passing albumId to don't lose it
+  // EDITION
   if (redirectBackToAlbum) {
     return (
       <Redirect
-        to={{
+        push to={{
           pathname: `album/${editedAlbumId}`,
-          state: { albumId: editedAlbumId },
         }}
       />
     );
@@ -176,7 +174,7 @@ const AlbumCreatorPage = ({
         setRedirectToAlbums(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       })
       .finally((error) => {
         setDeleteBox(false);
@@ -221,7 +219,6 @@ const AlbumCreatorPage = ({
             editedAlbumId={editedAlbumId}
             creatorType={creatorType}
             setForm={setBasicInfo}
-            friendsList={friendsList}
           />
         </SectionContainer>
         <SectionContainer>

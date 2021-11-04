@@ -1,28 +1,21 @@
 import React, { Component } from "react";
 import ErrorPage from "./ErrorPage";
 
-// https://pl.reactjs.org/docs/error-boundaries.html
-
 class ErrorBoundary extends Component {
 
     state = {
-      	hasError: false,
-		errorType: "",
+      	error: null,
     };
   
     // renders error UI
     static getDerivedStateFromError(error) {
-        return { hasError: true };
-    }
-  
-    // logs error
-    componentDidCatch(error, info) {
-	  	this.setState({errorType: error.message})
+        //console.log(error);
+        return { error: error };
     }
   
     render() {
-        if (this.state.hasError && this.state.errorType !== "") {
-            return <ErrorPage errorType={this.state.errorType}/>
+        if (this.state.error) {
+            return <ErrorPage errorType={this.state.error.message}/>
         } else {
             return this.props.children;
         }

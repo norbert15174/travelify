@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import noBackgroundPicture from "../../assets/noBackgroundPicture.png";
-import closeIcon from "../photos/assets/closeIcon.svg";
+import closeIcon from "../albumPhotos/assets/closeIcon.svg";
 
 const PhotoZoom = ({ url, type, close }) => {
   const blurState = useSelector((state) => state.blur.value);

@@ -3,15 +3,18 @@ import styled, { keyframes } from "styled-components";
 import Input from "../trinkets/Input";
 import "./groupsScrollbar.css";
 import MemberThumbnail from "./MemberThumbnail";
+import { useSelector } from "react-redux";
+import { selectMembers } from "../../redux/groupDetailsSlice";
 
-const MembersSection = ({ members, setMemberToRemove }) => {
+const MembersSection = ({ setMemberToRemove }) => {
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
+  const members = useSelector(selectMembers);
 
   const handleSearchBarChange = (e) => {
     setFound(
       members.filter((item) =>
-        (item.name + " " + item.surname)
+        (item.name + " " + item.surName)
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       )
@@ -28,7 +31,11 @@ const MembersSection = ({ members, setMemberToRemove }) => {
         </Header>
         <MembersGrid className="scroll">
           {members.map((item) => (
-            <MemberThumbnail key={item.id} member={item} type="requests" />
+            <MemberThumbnail
+              key={"request" + item.id}
+              member={item}
+              type="requests"
+            />
           ))}
         </MembersGrid>
       </Container>
@@ -52,14 +59,16 @@ const MembersSection = ({ members, setMemberToRemove }) => {
             (searchContent.length !== 0 && found.length !== 0
               ? found.map((item) => (
                   <MemberThumbnail
+                    key={"member" + item.id}
                     member={item}
                     setMemberToRemove={setMemberToRemove}
                   />
                 ))
               : null) ||
             (members.length !== 0 && searchContent.length === 0
-              ? members.map((item) => (
+              ? members.slice(0).reverse().map((item) => (
                   <MemberThumbnail
+                    key={"member" + item.id}
                     member={item}
                     setMemberToRemove={setMemberToRemove}
                   />

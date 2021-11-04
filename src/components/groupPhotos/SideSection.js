@@ -9,7 +9,7 @@ import editPencilIcon from "./assets/editPencilIcon.svg";
 import acceptIcon from "./assets/acceptIcon.svg";
 import close2Icon from "./assets/close2Icon.svg";
 import tagTurquiseIcon from "./assets/tagIcon.svg";
-import { albumRights } from "../../miscellanous/Utils";
+import { groupMember } from "../../miscellanous/Utils";
 import axios from "axios";
 import Spinner from "../trinkets/Spinner";
 import ReactLoading from "react-loading";
@@ -21,9 +21,9 @@ import {
   selectOwner,
   selectAlbumPhotos,
   selectRights,
-  selectTags,
+  selectPhotoTags,
   setPhotoTags,
-} from "../../redux/albumDetailsSlice";
+} from "../../redux/groupAlbumSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import moment from "moment";
 import "moment/locale/pl";
@@ -40,7 +40,7 @@ const SideSection = ({
   const rights = useSelector(selectRights);
   const currentPhotoDetail = photos[currentPhotoIndex].photo;
   const photoId = photos[currentPhotoIndex].photo.photoId;
-  const reduxTags = useSelector(selectTags); // tags from whole album
+  const reduxTags = useSelector(selectPhotoTags); // tags from whole album
   const dispatch = useDispatch();
 
   const [tags, setTags] = useState([]);
@@ -60,6 +60,9 @@ const SideSection = ({
 
   useEffect(() => {
     if (!pinBox) {
+      /*
+        in photo details check who is the owner of the photo
+      */
       getPhotoDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,7 +185,7 @@ const SideSection = ({
       heightDelimiter={heightDelimiter}
       widthDelimiter={widthDelimiter}
     >
-      {rights === albumRights.owner && (
+      {rights === groupMember.owner && (
         <EditDescriptionButton
           icon={!editing ? editPencilIcon : acceptIcon}
           onClick={() => {
@@ -212,20 +215,16 @@ const SideSection = ({
               e.target.src = noProfilePictureIcon;
             }}
             onClick={() => {
-              if (rights !== albumRights.notLogged) {
-                document.body.style.overflow = "";
-                setRedirectToProfile({ active: true, userId: owner.id });
-              }
+              document.body.style.overflow = "";
+              setRedirectToProfile({ active: true, userId: owner.id });
             }}
           />
           {!editing ? (
             <span>
               <p
                 onClick={() => {
-                  if (rights !== albumRights.notLogged) {
-                    document.body.style.overflow = "";
-                    setRedirectToProfile({ active: true, userId: owner.id });
-                  }
+                  document.body.style.overflow = "";
+                  setRedirectToProfile({ active: true, userId: owner.id });
                 }}
               >
                 {owner.name + " " + owner.surName}
@@ -261,13 +260,11 @@ const SideSection = ({
                   <TaggedPerson
                     key={item.userId}
                     onClick={() => {
-                      if (rights !== albumRights.notLogged) {
-                        document.body.style.overflow = "";
-                        setRedirectToProfile({
-                          active: true,
-                          userId: item.userId,
-                        });
-                      }
+                      document.body.style.overflow = "";
+                      setRedirectToProfile({
+                        active: true,
+                        userId: item.userId,
+                      });
                     }}
                   >
                     <UserPhoto
@@ -307,25 +304,21 @@ const SideSection = ({
                         e.target.src = noProfilePictureIcon;
                       }}
                       onClick={() => {
-                        if (rights !== albumRights.notLogged) {
-                          document.body.style.overflow = "";
-                          setRedirectToProfile({
-                            active: true,
-                            userId: item.userId,
-                          });
-                        }
+                        document.body.style.overflow = "";
+                        setRedirectToProfile({
+                          active: true,
+                          userId: item.userId,
+                        });
                       }}
                     />
                     <span>
                       <p
                         onClick={() => {
-                          if (rights !== albumRights.notLogged) {
-                            document.body.style.overflow = "";
-                            setRedirectToProfile({
-                              active: true,
-                              userId: item.userId,
-                            });
-                          }
+                          document.body.style.overflow = "";
+                          setRedirectToProfile({
+                            active: true,
+                            userId: item.userId,
+                          });
                         }}
                       >
                         {item.name + " " + item.surName}
@@ -369,12 +362,12 @@ const SideSection = ({
         )}
       </CommentsSection>
       <Footer>
-        {rights === albumRights.owner && (
+        {rights === groupMember.owner && (
           <TagButton icon={tagWhiteIcon} onClick={() => setPinBox(true)}>
             Oznacz osobę
           </TagButton>
         )}
-        {rights !== albumRights.notLogged && <AddComment add={sendComment} />}
+        <AddComment add={sendComment} />
       </Footer>
     </Container>
   );

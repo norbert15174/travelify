@@ -27,11 +27,13 @@ import {
 } from "../../redux/userDataSlice";
 import PhotoZoom from "./PhotoZoom";
 import Tooltip from "../trinkets/Tooltip";
+import MapSection from "./MapSection";
 
 const sections = {
   info: "info",
   albums: "albums",
   friends: "friends",
+  map: "map",
 };
 
 const UserPage = ({
@@ -49,6 +51,7 @@ const UserPage = ({
   const [infoActive, setInfoActive] = useState(true);
   const [albumsActive, setAlbumsActive] = useState(true);
   const [friendsActive, setFriendsActive] = useState(false);
+  const [mapActive, setMapActive] = useState(false);
 
   const blurState = useSelector((state) => state.blur.value);
   // id of friend we want to delete
@@ -231,11 +234,19 @@ const UserPage = ({
     if (sectionName === sections.albums) {
       setAlbumsActive(true);
       setFriendsActive(false);
+      setMapActive(false);
     } else if (sectionName === sections.friends) {
       setAlbumsActive(false);
       setFriendsActive(true);
+      setMapActive(false);
     } else if (sectionName === sections.info) {
       setInfoActive(!infoActive);
+      setMapActive(false);
+    } else if (sectionName === sections.map) {
+      setInfoActive(false);
+      setAlbumsActive(false);
+      setFriendsActive(false);
+      setMapActive(true);
     }
   };
 
@@ -332,6 +343,12 @@ const UserPage = ({
             >
               Znajomi
             </Button>
+            <Button
+              active={mapActive ? true : false}
+              onClick={() => sectionsToggle(sections.map)}
+            >
+              Odwiedzone miejsca
+            </Button>
             {userType === userTypes.logged && (
               <>
                 <EditButton
@@ -407,6 +424,7 @@ const UserPage = ({
               }
             />
           )}
+          {mapActive && <MapSection data={individualAlbums} />}
         </InnerContainer>
       </Container>
     </>

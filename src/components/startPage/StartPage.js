@@ -37,7 +37,6 @@ const StartPage = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         setMarkers(data);
       })
       .catch((error) => {

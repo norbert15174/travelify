@@ -44,6 +44,7 @@ const Photos = ({ editedAlbumId }) => {
 
     setErrorMessage("");
     setImagePreview([]);
+    setMultipleImages([]);
 
     Array.from(files).every((file) => {
       if (file === undefined) {

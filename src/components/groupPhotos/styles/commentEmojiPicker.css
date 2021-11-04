@@ -1,0 +1,332 @@
+.emoji-window-comment .emoji-picker-react div {
+  background-color: #e0e5e0; 
+}
+
+
+.emoji-window-comment .emoji-picker-react .emoji-search {
+  background-color: #e0e5e0;
+}
+
+.emoji-window-comment .emoji-picker-react input.emoji-search {
+  border: 1px solid #f2f7f2;
+}
+
+.emoji-window-comment .emoji-picker-react input.emoji-search:focus {
+  border: 1px solid #5b5b5b;
+}
+
+.emoji-window-comment .emoji-categories {
+  background-color: #e0e5e0;
+}
+
+.emoji-window-comment .emoji-picker-react .emoji-group:before {
+  background-color: #e0e5e0;
+}
+
+/* CUSTOM CONTAINER */
+.emoji-window-comment {
+  position: absolute;
+  margin-right: 20px;
+  right: 0;
+  margin-bottom: 40px;
+  bottom: 0;
+}
+
+/* WHOLE CONTAINIER */
+.emoji-window-comment aside.emoji-picker-react {
+  box-shadow: none;
+}
+
+/* EMOJI ICONS */
+.emoji-window-comment .emoji-picker-react .native {
+  height: 15px;
+  width: 15px;
+  font-size: 15px;
+}
+
+/* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
+.emoji-window-comment .emoji-picker-react .emoji-group:before  {
+  font-size: 10px;
+  height: 25px;
+  line-height: 25px;
+  margin: 0px;
+}
+
+/* TEXT DESCRIPTION OF SELECTED EMOJI */
+.emoji-window-comment aside.emoji-picker-react .content-wrapper:before {
+  content: "";
+}
+
+@media only screen and (max-width: 1635px) {
+  .emoji-window-comment {
+    margin-right: 10px;
+  }
+   /* INNER CONTAINER WITH EMOJIS */
+   .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+      height: 235px;
+  }
+}
+
+@media only screen and (max-width: 1425px) {
+    /* WHOLE CONTAINIER */
+    .emoji-window-comment aside.emoji-picker-react {
+      width: 250px;
+      height: 200px;
+    }
+
+    /* INNER CONTAINER WITH EMOJIS */
+    .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+        height: 130px;
+    }  
+
+    /* EMOJI SEARCH INPUT */
+    .emoji-window-comment .emoji-picker-react input.emoji-search {
+      height: 22px;
+      padding: 0px;
+    }
+
+    /* SKIN TONE SELECTION */
+    .emoji-window-comment .emoji-picker-react ul.skin-tones-list {
+      top: 0;
+      margin-top: 6px;
+    }
+}
+
+@media only screen and (max-width: 1225px) {
+  /* CUSTOM CONTAINER */
+  .emoji-window-comment {
+    margin-right: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* WHOLE CONTAINIER */
+  .emoji-window-comment aside.emoji-picker-react {
+    width: 200px;
+    height: 150px;
+  }
+
+  /* HEADER */
+  .emoji-window-comment .emoji-picker-react .emoji-categories {
+    padding: 5px 10px;
+    justify-content: flex-start;
+  }
+
+  /* BUTTONS FROM HEADER */
+  .emoji-window-comment .emoji-picker-react .emoji-categories button {
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+    background-size: 15px;
+    justify-self: center;
+  }
+
+  /* INNER CONTAINER WITH EMOJIS */
+  .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+      height: 90px;
+  }
+  
+  /* EMOJI ICONS */
+  .emoji-window-comment .emoji-picker-react .native {
+      height: 10px;
+      width: 10px;
+      font-size: 10px;
+  }
+
+  /* EMOJI SEARCH INPUT */
+  .emoji-window-comment .emoji-picker-react input.emoji-search {
+    height: 22px;
+    padding: 0px;
+  }
+
+  /* SKIN TONE SELECTION */
+  .emoji-window-comment .emoji-picker-react ul.skin-tones-list {
+    top: 0;
+    margin-top: 6px;
+  }
+}
+
+@media only screen and (max-width: 1025px) {
+  /* CUSTOM CONTAINER */
+  .emoji-window-comment {
+    margin-right: 9px;
+    margin-bottom: 22px;
+  }
+
+  /* WHOLE CONTAINIER */
+  .emoji-window-comment aside.emoji-picker-react {
+    width: 150px;
+    height: 100px;
+  }
+
+  /* HEADER */
+  .emoji-window-comment .emoji-picker-react .emoji-categories {
+    padding: 5px 10px;
+    justify-content: flex-start;
+  }
+
+  /* BUTTONS FROM HEADER */
+  .emoji-window-comment .emoji-picker-react .emoji-categories button {
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
+    background-size: 10px;
+    justify-self: center;
+  }
+
+  /* INNER CONTAINER WITH EMOJIS */
+  .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+      height: 50px;
+  }  
+
+  /* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
+  .emoji-window-comment .emoji-picker-react .emoji-group:before  {
+    font-size: 6px;
+    height: 15px;
+    line-height: 15px;
+    margin: 0px;
+  }
+
+  /* EMOJI SEARCH INPUT */
+  .emoji-window-comment .emoji-picker-react input.emoji-search {
+    height: 15px;
+    padding: 0px;
+    font-size: 10px;
+  }
+
+  /* SKIN TONE SELECTION */
+  .emoji-window-comment .emoji-picker-react ul.skin-tones-list {
+    top: 0;
+    margin-top: 5px;
+    right: 0;
+    margin-right: 30px;
+  }
+
+  /* SKIN TONE BLOCK */
+  .emoji-window-comment .emoji-picker-react ul.skin-tones-list label {
+    width: 5px;
+    height: 5px;
+  }
+
+}
+
+@media only screen and (max-width: 825px) {
+    /* CUSTOM CONTAINER */
+    .emoji-window-comment {
+      margin-right: 0px;
+      margin-bottom: 23px;
+    }
+  
+    /* WHOLE CONTAINIER */
+    .emoji-window-comment aside.emoji-picker-react {
+      width: 250px;
+      height: 200px;
+    }
+  
+    /* BUTTONS FROM HEADER */
+    .emoji-window-comment .emoji-picker-react .emoji-categories button {
+      width: 20px;
+      height: 20px;
+      margin: 0 auto;
+      background-size: 15px;
+      justify-self: center;
+    }
+  
+    /* INNER CONTAINER WITH EMOJIS */
+    .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+        height: 140px;
+    }  
+  
+    /* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
+    .emoji-window-comment .emoji-picker-react .emoji-group:before  {
+      font-size: 8px;
+      height: 15px;
+      line-height: 15px;
+      margin: 0px;
+    }
+  
+    /* EMOJI SEARCH INPUT */
+    .emoji-window-comment .emoji-picker-react input.emoji-search {
+      height: 20px;
+    }
+
+    /* SKIN TONE BLOCK */
+    .emoji-window-comment .emoji-picker-react ul.skin-tones-list label {
+      width: 8px;
+      height: 8px;
+    }
+
+}
+
+@media only screen and (max-width: 510px) {
+  /* CUSTOM CONTAINER */
+  .emoji-window-comment {
+    margin-right: 0px;
+    margin-bottom: 23px;
+  }
+
+  /* WHOLE CONTAINIER */
+  .emoji-window-comment aside.emoji-picker-react {
+    width: 150px;
+    height: 150px;
+  }
+
+  /* BUTTONS FROM HEADER */
+  .emoji-window-comment .emoji-picker-react .emoji-categories button {
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
+    background-size: 10px;
+    justify-self: center;
+  }
+
+  /* INNER CONTAINER WITH EMOJIS */
+  .emoji-window-comment .emoji-picker-react .content-wrapper .emoji-scroll-wrapper {
+      height: 100px;
+  }  
+
+  /* EMOJI SECTION HEADERS (REACENTLY USED, SMILEYS ETC.) */
+  .emoji-window-comment .emoji-picker-react .emoji-group:before  {
+    font-size: 6px;
+    height: 15px;
+    line-height: 15px;
+    margin: 0px;
+  }
+
+  /* EMOJI SEARCH INPUT */
+  .emoji-window-comment .emoji-picker-react input.emoji-search {
+    height: 15px;
+  }
+
+  /* SKIN TONE SELECTION */
+  .emoji-window-comment .emoji-picker-react ul.skin-tones-list {
+    top: 0;
+    margin-top: 5px;
+    right: 0;
+    margin-right: 30px;
+  }
+
+  /* SKIN TONE BLOCK */
+  .emoji-window-comment .emoji-picker-react ul.skin-tones-list label {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* 
+  SCROLLBAR
+*/
+
+.emoji-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-track {
+  background: #e0e5e0;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.emoji-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

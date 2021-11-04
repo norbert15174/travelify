@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import noBackgroundPicture from "../../assets/noBackgroundPicture.png";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { useSelector, useDispatch } from "react-redux";
 import threeDotsIcon from "./assets/threeDotsIcon.svg";
 import editIcon from "./assets/editIcon.svg";
@@ -21,11 +23,14 @@ import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { toggleBlur } from "../../redux/blurSlice";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
-import { groupCreator } from "../../miscellanous/Utils";
-
-/* import axios from "axios";
+import { groupCreator, groupMember } from "../../miscellanous/Utils";
+import {
+  selectBasicInfo,
+  selectMembers,
+  selectRights,
+  setMembers,
+} from "../../redux/groupDetailsSlice";
 import { endpoints } from "../../url";
-import { toggleBlur } from "../../redux/blurSlice"; */
 
 const section = {
   info: "info",
@@ -189,7 +194,7 @@ const tempAlbums = [
   },
 ];
 
-const GroupInside = ({ group, groupId }) => {
+const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);
   const [memberButtonText, setMemberButtonText] = useState("Dołączono");
@@ -204,36 +209,41 @@ const GroupInside = ({ group, groupId }) => {
     active: false,
     id: null,
   });
+  const [redirectBackToGroups, setRedirectBackToGroups] = useState(false);
   const [inviteFriendBox, setInviteFriendBox] = useState(false);
   const [removeMemberBox, setRemoveMemberBox] = useState(false);
+  const [leaveGroupBox, setLeaveGroupBox] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState(null);
   const [confirm, setConfirm] = useState(false);
   const [refuse, setRefuse] = useState(false);
 
   const dispatch = useDispatch();
+  const basicInfo = useSelector(selectBasicInfo);
+  const members = useSelector(selectMembers);
+  const rights = useSelector(selectRights);
 
   useEffect(() => {
     if (blurState) {
       dispatch(toggleBlur());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [removeMemberBox, memberToRemove, confirm, refuse]);
+  }, [leaveGroupBox, removeMemberBox, memberToRemove, confirm, refuse]);
 
   /*
     when user wants to leave group
   */
   useEffect(() => {
-    if (removeMemberBox) {
+    if (leaveGroupBox) {
       if (confirm) {
-        setConfirm(false);
-        setRemoveMemberBox(false);
+        leaveGroup();
       }
       if (refuse) {
-        setRemoveMemberBox(false);
+        setLeaveGroupBox(false);
         setRefuse(false);
       }
     }
-  }, [removeMemberBox, confirm, refuse]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaveGroupBox, confirm, refuse]);
 
   /*
     when owner removes someone from the group
@@ -242,9 +252,7 @@ const GroupInside = ({ group, groupId }) => {
     if (memberToRemove) {
       if (!removeMemberBox) setRemoveMemberBox(true);
       if (confirm) {
-        setConfirm(false);
-        setRemoveMemberBox(false);
-        setMemberToRemove(null);
+        removeMember();
       }
       if (refuse) {
         setRemoveMemberBox(false);
@@ -252,18 +260,72 @@ const GroupInside = ({ group, groupId }) => {
         setMemberToRemove(null);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeMemberBox, memberToRemove, confirm, refuse]);
+
+  async function removeMember() {
+    await axios({
+      method: "delete",
+      url: endpoints.removeMember + groupId + "/?userId=" + memberToRemove,
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        dispatch(setMembers(response.data.members));
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setMemberToRemove(null);
+        setRemoveMemberBox(false);
+        setConfirm(false);
+      });
+  }
+
+  async function leaveGroup() {
+    console.log();
+    await axios({
+      method: "delete",
+      url: `http://localhost:8020/group/${groupId}/leave`,/* endpoints.leaveGroup.replace(/:id/i, groupId), */
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        setRedirectBackToGroups(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLeaveGroupBox(false);
+        setConfirm(false);
+      });
+  }
 
   if (redirectToProfile.active) {
     return (
       <Redirect
         push
         to={{
-          pathname: routes.user.replace(/:id/i, 1),
+          pathname: routes.user.replace(/:id/i, redirectToProfile.id),
           state: {
             selectedUser: {
               selectIsTrue: true,
-              id: 1,
+              id: redirectToProfile.id,
               isHeFriend: false,
             },
           },
@@ -272,7 +334,6 @@ const GroupInside = ({ group, groupId }) => {
     );
   }
 
-  // redirection to album edition (EDITION)
   if (redirectToGroupEdit.active) {
     return (
       <Redirect
@@ -288,25 +349,32 @@ const GroupInside = ({ group, groupId }) => {
     );
   }
 
+  if (redirectBackToGroups) {
+    return <Redirect to={{ pathname: routes.groups }} />;
+  }
+
+
   return (
     <>
       {photoZoom && (
         <PhotoZoom
-          url={group.groupPicture}
+          url={
+            basicInfo.groupPicture !== undefined
+              ? basicInfo.groupPicture
+              : noBackgroundPicture
+          }
           type="background"
           close={setPhotoZoom}
         />
       )}
       {removeMemberBox && memberToRemove && (
         <ConfirmationBox
-          children={
-            "Czy na pewno chcesz usunąć daną osobę z grupy?"
-          }
+          children={"Czy na pewno chcesz usunąć daną osobę z grupy?"}
           confirm={setConfirm}
           refuse={setRefuse}
         />
       )}
-      {removeMemberBox && !memberToRemove && (
+      {leaveGroupBox && (
         <ConfirmationBox
           children={"Czy na pewno chcesz opuścić grupę?"}
           confirm={setConfirm}
@@ -320,11 +388,11 @@ const GroupInside = ({ group, groupId }) => {
         <Header>
           <GroupPicture
             src={
-              group.groupPicture !== undefined
-                ? group.groupPicture
+              basicInfo.groupPicture !== undefined
+                ? basicInfo.groupPicture
                 : noBackgroundPicture
             }
-            alt={"Group picture " + group.id}
+            alt={"Group picture " + groupId}
             onError={(e) => {
               e.target.onError = null;
               e.target.src = noBackgroundPicture;
@@ -332,50 +400,60 @@ const GroupInside = ({ group, groupId }) => {
             onClick={() => setPhotoZoom("background")}
           />
           <InnerContainer>
-            <GroupName>{group.groupName}</GroupName>
+            <GroupName>{basicInfo.groupName}</GroupName>
             <MembersAmount>
-              {group.members.length > 1
-                ? group.members.length + " członków grupy"
+              {members.length > 1
+                ? members.length + " członków grupy"
                 : "1 członek grupy"}
             </MembersAmount>
             <RowSection>
-              {group.members.slice(0, 12).map((item) => (
+              {members.slice(0, 12).map((item) => (
                 <MemberPicture
                   key={item.id}
-                  title={item.name + " " + item.surname}
-                  icon={item.profilePicture}
+                  title={item.name + " " + item.surName}
+                  icon={
+                    item.photo !== undefined ? item.photo : noProfilePictureIcon
+                  }
+                  onError={(e) => {
+                    e.target.onError = null;
+                    e.target.src = noProfilePictureIcon;
+                  }}
                   onClick={() =>
                     setRedirectToProfile({ active: true, id: item.id })
                   }
                 />
               ))}
-              {group.members.length > 12 ? (
+              {members.length > 12 ? (
                 <Limit
-                  title={group.members
+                  title={members
                     .slice(13)
-                    .map((item) => item.name + " " + item.surname)}
+                    .map((item) => item.name + " " + item.Surname)}
                   icon={threeDotsIcon}
                 />
               ) : null}
               <Buttons>
-                <MemberButton icon={crownIconWhite} buttonType="owner">
-                  Właściciel
-                </MemberButton>
-                {/* <MemberButton
-                  icon={memberButtonIcon}
-                  onClick={() => setRemoveMemberBox(true)}
-                  onMouseEnter={() => {
-                    setMemberButtonText("Opuścić?");
-                    setMemberButtonIcon(closeIconWhite);
-                  }}
-                  onMouseLeave={() => {
-                    setMemberButtonText("Dołączono");
-                    setMemberButtonIcon(groupMemberIconWhite);
-                  }}
-                  buttonType="member"
-                >
-                  {memberButtonText}
-                </MemberButton> */}
+                {rights === groupMember.owner && (
+                  <MemberButton icon={crownIconWhite} buttonType="owner">
+                    Właściciel
+                  </MemberButton>
+                )}
+                {rights === groupMember.member && (
+                  <MemberButton
+                    icon={memberButtonIcon}
+                    onClick={() => setLeaveGroupBox(true)}
+                    onMouseEnter={() => {
+                      setMemberButtonText("Opuścić?");
+                      setMemberButtonIcon(closeIconWhite);
+                    }}
+                    onMouseLeave={() => {
+                      setMemberButtonText("Dołączono");
+                      setMemberButtonIcon(groupMemberIconWhite);
+                    }}
+                    buttonType="member"
+                  >
+                    {memberButtonText}
+                  </MemberButton>
+                )}
                 <MemberButton
                   icon={addGroupIcon}
                   buttonType="invite"
@@ -383,19 +461,17 @@ const GroupInside = ({ group, groupId }) => {
                 >
                   Zaproś
                 </MemberButton>
-                <EditButton
-                  data-tip
-                  data-for="edit"
-                  icon={editIcon}
-                  onClick={() =>
-                    setRedirectToGroupEdit({ active: true, id: groupId })
-                  }
-                />
-                <Tooltip
-                  id="edit"
-                  place="bottom"
-                  text="Edytuj grupę"
-                />
+                {rights === groupMember.owner && (
+                  <EditButton
+                    data-tip
+                    data-for="edit"
+                    icon={editIcon}
+                    onClick={() =>
+                      setRedirectToGroupEdit({ active: true, id: groupId })
+                    }
+                  />
+                )}
+                <Tooltip id="edit" place="bottom" text="Edytuj grupę" />
               </Buttons>
             </RowSection>
             <Line />
@@ -428,17 +504,12 @@ const GroupInside = ({ group, groupId }) => {
           </InnerContainer>
         </Header>
         <SectionContainer>
-          {currentSection === section.info && (
-            <DescriptionSection description={group.description} />
-          )}
+          {currentSection === section.info && <DescriptionSection />}
           {currentSection === section.members && (
-            <MembersSection
-              members={group.members}
-              setMemberToRemove={setMemberToRemove}
-            />
+            <MembersSection setMemberToRemove={setMemberToRemove} />
           )}
           {currentSection === section.albums && (
-            <GroupAlbumSection albums={tempAlbums} />
+            <GroupAlbumSection albums={tempAlbums} groupId={groupId} />
           )}
           {currentSection === section.history && (
             <HistorySection history={[]} />

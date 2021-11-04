@@ -7,6 +7,7 @@ const Submit = styled(Button)`
     font-size: 18px;
     height: 32px;
     padding: 0 20px;
+    margin-left: 15px;
     &:disabled {
         opacity: 0.5;
     }

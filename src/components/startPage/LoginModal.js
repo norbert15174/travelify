@@ -28,7 +28,6 @@ const LoginModal = ({ setShowLogin }) => {
 
   function boxOutsideClick(e) {
     if (!loginRef.current || loginRef.current.contains(e.target)) {
-      console.log("click");
       return;
     }
     document.removeEventListener("click", boxOutsideClick, true);
@@ -59,6 +58,7 @@ const LoginModal = ({ setShowLogin }) => {
       },
     })
       .then((response) => {
+        document.removeEventListener("click", boxOutsideClick, true);
         sessionStorage.setItem("Bearer", response.data.token);
         sessionStorage.setItem("Login", response.data.login);
         setLogged(true);

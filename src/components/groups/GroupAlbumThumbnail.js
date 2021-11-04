@@ -12,7 +12,7 @@ const GroupAlbumThumbnail = ({ album }) => {
       <Redirect
         push
         to={{
-          pathname: routes.album.replace(/:id/i, 4),
+          pathname: routes.groupAlbum.replace(/:id/i, 2),
         }}
       />
     );

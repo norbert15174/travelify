@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
+import { routes } from "../../miscellanous/Routes";
 import styled from "styled-components";
 import "./groupsScrollbar.css";
 
@@ -21,7 +23,7 @@ const maleEventText = {
   leftGroup: " opuścił grupę",
   newName: " zmienił nazwę grupy",
   newDescription: " zmienił opis grupy",
-  newMainPicture: " zmienił zdjęcie grupowe"
+  newMainPicture: " zmienił zdjęcie grupowe",
 };
 
 const femaleEventText = {
@@ -32,7 +34,7 @@ const femaleEventText = {
   leftGroup: " opuściła grupę",
   newName: " zmieniła nazwę grupy na ",
   newDescription: " zmieniła opis grupy",
-  newMainPicture: " zmieniła zdjęcie grupowe"
+  newMainPicture: " zmieniła zdjęcie grupowe",
 };
 
 const HistorySection = ({ history }) => {
@@ -44,6 +46,26 @@ const HistorySection = ({ history }) => {
     name.replace(/ /g, "").substring(name.length - 1) === "a"
       ? femaleEventText
       : maleEventText;
+
+  const [redirectToProfile, setRedirectToProfile] = useState(false);
+
+  if (redirectToProfile) {
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: routes.user.replace(/:id/i, 1),
+          state: {
+            selectedUser: {
+              selectIsTrue: true,
+              id: 1,
+              isHeFriend: false,
+            },
+          },
+        }}
+      />
+    );
+  }
 
   return (
     <>
@@ -57,6 +79,7 @@ const HistorySection = ({ history }) => {
             <MemberPicture
               src="https://techcommunity.microsoft.com/t5/image/serverpage/image-id/217078i525F6A9EF292601F/image-size/large?v=v2&px=999"
               alt="Member picture"
+              onClick={() => setRedirectToProfile(true)}
             />
             <EventText>
               {name} Telec

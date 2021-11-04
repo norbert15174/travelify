@@ -4,7 +4,7 @@ import noAccessIcon from "../assets/noAccessIcon.svg";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
 import Button from "../components/trinkets/Button";
 import { useHistory } from "react-router-dom";
-import { errorTypes } from "../miscellanous/Utils"
+import { errorTypes } from "../miscellanous/Utils";
 
 const icons = {
   notFound: pageNotFoundIcon,

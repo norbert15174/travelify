@@ -6,6 +6,7 @@ import {
   setSharedPersonList,
   setBasicInfo,
 } from "../../redux/albumCreatorSlice";
+import { selectFriendsList } from "../../redux/userDataSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
@@ -17,18 +18,20 @@ import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import addIcon from "./assets/addIcon.svg";
 import closeIcon from "./assets/closeIcon.svg";
-import { albumTypes } from "../../miscellanous/Utils";
+import { albumTypes, mapFriendsToSelect } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
 import { endpoints } from "../../url";
 import axios from "axios";
 
-const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
+const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
   const dispatch = useDispatch();
   const basicInfo = useSelector(selectBasicInfo);
+  const loggedUserFriendsList = useSelector(selectFriendsList);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState(albumTypes.public);
+  const [friendsList, setFriendsList] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [sharedFriends, setSharedFriends] = useState([]);
 
@@ -49,6 +52,7 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
 
   useEffect(() => {
     if (firstRun) {
+      setFriendsList(mapFriendsToSelect(loggedUserFriendsList));
       if (creatorType === albumCreator.creation) {
         setName("");
         setDescription("");
@@ -146,18 +150,18 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
     setFriendsError("");
     setInfoError("");
     setSubmitMessage("");
-    if (name.length < 5) {
+    if (name.length < 5 || !name.trim()) {
       setInfoError("Nazwa albumu powinna składać się z minimum 5 znaków!");
       return;
     }
-    if (description.length === 0) {
+    if (description.length === 0 || !description.trim()) {
       setInfoError("Opis albumu jest wymagany!");
       return;
     }
     if (creatorType === albumCreator.creation) {
       setForm({
-        name: name,
-        description: description,
+        name: name.trim(),
+        description: description.trim(),
         visibility: visibility,
         shared: sharedFriends,
       });
@@ -254,8 +258,8 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
       method: "put",
       url: endpoints.editAlbum + editedAlbumId,
       data: {
-        name: name,
-        description: description,
+        name: name.trim(),
+        description: description.trim(),
         public: isPublic,
       },
       headers: {
@@ -268,7 +272,6 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         dispatch(
           setBasicInfo({
             name: name,
@@ -278,7 +281,9 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm, friendsList }) => {
         );
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        setName(basicInfo.name);
+        setDescription(basicInfo.description);
         setError(true);
       })
       .finally(() => {

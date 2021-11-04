@@ -10,7 +10,7 @@ import addGroupIcon from "./assets/addGroupIcon.svg";
 import "./groupsScrollbar.css";
 /* import AlbumThumbnail from "./AlbumThumbnail"; */
 
-const GroupAlbumSection = ({ albums }) => {
+const GroupAlbumSection = ({ albums, groupId }) => {
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
   const [redirectToCreator, setRedirectToCreator] = useState(false);
@@ -30,8 +30,8 @@ const GroupAlbumSection = ({ albums }) => {
       <Redirect
         push
         to={{
-          pathname: routes.albumCreator,
-          state: { creatorType: albumCreator.creation },
+          pathname: routes.groupAlbumCreator,
+          state: { creatorType: albumCreator.creation, groupId: groupId },
         }}
       />
     );

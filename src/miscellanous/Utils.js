@@ -30,7 +30,12 @@ export const albumCreator = {
 export const groupCreator = {
   creation: "creation",
   edition: "edition",
-}
+};
+
+export const groupMember = {
+  owner: "owner",
+  member: "member",
+};
 
 export const newsTypes = {
   friends: "friends",
@@ -86,17 +91,7 @@ export function mapCountriesToSelect(countries) {
 export function mapFriendsToSelect(input, type = null) {
   // type jest podawany ponieważ czasem możemy otrzymać lastName lub surName xD
   let output = [];
-  if (type !== "shared") {
-    for (let i = 0; i < input.length; i++) {
-      output.push({
-        value: input[i].name + " " + input[i].lastName,
-        label: input[i].name + " " + input[i].lastName,
-        name: input[i].name + " " + input[i].lastName,
-        icon: input[i].profilePicture,
-        id: input[i].id, // (USER_ID)
-      });
-    }
-  } else {
+  if (type === "shared") {
     for (let i = 0; i < input.length; i++) {
       output.push({
         value: input[i].name + " " + input[i].surName,
@@ -105,6 +100,16 @@ export function mapFriendsToSelect(input, type = null) {
         icon: input[i].photo,
         id: input[i].id, // share id (NOT USERID)
         userId: input[i].userId,
+      });
+    }
+  } else {
+    for (let i = 0; i < input.length; i++) {
+      output.push({
+        value: input[i].name + " " + input[i].lastName,
+        label: input[i].name + " " + input[i].lastName,
+        name: input[i].name + " " + input[i].lastName,
+        icon: input[i].profilePicture,
+        id: input[i].id, // (USER_ID)
       });
     }
   }
