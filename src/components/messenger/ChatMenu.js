@@ -1,98 +1,60 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import "./styles/friends.css";
+import Input from "../trinkets/Input";
 import closeIcon from "./assets/closeIcon.svg";
 import groupsIcon from "./assets/groupsIcon.svg";
 import userIcon from "./assets/userIcon.svg";
-import UserNotifications from "./UserNotifications";
-import GroupNotifications from "./GroupNotifications";
-import "./notificationsScrollbar.css";
 import Toggle from "../trinkets/Toggle";
-import { endpoints } from "../../url";
-import { setFriendsList } from "../../redux/userDataSlice";
 import Tooltip from "../trinkets/Tooltip";
-import moment from "moment";
-import "moment/locale/pl";
+import FriendChat from "./FriendChat";
+import GroupChat from "./GroupChat";
 
-const notificationsType = {
-  user: "user", // true
-  group: "group", // false
+const chatTypes = {
+  friend: "friend",
+  group: "group",
 };
 
-const Notifications = ({ notificationsDisplay }) => {
+const ChatMenu = ({ chatsDisplay }) => {
+  const [type, setType] = useState(chatTypes.friend);
   const blurState = useSelector((state) => state.blur.value);
-  const [type, setType] = useState(notificationsType.user);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    getFriends();
-    moment.locale("pl");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function getFriends() {
-    axios({
-      url: endpoints.getLoggedUserFriends,
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
-      },
-    })
-      .then(({ data }) => {
-        dispatch(setFriendsList(data));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
 
   return (
-    <Container blurState={blurState}>
+    <Container blurState={blurState} className="font">
       <Header>
-        <Heading>Powiadomienia</Heading>
+        <Heading>Komunikator</Heading>
         <CloseButton
           icon={closeIcon}
-          onClick={() => notificationsDisplay(false)}
+          onClick={(e) => {
+            chatsDisplay("");
+          }}
         />
       </Header>
       <ToggleContainer>
         <OptionContainer
           data-tip
-          data-for="userNotification"
-          active={type === notificationsType.user ? true : false}
+          data-for="friendChats"
+          active={type === chatTypes.friend ? true : false}
           icon={userIcon}
         />
-        <Tooltip
-          id="userNotification"
-          place="bottom"
-          text="Powiadomienia użytkowników"
-        />
+        <Tooltip id="friendChats" place="bottom" text="Czaty ze znajomymi" />
         <Toggle
           value={type}
           setValue={setType}
-          first={notificationsType.user}
-          second={notificationsType.group}
+          first={chatTypes.friend}
+          second={chatTypes.group}
         />
         <OptionContainer
           data-tip
-          data-for="groupNotification"
-          active={type === notificationsType.group ? true : false}
+          data-for="groupChats"
+          active={type === chatTypes.group ? true : false}
           icon={groupsIcon}
         />
-        <Tooltip
-          id="groupNotification"
-          place="bottom"
-          text="Powiadomienia grup"
-        />
+        <Tooltip id="groupChats" place="bottom" text="Czaty grupowe" />
       </ToggleContainer>
-      {type === notificationsType.user && (
-        <UserNotifications notificationsDisplay={notificationsDisplay} />
-      )}
-      {type === notificationsType.group && (
-        <GroupNotifications notificationsDisplay={notificationsDisplay} />
-      )}
+      {type === chatTypes.friend && <FriendChat chatsDisplay={chatsDisplay} />}
+      {type === chatTypes.group && <GroupChat chatsDisplay={chatsDisplay} />}
     </Container>
   );
 };
@@ -148,7 +110,7 @@ const Header = styled.div`
   }
 `;
 
-const Heading = styled.h1`
+const Heading = styled.p`
   margin-left: 12px;
   font-size: 30px;
   color: ${({ theme }) => theme.color.lightBackground};
@@ -198,8 +160,8 @@ const OptionContainer = styled.div`
   border-radius: 15px;
   width: 30px;
   height: 30px;
-  padding: 5px 25px 5px 25px;
-  margin: auto 25px auto 25px;
+  padding: 5px 25px;
+  margin: auto 25px;
   background-image: url(${({ icon }) => icon});
   background-size: 40%;
   background-position: 50% 50%;
@@ -212,15 +174,35 @@ const OptionContainer = styled.div`
   }
 `;
 
-const NotificationsList = styled.div`
+const ChatList = styled.div`
   display: flex;
   flex-direction: column;
   overflow-x: hidden; /* Hide horizontal scrollbar */
   overflow-y: scroll; /* Add vertical scrollbar */
+  height: 80%;
   max-height: 100vh;
-  margin: 20px 10px 20px 10px;
+  margin: 0px 20px 20px 20px;
   @media only screen and (max-width: 1000px) {
-    margin: 15px 5px 15px 5px;
+    margin: 0px 10px 10px 10px;
+  }
+`;
+
+const SearchContainer = styled.div`
+  margin: 20px auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  @media only screen and (max-width: 1000px) {
+    margin: 10px auto;
+  }
+`;
+
+const Search = styled(Input)`
+  width: 75%;
+  font-size: 16px;
+  @media only screen and (max-width: 1000px) {
+    font-size: 12px;
   }
 `;
 
@@ -233,4 +215,4 @@ const NoItems = styled.h1`
   }
 `;
 
-export default Notifications;
+export default ChatMenu;

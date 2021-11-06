@@ -7,13 +7,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
 import "./groupsScrollbar.css";
 import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
-import { selectMembers } from "../../redux/groupDetailsSlice";
+import { selectMembers, setRequests } from "../../redux/groupDetailsSlice";
 import axios from "axios";
 import { endpoints } from "../../url";
-
-/*
-    SPRAWDZ CZY KTORYS ZE ZNAJOMYCH NIE JEST JUZ CZŁONKIEM GRUPY, JAK TAK TO GO NIE WYŚWIETLAJ
-*/
 
 const InvitationBox = ({ setClose, groupId }) => {
   const [friendsFetchFinished, setFriendsFetchFinished] = useState(false);
@@ -34,6 +30,7 @@ const InvitationBox = ({ setClose, groupId }) => {
     if (!blurState) {
       dispatch(toggleBlur());
     }
+    getGroupRequests();
     getLoggedUserFriendsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,7 +71,6 @@ const InvitationBox = ({ setClose, groupId }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setFriendsList(data));
         output = data;
       })
@@ -89,6 +85,24 @@ const InvitationBox = ({ setClose, groupId }) => {
         );
         setList(results);
         setFriendsFetchFinished(true);
+      });
+  }
+
+  async function getGroupRequests() {
+    await axios({
+      method: "get",
+      url: endpoints.getGroupMemberRequests + groupId,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch(setRequests(data));
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }
 

@@ -13,7 +13,12 @@ const notificationsMaleVersion = {
   FRIEND_REQUEST: " wysłał ci zaproszenie do znajomych",
   COMMENT: " skomentował twoje zdjęcie",
   ALBUM_SHARE: " udostępnił Ci swój album",
-  GROUP_INVITE: " zaprosił cię do grupy"
+  GROUP_REQUEST: " zaprosił cię do grupy",
+  PHOTO_COMMENT: " skomentował zdjęcie z albumu grupowego",
+  PHOTO_MARKED: " oznaczył cię na zdjęciu z albumu grupowego",
+  NEW_ALBUM: " dodał nowy album grupowy",
+  DELETE_ALBUM: " usunął album grupowy",
+  REMOVE_USER: " usunął cię z grupy",
 };
 
 const notificationsFemaleVersion = {
@@ -21,21 +26,15 @@ const notificationsFemaleVersion = {
   FRIEND_REQUEST: " wysłała ci zaproszenie do znajomych",
   COMMENT: " skomentowała twoje zdjęcie",
   ALBUM_SHARE: " udostępniła Ci swój album",
-  GROUP_INVITE: " zaprosił cię do grupy"
+  GROUP_REQUEST: " zaprosił cię do grupy",
+  PHOTO_COMMENT: " skomentowała zdjęcie grupowe",
+  PHOTO_MARKED: " oznaczyła cię na zdjęciu z albumu grupowego",
+  NEW_ALBUM: " dodała nowy album grupowy",
+  DELETE_ALBUM: " usunęła album grupowy",
+  REMOVE_USER: " usunęła cię z grupy",
 };
 
-const NotificationsItem = ({
-  status,
-  senderId,
-  notificationsDisplay,
-  name,
-  surName,
-  profilePicture = undefined,
-  invitationId = null,
-  photoId = null,
-  albumId = null,
-  date,
-}) => {
+const UserItem = ({ notification, notificationsDisplay, date }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
@@ -43,14 +42,16 @@ const NotificationsItem = ({
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .
   const notifier =
-    name.replace(/ /g, "").substring(name.length - 1) === "a"
+    notification.user.name
+      .replace(/ /g, "")
+      .substring(notification.user.name.length - 1) === "a"
       ? notificationsFemaleVersion
       : notificationsMaleVersion;
 
   async function invitationHandler(action) {
     await axios({
       method: action === "accept" ? "put" : "delete",
-      url: endpoints.invitationHandler + invitationId,
+      url: endpoints.invitationHandler + notification.id,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
@@ -77,7 +78,10 @@ const NotificationsItem = ({
     return (
       <Redirect
         push
-        to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
+        to={{
+          pathname: `/album/${notification.albumId}`,
+          state: { photoId: notification.photoId },
+        }}
       />
     );
   }
@@ -87,9 +91,9 @@ const NotificationsItem = ({
       <InnerContainer
         onClick={() => {
           if (
-            status === "ALBUM_SHARE" ||
-            status === "PHOTO_TAG" ||
-            status === "COMMENT"
+            notification.status === "ALBUM_SHARE" ||
+            notification.status === "PHOTO_TAG" ||
+            notification.status === "COMMENT"
           ) {
             setRedirectToAlbum(true);
           }
@@ -97,7 +101,9 @@ const NotificationsItem = ({
       >
         <UserPhoto
           src={
-            profilePicture !== undefined ? profilePicture : noProfilePictureIcon
+            notification.user.photo !== undefined
+              ? notification.user.photo
+              : noProfilePictureIcon
           }
           alt="Profile picture"
           onError={(e) => {
@@ -108,14 +114,14 @@ const NotificationsItem = ({
         <TextContainer>
           <span>
             <p>
-              {name} {surName}
+              {notification.user.name} {notification.user.surName}
             </p>
-            {notifier[status]}
+            {notifier[notification.status]}
           </span>
           <Date>{date}</Date>
         </TextContainer>
       </InnerContainer>
-      {status === "FRIEND_REQUEST" && notClicked && (
+      {notification.status === "FRIEND_REQUEST" && notClicked && (
         <Buttons>
           <AcceptButton
             id="accept-button"
@@ -131,10 +137,10 @@ const NotificationsItem = ({
           </DeclineButton>
         </Buttons>
       )}
-      {status === "FRIEND_REQUEST" && !notClicked && accepted ? (
+      {notification.status === "FRIEND_REQUEST" && !notClicked && accepted ? (
         <Status>Zaproszenie zostało zaakceptowane</Status>
       ) : null}
-      {status === "FRIEND_REQUEST" && !notClicked && !accepted ? (
+      {notification.status === "FRIEND_REQUEST" && !notClicked && !accepted ? (
         <Status>Zaproszenie zostało odrzucone</Status>
       ) : null}
     </Container>
@@ -265,4 +271,4 @@ const UserPhoto = styled.img`
   }
 `;
 
-export default NotificationsItem;
+export default UserItem;

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import noAccessIcon from "../assets/noAccessIcon.svg";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
 import Button from "../components/trinkets/Button";
-import { useHistory } from "react-router-dom";
 import { errorTypes } from "../miscellanous/Utils";
 
 const icons = {
@@ -25,8 +24,6 @@ const errorMessages = {
 };
 
 const Error = ({ errorType = errorTypes.notFound }) => {
-  const history = useHistory(); // for going back
-
   return (
     <Container>
       <InnerContainer>
@@ -62,9 +59,6 @@ const Error = ({ errorType = errorTypes.notFound }) => {
           >
             Formularz zgłaszania błędu
           </a>
-          {errorMessages[errorType] !== undefined ? (
-            <GoBackButton onClick={() => history.goBack()}>Wróć</GoBackButton>
-          ) : null}
         </InnerInnerContainer>
       </InnerContainer>
     </Container>

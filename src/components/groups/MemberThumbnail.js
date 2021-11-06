@@ -4,14 +4,13 @@ import { Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
 import closeIconBlack from "./assets/closeIconBlack.svg";
-import invitationSendIcon from "./assets/invitationSendIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import crownIcon from "./assets/crownIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
 import { selectRights, selectOwner } from "../../redux/groupDetailsSlice";
 import { groupMember } from "../../miscellanous/Utils";
 
-const MemberThumbnail = ({ member, type = null, setMemberToRemove = null }) => {
+const MemberThumbnail = ({ member, type = null, setMemberToRemove = null, date = null }) => {
   const [redirectToProfile, setRedirectToProfile] = useState(false);
   const rights = useSelector(selectRights);
   const owner = useSelector(selectOwner);
@@ -45,7 +44,7 @@ const MemberThumbnail = ({ member, type = null, setMemberToRemove = null }) => {
         onClick={() => setRedirectToProfile(true)}
       >{`${member.name} ${member.surName}`}</MemberName>
       {type === "requests" ? (
-        <InvitationDate>15 sekund temu</InvitationDate>
+        <InvitationDate>{date}</InvitationDate>
       ) : (
         <>
           {rights === groupMember.owner &&

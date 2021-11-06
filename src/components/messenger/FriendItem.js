@@ -5,7 +5,7 @@ import noMessageIcon from "./assets/noMessageIcon.svg";
 import messageAvailableIcon from "./assets/messageAvailableIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-const ChatItem = ({
+const FriendItem = ({
   user,
   selectedChat,
   setSelectedChat,
@@ -123,4 +123,4 @@ const Communicate = styled.p`
   }
 `;
 
-export default ChatItem;
+export default FriendItem;

@@ -9,12 +9,11 @@ import threeDotsIcon from "./assets/threeDotsIcon.svg";
 import editIcon from "./assets/editIcon.svg";
 import addGroupIcon from "./assets/addGroupIcon.svg";
 import PhotoZoom from "../user/PhotoZoom";
-import groupMemberIconWhite from "./assets/groupMemberIconWhite.svg";
+import leaveGroupIcon from "./assets/leaveGroupIcon.svg";
 import crownIconWhite from "./assets/crownIconWhite.svg";
-import closeIconWhite from "./assets/closeIconWhite.svg";
-import closeIconBlack from "./assets/closeIconBlack.svg";
 import DescriptionSection from "./DescriptionSection";
 import MembersSection from "./MembersSection";
+import MapSection from "../user/MapSection";
 import GroupAlbumSection from "./GroupAlbumSection";
 import HistorySection from "./HistorySection";
 import InvitationBox from "./InvitationBox";
@@ -37,6 +36,7 @@ const section = {
   members: "members",
   albums: "albums",
   history: "history",
+  map: "map",
 };
 
 const tempAlbums = [
@@ -197,9 +197,6 @@ const tempAlbums = [
 const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);
-  const [memberButtonText, setMemberButtonText] = useState("Dołączono");
-  const [memberButtonIcon, setMemberButtonIcon] =
-    useState(groupMemberIconWhite);
   const [currentSection, setCurrentSection] = useState(section.info);
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
@@ -242,7 +239,7 @@ const GroupInside = ({ groupId }) => {
         setRefuse(false);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leaveGroupBox, confirm, refuse]);
 
   /*
@@ -260,7 +257,7 @@ const GroupInside = ({ groupId }) => {
         setMemberToRemove(null);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeMemberBox, memberToRemove, confirm, refuse]);
 
   async function removeMember() {
@@ -291,10 +288,9 @@ const GroupInside = ({ groupId }) => {
   }
 
   async function leaveGroup() {
-    console.log();
     await axios({
       method: "delete",
-      url: `http://localhost:8020/group/${groupId}/leave`,/* endpoints.leaveGroup.replace(/:id/i, groupId), */
+      url: endpoints.leaveGroup.replace(/:id/i, groupId),
       headers: {
         "Access-Control-Allow-Headers": "*",
         "Access-Control-Allow-Origin": "*",
@@ -352,7 +348,6 @@ const GroupInside = ({ groupId }) => {
   if (redirectBackToGroups) {
     return <Redirect to={{ pathname: routes.groups }} />;
   }
-
 
   return (
     <>
@@ -433,45 +428,51 @@ const GroupInside = ({ groupId }) => {
               ) : null}
               <Buttons>
                 {rights === groupMember.owner && (
-                  <MemberButton icon={crownIconWhite} buttonType="owner">
-                    Właściciel
-                  </MemberButton>
+                  <>
+                    <MemberButton
+                      data-tip
+                      data-for="owner"
+                      icon={crownIconWhite}
+                      buttonType="owner"
+                    >
+                      Właściciel
+                    </MemberButton>
+                    <Tooltip
+                      id="owner"
+                      place="bottom"
+                      text="Jesteś właścicielem grupy"
+                    />
+                    <MemberButton
+                      icon={addGroupIcon}
+                      buttonType="invite"
+                      onClick={() => setInviteFriendBox(true)}
+                    >
+                      Zaproś
+                    </MemberButton>
+                    <EditButton
+                      data-tip
+                      data-for="edit"
+                      icon={editIcon}
+                      onClick={() =>
+                        setRedirectToGroupEdit({ active: true, id: groupId })
+                      }
+                    />
+                    <Tooltip id="edit" place="bottom" text="Edytuj grupę" />
+                  </>
                 )}
                 {rights === groupMember.member && (
-                  <MemberButton
-                    icon={memberButtonIcon}
-                    onClick={() => setLeaveGroupBox(true)}
-                    onMouseEnter={() => {
-                      setMemberButtonText("Opuścić?");
-                      setMemberButtonIcon(closeIconWhite);
-                    }}
-                    onMouseLeave={() => {
-                      setMemberButtonText("Dołączono");
-                      setMemberButtonIcon(groupMemberIconWhite);
-                    }}
-                    buttonType="member"
-                  >
-                    {memberButtonText}
-                  </MemberButton>
+                  <>
+                    <MemberButton
+                      data-tip
+                      data-for="leave"
+                      icon={leaveGroupIcon}
+                      onClick={() => setLeaveGroupBox(true)}
+                    >
+                      Opuść
+                    </MemberButton>
+                    <Tooltip id="leave" place="bottom" text="Opuść grupę" />
+                  </>
                 )}
-                <MemberButton
-                  icon={addGroupIcon}
-                  buttonType="invite"
-                  onClick={() => setInviteFriendBox(true)}
-                >
-                  Zaproś
-                </MemberButton>
-                {rights === groupMember.owner && (
-                  <EditButton
-                    data-tip
-                    data-for="edit"
-                    icon={editIcon}
-                    onClick={() =>
-                      setRedirectToGroupEdit({ active: true, id: groupId })
-                    }
-                  />
-                )}
-                <Tooltip id="edit" place="bottom" text="Edytuj grupę" />
               </Buttons>
             </RowSection>
             <Line />
@@ -500,13 +501,19 @@ const GroupInside = ({ groupId }) => {
               >
                 <p>Historia</p>
               </Button>
+              <Button
+                active={currentSection === section.map ? true : false}
+                onClick={() => setCurrentSection(section.map)}
+              >
+                <p>Odwiedzone kraje</p>
+              </Button>
             </SectionButtons>
           </InnerContainer>
         </Header>
         <SectionContainer>
           {currentSection === section.info && <DescriptionSection />}
           {currentSection === section.members && (
-            <MembersSection setMemberToRemove={setMemberToRemove} />
+            <MembersSection setMemberToRemove={setMemberToRemove} groupId={groupId}/>
           )}
           {currentSection === section.albums && (
             <GroupAlbumSection albums={tempAlbums} groupId={groupId} />
@@ -514,6 +521,7 @@ const GroupInside = ({ groupId }) => {
           {currentSection === section.history && (
             <HistorySection history={[]} />
           )}
+          {currentSection === section.map && <MapSection />}
         </SectionContainer>
       </Container>
     </>
@@ -528,20 +536,20 @@ const Container = styled.div`
 
 const Header = styled.div`
   width: 100%;
-  height: 480px;
+  min-height: 480px;
   background-color: ${({ theme }) => theme.color.lightBackground};
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
   @media only screen and (max-width: 810px) {
-    height: 450px;
+    min-height: 450px;
   }
   @media only screen and (max-width: 550px) {
-    height: 350px;
+    min-height: 350px;
   }
   @media only screen and (max-width: 400px) {
-    height: 280px;
+    min-height: 280px;
   }
 `;
 
@@ -740,6 +748,9 @@ const Line = styled.div`
   border-top: 2px solid ${({ theme }) => theme.color.dark};
   margin-top: 15px;
   width: 100%;
+  @media only screen and (max-width: 550px) {
+    margin-top: 10px;
+  }
   @media only screen and (max-width: 400px) {
     margin-top: 5px;
   }
@@ -765,7 +776,6 @@ const Button = styled.div`
   border-radius: 5px;
   margin-right: 10px;
   color: ${({ active, theme }) => (active ? "#000" : theme.color.greyFont)};
-
   &:hover {
     background-color: rgba(18, 191, 206, 0.4);
     -webkit-transition: all 0.15s ease-in-out;
@@ -787,6 +797,13 @@ const Button = styled.div`
       font-size: 10px;
     }
     margin-right: 6px;
+  }
+  @media only screen and (max-width: 400px) {
+    p {
+      font-size: 8px;
+    }
+    margin-right: 4px;
+    padding: 2.5px;
   }
 `;
 

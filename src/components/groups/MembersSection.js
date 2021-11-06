@@ -1,15 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Input from "../trinkets/Input";
 import "./groupsScrollbar.css";
+import axios from "axios";
+import { endpoints } from "../../url";
 import MemberThumbnail from "./MemberThumbnail";
-import { useSelector } from "react-redux";
-import { selectMembers } from "../../redux/groupDetailsSlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectMembers,
+  setRequests,
+  selectRequests,
+} from "../../redux/groupDetailsSlice";
+import moment from "moment";
+import "moment/locale/pl";
 
-const MembersSection = ({ setMemberToRemove }) => {
+const MembersSection = ({ setMemberToRemove, groupId }) => {
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
   const members = useSelector(selectMembers);
+  const dispatch = useDispatch();
+  const requests = useSelector(selectRequests);
+
+  useEffect(() => {
+    moment.locale("pl");
+    getGroupRequests();
+  }, []);
+
+  async function getGroupRequests() {
+    await axios({
+      method: "get",
+      url: endpoints.getGroupMemberRequests + groupId,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch(setRequests(data));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   const handleSearchBarChange = (e) => {
     setFound(
@@ -24,21 +57,24 @@ const MembersSection = ({ setMemberToRemove }) => {
 
   return (
     <>
-      <Container>
-        <Header>
-          <h1>Wysłane zaproszenia</h1>
-          <Line />
-        </Header>
-        <MembersGrid className="scroll">
-          {members.map((item) => (
-            <MemberThumbnail
-              key={"request" + item.id}
-              member={item}
-              type="requests"
-            />
-          ))}
-        </MembersGrid>
-      </Container>
+      {requests.length > 0 && (
+        <Container>
+          <Header>
+            <h1>Wysłane zaproszenia</h1>
+            <Line />
+          </Header>
+          <MembersGrid className="scroll">
+            {requests.map((item) => (
+              <MemberThumbnail
+                key={item.time}
+                member={item.user}
+                date={moment(item.time).calendar()}
+                type="requests"
+              />
+            ))}
+          </MembersGrid>
+        </Container>
+      )}
       <Container>
         <Header>
           <h1>Aktualni członkowie</h1>
@@ -66,13 +102,16 @@ const MembersSection = ({ setMemberToRemove }) => {
                 ))
               : null) ||
             (members.length !== 0 && searchContent.length === 0
-              ? members.slice(0).reverse().map((item) => (
-                  <MemberThumbnail
-                    key={"member" + item.id}
-                    member={item}
-                    setMemberToRemove={setMemberToRemove}
-                  />
-                ))
+              ? members
+                  .slice(0)
+                  .reverse()
+                  .map((item) => (
+                    <MemberThumbnail
+                      key={"member" + item.id}
+                      member={item}
+                      setMemberToRemove={setMemberToRemove}
+                    />
+                  ))
               : null) || <h1 style={{ color: "#5B5B5B" }}>Brak członków...</h1>
           ) : (
             <h1 style={{ color: "#5B5B5B" }}>Brak członków...</h1>

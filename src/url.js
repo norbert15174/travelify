@@ -55,7 +55,10 @@ export const endpoints = {
     deleteGroup: url + "/group/", // + groupId, DELETE
     setGroupPicture: url + "/group/photo/", // + groupId, POST
     changeOwner: url + "/group/owner/", // + groupId/?userId=:id, PUT
+    getGroupMemberRequests: url+ "/group/request/", // + groupId
     getUserGroupRequests: url + "/group/user/",
+    getGroupNotifications: url + "/group/user/notification",
+    groupInvitationHandler: url + "/group/user/", // + requestId, PUT
 }
 
 // http://localhost:8020/friends/delete/

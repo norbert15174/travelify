@@ -12,8 +12,7 @@ import {
   setBasicInfo,
   setRights,
   setMembers,
-  setGroupAlbums,
-  setRequests,
+  setGroupAlbums
 } from "../redux/groupDetailsSlice";
 import { groupMember } from "../miscellanous/Utils";
 

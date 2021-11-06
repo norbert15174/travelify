@@ -40,6 +40,7 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.lightBackground};
   padding: 20px 25px;
   height: 80vh;
+  margin-bottom: 15px;
   @media only screen and (max-width: 560px) {
     height: 60vh;
     padding: 15px 20px;

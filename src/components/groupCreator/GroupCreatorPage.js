@@ -86,7 +86,7 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
       data: {
         groupName: basicInfo.name,
         description: basicInfo.description,
-        members: members.map((item) => item.id),
+        membersToAdd: members.map((item) => item.id),
       },
       headers: {
         "Content-Type": "application/json",
@@ -294,7 +294,7 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
             <WarningMessage>
               <p>Usunięcie grupy jest nieodwracalne!</p>
               <p>
-                Wszyscy członkowie zostaną wydaleni, a stworzone album zostaną
+                Wszyscy członkowie zostaną wyrzuceni, a stworzone albumy zostaną
                 usunięte.
               </p>
             </WarningMessage>
