@@ -15,7 +15,6 @@ import DescriptionSection from "./DescriptionSection";
 import MembersSection from "./MembersSection";
 import MapSection from "../user/MapSection";
 import GroupAlbumSection from "./GroupAlbumSection";
-import HistorySection from "./HistorySection";
 import InvitationBox from "./InvitationBox";
 import Tooltip from "../trinkets/Tooltip";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
@@ -28,6 +27,7 @@ import {
   selectMembers,
   selectRights,
   setMembers,
+  selectGroupAlbums,
 } from "../../redux/groupDetailsSlice";
 import { endpoints } from "../../url";
 
@@ -35,164 +35,8 @@ const section = {
   info: "info",
   members: "members",
   albums: "albums",
-  history: "history",
   map: "map",
 };
-
-const tempAlbums = [
-  {
-    id: 1,
-    name: "Album numer 1",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner1",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 2,
-    name: "Album numer 2",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner2",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 3,
-    name: "Album numer 3",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner3",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 4,
-    name: "Album numer 4",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner4",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 5,
-    name: "Album numer 5",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner5",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 6,
-    name: "Album numer 6",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner6",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 7,
-    name: "Album numer 7",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner7",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 8,
-    name: "Album numer 8",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner8",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-];
 
 const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
@@ -218,6 +62,7 @@ const GroupInside = ({ groupId }) => {
   const basicInfo = useSelector(selectBasicInfo);
   const members = useSelector(selectMembers);
   const rights = useSelector(selectRights);
+  const groupAlbums = useSelector(selectGroupAlbums);
 
   useEffect(() => {
     if (blurState) {
@@ -496,16 +341,10 @@ const GroupInside = ({ groupId }) => {
                 <p>Albumy grupowe</p>
               </Button>
               <Button
-                active={currentSection === section.history ? true : false}
-                onClick={() => setCurrentSection(section.history)}
-              >
-                <p>Historia</p>
-              </Button>
-              <Button
                 active={currentSection === section.map ? true : false}
                 onClick={() => setCurrentSection(section.map)}
               >
-                <p>Odwiedzone kraje</p>
+                <p>Odwiedzone miejsca</p>
               </Button>
             </SectionButtons>
           </InnerContainer>
@@ -513,15 +352,15 @@ const GroupInside = ({ groupId }) => {
         <SectionContainer>
           {currentSection === section.info && <DescriptionSection />}
           {currentSection === section.members && (
-            <MembersSection setMemberToRemove={setMemberToRemove} groupId={groupId}/>
+            <MembersSection
+              setMemberToRemove={setMemberToRemove}
+              groupId={groupId}
+            />
           )}
           {currentSection === section.albums && (
-            <GroupAlbumSection albums={tempAlbums} groupId={groupId} />
+            <GroupAlbumSection groupId={groupId} />
           )}
-          {currentSection === section.history && (
-            <HistorySection history={[]} />
-          )}
-          {currentSection === section.map && <MapSection />}
+          {currentSection === section.map && <MapSection data={groupAlbums} type="groups"/>}
         </SectionContainer>
       </Container>
     </>

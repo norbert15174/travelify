@@ -133,12 +133,10 @@ const GroupAlbumCreatorPage = ({
     setCreatingAlbum(true);
     await axios({
       method: "post",
-      url: endpoints.addAlbum,
+      url: endpoints.createGroupAlbum + groupId,
       data: {
-        coordinate: {
-          country: {
-            id: localization.countryId,
-          },
+        coordinates: {
+          country: localization.countryName,
           lang: localization.lng,
           lat: localization.lat,
           place: localization.place,

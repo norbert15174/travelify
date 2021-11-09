@@ -87,8 +87,6 @@ function Map({
               }
             }
           }
-          console.log(country);
-          console.log(place);
           if (place === "") {
             place = "Brak informacji";
           }
@@ -139,7 +137,7 @@ function Map({
       }
     >
       <>
-        {markers && (type === "StartPage" || type === "UserPage")
+        {markers && (type === "StartPage" || type === "UserPage" || type === "groups")
           ? markers.map((item) => (
               <Marker
                 key={item.id}
@@ -152,7 +150,7 @@ function Map({
               />
             ))
           : null}
-        {selected && (type === "StartPage" || type === "UserPage") ? (
+        {selected && (type === "StartPage" || type === "UserPage" || type === "groups") ? (
           <InfoWindow
             position={{
               lat: selected.coordinate.lat + 3,

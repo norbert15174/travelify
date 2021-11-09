@@ -424,7 +424,7 @@ const UserPage = ({
               }
             />
           )}
-          {mapActive && <MapSection data={individualAlbums} />}
+          {mapActive && <MapSection data={individualAlbums} type="UserPage" />}
         </InnerContainer>
       </Container>
     </>

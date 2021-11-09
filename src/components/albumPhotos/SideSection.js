@@ -84,9 +84,6 @@ const SideSection = ({
       })
       .catch((error) => {
         setTags(reduxTags.find((item) => item.photoId === photoId).tags);
-        dispatch(
-          setPhotoTags(reduxTags.find((item) => item.photoId === photoId).tags)
-        );
         // comments from first opening of the album
         let temp = null;
         for (let i = 0; i < photos.length; i++) {

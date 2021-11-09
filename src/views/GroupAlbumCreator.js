@@ -20,7 +20,7 @@ const GroupAlbumCreator = () => {
   const location = useLocation();
   const [error, setError] = useState(null);
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
-    useState(false); 
+    useState(false);
 
   const dispatch = useDispatch();
 
@@ -33,7 +33,6 @@ const GroupAlbumCreator = () => {
       throw new Error(errorTypes.noAccess);
     } else {
       dispatch(clearStore());
-      console.log(location.state.albumId);
       if (location.state !== undefined && location.state.groupId) {
         setGroupId(location.state.groupId);
       }

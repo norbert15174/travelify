@@ -13,6 +13,8 @@ const notificationsMaleVersion = {
   NEW_ALBUM: " dodał nowy album w grupie: ",
   DELETE_ALBUM: " usunął album z grupy: ",
   REMOVE_USER: " usunął cię z grupy: ",
+  CHANGE_GROUP_OWNER: " mianował cię właścicielem grupy: ",
+  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu: ",
 };
 
 const notificationsFemaleVersion = {
@@ -22,13 +24,11 @@ const notificationsFemaleVersion = {
   NEW_ALBUM: " dodała nowy album w grupie: ",
   DELETE_ALBUM: " usunęła album z grupy: ",
   REMOVE_USER: " usunęła cię z grupy: ",
+  CHANGE_GROUP_OWNER: " mianowała cię właścicielką grupy: ",
+  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu: ",
 };
 
-const GroupItem = ({
-  notification,
-  date,
-  notificationsDisplay,
-}) => {
+const GroupItem = ({ notification, date, notificationsDisplay }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
@@ -140,6 +140,7 @@ const GroupItem = ({
 const Container = styled.div`
   margin: 0px 5px 15px 0px;
   font-size: 20px;
+  cursor: pointer;
   span {
     display: inline-block;
     word-wrap: break-word;

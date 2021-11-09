@@ -150,6 +150,7 @@ const UserItem = ({ notification, notificationsDisplay, date }) => {
 const Container = styled.div`
   margin: 0px 5px 15px 0px;
   font-size: 20px;
+  cursor: pointer;
   span {
     display: inline-block;
     word-wrap: break-word;

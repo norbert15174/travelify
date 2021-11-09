@@ -48,7 +48,6 @@ const Header = styled.h1`
   color: ${({ theme }) => theme.color.greyFont};
   @media only screen and (max-width: 1025px) {
     font-size: 24px;
-    margin-bottom: 15px;
   }
   @media only screen and (max-width: 510px) {
     font-size: 16px;

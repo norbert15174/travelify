@@ -12,7 +12,7 @@ import {
   setBasicInfo,
   setRights,
   setMembers,
-  setGroupAlbums
+  setGroupAlbums,
 } from "../redux/groupDetailsSlice";
 import { groupMember } from "../miscellanous/Utils";
 
@@ -21,6 +21,8 @@ const GroupDetails = () => {
   const [groupId, setGroupId] = useState(null);
   const [friendsFetchFinished, setFriendsFetchFinished] = useState(false);
   const [groupDetailsFetchFinished, setGroupDetailsFetchFinished] =
+    useState(false);
+  const [groupAlbumsFetchFinished, setGroupAlbumsFetchFinished] =
     useState(false);
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
@@ -32,6 +34,7 @@ const GroupDetails = () => {
       setGroupId(urlParams.id);
       getLoggedUserFriendsList();
       getGroupDetails();
+      getGroupAlbums();
     }
   }, []);
 
@@ -46,7 +49,6 @@ const GroupDetails = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(
           setBasicInfo({
             groupName: data.groupName,
@@ -73,6 +75,31 @@ const GroupDetails = () => {
       })
       .finally(() => {
         setGroupDetailsFetchFinished(true);
+      });
+  }
+
+  async function getGroupAlbums() {
+    setGroupAlbumsFetchFinished(false);
+    await axios({
+      method: "get",
+      url: endpoints.getGroupAlbums.replace(/:groupId/i, urlParams.id),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch(setGroupAlbums(data));
+      })
+      .catch((error) => {
+        if (error.response !== undefined) {
+          setError(error.response.status);
+        }
+        console.error(error);
+      })
+      .finally(() => {
+        setGroupAlbumsFetchFinished(true);
       });
   }
 
@@ -107,7 +134,10 @@ const GroupDetails = () => {
 
   return (
     <UserTemplate>
-      {friendsFetchFinished && groupDetailsFetchFinished && !error ? (
+      {friendsFetchFinished &&
+      groupDetailsFetchFinished &&
+      groupAlbumsFetchFinished &&
+      !error ? (
         <GroupInside groupId={groupId} />
       ) : !error ? (
         <Loading />

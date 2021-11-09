@@ -3,7 +3,7 @@ import Map from "../googleMaps/Map";
 import styled from "styled-components";
 import "./userScrollbar.css";
 
-const MapSection = ({ data }) => {
+const MapSection = ({ data, type }) => {
   // map options
   const options = {
     disableDefaultUI: true, // disables little yellow guy and satellite view
@@ -28,7 +28,7 @@ const MapSection = ({ data }) => {
             lng: 0,
           }}
           markers={data}
-          type="UserPage"
+          type={type}
         />
       </MapContainer>
     </Container>

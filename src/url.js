@@ -59,6 +59,10 @@ export const endpoints = {
     getUserGroupRequests: url + "/group/user/",
     getGroupNotifications: url + "/group/user/notification",
     groupInvitationHandler: url + "/group/user/", // + requestId, PUT
+    getGroupAlbums: url + "/group/:groupId/albums", 
+    createGroupAlbum: url + "/group/albums/", // + groupId, POST
+    getGroupAlbumDetails: url + "/group/albums/:groupAlbumId/full",
+    getGroupAlbumHistory: url + "/group/albums/history/:groupAlbumId/", // + ?=page=page_number
 }
 
 // http://localhost:8020/friends/delete/

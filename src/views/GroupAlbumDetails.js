@@ -33,7 +33,7 @@ const GroupAlbumDetails = () => {
     if (!sessionStorage.getItem("Login")) {
       throw new Error(errorTypes.noAccess);
     } else {
-      setAlbumId(2);
+      setAlbumId(urlParams.id);
       if (
         history.location.state !== undefined &&
         history.location.state.photoId
@@ -43,7 +43,7 @@ const GroupAlbumDetails = () => {
         history.replace({ state: {} });
         setNotifPhoto(null);
       }
-      getAlbum(2);
+      getAlbum();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlParams.id]);
@@ -102,6 +102,67 @@ const GroupAlbumDetails = () => {
       });
   }
 
+  async function getGroupAlbum() {
+    console.log(urlParams.id)
+    await axios({
+      method: "get",
+      url: endpoints.getGroupAlbumDetails.replace(
+        /:groupAlbumId/i,
+        urlParams.id
+      ),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        /* let tempPhotos = [];
+        let tempTags = [];
+        for (let i = 0; i < data.photosDTOS.length; i++) {
+          tempPhotos.push({
+            index: i + 1,
+            photo: data.photosDTOS[i],
+          });
+          if (
+            history.location.state !== undefined &&
+            history.location.state.photoId &&
+            data.photosDTOS[i].photoId === history.location.state.photoId
+          ) {
+            setNotifPhoto(tempPhotos[i].index);
+          }
+          tempTags.push({
+            photoId: data.photosDTOS[i].photoId,
+            tags: data.photosDTOS[i].taggedList,
+          });
+        }
+        dispatch(setPhotoTags(tempTags));
+        dispatch(setOwner(data.albumOwner));
+        dispatch(setInfo(data.album));
+        dispatch(setAlbumPhotos(tempPhotos)); */
+        /* if (
+          data.groupOwner.id.toString() ===
+            sessionStorage.getItem("loggedUserId") ||
+          data.albumOwner.id.toString() ===
+            sessionStorage.getItem("loggedUserId")
+        ) {
+          dispatch(setRights(groupMember.owner));
+        } else {
+          dispatch(setRights(groupMember.member));
+        } */
+      })
+      .catch((error) => {
+        if (error.response !== undefined) {
+          setError(error.response.status);
+        }
+        console.error(error);
+      })
+      .finally(() => {
+        history.replace({ state: {} });
+        setAlbumDetailsFetchFinished(true);
+      });
+  }
+
   if (error === 403) {
     throw new Error(errorTypes.noAccess);
   }
@@ -117,7 +178,7 @@ const GroupAlbumDetails = () => {
           key={"album" + new Date().getTime()}
           albumId={albumId}
           notifPhoto={notifPhoto}
-        /> 
+        />
       ) : !error ? (
         <Loading />
       ) : (

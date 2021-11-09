@@ -24,10 +24,13 @@ import { selectMembers } from "../../redux/groupCreatorSlice";
 import { toggleBlur } from "../../redux/blurSlice";
 
 const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
-  const [confirmDeletingGroup, setConfirmDeletingGroup] = useState(false);
-  const [refuseDeletingGroup, setRefuseDeletingGroup] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [refuse, setRefuse] = useState(false);
   const [deleteBox, setDeleteBox] = useState(false);
-
+  const [ownerChangeBox, setOwnerChangeBox] = useState({
+    active: false,
+    newOwner: null,
+  });
   const [basicInfo, setBasicInfo] = useState({
     name: "",
     description: "",
@@ -55,27 +58,36 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
       dispatch(toggleBlur());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteBox, confirmDeletingGroup, refuseDeletingGroup]);
+  }, [deleteBox, confirm, refuse]);
 
   useEffect(() => {
     if (deleteBox && groupCreator.edition === creatorType) {
-      if (confirmDeletingGroup) {
+      if (confirm) {
         // deleting members ---> deleting group
         deleteMembers();
       }
-      if (refuseDeletingGroup) {
+      if (refuse) {
         setDeleteBox(false);
-        setRefuseDeletingGroup(false);
-        setConfirmDeletingGroup(false);
+        setRefuse(false);
+        setConfirm(false);
       }
     }
     // eslint-disable-next-line
-  }, [confirmDeletingGroup, refuseDeletingGroup]);
+  }, [deleteBox, confirm, refuse]);
 
   useEffect(() => {
-    console.log(basicInfo);
-    console.log(members);
-  }, [basicInfo, members]);
+    if (ownerChangeBox.active && groupCreator.edition === creatorType) {
+      if (confirm) {
+        changeOwner();
+      }
+      if (refuse) {
+        setOwnerChangeBox({ active: false, newOwner: null });
+        setRefuse(false);
+        setConfirm(false);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerChangeBox, confirm, refuse]);
 
   async function createGroup() {
     setErrorAtPosting(null);
@@ -125,7 +137,7 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
         console.error(error);
       })
       .finally(() => {
-        setConfirmDeletingGroup(false);
+        setConfirm(false);
         setDeleteBox(false);
       });
   }
@@ -157,8 +169,38 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
       })
       .catch((error) => {
         console.error(error);
-        setConfirmDeletingGroup(false);
+        setConfirm(false);
         setDeleteBox(false);
+      });
+  }
+
+  async function changeOwner() {
+    await axios({
+      method: "put",
+      url:
+        endpoints.changeOwner +
+        editedGroupId +
+        "/?userId=" +
+        ownerChangeBox.newOwner.id,
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        setRedirectBackToGroup(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setConfirm(false);
+        setOwnerChangeBox({ active: false, newOwner: null });
       });
   }
 
@@ -188,11 +230,18 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
 
   return (
     <>
+      {ownerChangeBox.active && creatorType === groupCreator.edition && (
+        <ConfirmationBox
+          children={"Czy na pewno chcesz przestać być właścicielem albumu?"}
+          confirm={setConfirm}
+          refuse={setRefuse}
+        />
+      )}
       {deleteBox && creatorType === groupCreator.edition && (
         <ConfirmationBox
           children={"Czy na pewno chcesz usunąć grupę?"}
-          confirm={setConfirmDeletingGroup}
-          refuse={setRefuseDeletingGroup}
+          confirm={setConfirm}
+          refuse={setRefuse}
         />
       )}
       <Container blurState={blurState} ref={scrollBack}>
@@ -282,6 +331,7 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
             <ChangeOwner
               editedGroupId={editedGroupId}
               setRedirectBackToGroup={setRedirectBackToGroup}
+              setOwnerChangeBox={setOwnerChangeBox}
             />
           </SectionContainer>
         )}

@@ -5,6 +5,7 @@ import PhotoSection from "../groupPhotos/PhotoSection";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import localizationIcon from "./assets/localizationIcon.svg";
 import descriptionIcon from "./assets/descriptionIcon.svg";
+import historyIcon from "./assets/historyIcon.svg";
 import editIcon from "./assets/editIcon.svg";
 import Map from "../googleMaps/Map";
 import Carousel from "../groupPhotos/Carousel";
@@ -18,6 +19,9 @@ import {
   selectInfo,
   selectRights,
 } from "../../redux/groupAlbumSlice";
+import HistoryBox from "./HistoryBox";
+import moment from "moment";
+import "moment/locale/pl";
 
 const GroupAlbumInside = ({ albumId, notifPhoto }) => {
   // map options
@@ -41,6 +45,7 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
     active: false,
     userId: null,
   });
+  const [history, setHistory] = useState(false);
 
   const blurState = useSelector((state) => state.blur.value);
   const owner = useSelector(selectOwner);
@@ -96,6 +101,7 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
           setClose={setPhotoPreview}
         />
       )}
+      {history && <HistoryBox setHistory={setHistory} albumId={albumId} />}
       <Container blurState={blurState}>
         <Details>
           <Header>
@@ -153,6 +159,16 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
               <Buttons>
                 {rights === groupMember.owner && (
                   <TypeSpecifiedButton
+                    icon={historyIcon}
+                    active={history}
+                    onClick={() => setHistory(!history)}
+                  >
+                    Historia
+                  </TypeSpecifiedButton>
+                )}
+                {rights === groupMember.owner && (
+                  <TypeSpecifiedButton
+                    btnType="edit"
                     icon={editIcon}
                     onClick={() =>
                       setRedirectToAlbumsCreator({

@@ -8,21 +8,21 @@ import userIcon from "./assets/userIcon.svg";
 import UserNotifications from "./UserNotifications";
 import GroupNotifications from "./GroupNotifications";
 import "./notificationsScrollbar.css";
-import Toggle from "../trinkets/Toggle";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
+import Toggle from "../trinkets/Toggle";
 import Tooltip from "../trinkets/Tooltip";
 import moment from "moment";
 import "moment/locale/pl";
 
-const notificationsType = {
+const toggle = {
   user: "user", // true
   group: "group", // false
 };
 
 const Notifications = ({ notificationsDisplay }) => {
   const blurState = useSelector((state) => state.blur.value);
-  const [type, setType] = useState(notificationsType.user);
+  const [type, setType] = useState(toggle.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const Notifications = ({ notificationsDisplay }) => {
         <OptionContainer
           data-tip
           data-for="userNotification"
-          active={type === notificationsType.user ? true : false}
+          active={type === toggle.user ? true : false}
           icon={userIcon}
         />
         <Tooltip
@@ -72,13 +72,13 @@ const Notifications = ({ notificationsDisplay }) => {
         <Toggle
           value={type}
           setValue={setType}
-          first={notificationsType.user}
-          second={notificationsType.group}
+          first={toggle.user}
+          second={toggle.group}
         />
         <OptionContainer
           data-tip
           data-for="groupNotification"
-          active={type === notificationsType.group ? true : false}
+          active={type === toggle.group ? true : false}
           icon={groupsIcon}
         />
         <Tooltip
@@ -87,10 +87,10 @@ const Notifications = ({ notificationsDisplay }) => {
           text="Powiadomienia grup"
         />
       </ToggleContainer>
-      {type === notificationsType.user && (
+      {type === toggle.user && (
         <UserNotifications notificationsDisplay={notificationsDisplay} />
       )}
-      {type === notificationsType.group && (
+      {type === toggle.group && (
         <GroupNotifications notificationsDisplay={notificationsDisplay} />
       )}
     </Container>
@@ -212,25 +212,5 @@ const OptionContainer = styled.div`
   }
 `;
 
-const NotificationsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden; /* Hide horizontal scrollbar */
-  overflow-y: scroll; /* Add vertical scrollbar */
-  max-height: 100vh;
-  margin: 20px 10px 20px 10px;
-  @media only screen and (max-width: 1000px) {
-    margin: 15px 5px 15px 5px;
-  }
-`;
-
-const NoItems = styled.h1`
-  display: inline-block;
-  margin: 10px auto;
-  color: ${({ theme }) => theme.color.greyFont};
-  @media only screen and (max-width: 1000px) {
-    font-size: 16px;
-  }
-`;
 
 export default Notifications;

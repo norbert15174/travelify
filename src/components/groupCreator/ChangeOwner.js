@@ -5,16 +5,13 @@ import { selectMembers } from "../../redux/groupCreatorSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import SelectFriends from "../trinkets/Select";
-import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
-import axios from "axios";
 
-const ChangeOwner = ({ editedGroupId, setRedirectBackToGroup }) => {
+const ChangeOwner = ({
+  setOwnerChangeBox,
+}) => {
   const currentMembers = useSelector(selectMembers);
   const [options, setOptions] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
-  const [submitMessage, setSubmitMessage] = useState("");
-  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     setOptions(
@@ -24,35 +21,6 @@ const ChangeOwner = ({ editedGroupId, setRedirectBackToGroup }) => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function changeOwner() {
-    setSubmitError("");
-    setSubmitMessage("Zapisywanie...");
-    await axios({
-      method: "put",
-      url:
-        endpoints.changeOwner + editedGroupId + "/?userId=" + selectedMember.id,
-      headers: {
-        "Access-Control-Allow-Headers": "*",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
-        withCredentials: true,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        setSubmitMessage("Zmiany zostały zapisane");
-        setRedirectBackToGroup(true);
-      })
-      .catch((error) => {
-        console.error(error);
-        setSelectedMember(null);
-        setSubmitMessage("");
-        setSubmitError("Coś poszło nie tak... spróbuj ponownie");
-      });
-  }
 
   return (
     <>
@@ -75,13 +43,11 @@ const ChangeOwner = ({ editedGroupId, setRedirectBackToGroup }) => {
         </Label>
       </Container>
       <Buttons>
-        {submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
-        {submitError !== "" && (
-          <SubmitMessage type="error">{submitError}</SubmitMessage>
-        )}
         <Submit
           type="submit"
-          onClick={changeOwner}
+          onClick={() =>
+            setOwnerChangeBox({ active: true, newOwner: selectedMember })
+          }
           disabled={!selectedMember ? true : false}
         >
           Zapisz
@@ -148,19 +114,6 @@ const SelectContainer = styled.div`
   flex-direction: row;
   align-items: center;
   margin: 10px 25px 25px 0px;
-`;
-
-const SubmitMessage = styled(StatusMessage)`
-  font-size: 12px;
-  align-self: center;
-  margin-right: 15px;
-  @media only screen and (max-width: 1080px) {
-    font-size: 8px;
-    padding: 5px;
-  }
-  @media only screen and (max-width: 560px) {
-    font-size: 6px;
-  }
 `;
 
 const Buttons = styled.div`
