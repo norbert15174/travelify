@@ -62,14 +62,12 @@ const GroupAlbumThumbnail = ({ album }) => {
         />
         <h3>{album.albumOwner.name + " " + album.albumOwner.surName}</h3>
       </SharingPerson>
-      <InfoContainer>
+      <InfoContainer onClick={() => setRedirectToAlbumDetails(true)}>
         <Text>
           <Header>
             <Title>{album.name}</Title>
             <Localization>
-              {album.coordinate.place +
-                ", " +
-                album.coordinate.country.country}
+              {album.coordinate.place + ", " + album.coordinate.country.country}
             </Localization>
           </Header>
           <Description>{album.description}</Description>

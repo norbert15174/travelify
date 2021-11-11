@@ -13,8 +13,6 @@ import Tooltip from "../trinkets/Tooltip";
 const StartPage = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [redirectToAuth, setRedirectToAuth] = useState(false);
-  const [redirectToLoginTransition, setRedirectToLoginTransition] =
-    useState(false);
   const [markers, setMarkers] = useState(null);
 
   const options = {

@@ -103,12 +103,10 @@ const Localization = ({ editedAlbumId, creatorType, setForm }) => {
     setSubmitMessage("Zapisywanie zmian...");
     await axios({
       method: "put",
-      url: endpoints.editAlbum + editedAlbumId,
+      url: endpoints.editGroupAlbum + editedAlbumId,
       data: {
-        coordinate: {
-          country: {
-            country: localization.countryName,
-          },
+        coordinates: {
+          country: localization.countryName,
           lang: localization.lng,
           lat: localization.lat,
           place: localization.place,
@@ -124,6 +122,7 @@ const Localization = ({ editedAlbumId, creatorType, setForm }) => {
       },
     })
       .then((response) => {
+        console.log(response);
         dispatch(
           setCoordinate({
             country: {
@@ -139,6 +138,8 @@ const Localization = ({ editedAlbumId, creatorType, setForm }) => {
         setIsDirty(false);
       })
       .catch((error) => {
+        console.error(error);
+        setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       });
   }

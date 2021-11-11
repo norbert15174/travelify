@@ -8,7 +8,7 @@ import { endpoints } from "../../url";
 
 const notificationsMaleVersion = {
   GROUP_REQUEST: " zaprosił cię do grupy: ",
-  PHOTO_COMMENT: " skomentował zdjęcie z",
+  PHOTO_COMMENT: " skomentował zdjęcie z grupy: ",
   PHOTO_MARKED: " oznaczył cię na zdjęciu z grupy: ",
   NEW_ALBUM: " dodał nowy album w grupie: ",
   DELETE_ALBUM: " usunął album z grupy: ",
@@ -64,16 +64,15 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
       });
   }
 
-  // redirection to chosen album
-  /* if (redirectToAlbum) {
+  if (redirectToAlbum) {
     notificationsDisplay("");
-    return (
+    /* return (
       <Redirect
         push
         to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
       />
-    );
-  } */
+    ); */
+  } 
 
   return (
     <Container>
@@ -111,23 +110,26 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
           <Date>{date}</Date>
         </TextContainer>
       </InnerContainer>
-      {notification.type === "GROUP_REQUEST" && notClicked && (
-        <Buttons>
-          <AcceptButton
-            id="accept-button"
-            onClick={() => groupInvitationHandler("accept")}
-          >
-            Zaakceptuj
-          </AcceptButton>
-          <DeclineButton
-            id="decline-button"
-            onClick={() => groupInvitationHandler("decline")}
-          >
-            Odrzuć
-          </DeclineButton>
-        </Buttons>
-      )}
-      {notification.type === "GROUP_REQUEST" && !notClicked && accepted ? (
+      {notification.type === "GROUP_REQUEST" &&
+        notClicked &&
+        (notification.status === "NEW" || notification.status === "SEEN") && (
+          <Buttons>
+            <AcceptButton
+              id="accept-button"
+              onClick={() => groupInvitationHandler("accept")}
+            >
+              Zaakceptuj
+            </AcceptButton>
+            <DeclineButton
+              id="decline-button"
+              onClick={() => groupInvitationHandler("decline")}
+            >
+              Odrzuć
+            </DeclineButton>
+          </Buttons>
+        )}
+      {(notification.type === "GROUP_REQUEST" && !notClicked && accepted) ||
+      notification.status === "ACCEPTED" ? (
         <Status>Zaproszenie zostało zaakceptowane</Status>
       ) : null}
       {notification.type === "GROUP_REQUEST" && !notClicked && !accepted ? (

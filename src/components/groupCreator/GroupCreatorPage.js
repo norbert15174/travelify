@@ -232,7 +232,7 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
     <>
       {ownerChangeBox.active && creatorType === groupCreator.edition && (
         <ConfirmationBox
-          children={"Czy na pewno chcesz przestać być właścicielem albumu?"}
+          children={"Czy na pewno chcesz przestać być właścicielem grupy?"}
           confirm={setConfirm}
           refuse={setRefuse}
         />

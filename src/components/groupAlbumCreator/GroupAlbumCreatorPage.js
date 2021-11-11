@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import Button from "../trinkets/Button";
-import { routes } from "../../miscellanous/Routes";
 import infoIcon from "./assets/infoIcon.svg";
 import localizationIcon from "./assets/localizationIcon.svg";
 import photoIcon from "./assets/photoIcon.svg";
+import crownIcon from "./assets/crownIcon.svg";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import deleteAlbumIcon from "./assets/deleteAlbumIcon.svg";
 import BasicInfo from "./BasicInfo";
@@ -18,17 +18,24 @@ import { endpoints } from "../../url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
-import { selectRights } from "../../redux/groupAlbumCreatorSlice";
+import {
+  selectAlbumOwner,
+  selectRights,
+} from "../../redux/groupAlbumCreatorSlice";
+import ChangeOwner from "./ChangeOwner";
 
 const GroupAlbumCreatorPage = ({
   creatorType,
   editedAlbumId = null,
   groupId,
 }) => {
-  const [confirmDeletingAlbum, setConfirmDeletingAlbum] = useState(false);
-  const [refuseDeletingAlbum, setRefuseDeletingAlbum] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [refuse, setRefuse] = useState(false);
   const [deleteBox, setDeleteBox] = useState(false);
-
+  const [ownerChangeBox, setOwnerChangeBox] = useState({
+    active: false,
+    newOwner: null,
+  });
   const [creatingAlbum, setCreatingAlbum] = useState(false);
   const [errorAtPosting, setErrorAtPosting] = useState(null);
   const [redirectToCreatedAlbum, setRedirectToCreatedAlbum] = useState({
@@ -41,6 +48,7 @@ const GroupAlbumCreatorPage = ({
 
   const blurState = useSelector((state) => state.blur.value);
   const rights = useSelector(selectRights);
+  const albumOwner = useSelector(selectAlbumOwner);
 
   // BasicInfo submitted data, used at album creation, at editing it won't be used
   const [basicInfo, setBasicInfo] = useState({
@@ -59,24 +67,19 @@ const GroupAlbumCreatorPage = ({
   });
 
   useEffect(() => {
-    console.log(basicInfo);
-    console.log(localization);
-  }, [basicInfo, localization]);
-
-  useEffect(() => {
     // checking if album will be edited or created, setting albumId we are editing
     if (deleteBox && albumCreator.edition === creatorType) {
-      if (confirmDeletingAlbum) {
+      if (confirm) {
         deleteAlbum();
       }
-      if (refuseDeletingAlbum) {
+      if (refuse) {
         console.log("Album hasn't been deleted!");
         setDeleteBox(false);
-        setRefuseDeletingAlbum(false);
+        setRefuse(false);
       }
     }
     // eslint-disable-next-line
-  }, [confirmDeletingAlbum, refuseDeletingAlbum]);
+  }, [confirm, refuse]);
 
   useEffect(() => {
     if (
@@ -89,6 +92,21 @@ const GroupAlbumCreatorPage = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [basicInfo.name, localization.lat, localization.place]);
+
+  useEffect(() => {
+    if (ownerChangeBox.active && rights === groupMember.owner) {
+      if (confirm) {
+        /* changeOwner(); */
+        console.log(ownerChangeBox.newOwner);
+      }
+      if (refuse) {
+        setOwnerChangeBox({ active: false, newOwner: null });
+        setRefuse(false);
+        setConfirm(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerChangeBox, confirm, refuse]);
 
   const [redirectToGroup, setRedirectToGroup] = useState(false);
   const [redirectBackToAlbum, setRedirectBackToAlbum] = useState(false);
@@ -181,7 +199,7 @@ const GroupAlbumCreatorPage = ({
       })
       .finally((error) => {
         setDeleteBox(false);
-        setConfirmDeletingAlbum(false);
+        setConfirm(false);
       });
   }
 
@@ -190,8 +208,15 @@ const GroupAlbumCreatorPage = ({
       {deleteBox && creatorType === albumCreator.edition && (
         <ConfirmationBox
           children={"Czy na pewno chcesz usunąć album?"}
-          confirm={setConfirmDeletingAlbum}
-          refuse={setRefuseDeletingAlbum}
+          confirm={setConfirm}
+          refuse={setRefuse}
+        />
+      )}
+      {ownerChangeBox.active && creatorType === albumCreator.edition && (
+        <ConfirmationBox
+          children={"Czy na pewno chcesz przestać być właścicielem grupy?"}
+          confirm={setConfirm}
+          refuse={setRefuse}
         />
       )}
       <Container blurState={blurState} ref={scrollBack}>
@@ -205,7 +230,8 @@ const GroupAlbumCreatorPage = ({
             onClick={() => {
               if (creatorType === "creation") {
                 setRedirectToGroup(true);
-              } else if (creatorType === "edition") {
+              }
+              if (creatorType === "edition") {
                 setRedirectBackToAlbum(true);
               }
             }}
@@ -213,28 +239,32 @@ const GroupAlbumCreatorPage = ({
             Wróć
           </GoBackButton>
         </PageHeader>
-        {rights === groupMember.owner && <SectionContainer>
-          <Header>
-            <Icon src={infoIcon} />
-            <h1>Podstawowe informacje</h1>
-          </Header>
-          <BasicInfo
-            editedAlbumId={editedAlbumId}
-            creatorType={creatorType}
-            setForm={setBasicInfo}
-          />
-        </SectionContainer>}
-        {rights === groupMember.owner && <SectionContainer>
-          <Header>
-            <Icon src={localizationIcon} />
-            <h1>Lokalizacja</h1>
-          </Header>
-          <Localization
-            editedAlbumId={editedAlbumId}
-            creatorType={creatorType}
-            setForm={setLocalization}
-          />
-        </SectionContainer>}
+        {rights === groupMember.owner && (
+          <SectionContainer>
+            <Header>
+              <Icon src={infoIcon} />
+              <h1>Podstawowe informacje</h1>
+            </Header>
+            <BasicInfo
+              editedAlbumId={editedAlbumId}
+              creatorType={creatorType}
+              setForm={setBasicInfo}
+            />
+          </SectionContainer>
+        )}
+        {rights === groupMember.owner && (
+          <SectionContainer>
+            <Header>
+              <Icon src={localizationIcon} />
+              <h1>Lokalizacja</h1>
+            </Header>
+            <Localization
+              editedAlbumId={editedAlbumId}
+              creatorType={creatorType}
+              setForm={setLocalization}
+            />
+          </SectionContainer>
+        )}
         {creatorType === albumCreator.edition && (
           <SectionContainer>
             <Header>
@@ -271,18 +301,36 @@ const GroupAlbumCreatorPage = ({
               </End>
             </SectionContainer>
           )}
-        {rights === groupMember.owner && creatorType === albumCreator.edition && (
-          <SectionContainer>
-            <Header>
-              <Icon src={deleteAlbumIcon} />
-              <h1>Usuń album</h1>
-            </Header>
-            <WarningMessage>
-              <p>Usuniętego albumu nie da się odzyskać!</p>
-              <p>Dodane zdjęcia zostaną trwale usunięte.</p>
-            </WarningMessage>
-            <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
-          </SectionContainer>
+        {creatorType === albumCreator.edition && rights === groupMember.owner && (
+          <>
+            {albumOwner.id.toString() ===
+              sessionStorage.getItem("loggedUserId") && (
+              <SectionContainer>
+                <Header>
+                  <Icon src={crownIcon} />
+                  <h1>Zmiana właściciela</h1>
+                </Header>
+                <ChangeOwner
+                  editedAlbumId={editedAlbumId}
+                  setRedirectBackToAlbum={setRedirectBackToAlbum}
+                  setOwnerChangeBox={setOwnerChangeBox}
+                />
+              </SectionContainer>
+            )}
+            <SectionContainer>
+              <Header>
+                <Icon src={deleteAlbumIcon} />
+                <h1>Usuń album</h1>
+              </Header>
+              <WarningMessage>
+                <p>Usuniętego albumu nie da się odzyskać!</p>
+                <p>Dodane zdjęcia zostaną trwale usunięte.</p>
+              </WarningMessage>
+              <DeleteButton onClick={() => setDeleteBox(true)}>
+                Usuń
+              </DeleteButton>
+            </SectionContainer>
+          </>
         )}
       </Container>
       <ScrollBack

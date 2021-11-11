@@ -41,11 +41,11 @@ const GroupNotifications = ({ notificationsDisplay }) => {
         if (groupNotifications && type === "scrollUpdate") {
           setGroupNotifications((prevState) => [
             ...prevState,
-            ...data.filter((item) => item.status !== "ACCEPTED"),
+            ...data,
           ]);
         } else if (type === "firstRun") {
           setPage(1);
-          setGroupNotifications(data.filter((item) => item.status !== "ACCEPTED"));
+          setGroupNotifications(data);
         }
       })
       .catch((error) => {

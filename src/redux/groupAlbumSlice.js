@@ -1,28 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  owner: null,
+  groupOwner: null,
+  albumOwner: null,
   rights: "",
+  info: {
+    coordinate: null,
+    description: "",
+    name: "",
+    albumId: null,
+    groupId: null,
+    creationTime: "",
+  },
   albumPhotos: [],
-  members: [],
-  info: null,
   photoTags: [],
+  members: [],
 };
 
 export const groupAlbumDetailsSlice = createSlice({
   name: "groupAlbumDetails",
   initialState: initialState,
   reducers: {
-    setOwner: (state, action) => {
-      state.owner = action.payload;
+    setGroupOwner: (state, action) => {
+      state.groupOwner = action.payload;
+    },
+    setAlbumOwner: (state, action) => {
+      state.albumOwner = action.payload;
     },
     setRights: (state, action) => {
       state.rights = action.payload;
     },
     setInfo: (state, action) => {
-      state.info = action.payload;
-    },
-    setMembers: (state, action) => {
       state.info = action.payload;
     },
     setPhotoTags: (state, action) => {
@@ -31,33 +39,44 @@ export const groupAlbumDetailsSlice = createSlice({
     setAlbumPhotos: (state, action) => {
       state.albumPhotos = action.payload;
     },
+    setMembers: (state, action) => {
+      state.members = action.payload;
+    },
     clearStore: (state) => {
-      state.info = null;
+      state.info = {
+        coordinate: null,
+        description: "",
+        name: "",
+        albumId: null,
+        creationTime: "",
+      };
       state.albumPhotos = [];
+      state.photoTags = [];
       state.rights = "";
-      state.owner = null;
-      state.members = [];
+      state.groupOwner = null;
+      state.albumOwner = null;
     },
   },
 });
 
 // actions
 export const {
-  setOwner,
+  setGroupOwner,
+  setAlbumOwner,
   setRights,
   setAlbumPhotos,
   setInfo,
   clearStore,
-  setPhotoTags,
   setMembers,
+  setPhotoTags,
 } = groupAlbumDetailsSlice.actions;
 
 // exporting selects
 export const selectInfo = (state) => state.groupAlbumDetails.info;
-export const selectOwner = (state) => state.groupAlbumDetails.owner;
+export const selectAlbumOwner = (state) => state.groupAlbumDetails.albumOwner;
+export const selectGroupOwner = (state) => state.groupAlbumDetails.groupOwner;
 export const selectAlbumPhotos = (state) => state.groupAlbumDetails.albumPhotos;
 export const selectRights = (state) => state.groupAlbumDetails.rights;
-export const selectAlbumType = (state) => state.groupAlbumDetails.albumType;
 export const selectPhotoTags = (state) => state.groupAlbumDetails.photoTags;
 export const selectMembers = (state) => state.groupAlbumDetails.members;
 

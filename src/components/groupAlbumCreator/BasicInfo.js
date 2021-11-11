@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  selectBasicInfo
+  selectBasicInfo,
+  setBasicInfo,
 } from "../../redux/groupAlbumCreatorSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
 import StatusMessage from "../trinkets/StatusMessage";
-/* import { endpoints } from "../../url";
-import axios from "axios"; */
+import { endpoints } from "../../url";
+import axios from "axios";
 import { groupCreator } from "../../miscellanous/Utils";
 
 const BasicGroupInfo = ({ creatorType, editedAlbumId, setForm }) => {
@@ -75,7 +76,7 @@ const BasicGroupInfo = ({ creatorType, editedAlbumId, setForm }) => {
     } else if (creatorType === groupCreator.edition) {
       setSubmitMessage("Zapisywanie...");
       if (name !== basicInfo.name || description !== basicInfo.description) {
-        /* editBasicInfo(isPublic); */
+        editBasicInfo();
       } else {
         setInfoEditFinished(true);
       }
@@ -99,40 +100,41 @@ const BasicGroupInfo = ({ creatorType, editedAlbumId, setForm }) => {
     setIsDirty(false);
   };
 
-  /* async function editBasicInfo(isPublic) {
+  async function editBasicInfo() {
     await axios({
-        method: "put",
-        url: endpoints.editAlbum + editedAlbumId,
-        data: {
-            name: name.trim(),
-            description: description.trim(),
-            public: isPublic,
-        },
-        headers: {
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*",
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-            withCredentials: true,
-        },
+      method: "put",
+      url: endpoints.editGroupAlbum + editedAlbumId,
+      data: {
+        name: name.trim(),
+        description: description.trim(),
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
     })
-    .then((response) => {               
-        console.log(response);
-        dispatch(setBasicInfo({
+      .then((response) => {
+        dispatch(
+          setBasicInfo({
             name: name,
             description: description,
-            public: isPublic,
-        })); 
-    })
-    .catch((error) => {
+          })
+        );
+      })
+      .catch((error) => {
         console.log(error);
+        setName(basicInfo.name);
+        setDescription(basicInfo.description);
         setError(true);
-    })
-    .finally(() => {
+      })
+      .finally(() => {
         setInfoEditFinished(true);
-    });
-}; */
+      });
+  }
 
   return (
     <>

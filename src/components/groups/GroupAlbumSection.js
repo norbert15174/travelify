@@ -90,10 +90,10 @@ const GroupAlbumSection = ({ groupId }) => {
       <AlbumsGrid className="scroll">
         {groupAlbums.length > 0 ? (
           (searchContent.length !== 0 && found.length !== 0
-            ? found.map((item) => <GroupAlbumThumbnail album={item} />)
+            ? found.map((item) => <GroupAlbumThumbnail key={item.id} album={item} />)
             : null) ||
           (groupAlbums.length !== 0 && searchContent.length === 0
-            ? groupAlbums.map((item) => <GroupAlbumThumbnail album={item} />)
+            ? groupAlbums.map((item) => <GroupAlbumThumbnail key={item.id} album={item} />)
             : null) || <h1 style={{ color: "#5B5B5B" }}>Brak albumów...</h1>
         ) : (
           <h1 style={{ color: "#5B5B5B" }}>Brak albumów...</h1>

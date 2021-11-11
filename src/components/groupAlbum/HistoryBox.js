@@ -54,6 +54,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
 
   useEffect(() => {
     getHistory();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   function boxOutsideClick(e) {
@@ -157,7 +158,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
               }}
             >
               {items.map((item) => (
-                <Timestamp key={item.title + "1"}>
+                <Timestamp key={item.id}>
                   <Text>{EVENT_TEXT[item.status]}</Text>
                   <SourceContainer
                     onClick={() => {
@@ -227,7 +228,7 @@ const Box = styled.div`
   transform: translate(-50%, -50%);
   background-color: ${({ theme }) => theme.color.lightBackground};
   width: 60%;
-  height: 95%;
+  max-height: 95%;
   border: 5px solid ${({ theme }) => theme.color.dark};
   box-shadow: 5px 5px 10px 0 ${({ theme }) => theme.color.greyFont};
   @media only screen and (max-width: 1140px) {
@@ -305,12 +306,12 @@ const Loading = styled(ReactLoading)`
 `;
 
 const InnerContainer = styled.div`
-  height: calc(98% - 60px);
+  height: calc(98% - 55px);
   @media only screen and (max-width: 720px) {
-    height: calc(98% - 40px);
+    height: calc(98% - 35px);
   }
   @media only screen and (max-width: 540px) {
-    height: calc(98% - 20px);
+    height: calc(98% - 15px);
   }
 `;
 
@@ -343,7 +344,6 @@ const SourceContainer = styled.div`
   align-items: center;
   margin: auto 0 5px 0;
   cursor: pointer;
-
 `;
 
 const Name = styled.p`

@@ -11,7 +11,6 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
             if (isMulti) {
                 setState(value); // całe obiekty
             } else {
-                console.log(value);
                 setState(value); 
             }
             return;

@@ -62,7 +62,14 @@ export const endpoints = {
     getGroupAlbums: url + "/group/:groupId/albums", 
     createGroupAlbum: url + "/group/albums/", // + groupId, POST
     getGroupAlbumDetails: url + "/group/albums/:groupAlbumId/full",
-    getGroupAlbumHistory: url + "/group/albums/history/:groupAlbumId/", // + ?=page=page_number
+    getGroupAlbumHistory: url + "/group/albums/history/:groupAlbumId/", // + ?page=page_number
+    getGroupPhotoDetails: url + "/group/albums/photos/", // + groupPhotoId
+    addGroupPhotoComment: url + "/group/albums/photos/:groupPhotoId/comments", // POST
+    updateGroupPhotoDescription: url + "/group/albums/photos/", // + groupPhotoId, PUT, query: /?=description="..."
+    tagPersonOnGroupPhoto: url + "/group/albums/photos/:groupPhotoId/tag", // PUT
+    untagPersonOnGroupPhoto: url + "/group/albums/photos/:groupPhotoId/untag", // PUT
+    editGroupAlbum: url + "/group/albums/", // + groupAlbumId, PUT
+    addSinglePhotoToGroupAlbum: url + "/group/albums/photos/", // +groupAlbumId, POST
+    addMultiplePhotosToGroupAlbum: url + "/group/albums/photos/multiple/", // +groupAlbumId, POST
+    setGroupAlbumMainPhoto: url + "/group/albums/main/", // + groupAlbumId, PUT
 }
-
-// http://localhost:8020/friends/delete/

@@ -18,7 +18,9 @@ const MarkerInfo = ({ details, type }) => {
           pathname:
             type === "StartPage"
               ? `/albumPreview/${redirectToAlbum.albumId}`
-              : `/album/${redirectToAlbum.albumId}`,
+              : type === "UserPage"
+              ? `/album/${redirectToAlbum.albumId}`
+              : `/groupAlbum/${redirectToAlbum.albumId}`,
         }}
       />
     );

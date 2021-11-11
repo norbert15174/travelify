@@ -11,19 +11,20 @@ import Map from "../googleMaps/Map";
 import Carousel from "../groupPhotos/Carousel";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { routes } from "../../miscellanous/Routes";
-import { endpoints } from "../../url";
 import { useSelector } from "react-redux";
 import { groupMember, albumCreator } from "../../miscellanous/Utils";
 import {
-  selectOwner,
+  selectAlbumOwner,
   selectInfo,
   selectRights,
 } from "../../redux/groupAlbumSlice";
 import HistoryBox from "./HistoryBox";
 import moment from "moment";
+
 import "moment/locale/pl";
 
 const GroupAlbumInside = ({ albumId, notifPhoto }) => {
+  moment.locale("pl");
   // map options
   const options = {
     disableDefaultUI: true, // disables little yellow guy and satellite view
@@ -41,14 +42,16 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
     active: false,
     albumId: null,
   });
+
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
     userId: null,
   });
+
   const [history, setHistory] = useState(false);
 
   const blurState = useSelector((state) => state.blur.value);
-  const owner = useSelector(selectOwner);
+  const owner = useSelector(selectAlbumOwner);
   const info = useSelector(selectInfo);
   const rights = useSelector(selectRights);
 
@@ -69,6 +72,7 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
           state: {
             creatorType: albumCreator.edition,
             albumId: redirectToAlbumsCreator.albumId,
+            groupId: 46,
           },
         }}
       />
@@ -112,6 +116,9 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
                 {info.coordinate.place + ", " + info.coordinate.country.country}
               </h3>
             </Localization>
+            <h4 style={{ marginTop: "10px" }}>
+              Utworzono {moment(info.creationTime).format("LL")}
+            </h4>
           </Header>
           <MapContainer>
             <Map
@@ -148,7 +155,7 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
                   }}
                 />
                 <p
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", marginRight: "10px" }}
                   onClick={() => {
                     setRedirectToProfile({ active: true, userId: owner.id });
                   }}
@@ -157,29 +164,24 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
                 </p>
               </AlbumInfo>
               <Buttons>
-                {rights === groupMember.owner && (
-                  <TypeSpecifiedButton
-                    icon={historyIcon}
-                    active={history}
-                    onClick={() => setHistory(!history)}
-                  >
-                    Historia
-                  </TypeSpecifiedButton>
-                )}
-                {rights === groupMember.owner && (
-                  <TypeSpecifiedButton
-                    btnType="edit"
-                    icon={editIcon}
-                    onClick={() =>
-                      setRedirectToAlbumsCreator({
-                        active: true,
-                        albumId: albumId,
-                      })
-                    }
-                  >
-                    Edytuj album
-                  </TypeSpecifiedButton>
-                )}
+                <TypeSpecifiedButton
+                  icon={historyIcon}
+                  active={history}
+                  onClick={() => setHistory(!history)}
+                >
+                  Historia
+                </TypeSpecifiedButton>
+                <TypeSpecifiedButton
+                  icon={editIcon}
+                  onClick={() =>
+                    setRedirectToAlbumsCreator({
+                      active: true,
+                      albumId: albumId,
+                    })
+                  }
+                >
+                  Edytuj album
+                </TypeSpecifiedButton>
               </Buttons>
             </Footer>
           </div>

@@ -26,7 +26,7 @@ const Photos = ({ editedAlbumId }) => {
   const rights = useSelector(selectRights);
   const dispatch = useDispatch();
 
-  const [addType, setAddType] = useState("");
+  const [operationType, setOperationType] = useState("");
   const [description, setDescription] = useState("");
   const [singleImage, setSingleImage] = useState(undefined);
   const [multipleImages, setMultipleImages] = useState([]);
@@ -52,7 +52,7 @@ const Photos = ({ editedAlbumId }) => {
       if (file === undefined) {
         setMultipleImages([]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
@@ -61,7 +61,7 @@ const Photos = ({ editedAlbumId }) => {
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
@@ -73,7 +73,7 @@ const Photos = ({ editedAlbumId }) => {
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
@@ -100,27 +100,27 @@ const Photos = ({ editedAlbumId }) => {
       setSingleImage(undefined);
       setMainImage(mainPhoto);
       setIsDirty(false);
-      document.getElementById(addType + "__input").value = null;
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
     if (file.size >= 5000000) {
       setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
       setIsDirty(false);
-      document.getElementById(addType + "__input").value = null;
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
     if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
       setIsDirty(false);
       setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
-      document.getElementById(addType + "__input").value = null;
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (addType === "single") {
+    if (operationType === "single") {
       setSingleImage(file);
-    } else if (addType === "main") {
+    } else if (operationType === "main") {
       setMainImage(file);
     }
 
@@ -129,13 +129,13 @@ const Photos = ({ editedAlbumId }) => {
   };
 
   const formHandler = () => {
-    if (addType === "single") {
+    if (operationType === "single") {
       addSinglePhoto();
-    } else if (addType === "multi") {
+    } else if (operationType === "multi") {
       addMultiPhotos();
-    } else if (addType === "main") {
+    } else if (operationType === "main") {
       addAlbumMainPhoto();
-    } else if (addType === "delete") {
+    } else if (operationType === "delete") {
       deletePhotos();
     }
   };
@@ -165,22 +165,22 @@ const Photos = ({ editedAlbumId }) => {
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
         setMultipleImages([]);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
       }
     } else if (type === "album") {
       // deleting images with specific id from album
       let images = albumImages.filter(
         (photo) => photo.photoId !== imageToDelete
       );
-      setAddType("delete");
+      setOperationType("delete");
       setAlbumImages(images);
       setPhotosToDelete((prevState) => [...prevState, imageToDelete]);
     }
   };
 
   const clearForm = () => {
-    if (document.getElementById(addType + "__input") !== null) {
-      document.getElementById(addType + "__input").value = null;
+    if (document.getElementById(operationType + "__input") !== null) {
+      document.getElementById(operationType + "__input").value = null;
     }
     setSingleImage(undefined);
     setMultipleImages([]);
@@ -199,17 +199,16 @@ const Photos = ({ editedAlbumId }) => {
     data.append("file", mainImage);
     setSubmitMessage("Dodawanie zdjęcia...");
     await axios
-      .post(endpoints.setAlbumMainPhoto + editedAlbumId, data, {
+      .put(endpoints.setGroupAlbumMainPhoto + editedAlbumId, data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
         },
       })
-      .then((response) => {
-        console.log(response);
+      .then(({ data }) => {
         setSubmitMessage("Zmiany zostały zapisane!");
-        setMainImage(response.data.mainPhoto);
-        dispatch(setMainPhotoRedux(response.data.mainPhoto));
+        setMainImage(data.mainPhoto);
+        dispatch(setMainPhotoRedux(data.mainPhoto));
       })
       .catch((error) => {
         console.log(error);
@@ -217,34 +216,48 @@ const Photos = ({ editedAlbumId }) => {
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setIsDirty(false);
       });
   }
 
   async function addSinglePhoto() {
-    const data = new FormData();
-    data.append("file", singleImage);
-    data.append("description", description);
+    const formData = new FormData();
+    formData.append("file", singleImage);
     setSubmitMessage("Dodawanie zdjęcia...");
     await axios
-      .post(endpoints.addSingleImageToAlbum + editedAlbumId, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
-        },
-      })
-      .then((response) => {
+      .post(
+        endpoints.addSinglePhotoToGroupAlbum +
+          editedAlbumId +
+          `/?description=${description}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+          },
+        }
+      )
+      .then(({ data }) => {
         setSubmitMessage("Zmiany zostały zapisane!");
-        setAlbumImages(response.data.photosDTOS);
-        dispatch(setAlbumPhotosRedux(response.data.photosDTOS));
+        let temp = [
+          ...albumImages,
+          {
+            owner: data.creator,
+            photoId: data.id,
+            photoUrl: data.photo,
+          },
+        ];
+        setAlbumImages(temp);
+        dispatch(setAlbumPhotosRedux(temp));
       })
       .catch((error) => {
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
         setDescription("");
         setIsDirty(false);
@@ -284,23 +297,32 @@ const Photos = ({ editedAlbumId }) => {
     }
     setSubmitMessage("Dodawanie zdjęć...");
     await axios
-      .post(endpoints.addMultiPhotos + editedAlbumId, data, {
+      .post(endpoints.addMultiplePhotosToGroupAlbum + editedAlbumId, data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
         },
       })
-      .then((response) => {
+      .then(({ data }) => {
+        let addedPhotos = data.map((item) => {
+          return {
+            owner: item.creator,
+            photoId: item.id,
+            photoUrl: item.photo,
+          };
+        });
+        let temp = [...albumImages, ...addedPhotos];
         setSubmitMessage("Zmiany zostały zapisane!");
-        setAlbumImages(response.data.photosDTOS);
-        dispatch(setAlbumPhotosRedux(response.data.photosDTOS));
+        setAlbumImages(temp);
+        dispatch(setAlbumPhotosRedux(temp));
       })
       .catch((error) => {
+        console.log(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
       });
@@ -312,7 +334,7 @@ const Photos = ({ editedAlbumId }) => {
         <h3>Co chcesz dodać?</h3>
         <RadioContainer
           onChange={(e) => {
-            setAddType(e.target.value);
+            setOperationType(e.target.value);
             clearForm();
           }}
         >
@@ -337,7 +359,7 @@ const Photos = ({ editedAlbumId }) => {
             label="Wiele zdjęć"
           />
         </RadioContainer>
-        {addType === "single" && (
+        {operationType === "single" && (
           <>
             <h3>Opis zdjęcia (opcjonalny)</h3>
             <Description
@@ -348,20 +370,20 @@ const Photos = ({ editedAlbumId }) => {
             />
           </>
         )}
-        {(addType === "single" ||
-          addType === "multi" ||
-          addType === "main") && (
+        {(operationType === "single" ||
+          operationType === "multi" ||
+          operationType === "main") && (
           <>
             <FileInput>
               <input
                 className="file__upload"
                 type="file"
-                id={addType + "__input"}
-                multiple={addType === "multi" ? true : false}
+                id={operationType + "__input"}
+                multiple={operationType === "multi" ? true : false}
                 onChange={(e) => {
-                  if (addType === "single" || addType === "main") {
+                  if (operationType === "single" || operationType === "main") {
                     singleFileHandler(e);
-                  } else if (addType === "multi") {
+                  } else if (operationType === "multi") {
                     multipleFilesHandler(e);
                   }
                 }}
@@ -374,13 +396,13 @@ const Photos = ({ editedAlbumId }) => {
         )}
         <Line />
         <InnerContainer>
-          {addType === "single" || addType === "main" ? (
+          {operationType === "single" || operationType === "main" ? (
             <>
               <h3>
-                {addType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
+                {operationType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
               </h3>
               {imagePreview[0].url !== "" ||
-              (mainImage !== "" && addType === "main") ? (
+              (mainImage !== "" && operationType === "main") ? (
                 <SingleImageContainer>
                   <SingleImage
                     src={
@@ -393,14 +415,14 @@ const Photos = ({ editedAlbumId }) => {
                 <ImageNotFound />
               )}
             </>
-          ) : addType === "multi" ? (
+          ) : operationType === "multi" ? (
             <>
               <h3>Wybrane zdjęcia:</h3>
               <PhotoContainer>
                 {imagePreview[0].url !== "" ? (
                   imagePreview.map((preview) => (
                     <MultiImageContainer
-                      key={new Date().getTime() + preview.url.substr()}
+                      key={(new Date()).getTime() + preview.url.substr(0)}
                     >
                       <MultiImage src={preview.url} />
                       <DeleteButton
@@ -417,7 +439,7 @@ const Photos = ({ editedAlbumId }) => {
               </PhotoContainer>
             </>
           ) : null}
-          <h3>Zdjęcia w albumie:</h3>
+          <h3>{rights === groupMember.owner ? "Zdjęcia w albumie:" : "Zdjęcia, których jesteś właścicielem:"}</h3>
           <PhotoContainer>
             {albumImages !== undefined && albumImages.length !== 0 ? (
               albumImages.map((photo) => (

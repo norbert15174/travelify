@@ -5,9 +5,9 @@ import Input from "../trinkets/Input";
 import PinMemberThumbnail from "./PinMemberThumbnail";
 import axios from "axios";
 import "./styles/photosScrollbar.css";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { endpoints } from "../../url";
-import { selectMembers } from "../../redux/groupDetailsSlice";
+import { setMembers } from "../../redux/groupAlbumSlice";
 
 const PinBox = ({ setClose, heightDelimiter, photoId }) => {
   // search field content
@@ -15,15 +15,37 @@ const PinBox = ({ setClose, heightDelimiter, photoId }) => {
   const [found, setFound] = useState([]);
 
   const ref = useRef(null);
-
-  const membersList = useSelector(selectMembers);
+  const dispatch = useDispatch();
 
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    setList(membersList);
+    getMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function getMembers() {
+    await axios({
+      method: "get",
+      url: endpoints.getGroupDetails + 46,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        dispatch(setMembers(data.members));
+        setList(
+          data.members.filter(
+            (item) =>
+              item.id.toString() !== sessionStorage.getItem("loggedUserId")
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   const handleSearchBarChange = (e) => {
     setFound(

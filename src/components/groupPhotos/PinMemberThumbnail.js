@@ -1,24 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectAlbumType,
-  selectPhotoTags,
-  setPhotoTags,
-} from "../../redux/albumDetailsSlice";
+import { selectPhotoTags, setPhotoTags } from "../../redux/groupAlbumSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
 import axios from "axios";
-import { albumTypes } from "../../miscellanous/Utils";
 
 const PinMemberThumbnail = ({ friend, photoId }) => {
   const tags = useSelector(selectPhotoTags);
   const dispatch = useDispatch();
 
   const [updating, setUpdating] = useState(false);
-  const albumType = useSelector(selectAlbumType);
-  const friendId = albumType === albumTypes.private ? friend.userId : friend.id;
+  const friendId = friend.id;
   const [alreadyChosen, setAlreadyChosen] = useState(
     tags.find((item) => (item.userId === friendId ? true : false))
   );
@@ -30,7 +24,7 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
     setUpdating(true);
     await axios({
       method: "put",
-      url: endpoints.tagPersonOnPhoto + photoId,
+      url: endpoints.tagPersonOnGroupPhoto.replace(/:groupPhotoId/i, photoId),
       data: [friendId],
       headers: {
         "Access-Control-Allow-Headers": "*",
@@ -42,7 +36,8 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
       },
     })
       .then(({ data }) => {
-        dispatch(setPhotoTags(data));
+        console.log(data);
+        dispatch(setPhotoTags(data.taggedList));
         setAlreadyChosen(true);
         setButtonText("Oznaczony");
       })
@@ -55,11 +50,12 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
   }
 
   async function deleteTag() {
-    const tagToDelete = tags.find((item) => item.userId === friendId).taggedId;
+    const tagToDelete = tags.find((item) => item.userId === friendId).userId;
+    console.log(tagToDelete)
     setUpdating(true);
     await axios({
-      method: "delete",
-      url: endpoints.deleteTag + photoId,
+      method: "put",
+      url: endpoints.untagPersonOnGroupPhoto.replace(/:groupPhotoId/i, photoId),
       data: [tagToDelete],
       headers: {
         "Access-Control-Allow-Headers": "*",
@@ -70,9 +66,8 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
         withCredentials: true,
       },
     })
-      .then((response) => {
-        console.log(response);
-        dispatch(setPhotoTags(response.data));
+      .then(({data}) => {
+        dispatch(setPhotoTags(data.taggedList));
         setAlreadyChosen(false);
         setButtonText("Wybierz");
       })

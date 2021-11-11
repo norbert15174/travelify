@@ -4,11 +4,13 @@ const initialState = {
   mainPhoto: null,
   rights: "",
   albumPhotos: [],
+  albumOwner: null,
   basicInfo: {
     name: "",
     description: "",
   },
   coordinate: null,
+  members: [],
 };
 
 export const groupAlbumCreatorSlice = createSlice({
@@ -17,6 +19,9 @@ export const groupAlbumCreatorSlice = createSlice({
   reducers: {
     setRights: (state, action) => {
       state.rights = action.payload;
+    },
+    setAlbumOwner: (state, action) => {
+      state.albumOwner = action.payload;
     },
     setAlbumPhotosRedux: (state, action) => {
       state.albumPhotos = action.payload;
@@ -37,8 +42,14 @@ export const groupAlbumCreatorSlice = createSlice({
         place: action.payload.place,
       };
     },
+    setMembers: (state, action) => {
+      state.members = action.payload;
+    },
     clearStore: (state) => {
       state.albumPhotos = [];
+      state.members = [];
+      state.albumOwner = null;
+      state.rights = "";
       state.mainPhoto = null;
       state.basicInfo = {
         name: "",
@@ -55,16 +66,23 @@ export const {
   setCoordinate,
   setBasicInfo,
   setRights,
+  setAlbumOwner,
   setMainPhotoRedux,
+  setMembers,
   clearStore,
 } = groupAlbumCreatorSlice.actions;
 
 // exporting selects
 export const selectRights = (state) => state.groupAlbumCreator.rights;
-export const selectAlbumPhotosRedux = (state) => state.groupAlbumCreator.albumPhotos;
-export const selectMainPhotoRedux = (state) => state.groupAlbumCreator.mainPhoto;
+export const selectAlbumPhotosRedux = (state) =>
+  state.groupAlbumCreator.albumPhotos;
+export const selectAlbumOwner = (state) => state.groupAlbumCreator.albumOwner;
+export const selectMainPhotoRedux = (state) =>
+  state.groupAlbumCreator.mainPhoto;
 export const selectBasicInfo = (state) => state.groupAlbumCreator.basicInfo;
-export const selectAlbumName = (state) => state.groupAlbumCreator.basicInfo.name;
+export const selectAlbumName = (state) =>
+  state.groupAlbumCreator.basicInfo.name;
 export const selectCoordinate = (state) => state.groupAlbumCreator.coordinate;
+export const selectMembers = (state) => state.groupAlbumCreator.members;
 
 export default groupAlbumCreatorSlice.reducer;

@@ -18,7 +18,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
 import Tooltip from "../trinkets/Tooltip";
 import {
-  selectOwner,
   selectAlbumPhotos,
   selectRights,
   selectPhotoTags,
@@ -35,10 +34,10 @@ const SideSection = ({
   heightDelimiter,
   widthDelimiter,
 }) => {
-  const owner = useSelector(selectOwner);
   const photos = useSelector(selectAlbumPhotos);
   const rights = useSelector(selectRights);
   const currentPhotoDetail = photos[currentPhotoIndex].photo;
+  const photoOwner = photos[currentPhotoIndex].photo.owner;
   const photoId = photos[currentPhotoIndex].photo.photoId;
   const reduxTags = useSelector(selectPhotoTags); // tags from whole album
   const dispatch = useDispatch();
@@ -60,9 +59,6 @@ const SideSection = ({
 
   useEffect(() => {
     if (!pinBox) {
-      /*
-        in photo details check who is the owner of the photo
-      */
       getPhotoDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,20 +68,21 @@ const SideSection = ({
     setLoading(true);
     await axios({
       method: "get",
-      url: endpoints.getPhoto + photoId,
+      url: endpoints.getGroupPhotoDetails + photoId,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
+        console.log(data);
         setTags(data.taggedList);
         dispatch(setPhotoTags(data.taggedList));
-        let temp = sortCommentsByTime(data.photoComments);
-        setComments(temp);
+        setComments(sortCommentsByTime(data.photoComments));
         setDescription(data.description);
       })
       .catch((error) => {
+        console.error(error);
         setTags(reduxTags.find((item) => item.photoId === photoId).tags);
         dispatch(
           setPhotoTags(reduxTags.find((item) => item.photoId === photoId).tags)
@@ -116,13 +113,13 @@ const SideSection = ({
         ? 1
         : 0;
     });
-    return input;
+    return input.splice(0).reverse();
   };
 
   async function sendComment(comment) {
     await axios({
-      method: "put",
-      url: endpoints.addComment + photoId,
+      method: "POST",
+      url: endpoints.addGroupPhotoComment.replace(/:groupPhotoId/, photoId),
       data: {
         text: comment,
       },
@@ -132,21 +129,20 @@ const SideSection = ({
       },
     })
       .then(({ data }) => {
-        let temp = sortCommentsByTime(data);
-        setComments(temp);
+        setComments(sortCommentsByTime(data));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 
   async function updatePhotoDescription() {
     await axios({
       method: "put",
-      url: endpoints.updatePhotoDescription + photoId,
-      data: {
-        description: description,
-      },
+      url:
+        endpoints.updateGroupPhotoDescription +
+        photoId +
+        `/?description=${description}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
@@ -154,6 +150,7 @@ const SideSection = ({
     })
       .then((response) => {})
       .catch((error) => {
+        console.error(error);
         setDescription(currentPhotoDetail.description);
       })
       .finally(() => {
@@ -185,7 +182,9 @@ const SideSection = ({
       heightDelimiter={heightDelimiter}
       widthDelimiter={widthDelimiter}
     >
-      {rights === groupMember.owner && (
+      {(rights === groupMember.owner ||
+        photoOwner.id.toString() ===
+          sessionStorage.getItem("loggedUserId")) && (
         <EditDescriptionButton
           icon={!editing ? editPencilIcon : acceptIcon}
           onClick={() => {
@@ -202,44 +201,65 @@ const SideSection = ({
           icon={close2Icon}
           onClick={() => {
             setEditing(false);
-            setDescription(currentPhotoDetail.description);
+            getPhotoDetails();
           }}
         />
       )}
       <Header>
         <Heading>
           <OwnerPhoto
-            src={owner.photo !== undefined ? owner.photo : noProfilePictureIcon}
+            src={
+              photoOwner.photo !== undefined
+                ? photoOwner.photo
+                : noProfilePictureIcon
+            }
             onError={(e) => {
               e.target.onError = null;
               e.target.src = noProfilePictureIcon;
             }}
             onClick={() => {
               document.body.style.overflow = "";
-              setRedirectToProfile({ active: true, userId: owner.id });
+              setRedirectToProfile({ active: true, userId: photoOwner.id });
             }}
           />
           {!editing ? (
-            <span>
-              <p
-                onClick={() => {
-                  document.body.style.overflow = "";
-                  setRedirectToProfile({ active: true, userId: owner.id });
-                }}
-              >
-                {owner.name + " " + owner.surName}
-              </p>
-              {!loading ? (
-                description
-              ) : (
-                <ReactLoading
-                  height={"8%"}
-                  width={"8%"}
-                  type={"bubbles"}
-                  color={"#064045"}
+            <>
+              <span>
+                <PhotoDescription
+                  onClick={() => {
+                    document.body.style.overflow = "";
+                    setRedirectToProfile({
+                      active: true,
+                      userId: photoOwner.id,
+                    });
+                  }}
+                >
+                  {photoOwner.name + " " + photoOwner.surName}
+                </PhotoDescription>
+                {!loading ? (
+                  <PhotoDescription type="description">
+                    {description}
+                  </PhotoDescription>
+                ) : (
+                  <ReactLoading
+                    height={"8%"}
+                    width={"8%"}
+                    type={"bubbles"}
+                    color={"#064045"}
+                  />
+                )}
+                <PhotoDate data-tip data-for={"photoDate"}>
+                  {moment(currentPhotoDetail.dateTime).fromNow()}
+                </PhotoDate>
+                <Tooltip
+                  id={"photoDate"}
+                  place="left"
+                  text={moment(currentPhotoDetail.dateTime).format(
+                    "H:mm, MMMM Do YYYY"
+                  )}
                 />
-              )}
-            </span>
+              </span>
+            </>
           ) : (
             <AddDescription
               className="scroll_two"
@@ -362,7 +382,9 @@ const SideSection = ({
         )}
       </CommentsSection>
       <Footer>
-        {rights === groupMember.owner && (
+        {(rights === groupMember.owner ||
+          photoOwner.id.toString() ===
+            sessionStorage.getItem("loggedUserId")) && (
           <TagButton icon={tagWhiteIcon} onClick={() => setPinBox(true)}>
             Oznacz osobę
           </TagButton>
@@ -416,7 +438,6 @@ const Heading = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  font-size: 18px;
   color: ${({ theme }) => theme.color.greyFont};
   padding: 0px 40px 5px 0px;
   span {
@@ -425,19 +446,31 @@ const Heading = styled.div`
     width: 90%;
     white-space: normal;
   }
-  p {
-    color: #000;
-    margin-right: 5px;
-    display: inline-block;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: ${({ theme }) => theme.fontWeight.bold};
-  }
+`;
+
+const PhotoDescription = styled.p`
+  color: #000;
+  margin-right: 5px;
+  font-size: 18px;
+  display: inline-block;
+  cursor: ${({ type }) => (type === "description" ? "default" : "pointer")}};
+  text-decoration: none;
+  font-weight: ${({ theme, type }) =>
+    type === "description" ? theme.fontWeight.medium : theme.fontWeight.bold};
   @media only screen and (max-width: 1225px) {
     font-size: 14px;
   }
   @media only screen and (max-width: 1025px) {
     font-size: 10px;
+  }
+`;
+
+const PhotoDate = styled.p`
+  color: ${({ theme }) => theme.color.greyFont};
+  margin-top: 10px;
+  font-size: 12px;
+  @media only screen and (max-width: 1225px) {
+    font-size: 8px;
   }
 `;
 

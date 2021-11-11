@@ -97,6 +97,7 @@ const MembersSection = ({ setMemberToRemove, groupId }) => {
           />
           <Tooltip id="members" place="bottom" text="Aktualni członkowie" />
           <Toggle
+            key="membersSection"
             value={type}
             setValue={setType}
             first={toggle.members}
