@@ -4,7 +4,7 @@ import { Link, Redirect, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "../trinkets/Tooltip";
 import UserProfilePicture from "./UserProfilePicture";
-import Chats from "../messenger/Chats";
+import Chats from "../messenger/ChatMenu";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import expandIcon from "./assets/expandIcon.svg";
 import notifs from "./assets/notifs.svg";

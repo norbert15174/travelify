@@ -2,23 +2,22 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setGroupName,
-  setGroupDescription,
+  setBasicInfo,
   selectGroupName,
-  selectGroupDescription,
+  selectDescription,
 } from "../../redux/groupCreatorSlice";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
 import StatusMessage from "../trinkets/StatusMessage";
-/* import { endpoints } from "../../url";
-import axios from "axios"; */
+import { endpoints } from "../../url";
+import axios from "axios";
 import { groupCreator } from "../../miscellanous/Utils";
 
 const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
   const dispatch = useDispatch();
-  const reduxName = useSelector(selectGroupName);
-  const reduxDescription = useSelector(selectGroupDescription);
+  const currentName = useSelector(selectGroupName);
+  const currentDescription = useSelector(selectDescription);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -39,8 +38,8 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
         setName("");
         setDescription("");
       } else if (creatorType === groupCreator.edition) {
-        setName(reduxName);
-        setDescription(reduxDescription);
+        setName(currentName);
+        setDescription(currentDescription);
       }
       setFirstRun(false);
     }
@@ -61,25 +60,27 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
   const formHandler = () => {
     setInfoError("");
     setSubmitMessage("");
-    if (name.length < 5) {
+    setSubmitError("");
+    console.log(name);
+    if (name.length < 5 || !name.trim()) {
       setInfoError("Nazwa grupy powinna składać się z minimum 5 znaków!");
       return;
     }
-    if (description.length === 0) {
+    if (description.length === 0 || !description.trim()) {
       setInfoError("Opis grupy jest wymagany!");
       return;
     }
     if (creatorType === groupCreator.creation) {
       setForm({
-        name: name,
-        description: description,
+        name: name.trim(),
+        description: description.trim(),
       });
       setSubmitMessage("Informacje zostały dodane do formularza.");
       setFormSubmitted(true);
     } else if (creatorType === groupCreator.edition) {
       setSubmitMessage("Zapisywanie...");
-      if (name !== reduxName || description !== reduxDescription) {
-        /* editBasicInfo(isPublic); */
+      if (name !== currentName || description !== currentDescription) {
+        editBasicInfo();
       } else {
         setInfoEditFinished(true);
       }
@@ -91,8 +92,8 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
       setName("");
       setDescription("");
     } else if (creatorType === groupCreator.edition) {
-      setName(reduxName);
-      setDescription(reduxDescription);
+      setName(currentName);
+      setDescription(currentDescription);
     }
     setInfoError("");
     setSubmitError("");
@@ -103,40 +104,44 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
     setIsDirty(false);
   };
 
-  /* async function editBasicInfo(isPublic) {
+  async function editBasicInfo() {
+    setInfoEditFinished(false);
     await axios({
-        method: "put",
-        url: endpoints.editAlbum + editedAlbumId,
-        data: {
-            name: name,
-            description: description,
-            public: isPublic,
-        },
-        headers: {
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*",
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
-            withCredentials: true,
-        },
+      method: "put",
+      url: endpoints.editGroup,
+      data: {
+        id: editedGroupId,
+        groupName: name.trim(),
+        description: description.trim(),
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
     })
-    .then((response) => {               
+      .then((response) => {
         console.log(response);
-        dispatch(setBasicInfo({
-            name: name,
+        dispatch(
+          setBasicInfo({
+            groupName: name,
             description: description,
-            public: isPublic,
-        })); 
-    })
-    .catch((error) => {
-        console.log(error);
+          })
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        setName(currentName);
+        setDescription(currentDescription);
         setError(true);
-    })
-    .finally(() => {
+      })
+      .finally(() => {
         setInfoEditFinished(true);
-    });
-}; */
+      });
+  }
 
   return (
     <>
@@ -176,7 +181,7 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
               if (!isDirty) setIsDirty(true);
             }}
             placeholder="Dodaj opis grupy..."
-            maxLength={500}
+            maxLength={600}
           />
         </Label>
       </Container>
@@ -321,7 +326,6 @@ const NameInfo = styled(StatusMessage)`
   }
   @media only screen and (max-width: 400px) {
     margin-left: 55%;
-    position: fixed;
   }
 `;
 

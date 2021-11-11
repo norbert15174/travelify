@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
-import { setMembers, selectMembers } from "../../redux/groupCreatorSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
@@ -10,111 +8,55 @@ import SelectFriends from "../trinkets/Select";
 import closeIcon from "./assets/closeIcon.svg";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import StatusMessage from "../trinkets/StatusMessage";
-/* import { endpoints } from "../../url";
-import axios from "axios"; */
-import { groupCreator } from "../../miscellanous/Utils";
+import { endpoints } from "../../url";
+import axios from "axios";
 
-const Members = ({ creatorType, editedGroupId, friendsList, setForm }) => {
-  const dispatch = useDispatch();
-  const reduxMembers = useSelector(selectMembers);
-
+const Members = ({ friendsList, setForm, form }) => {
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [newMembers, setNewMembers] = useState([]);
   const [friendsError, setFriendsError] = useState("");
 
-  const [firstRun, setFirstRun] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [error, setError] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const [memberDeleteFinished, setMemberDeleteFinished] = useState(false);
-  const [membersToDelete, setMembersToDelete] = useState([]); // share id's
-  const [memberAddFinished, setMemberAddFinished] = useState(false);
-  const [membersToAdd, setMembersToAdd] = useState([]); // user id's
-
   useEffect(() => {
-    if (firstRun) {
-      if (creatorType === groupCreator.creation) {
-        setNewMembers([]);
-      } else if (creatorType === groupCreator.edition) {
-        setNewMembers(reduxMembers);
-      }
-      setFirstRun(false);
-    }
-    if (
-      creatorType === groupCreator.edition &&
-      memberAddFinished &&
-      memberDeleteFinished
-    ) {
-      if (error) {
-        setSubmitMessage("");
-        setSubmitError("Coś poszło nie tak... spróbuj ponownie");
-        setError(false);
-      } else {
-        setSubmitMessage("Zmiany zostały zapisane");
-        dispatch(setMembers(newMembers));
-        setMemberAddFinished(false);
-        setMemberDeleteFinished(false);
-        setIsDirty(false);
-      }
-    }
+    setNewMembers([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [memberAddFinished, memberDeleteFinished]);
+  }, []);
 
   const formHandler = () => {
     setFriendsError("");
     setSubmitMessage("");
     setSubmitError("");
-    if (creatorType === groupCreator.creation) {
-      setForm(newMembers);
-      setSubmitMessage("Informacje zostały dodane do formularza.");
-      setFormSubmitted(true);
-      setIsDirty(false);
-    } else if (creatorType === groupCreator.edition) {
-      setSubmitMessage("Zapisywanie...");
-      if (membersToDelete.length !== 0) {
-        // we post if there was a change
-      } else {
-        // no change
-        setMemberDeleteFinished(true);
-      }
-      if (membersToAdd.length !== 0) {
-        //
-      } else {
-        setMemberAddFinished(true);
-      }
-    }
+    setForm(newMembers);
+    setSubmitMessage("Informacje zostały dodane do formularza.");
+    setFormSubmitted(true);
+    setIsDirty(false);
   };
 
   const clearForm = () => {
-    if (creatorType === groupCreator.creation) {
-      setNewMembers([]);
-      setForm([]);
-    } else if (creatorType === groupCreator.edition) {
-      setNewMembers(reduxMembers);
-    }
+    setNewMembers(form);
+    setForm(form);
     setFriendsError("");
     setSubmitError("");
     setSubmitMessage("");
     setFormSubmitted(false);
     setError(false);
-    setMembersToDelete([]);
-    setMembersToAdd([]);
-    setIsDirty(false);
+    setIsDirty(false);    
   };
 
   const addFriend = () => {
     selectedFriends.map((selectedFriend) => {
       setFriendsError("");
-      // for friends we should be checking id's
       if (
         Array.from(newMembers).find(
-          (element) => element.name === selectedFriend.value
+          (element) => element.id === selectedFriend.id
         )
       ) {
-        setFriendsError("Jedna z osób została już przez ciebie dodana!");
+        setFriendsError("Jedna z osób została już przez ciebie wybrana!");
         return null;
       }
       setNewMembers((prevState) => [
@@ -125,16 +67,11 @@ const Members = ({ creatorType, editedGroupId, friendsList, setForm }) => {
           id: selectedFriend.id,
         },
       ]);
-      setMembersToAdd((prevState) => [...prevState, selectedFriend.id]);
       return "";
     });
-    if (creatorType === groupCreator.creation && formSubmitted) {
+    if (formSubmitted) {
       setSubmitMessage("");
       setFormSubmitted(false);
-    }
-    if (creatorType === groupCreator.edition) {
-      setSubmitError("");
-      setSubmitMessage("");
     }
     setIsDirty(true);
     setSelectedFriends([]);
@@ -144,26 +81,25 @@ const Members = ({ creatorType, editedGroupId, friendsList, setForm }) => {
     setNewMembers(() =>
       newMembers.filter((item) => item.id !== friendToDelete)
     );
-    if (creatorType === groupCreator.creation && formSubmitted) {
+    if (formSubmitted) {
       setSubmitMessage("");
       setFormSubmitted(false);
     }
     if (friendsError) {
       setFriendsError("");
     }
-    if (creatorType === groupCreator.edition) {
-      setMembersToDelete((prevState) => [...prevState, friendToDelete]);
-      setSubmitError("");
-      setSubmitMessage("");
-    }
     setIsDirty(true);
   };
+
+  useEffect(() => {
+    console.log(newMembers.length)
+  }, [newMembers])
 
   return (
     <>
       <Container>
         <Label>
-          Wybierz nowego członka grupy
+          Wybierz znajomych, których chcesz zaprosić do grupy:
           <SelectContainer>
             <SelectFriends
               type="friends"
@@ -178,34 +114,39 @@ const Members = ({ creatorType, editedGroupId, friendsList, setForm }) => {
             )}
           </SelectContainer>
         </Label>
-        <MembersSection>
-          <p>Wybrane osoby:</p>
-          <AddedMembers>
-            {newMembers.length !== 0 ? (
-              newMembers.map((friend) => (
-                <Friend key={friend.id}>
-                  <ProfilePicture
-                    src={
-                      friend.icon !== undefined
-                        ? friend.icon
-                        : noProfilePictureIcon
-                    }
-                    alt="Profile picture"
-                  />
-                  {friend.name || friend.label}
-                  <DeleteIcon
-                    onClick={() => deleteFriend(friend.id)}
-                    src={closeIcon}
-                  />
-                </Friend>
-              ))
-            ) : (
-              <Placeholder>
-                Wybierz znajomego, by dodać go do grupy:
-              </Placeholder>
-            )}
-          </AddedMembers>
-        </MembersSection>
+        {newMembers.length > 0 && (
+          <MembersSection>
+            <p>Wybrane osoby:</p>
+            <AddedMembers>
+              {newMembers.map((friend) => {
+                if (
+                  friend.id.toString() !==
+                  sessionStorage.getItem("loggedUserId")
+                ) {
+                  return (
+                    <Friend key={friend.id}>
+                      <ProfilePicture
+                        src={
+                          friend.icon !== undefined
+                            ? friend.icon
+                            : noProfilePictureIcon
+                        }
+                        alt="Profile picture"
+                      />
+                      {friend.name || friend.label}
+                      <DeleteIcon
+                        onClick={() => deleteFriend(friend.id)}
+                        src={closeIcon}
+                      />
+                    </Friend>
+                  );
+                } else {
+                  return null;
+                }
+              })}
+            </AddedMembers>
+          </MembersSection>
+        )}
       </Container>
       <Buttons>
         {submitMessage !== "" && <SubmitMessage>{submitMessage}</SubmitMessage>}
@@ -217,7 +158,7 @@ const Members = ({ creatorType, editedGroupId, friendsList, setForm }) => {
           onClick={formHandler}
           disabled={!isDirty || formSubmitted ? true : false}
         >
-          {creatorType === groupCreator.creation ? "Dodaj" : "Zapisz"}
+          Dodaj
         </Submit>
         <Cancel
           onClick={clearForm}
@@ -234,7 +175,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin: 20px 0px 0px 77px;
-  min-height: 200px;
+  min-height: 180px;
   @media only screen and (max-width: 1220px) {
     margin: 20px 0px 0px 65px;
   }
@@ -350,17 +291,6 @@ const DeleteIcon = styled.img`
   @media only screen and (max-width: 560px) {
     width: 5px;
     height: 5px;
-  }
-`;
-
-const Placeholder = styled.p`
-  font-size: 12px;
-  opacity: 0.8;
-  @media only screen and (max-width: 870px) {
-    font-size: 10px;
-  }
-  @media only screen and (max-width: 560px) {
-    font-size: 8px;
   }
 `;
 

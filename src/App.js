@@ -19,33 +19,53 @@ import ErrorBoundary from "./templates/ErrorBoundary";
 import AlbumNotLogged from "./views/AlbumNotLogged";
 import GroupCreator from "./views/GroupCreator";
 import GroupDetails from "./views/GroupDetails";
+import GroupAlbumDetails from "./views/GroupAlbumDetails";
+import GroupAlbumCreator from "./views/GroupAlbumCreator";
 
 function App() {
-	return (
-    	<ThemeProvider theme={theme}>
-			<BrowserRouter>
-				<ErrorBoundary>
-					<Switch>
-						<Route exact path={routes.startPage} component={StartPage}/>
-						<Route exact path={routes.auth} component={Auth}/>
-						<Route exact path={routes.loginTransition} component={LoginTransition}/>   
-						<Route exact path={routes.news} component={News}/>
-						<Route exact path={routes.user} component={User}/>
-						<Route exact path={routes.editProfile} component={EditProfile}/>
-						<Route exact path={routes.search} component={Search}/>
-						<Route exact path={routes.albums} component={Albums}/>
-						<Route exact path={routes.album} component={AlbumDetails}/>
-						<Route exact path={routes.albumCreator} component={AlbumCreator}/>
-						<Route exact path={routes.groups} component={Groups}/>
-						<Route exact path={routes.groupCreator} component={GroupCreator}/>
-						<Route exact path={routes.group} component={GroupDetails}/>
-						<Route exact path={routes.albumNotLogged} component={AlbumNotLogged}/>
-						<Route path="*" component={ErrorPage}/>
-					</Switch>
-				</ErrorBoundary>
-			</BrowserRouter>
-    	</ThemeProvider>
-  	);
+  return (
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <ErrorBoundary>
+          <Switch>
+            <Route exact path={routes.startPage} component={StartPage} />
+            <Route exact path={routes.auth} component={Auth} />
+            <Route
+              exact
+              path={routes.loginTransition}
+              component={LoginTransition}
+            />
+            <Route exact path={routes.news} component={News} />
+            <Route exact path={routes.user} component={User} />
+            <Route exact path={routes.editProfile} component={EditProfile} />
+            <Route exact path={routes.search} component={Search} />
+            <Route exact path={routes.albums} component={Albums} />
+            <Route exact path={routes.album} component={AlbumDetails} />
+            <Route exact path={routes.albumCreator} component={AlbumCreator} />
+            <Route exact path={routes.groups} component={Groups} />
+            <Route exact path={routes.groupCreator} component={GroupCreator} />
+            <Route exact path={routes.group} component={GroupDetails} />
+            <Route
+              exact
+              path={routes.albumNotLogged}
+              component={AlbumNotLogged}
+            />
+            <Route
+              exact
+              path={routes.groupAlbum}
+              component={GroupAlbumDetails}
+            />
+            <Route
+              exact
+              path={routes.groupAlbumCreator}
+              component={GroupAlbumCreator}
+            />
+            <Route path="*" component={ErrorPage} />
+          </Switch>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }
 
 export default App;

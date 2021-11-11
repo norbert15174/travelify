@@ -1,61 +1,56 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
-import { setFriendsList } from "../../redux/userDataSlice";
 
 const notificationsMaleVersion = {
-  PHOTO_TAG: " oznaczył cię na zdjęciu",
-  FRIEND_REQUEST: " wysłał ci zaproszenie do znajomych",
-  COMMENT: " skomentował twoje zdjęcie",
-  ALBUM_SHARE: " udostępnił Ci swój album",
+  GROUP_REQUEST: " zaprosił cię do grupy: ",
+  PHOTO_COMMENT: " skomentował zdjęcie z grupy: ",
+  PHOTO_MARKED: " oznaczył cię na zdjęciu z grupy: ",
+  NEW_ALBUM: " dodał nowy album w grupie: ",
+  DELETE_ALBUM: " usunął album z grupy: ",
+  REMOVE_USER: " usunął cię z grupy: ",
+  CHANGE_GROUP_OWNER: " mianował cię właścicielem grupy: ",
+  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu: ",
 };
 
 const notificationsFemaleVersion = {
-  PHOTO_TAG: " oznaczyła cię na zdjęciu",
-  FRIEND_REQUEST: " wysłała ci zaproszenie do znajomych",
-  COMMENT: " skomentowała twoje zdjęcie",
-  ALBUM_SHARE: " udostępniła Ci swój album",
+  GROUP_REQUEST: " zaprosił cię do grupy: ",
+  PHOTO_COMMENT: " skomentowała zdjęcie z grupy: ",
+  PHOTO_MARKED: " oznaczyła cię na zdjęciu z grupy: ",
+  NEW_ALBUM: " dodała nowy album w grupie: ",
+  DELETE_ALBUM: " usunęła album z grupy: ",
+  REMOVE_USER: " usunęła cię z grupy: ",
+  CHANGE_GROUP_OWNER: " mianowała cię właścicielką grupy: ",
+  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu: ",
 };
 
-const NotificationsItem = ({
-  status,
-  senderId,
-  notificationsDisplay,
-  name,
-  surName,
-  profilePicture = undefined,
-  invitationId = null,
-  photoId = null,
-  albumId = null,
-  date,
-}) => {
+const GroupItem = ({ notification, date, notificationsDisplay }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
-  const dispatch = useDispatch();
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .
   const notifier =
-    name.replace(/ /g, "").substring(name.length - 1) === "a"
+    notification.actionUser.name
+      .replace(/ /g, "")
+      .substring(notification.actionUser.name.length - 1) === "a"
       ? notificationsFemaleVersion
       : notificationsMaleVersion;
 
-  async function invitationHandler(action) {
+  async function groupInvitationHandler(action) {
     await axios({
       method: action === "accept" ? "put" : "delete",
-      url: endpoints.invitationHandler + invitationId,
+      url: endpoints.groupInvitationHandler + notification.groupRequestId,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
-        dispatch(setFriendsList(data));
         if (action === "accept") {
           setAccepted(true);
           setNotClicked(false);
@@ -69,25 +64,24 @@ const NotificationsItem = ({
       });
   }
 
-  // redirection to chosen album
   if (redirectToAlbum) {
     notificationsDisplay("");
-    return (
+    /* return (
       <Redirect
         push
         to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
       />
-    );
-  }
+    ); */
+  } 
 
   return (
     <Container>
       <InnerContainer
         onClick={() => {
           if (
-            status === "ALBUM_SHARE" ||
-            status === "PHOTO_TAG" ||
-            status === "COMMENT"
+            notification.type === "PHOTO_COMMENT" ||
+            notification.type === "PHOTO_MARKED" ||
+            notification.type === "NEW_ALBUM"
           ) {
             setRedirectToAlbum(true);
           }
@@ -95,44 +89,50 @@ const NotificationsItem = ({
       >
         <UserPhoto
           src={
-            profilePicture !== undefined ? profilePicture : noProfilePictureIcon
+            notification.actionUser.photo !== undefined
+              ? notification.actionUser.photo
+              : noProfilePictureIcon
           }
-          alt="Profile picture"
+          alt="Picture"
           onError={(e) => {
             e.target.onError = null;
             e.target.src = noProfilePictureIcon;
           }}
         />
-        <TextContainer>
+        <TextContainer notSeen={notification.status === "NEW" ? true : false}>
           <span>
             <p>
-              {name} {surName}
+              {notification.actionUser.name} {notification.actionUser.surName}
             </p>
-            {notifier[status]}
+            {notifier[notification.type]}
+            <p>{notification.groupName}</p>
           </span>
           <Date>{date}</Date>
         </TextContainer>
       </InnerContainer>
-      {status === "FRIEND_REQUEST" && notClicked && (
-        <Buttons>
-          <AcceptButton
-            id="accept-button"
-            onClick={() => invitationHandler("accept")}
-          >
-            Zaakceptuj
-          </AcceptButton>
-          <DeclineButton
-            id="decline-button"
-            onClick={() => invitationHandler("decline")}
-          >
-            Odrzuć
-          </DeclineButton>
-        </Buttons>
-      )}
-      {status === "FRIEND_REQUEST" && !notClicked && accepted ? (
+      {notification.type === "GROUP_REQUEST" &&
+        notClicked &&
+        (notification.status === "NEW" || notification.status === "SEEN") && (
+          <Buttons>
+            <AcceptButton
+              id="accept-button"
+              onClick={() => groupInvitationHandler("accept")}
+            >
+              Zaakceptuj
+            </AcceptButton>
+            <DeclineButton
+              id="decline-button"
+              onClick={() => groupInvitationHandler("decline")}
+            >
+              Odrzuć
+            </DeclineButton>
+          </Buttons>
+        )}
+      {(notification.type === "GROUP_REQUEST" && !notClicked && accepted) ||
+      notification.status === "ACCEPTED" ? (
         <Status>Zaproszenie zostało zaakceptowane</Status>
       ) : null}
-      {status === "FRIEND_REQUEST" && !notClicked && !accepted ? (
+      {notification.type === "GROUP_REQUEST" && !notClicked && !accepted ? (
         <Status>Zaproszenie zostało odrzucone</Status>
       ) : null}
     </Container>
@@ -142,6 +142,7 @@ const NotificationsItem = ({
 const Container = styled.div`
   margin: 0px 5px 15px 0px;
   font-size: 20px;
+  cursor: pointer;
   span {
     display: inline-block;
     word-wrap: break-word;
@@ -170,6 +171,8 @@ const Container = styled.div`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+  font-weight: ${({ notSeen, theme }) =>
+    notSeen ? theme.fontWeight.bold : ""};
 `;
 
 const Date = styled.p`
@@ -263,4 +266,4 @@ const UserPhoto = styled.img`
   }
 `;
 
-export default NotificationsItem;
+export default GroupItem;

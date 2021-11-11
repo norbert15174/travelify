@@ -58,8 +58,7 @@ const GroupPhoto = ({ editedGroupId }) => {
   };
 
   const formHandler = () => {
-    /* addAlbumMainPhoto(); */
-    console.log("form submitted");
+    addAlbumMainPhoto();
     setIsDirty(false);
   };
 
@@ -79,20 +78,19 @@ const GroupPhoto = ({ editedGroupId }) => {
     data.append("file", mainImage);
     setSubmitMessage("Dodawanie zdjęcia...");
     await axios
-      .post(endpoints.setAlbumMainPhoto + editedGroupId, data, {
+      .post(endpoints.setGroupPicture + editedGroupId, data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
         },
       })
-      .then((response) => {
-        console.log(response);
+      .then(({ data }) => {
         setSubmitMessage("Zmiany zostały zapisane!");
-        setMainImage(response.data.mainPhoto);
-        dispatch(setGroupPicture(response.data.mainPhoto));
+        setMainImage(data.mainPhoto);
+        dispatch(setGroupPicture(data.mainPhoto));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
@@ -209,7 +207,7 @@ const SingleImage = styled.img`
   width: 250px;
   height: 250px;
   object-fit: cover;
-  border: 2px solid ${({theme}) => theme.color.light};
+  border: 2px solid ${({ theme }) => theme.color.light};
   @media only screen and (max-width: 870px) {
     width: 175px;
     height: 175px;

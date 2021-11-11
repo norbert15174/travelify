@@ -11,9 +11,6 @@ import "./groupsScrollbar.css";
 import addGroupIcon from "./assets/addGroupIcon.svg";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 
-
-
-
 const GroupsPage = ({ groups }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [searchList, setSearchList] = useState(null);
@@ -101,13 +98,25 @@ const GroupsPage = ({ groups }) => {
       <Groups>
         <Header>
           <GridHeader>Twoje grupy</GridHeader>
-          <AddButton onClick={() => setRedirectToCreator(true)}>Stwórz grupę</AddButton>
+          <AddButton onClick={() => setRedirectToCreator(true)}>
+            Stwórz grupę
+          </AddButton>
         </Header>
         <GridLine />
         <Grid className="scroll">
-          {groups.map((item) => (
-            <GroupThumbnail key={item.id} group={item} redirectToGroup={() => setRedirectToGroup({active: true, groupId: item.id})}/>
-          ))}
+          {groups.length > 0 ? (
+            groups.map((item) => (
+              <GroupThumbnail
+                key={item.id}
+                group={item}
+                redirectToGroup={() =>
+                  setRedirectToGroup({ active: true, groupId: item.id })
+                }
+              />
+            ))
+          ) : (
+            <NoGroups>Brak grup...</NoGroups>
+          )}
         </Grid>
       </Groups>
     </Container>
@@ -223,6 +232,17 @@ const Grid = styled.div`
   @media only screen and (max-width: 510px) {
     grid-gap: 15px;
     margin-top: 10px;
+  }
+`;
+
+const NoGroups = styled.h1`
+  font-size: 24px;
+  color: ${({ theme }) => theme.color.greyFont};
+  @media only screen and (max-width: 825px) {
+    font-size: 18px;
+  }
+  @media only screen and (max-width: 510px) {
+    font-size: 12px;
   }
 `;
 

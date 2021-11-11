@@ -3,7 +3,7 @@ import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 
-const MarkerInfo = ({ details }) => {
+const MarkerInfo = ({ details, type }) => {
   const [redirectToAlbum, setRedirectToAlbum] = useState({
     active: false,
     albumId: "",
@@ -15,7 +15,12 @@ const MarkerInfo = ({ details }) => {
       <Redirect
         push
         to={{
-          pathname: `/albumPreview/${redirectToAlbum.albumId}`,
+          pathname:
+            type === "StartPage"
+              ? `/albumPreview/${redirectToAlbum.albumId}`
+              : type === "UserPage"
+              ? `/album/${redirectToAlbum.albumId}`
+              : `/groupAlbum/${redirectToAlbum.albumId}`,
         }}
       />
     );
@@ -25,22 +30,28 @@ const MarkerInfo = ({ details }) => {
     <Container>
       <Picture
         src={
-          details.personalInformationDTO.photo !== undefined
-            ? details.personalInformationDTO.photo
+          type === "StartPage"
+            ? details.personalInformationDTO.photo !== undefined
+              ? details.personalInformationDTO.photo
+              : noProfilePictureIcon
+            : details.mainPhoto !== undefined
+            ? details.mainPhoto
             : noProfilePictureIcon
         }
-        alt="Profile picture"
+        alt="Picture"
         onError={(e) => {
           e.target.onError = null;
           e.target.src = noProfilePictureIcon;
         }}
       />
       <InnerContainer>
-        <Header>
-          {details.personalInformationDTO.name +
-            " " +
-            details.personalInformationDTO.surName}
-        </Header>
+        {type === "StartPage" && (
+          <Header>
+            {details.personalInformationDTO.name +
+              " " +
+              details.personalInformationDTO.surName}
+          </Header>
+        )}
         <Name>{details.name}</Name>
         <Country>
           {details.coordinate.country.country + ", " + details.coordinate.place}

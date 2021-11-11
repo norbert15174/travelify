@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import Input from "../trinkets/Input";
@@ -8,16 +8,45 @@ import { albumCreator } from "../../miscellanous/Utils";
 import GroupAlbumThumbnail from "./GroupAlbumThumbnail";
 import addGroupIcon from "./assets/addGroupIcon.svg";
 import "./groupsScrollbar.css";
-/* import AlbumThumbnail from "./AlbumThumbnail"; */
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectGroupAlbums,
+  setGroupAlbums,
+} from "../../redux/groupDetailsSlice";
+import axios from "axios";
+import { endpoints } from "../../url";
 
-const GroupAlbumSection = ({ albums }) => {
+const GroupAlbumSection = ({ groupId }) => {
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
   const [redirectToCreator, setRedirectToCreator] = useState(false);
+  const groupAlbums = useSelector(selectGroupAlbums);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getGroupAlbums();
+  }, []);
+
+  async function getGroupAlbums() {
+    await axios({
+      method: "get",
+      url: endpoints.getGroupAlbums.replace(/:groupId/i, groupId),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        dispatch(setGroupAlbums(data));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   const handleSearchBarChange = (e) => {
     setFound(
-      albums.filter((item) =>
+      groupAlbums.filter((item) =>
         item.name.toLowerCase().includes(e.target.value.toLowerCase())
       )
     );
@@ -30,8 +59,8 @@ const GroupAlbumSection = ({ albums }) => {
       <Redirect
         push
         to={{
-          pathname: routes.albumCreator,
-          state: { creatorType: albumCreator.creation },
+          pathname: routes.groupAlbumCreator,
+          state: { creatorType: albumCreator.creation, groupId: groupId },
         }}
       />
     );
@@ -59,12 +88,12 @@ const GroupAlbumSection = ({ albums }) => {
         onChange={handleSearchBarChange}
       />
       <AlbumsGrid className="scroll">
-        {albums !== null ? (
+        {groupAlbums.length > 0 ? (
           (searchContent.length !== 0 && found.length !== 0
-            ? found.map((item) => <GroupAlbumThumbnail album={item} />)
+            ? found.map((item) => <GroupAlbumThumbnail key={item.id} album={item} />)
             : null) ||
-          (albums.length !== 0 && searchContent.length === 0
-            ? albums.map((item) => <GroupAlbumThumbnail album={item} />)
+          (groupAlbums.length !== 0 && searchContent.length === 0
+            ? groupAlbums.map((item) => <GroupAlbumThumbnail key={item.id} album={item} />)
             : null) || <h1 style={{ color: "#5B5B5B" }}>Brak albumów...</h1>
         ) : (
           <h1 style={{ color: "#5B5B5B" }}>Brak albumów...</h1>

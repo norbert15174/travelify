@@ -8,12 +8,12 @@ import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { mapFriendsToSelect, albumCreator } from "../miscellanous/Utils";
 import { clearStore, setAlbumPhotosRedux, setMainPhotoRedux, setBasicInfo, setCoordinate, setSharedPersonList } from "../redux/albumCreatorSlice";
+import { setFriendsList } from "../redux/userDataSlice";
 import { useDispatch } from "react-redux";
 
 const AlbumCreator = () => {
 
 	const location = useLocation();
-	const [ friendsList, setFriendsList ] = useState([]);
 	const [ error, setError ] = useState(null);
 	const [ userFriendsFetchFinished, setUserFriendsFetchFinished ] = useState(false);
 	const [ albumDetailsFetchFinished, setAlbumDetailsFetchFinished ] = useState(false);
@@ -51,8 +51,6 @@ const AlbumCreator = () => {
 				'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
 			},
 		}).then(({data}) => {
-			let temp = [];
-			temp = mapFriendsToSelect(data.shared, "shared");
 			dispatch(setMainPhotoRedux(data.album.mainPhoto));
 			dispatch(setAlbumPhotosRedux(data.photosDTOS));
 			dispatch(setBasicInfo({
@@ -60,7 +58,7 @@ const AlbumCreator = () => {
 				name: data.album.name,
 				description: data.album.description,
 			}));
-			dispatch(setSharedPersonList(temp));
+			dispatch(setSharedPersonList(mapFriendsToSelect(data.shared, "shared")));
 			dispatch(setCoordinate(data.album.coordinate));
 		}).catch((error) => {
 			setError(error);
@@ -80,9 +78,7 @@ const AlbumCreator = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then(({data}) => {
-			let temp = [];
-			temp = mapFriendsToSelect(data);
-			setFriendsList(temp);
+			dispatch(setFriendsList(data));
         }).catch((error) => {
             setError(error);
         }).finally(() => {
@@ -99,7 +95,6 @@ const AlbumCreator = () => {
 					(userFriendsFetchFinished && albumDetailsFetchFinished && !error) 
 					?
 					<AlbumCreatorPage 
-						friendsList={friendsList} 
 						creatorType={creatorType} 
 						editedAlbumId={editedAlbumId}
 					/>
@@ -115,7 +110,6 @@ const AlbumCreator = () => {
 					(userFriendsFetchFinished && !error) 
 					?
 					<AlbumCreatorPage 
-						friendsList={friendsList} 
 						creatorType={creatorType} 
 					/>
 					: 

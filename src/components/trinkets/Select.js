@@ -11,8 +11,7 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
             if (isMulti) {
                 setState(value); // całe obiekty
             } else {
-                console.log(value.value);
-                setState(value.value); 
+                setState(value); 
             }
             return;
         }
@@ -133,7 +132,7 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
             isSearchable 
             isClearable={isMulti ? false : true}
             isMulti={isMulti}
-            placeholder={type === "country" ? "Wybierz kraj..." : "Wybierz znajomego..."}
+            placeholder={type === "country" ? "Wybierz kraj..." : "Wybierz..."}
             noOptionsMessage={() => "No results :("}
             onChange={formik ? handleChange : setValueOnChange}
             onBlur={formik ? handleBlur : null}

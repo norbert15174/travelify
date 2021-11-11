@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
 import closeIconBlack from "./assets/closeIconBlack.svg";
-import invitationSendIcon from "./assets/invitationSendIcon.svg";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
+import crownIcon from "./assets/crownIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
+import { selectRights, selectOwner } from "../../redux/groupDetailsSlice";
+import { groupMember } from "../../miscellanous/Utils";
 
-const MemberThumbnail = ({ member, type = null, setMemberToRemove = null }) => {
+const MemberThumbnail = ({ member, type = null, setMemberToRemove = null, date = null }) => {
   const [redirectToProfile, setRedirectToProfile] = useState(false);
+  const rights = useSelector(selectRights);
+  const owner = useSelector(selectOwner);
 
   if (redirectToProfile) {
     return (
       <Redirect
         push
         to={{
-          pathname: routes.user.replace(/:id/i, 1),
+          pathname: routes.user.replace(/:id/i, member.id),
           state: {
             selectedUser: {
               selectIsTrue: true,
-              id: 1,
+              id: member.id,
               isHeFriend: false,
             },
           },
@@ -31,27 +37,38 @@ const MemberThumbnail = ({ member, type = null, setMemberToRemove = null }) => {
     <Member key={member.id}>
       <MemberPicture
         alt={member.id + " picture"}
-        src={member.profilePicture}
+        src={member.photo !== undefined ? member.photo : noProfilePictureIcon}
         onClick={() => setRedirectToProfile(true)}
       />
       <MemberName
         onClick={() => setRedirectToProfile(true)}
-      >{`${member.name} ${member.surname}`}</MemberName>
+      >{`${member.name} ${member.surName}`}</MemberName>
       {type === "requests" ? (
-        <InvitationDate>15 sekund temu</InvitationDate>
+        <InvitationDate>{date}</InvitationDate>
       ) : (
         <>
-          <Icon
-            data-tip
-            data-for="remove"
-            icon={closeIconBlack}
-            onClick={() => setMemberToRemove(member.id)}
-          />
-          <Tooltip
-            id="remove"
-            place="left"
-            text="Kliknij, by usunąć osobę z grupy"
-          />
+          {rights === groupMember.owner &&
+          member.id.toString() !== sessionStorage.getItem("loggedUserId") ? (
+            <>
+              <Icon
+                data-tip
+                data-for="remove"
+                icon={closeIconBlack}
+                onClick={() => setMemberToRemove(member.id)}
+              />
+              <Tooltip
+                id="remove"
+                place="left"
+                text="Kliknij, by usunąć osobę z grupy"
+              />
+            </>
+          ) : null}
+          {owner.id === member.id ? (
+            <>
+              <Icon data-tip data-for="owner" icon={crownIcon} />
+              <Tooltip id="owner" place="left" text="Właściciel grupy" />
+            </>
+          ) : null}
         </>
       )}
     </Member>
@@ -116,8 +133,7 @@ const Icon = styled.div`
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  cursor: ${({ icon }) =>
-    icon === invitationSendIcon ? "default" : "pointer"};
+  cursor: ${({ icon }) => (icon !== closeIconBlack ? "default" : "pointer")};
   @media only screen and (max-width: 1010px) {
     width: 25px;
     height: 25px;
@@ -139,7 +155,7 @@ const Icon = styled.div`
 
 const InvitationDate = styled.p`
   font-size: 16px;
-  color: ${({theme}) => theme.color.greyFont};
+  color: ${({ theme }) => theme.color.greyFont};
   margin: 0 5px 0 auto;
   @media only screen and (max-width: 1010px) {
     font-size: 12px;

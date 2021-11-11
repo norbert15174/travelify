@@ -1,200 +1,46 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import noBackgroundPicture from "../../assets/noBackgroundPicture.png";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { useSelector, useDispatch } from "react-redux";
 import threeDotsIcon from "./assets/threeDotsIcon.svg";
 import editIcon from "./assets/editIcon.svg";
 import addGroupIcon from "./assets/addGroupIcon.svg";
 import PhotoZoom from "../user/PhotoZoom";
-import groupMemberIconWhite from "./assets/groupMemberIconWhite.svg";
+import leaveGroupIcon from "./assets/leaveGroupIcon.svg";
 import crownIconWhite from "./assets/crownIconWhite.svg";
-import closeIconWhite from "./assets/closeIconWhite.svg";
-import closeIconBlack from "./assets/closeIconBlack.svg";
 import DescriptionSection from "./DescriptionSection";
 import MembersSection from "./MembersSection";
+import MapSection from "../user/MapSection";
 import GroupAlbumSection from "./GroupAlbumSection";
-import HistorySection from "./HistorySection";
 import InvitationBox from "./InvitationBox";
 import Tooltip from "../trinkets/Tooltip";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 import { toggleBlur } from "../../redux/blurSlice";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
-import { groupCreator } from "../../miscellanous/Utils";
-
-/* import axios from "axios";
+import { groupCreator, groupMember } from "../../miscellanous/Utils";
+import {
+  selectBasicInfo,
+  selectMembers,
+  selectRights,
+  setMembers,
+  selectGroupAlbums,
+} from "../../redux/groupDetailsSlice";
 import { endpoints } from "../../url";
-import { toggleBlur } from "../../redux/blurSlice"; */
 
 const section = {
   info: "info",
   members: "members",
   albums: "albums",
-  history: "history",
+  map: "map",
 };
 
-const tempAlbums = [
-  {
-    id: 1,
-    name: "Album numer 1",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner1",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 2,
-    name: "Album numer 2",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner2",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 3,
-    name: "Album numer 3",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner3",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 4,
-    name: "Album numer 4",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner4",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 5,
-    name: "Album numer 5",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner5",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 6,
-    name: "Album numer 6",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner6",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 7,
-    name: "Album numer 7",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner7",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-  {
-    id: 8,
-    name: "Album numer 8",
-    coordinate: {
-      place: "Poland",
-      country: { country: "Cracow" },
-    },
-    description:
-      "Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker",
-    mainPhoto:
-      "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg",
-    owner: {
-      id: "owner8",
-      name: "Imię",
-      surname: "Nazwisko",
-      profilePicture:
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-  },
-];
-
-const GroupInside = ({ group, groupId }) => {
+const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);
-  const [memberButtonText, setMemberButtonText] = useState("Dołączono");
-  const [memberButtonIcon, setMemberButtonIcon] =
-    useState(groupMemberIconWhite);
   const [currentSection, setCurrentSection] = useState(section.info);
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
@@ -204,36 +50,42 @@ const GroupInside = ({ group, groupId }) => {
     active: false,
     id: null,
   });
+  const [redirectBackToGroups, setRedirectBackToGroups] = useState(false);
   const [inviteFriendBox, setInviteFriendBox] = useState(false);
   const [removeMemberBox, setRemoveMemberBox] = useState(false);
+  const [leaveGroupBox, setLeaveGroupBox] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState(null);
   const [confirm, setConfirm] = useState(false);
   const [refuse, setRefuse] = useState(false);
 
   const dispatch = useDispatch();
+  const basicInfo = useSelector(selectBasicInfo);
+  const members = useSelector(selectMembers);
+  const rights = useSelector(selectRights);
+  const groupAlbums = useSelector(selectGroupAlbums);
 
   useEffect(() => {
     if (blurState) {
       dispatch(toggleBlur());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [removeMemberBox, memberToRemove, confirm, refuse]);
+  }, [leaveGroupBox, removeMemberBox, memberToRemove, confirm, refuse]);
 
   /*
     when user wants to leave group
   */
   useEffect(() => {
-    if (removeMemberBox) {
+    if (leaveGroupBox) {
       if (confirm) {
-        setConfirm(false);
-        setRemoveMemberBox(false);
+        leaveGroup();
       }
       if (refuse) {
-        setRemoveMemberBox(false);
+        setLeaveGroupBox(false);
         setRefuse(false);
       }
     }
-  }, [removeMemberBox, confirm, refuse]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaveGroupBox, confirm, refuse]);
 
   /*
     when owner removes someone from the group
@@ -242,9 +94,7 @@ const GroupInside = ({ group, groupId }) => {
     if (memberToRemove) {
       if (!removeMemberBox) setRemoveMemberBox(true);
       if (confirm) {
-        setConfirm(false);
-        setRemoveMemberBox(false);
-        setMemberToRemove(null);
+        removeMember();
       }
       if (refuse) {
         setRemoveMemberBox(false);
@@ -252,18 +102,71 @@ const GroupInside = ({ group, groupId }) => {
         setMemberToRemove(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeMemberBox, memberToRemove, confirm, refuse]);
+
+  async function removeMember() {
+    await axios({
+      method: "delete",
+      url: endpoints.removeMember + groupId + "/?userId=" + memberToRemove,
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        dispatch(setMembers(response.data.members));
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setMemberToRemove(null);
+        setRemoveMemberBox(false);
+        setConfirm(false);
+      });
+  }
+
+  async function leaveGroup() {
+    await axios({
+      method: "delete",
+      url: endpoints.leaveGroup.replace(/:id/i, groupId),
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        setRedirectBackToGroups(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLeaveGroupBox(false);
+        setConfirm(false);
+      });
+  }
 
   if (redirectToProfile.active) {
     return (
       <Redirect
         push
         to={{
-          pathname: routes.user.replace(/:id/i, 1),
+          pathname: routes.user.replace(/:id/i, redirectToProfile.id),
           state: {
             selectedUser: {
               selectIsTrue: true,
-              id: 1,
+              id: redirectToProfile.id,
               isHeFriend: false,
             },
           },
@@ -272,7 +175,6 @@ const GroupInside = ({ group, groupId }) => {
     );
   }
 
-  // redirection to album edition (EDITION)
   if (redirectToGroupEdit.active) {
     return (
       <Redirect
@@ -288,25 +190,31 @@ const GroupInside = ({ group, groupId }) => {
     );
   }
 
+  if (redirectBackToGroups) {
+    return <Redirect to={{ pathname: routes.groups }} />;
+  }
+
   return (
     <>
       {photoZoom && (
         <PhotoZoom
-          url={group.groupPicture}
+          url={
+            basicInfo.groupPicture !== undefined
+              ? basicInfo.groupPicture
+              : noBackgroundPicture
+          }
           type="background"
           close={setPhotoZoom}
         />
       )}
       {removeMemberBox && memberToRemove && (
         <ConfirmationBox
-          children={
-            "Czy na pewno chcesz usunąć daną osobę z grupy?"
-          }
+          children={"Czy na pewno chcesz usunąć daną osobę z grupy?"}
           confirm={setConfirm}
           refuse={setRefuse}
         />
       )}
-      {removeMemberBox && !memberToRemove && (
+      {leaveGroupBox && (
         <ConfirmationBox
           children={"Czy na pewno chcesz opuścić grupę?"}
           confirm={setConfirm}
@@ -320,11 +228,11 @@ const GroupInside = ({ group, groupId }) => {
         <Header>
           <GroupPicture
             src={
-              group.groupPicture !== undefined
-                ? group.groupPicture
+              basicInfo.groupPicture !== undefined
+                ? basicInfo.groupPicture
                 : noBackgroundPicture
             }
-            alt={"Group picture " + group.id}
+            alt={"Group picture " + groupId}
             onError={(e) => {
               e.target.onError = null;
               e.target.src = noBackgroundPicture;
@@ -332,70 +240,84 @@ const GroupInside = ({ group, groupId }) => {
             onClick={() => setPhotoZoom("background")}
           />
           <InnerContainer>
-            <GroupName>{group.groupName}</GroupName>
+            <GroupName>{basicInfo.groupName}</GroupName>
             <MembersAmount>
-              {group.members.length > 1
-                ? group.members.length + " członków grupy"
+              {members.length > 1
+                ? members.length + " członków grupy"
                 : "1 członek grupy"}
             </MembersAmount>
             <RowSection>
-              {group.members.slice(0, 12).map((item) => (
+              {members.slice(0, 12).map((item) => (
                 <MemberPicture
                   key={item.id}
-                  title={item.name + " " + item.surname}
-                  icon={item.profilePicture}
+                  title={item.name + " " + item.surName}
+                  icon={
+                    item.photo !== undefined ? item.photo : noProfilePictureIcon
+                  }
+                  onError={(e) => {
+                    e.target.onError = null;
+                    e.target.src = noProfilePictureIcon;
+                  }}
                   onClick={() =>
                     setRedirectToProfile({ active: true, id: item.id })
                   }
                 />
               ))}
-              {group.members.length > 12 ? (
+              {members.length > 12 ? (
                 <Limit
-                  title={group.members
+                  title={members
                     .slice(13)
-                    .map((item) => item.name + " " + item.surname)}
+                    .map((item) => item.name + " " + item.Surname)}
                   icon={threeDotsIcon}
                 />
               ) : null}
               <Buttons>
-                <MemberButton icon={crownIconWhite} buttonType="owner">
-                  Właściciel
-                </MemberButton>
-                {/* <MemberButton
-                  icon={memberButtonIcon}
-                  onClick={() => setRemoveMemberBox(true)}
-                  onMouseEnter={() => {
-                    setMemberButtonText("Opuścić?");
-                    setMemberButtonIcon(closeIconWhite);
-                  }}
-                  onMouseLeave={() => {
-                    setMemberButtonText("Dołączono");
-                    setMemberButtonIcon(groupMemberIconWhite);
-                  }}
-                  buttonType="member"
-                >
-                  {memberButtonText}
-                </MemberButton> */}
-                <MemberButton
-                  icon={addGroupIcon}
-                  buttonType="invite"
-                  onClick={() => setInviteFriendBox(true)}
-                >
-                  Zaproś
-                </MemberButton>
-                <EditButton
-                  data-tip
-                  data-for="edit"
-                  icon={editIcon}
-                  onClick={() =>
-                    setRedirectToGroupEdit({ active: true, id: groupId })
-                  }
-                />
-                <Tooltip
-                  id="edit"
-                  place="bottom"
-                  text="Edytuj grupę"
-                />
+                {rights === groupMember.owner && (
+                  <>
+                    <MemberButton
+                      data-tip
+                      data-for="owner"
+                      icon={crownIconWhite}
+                      buttonType="owner"
+                    >
+                      Właściciel
+                    </MemberButton>
+                    <Tooltip
+                      id="owner"
+                      place="bottom"
+                      text="Jesteś właścicielem grupy"
+                    />
+                    <MemberButton
+                      icon={addGroupIcon}
+                      buttonType="invite"
+                      onClick={() => setInviteFriendBox(true)}
+                    >
+                      Zaproś
+                    </MemberButton>
+                    <EditButton
+                      data-tip
+                      data-for="edit"
+                      icon={editIcon}
+                      onClick={() =>
+                        setRedirectToGroupEdit({ active: true, id: groupId })
+                      }
+                    />
+                    <Tooltip id="edit" place="bottom" text="Edytuj grupę" />
+                  </>
+                )}
+                {rights === groupMember.member && (
+                  <>
+                    <MemberButton
+                      data-tip
+                      data-for="leave"
+                      icon={leaveGroupIcon}
+                      onClick={() => setLeaveGroupBox(true)}
+                    >
+                      Opuść
+                    </MemberButton>
+                    <Tooltip id="leave" place="bottom" text="Opuść grupę" />
+                  </>
+                )}
               </Buttons>
             </RowSection>
             <Line />
@@ -419,30 +341,26 @@ const GroupInside = ({ group, groupId }) => {
                 <p>Albumy grupowe</p>
               </Button>
               <Button
-                active={currentSection === section.history ? true : false}
-                onClick={() => setCurrentSection(section.history)}
+                active={currentSection === section.map ? true : false}
+                onClick={() => setCurrentSection(section.map)}
               >
-                <p>Historia</p>
+                <p>Odwiedzone miejsca</p>
               </Button>
             </SectionButtons>
           </InnerContainer>
         </Header>
         <SectionContainer>
-          {currentSection === section.info && (
-            <DescriptionSection description={group.description} />
-          )}
+          {currentSection === section.info && <DescriptionSection />}
           {currentSection === section.members && (
             <MembersSection
-              members={group.members}
               setMemberToRemove={setMemberToRemove}
+              groupId={groupId}
             />
           )}
           {currentSection === section.albums && (
-            <GroupAlbumSection albums={tempAlbums} />
+            <GroupAlbumSection groupId={groupId} />
           )}
-          {currentSection === section.history && (
-            <HistorySection history={[]} />
-          )}
+          {currentSection === section.map && <MapSection data={groupAlbums} type="groups"/>}
         </SectionContainer>
       </Container>
     </>
@@ -457,20 +375,20 @@ const Container = styled.div`
 
 const Header = styled.div`
   width: 100%;
-  height: 480px;
+  min-height: 480px;
   background-color: ${({ theme }) => theme.color.lightBackground};
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
   @media only screen and (max-width: 810px) {
-    height: 450px;
+    min-height: 450px;
   }
   @media only screen and (max-width: 550px) {
-    height: 350px;
+    min-height: 350px;
   }
   @media only screen and (max-width: 400px) {
-    height: 280px;
+    min-height: 280px;
   }
 `;
 
@@ -669,6 +587,9 @@ const Line = styled.div`
   border-top: 2px solid ${({ theme }) => theme.color.dark};
   margin-top: 15px;
   width: 100%;
+  @media only screen and (max-width: 550px) {
+    margin-top: 10px;
+  }
   @media only screen and (max-width: 400px) {
     margin-top: 5px;
   }
@@ -694,7 +615,6 @@ const Button = styled.div`
   border-radius: 5px;
   margin-right: 10px;
   color: ${({ active, theme }) => (active ? "#000" : theme.color.greyFont)};
-
   &:hover {
     background-color: rgba(18, 191, 206, 0.4);
     -webkit-transition: all 0.15s ease-in-out;
@@ -716,6 +636,13 @@ const Button = styled.div`
       font-size: 10px;
     }
     margin-right: 6px;
+  }
+  @media only screen and (max-width: 400px) {
+    p {
+      font-size: 8px;
+    }
+    margin-right: 4px;
+    padding: 2.5px;
   }
 `;
 

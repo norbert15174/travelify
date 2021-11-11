@@ -12,6 +12,7 @@ export const routes = {
     group: '/group/:id',
     groupAlbum: '/groupAlbum/:id',
     groupCreator: "/groupCreator",
+    groupAlbumCreator: "/groupAlbumCreator",
     search: '/search',
     notFound: '/notFound',
     albumNotLogged: '/albumPreview/:id',

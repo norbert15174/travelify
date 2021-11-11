@@ -1,19 +1,24 @@
 import React from "react";
 import styled from "styled-components";
 import descriptionIcon from "./assets/descriptionIcon.svg";
+import { useSelector } from "react-redux";
+import { selectDescription } from "../../redux/groupDetailsSlice";
 
-const DescriptionSection = ({ description }) => (
-  <Container>
-    <Header>
-      <h1>Opis grupy</h1>
-      <Line />
-    </Header>
-    <InnerContainer>
-      <Icon src={descriptionIcon} />
-      <Text>{description}</Text>
-    </InnerContainer>
-  </Container>
-);
+const DescriptionSection = () => {
+  const description = useSelector(selectDescription);
+  return (
+    <Container>
+      <Header>
+        <h1>Opis grupy</h1>
+        <Line />
+      </Header>
+      <InnerContainer>
+        <Icon src={descriptionIcon} />
+        <Text>{description}</Text>
+      </InnerContainer>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   border-radius: 15px;
@@ -33,17 +38,17 @@ const Header = styled.div`
   }
   @media only screen and (max-width: 810px) {
     h1 {
-        font-size: 27px;
+      font-size: 27px;
     }
   }
   @media only screen and (max-width: 550px) {
     h1 {
-        font-size: 20px;
+      font-size: 20px;
     }
   }
   @media only screen and (max-width: 400px) {
     h1 {
-        font-size: 18px;
+      font-size: 18px;
     }
   }
 `;

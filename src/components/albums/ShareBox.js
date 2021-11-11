@@ -27,9 +27,6 @@ const ShareBox = ({ setClose, albumId }) => {
     if (!blurState) {
       dispatch(toggleBlur());
     }
-
-    // backend magic
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

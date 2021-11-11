@@ -8,26 +8,34 @@ import infoIcon from "./assets/infoIcon.svg";
 import deleteGroupIcon from "./assets/deleteGroupIcon.svg";
 import photoIcon from "./assets/photoIcon.svg";
 import membersIcon from "./assets/membersIcon.svg";
+import crownIcon from "./assets/crownIcon.svg";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
 import axios from "axios";
 import { endpoints } from "../../url";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import BasicGroupInfo from "./BasicGroupInfo";
 import Members from "./Members";
 import GroupPhoto from "./GroupPhoto";
+import ChangeOwner from "./ChangeOwner";
+import { selectMembers } from "../../redux/groupCreatorSlice";
+import { toggleBlur } from "../../redux/blurSlice";
 
 const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
-  const [confirmDeletingGroup, setConfirmDeletingGroup] = useState(false);
-  const [refuseDeletingGroup, setRefuseDeletingGroup] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [refuse, setRefuse] = useState(false);
   const [deleteBox, setDeleteBox] = useState(false);
-
+  const [ownerChangeBox, setOwnerChangeBox] = useState({
+    active: false,
+    newOwner: null,
+  });
   const [basicInfo, setBasicInfo] = useState({
     name: "",
     description: "",
   });
+  const currentMembers = useSelector(selectMembers);
 
   const [members, setMembers] = useState([]);
 
@@ -36,31 +44,50 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
 
   const [redirectBackToGroups, setRedirectBackToGroups] = useState(null);
   const [redirectBackToGroup, setRedirectBackToGroup] = useState(null);
+  const [redirectToCreatedGroup, setRedirectToCreatedGroup] = useState({
+    active: false,
+    id: null,
+  });
 
   const scrollBack = useRef(null);
   const blurState = useSelector((state) => state.blur.value);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // checking if album will be edited or created, setting albumId we are editing
+    if (blurState) {
+      dispatch(toggleBlur());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteBox, confirm, refuse]);
+
+  useEffect(() => {
     if (deleteBox && groupCreator.edition === creatorType) {
-      if (confirmDeletingGroup) {
-        console.log("Group deleted!");
-        setDeleteBox(false);
+      if (confirm) {
+        // deleting members ---> deleting group
+        deleteMembers();
       }
-      if (refuseDeletingGroup) {
-        console.log("Group not deleted!");
+      if (refuse) {
         setDeleteBox(false);
-        setRefuseDeletingGroup(false);
-        setConfirmDeletingGroup(false);
+        setRefuse(false);
+        setConfirm(false);
       }
     }
     // eslint-disable-next-line
-  }, [confirmDeletingGroup, refuseDeletingGroup]);
+  }, [deleteBox, confirm, refuse]);
 
   useEffect(() => {
-    console.log(basicInfo);
-    console.log(members);
-  }, [basicInfo, members]);
+    if (ownerChangeBox.active && groupCreator.edition === creatorType) {
+      if (confirm) {
+        changeOwner();
+      }
+      if (refuse) {
+        setOwnerChangeBox({ active: false, newOwner: null });
+        setRefuse(false);
+        setConfirm(false);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerChangeBox, confirm, refuse]);
 
   async function createGroup() {
     setErrorAtPosting(null);
@@ -71,16 +98,15 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
       data: {
         groupName: basicInfo.name,
         description: basicInfo.description,
-        members: members.map((item) => item.id)
+        membersToAdd: members.map((item) => item.id),
       },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
-      .then((response) => {
-        console.log(response);
-        // setRedirect when group has been created
+      .then(({ data }) => {
+        setRedirectToCreatedGroup({ active: true, id: data.id });
       })
       .catch((error) => {
         setErrorAtPosting(error);
@@ -91,30 +117,131 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
       });
   }
 
-  // CREATION or after group delete
+  function deleteGroup() {
+    axios({
+      method: "delete",
+      url: endpoints.deleteGroup + editedGroupId,
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        setRedirectBackToGroups(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setConfirm(false);
+        setDeleteBox(false);
+      });
+  }
+
+  function deleteMembers() {
+    axios({
+      method: "put",
+      url: endpoints.editGroup,
+      data: {
+        id: editedGroupId,
+        membersToDelete: currentMembers
+          .filter(
+            (item) =>
+              item.id.toString() !== sessionStorage.getItem("loggedUserId")
+          )
+          .map((item) => item.id),
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        deleteGroup();
+      })
+      .catch((error) => {
+        console.error(error);
+        setConfirm(false);
+        setDeleteBox(false);
+      });
+  }
+
+  async function changeOwner() {
+    await axios({
+      method: "put",
+      url:
+        endpoints.changeOwner +
+        editedGroupId +
+        "/?userId=" +
+        ownerChangeBox.newOwner.id,
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        setRedirectBackToGroup(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setConfirm(false);
+        setOwnerChangeBox({ active: false, newOwner: null });
+      });
+  }
+
   if (redirectBackToGroups) {
     return <Redirect to={{ pathname: routes.groups }} />;
   }
 
-  // when EDITION we are passing groupId to don't lose it
-  if (redirectBackToGroup) {
-    /* return (
+  if (redirectToCreatedGroup.active) {
+    return (
       <Redirect
         to={{
-          pathname: `groupId/${editedGroupId}`,
-          state: { groupId: editedGroupId },
+          pathname: `group/${redirectToCreatedGroup.id}`,
         }}
       />
-    ); */
+    );
+  }
+
+  if (redirectBackToGroup) {
+    return (
+      <Redirect
+        to={{
+          pathname: `group/${editedGroupId}`,
+        }}
+      />
+    );
   }
 
   return (
     <>
+      {ownerChangeBox.active && creatorType === groupCreator.edition && (
+        <ConfirmationBox
+          children={"Czy na pewno chcesz przestać być właścicielem grupy?"}
+          confirm={setConfirm}
+          refuse={setRefuse}
+        />
+      )}
       {deleteBox && creatorType === groupCreator.edition && (
         <ConfirmationBox
           children={"Czy na pewno chcesz usunąć grupę?"}
-          confirm={setConfirmDeletingGroup}
-          refuse={setRefuseDeletingGroup}
+          confirm={setConfirm}
+          refuse={setRefuse}
         />
       )}
       <Container blurState={blurState} ref={scrollBack}>
@@ -147,18 +274,19 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
             setForm={setBasicInfo}
           />
         </SectionContainer>
-        <SectionContainer>
-          <Header>
-            <Icon src={membersIcon} />
-            <h1>Członkowie</h1>
-          </Header>
-          <Members
-            creatorType={creatorType}
-            editedGroupId={editedGroupId}
-            friendsList={friendsList}
-            setForm={setMembers}
-          />
-        </SectionContainer>
+        {creatorType === groupCreator.creation && (
+          <SectionContainer>
+            <Header>
+              <Icon src={membersIcon} />
+              <h1>Członkowie</h1>
+            </Header>
+            <Members
+              friendsList={friendsList}
+              form={members}
+              setForm={setMembers}
+            />
+          </SectionContainer>
+        )}
         {creatorType === groupCreator.edition && (
           <SectionContainer>
             <Header>
@@ -197,12 +325,28 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
         {creatorType === groupCreator.edition && (
           <SectionContainer>
             <Header>
+              <Icon src={crownIcon} />
+              <h1>Zmiana właściciela</h1>
+            </Header>
+            <ChangeOwner
+              editedGroupId={editedGroupId}
+              setRedirectBackToGroup={setRedirectBackToGroup}
+              setOwnerChangeBox={setOwnerChangeBox}
+            />
+          </SectionContainer>
+        )}
+        {creatorType === groupCreator.edition && (
+          <SectionContainer>
+            <Header>
               <Icon src={deleteGroupIcon} />
               <h1>Usuń grupę</h1>
             </Header>
             <WarningMessage>
               <p>Usunięcie grupy jest nieodwracalne!</p>
-              <p>Stworzone albumy zostaną usunięte.</p>
+              <p>
+                Wszyscy członkowie zostaną wyrzuceni, a stworzone albumy zostaną
+                usunięte.
+              </p>
             </WarningMessage>
             <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
           </SectionContainer>

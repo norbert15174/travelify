@@ -7,7 +7,7 @@ import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { useDispatch } from "react-redux";
-import { setOwner, setAlbumPhotos, setInfo, setTags, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
+import { setOwner, setAlbumPhotos, setInfo, setPhotoTags, clearStore, setRights, setAlbumType } from "../redux/albumDetailsSlice";
 import { clearStore as clearUserStore } from '../redux/userDataSlice';
 import { errorTypes } from '../miscellanous/Utils';
 
@@ -51,7 +51,7 @@ const AlbumNotLogged = () => {
                     tags: data.photosDTOS[i].taggedList,
                 });
             };
-            dispatch(setTags(tempTags));
+            dispatch(setPhotoTags(tempTags));
             dispatch(setOwner(data.owner));
             dispatch(setInfo(data.album));
             dispatch(setAlbumPhotos(tempPhotos));

@@ -1,24 +1,68 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { selectRequests, setRequests } from "../../redux/groupDetailsSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Button from "../trinkets/Button";
-
-/*
-  POBIERZ REQUESTY I SPRAWDZ CZY JUZ NIE JEST ZAPROSZONA DANA OSOBA
-*/
+import { endpoints } from "../../url";
 
 const InviteFriendThumbnail = ({ friend, groupId }) => {
+  const requests = useSelector(selectRequests);
+  console.log(requests);
+  const dispatch = useDispatch();
   const [updating, setUpdating] = useState(false);
-  // sprawdzam requesty tutaj
   const [alreadyChosen, setAlreadyChosen] = useState(
-    [].find((item) => item.userId === friend.id) ? true : false
+    requests.find((item) => item.user.id === friend.id) ? true : false
   );
   const [buttonText, setButtonText] = useState(
     !alreadyChosen ? "Wybierz" : "Zaproszony"
   );
-  const dispatch = useDispatch();
+
+  async function inviteToGroup() {
+    setUpdating(true);
+    await axios({
+      method: "put",
+      url: endpoints.inviteToGroup,
+      data: {
+        id: groupId,
+        membersToAdd: [friend.id],
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then((response) => {
+        dispatch(
+          setRequests([
+            ...requests,
+            {
+              time: new Date().getTime(),
+              user: {
+                id: friend.id,
+                name: friend.name,
+                surName: friend.lastName,
+                photo: friend.profilePicture,
+              },
+            },
+          ])
+        );
+        console.log(response);
+        setAlreadyChosen(true);
+        setButtonText("Zaproszony");
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setUpdating(false);
+      });
+  }
 
   return (
     <Friend>
@@ -36,9 +80,9 @@ const InviteFriendThumbnail = ({ friend, groupId }) => {
       />
       <h1>{friend.name + " " + friend.lastName}</h1>
       <ChooseButton
-        onClick={() => {
-          setButtonText("Zaproszony")
-        }}
+        onClick={inviteToGroup}
+        invited={alreadyChosen}
+        disabled={alreadyChosen}
       >
         {updating ? "Zapisywanie..." : buttonText}
       </ChooseButton>
@@ -94,6 +138,12 @@ const ChooseButton = styled(Button)`
   padding: 0px 5px 0px 5px;
   height: 30px;
   margin: 0 15px 0 auto;
+  &:hover,
+  &:focus {
+    background-color: ${({ theme, invited }) =>
+      !invited ? theme.color.light : theme.color.dark};
+  }
+  cursor: ${({ invited }) => (!invited ? "pointer" : "default")};
   @media only screen and (max-width: 1140px) {
     font-size: 12px;
     height: 25px;

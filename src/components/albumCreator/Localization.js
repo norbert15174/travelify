@@ -143,6 +143,8 @@ const Localization = ({ editedAlbumId, creatorType, setForm }) => {
         setIsDirty(false);
       })
       .catch((error) => {
+        console.error("");
+        setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       });
   }

@@ -6,14 +6,14 @@ import FriendThumbnail from "./InviteFriendThumbnail";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleBlur } from "../../redux/blurSlice";
 import "./groupsScrollbar.css";
-import { selectFriendsList } from "../../redux/userDataSlice";
-
-/*
-    SPRAWDZ CZY KTORYS ZE ZNAJOMYCH NIE JEST JUZ CZŁONKIEM GRUPY, JAK TAK TO GO NIE WYŚWIETLAJ
-*/
+import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
+import { selectMembers, setRequests } from "../../redux/groupDetailsSlice";
+import axios from "axios";
+import { endpoints } from "../../url";
 
 const InvitationBox = ({ setClose, groupId }) => {
-
+  const [friendsFetchFinished, setFriendsFetchFinished] = useState(false);
+  const [list, setList] = useState([]);
   const [searchContent, setSearchContent] = useState("");
   const [found, setFound] = useState([]);
 
@@ -22,6 +22,7 @@ const InvitationBox = ({ setClose, groupId }) => {
   const dispatch = useDispatch();
   const blurState = useSelector((state) => state.blur.value);
   const friendsList = useSelector(selectFriendsList);
+  const members = useSelector(selectMembers);
 
   useEffect(() => {
     document.addEventListener("click", boxOutsideClick, true);
@@ -29,6 +30,8 @@ const InvitationBox = ({ setClose, groupId }) => {
     if (!blurState) {
       dispatch(toggleBlur());
     }
+    getGroupRequests();
+    getLoggedUserFriendsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,19 +45,66 @@ const InvitationBox = ({ setClose, groupId }) => {
 
   // albums are searched by title, friends by name of course
   const handleSearchBarChange = (e) => {
-    setSearchContent(e.target.value);
     setFound(
-      friendsList.filter((item) => {
+      list.filter((item) => {
         return (
-          item.name.toLowerCase().includes(searchContent.toLowerCase()) ||
-          item.lastName.toLowerCase().includes(searchContent.toLowerCase()) ||
+          item.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          item.lastName.toLowerCase().includes(e.target.value.toLowerCase()) ||
           (item.name + " " + item.lastName)
             .toLowerCase()
-            .includes(searchContent.toLowerCase())
+            .includes(e.target.value.toLowerCase())
         );
       })
     );
+    setSearchContent(e.target.value);
   };
+
+  async function getLoggedUserFriendsList() {
+    setFriendsFetchFinished(false);
+    let output = [];
+    await axios({
+      method: "get",
+      url: endpoints.getLoggedUserFriends,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        dispatch(setFriendsList(data));
+        output = data;
+      })
+      .catch((error) => {
+        console.error(error);
+        output = friendsList;
+      })
+      .finally(() => {
+        const results = output.filter(
+          ({ id: friendId }) =>
+            !members.some(({ id: memberId }) => memberId === friendId)
+        );
+        setList(results);
+        setFriendsFetchFinished(true);
+      });
+  }
+
+  async function getGroupRequests() {
+    await axios({
+      method: "get",
+      url: endpoints.getGroupMemberRequests + groupId,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch(setRequests(data));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   return (
     <Container>
@@ -82,24 +132,26 @@ const InvitationBox = ({ setClose, groupId }) => {
           onChange={handleSearchBarChange}
         />
         <List className="scroll">
-          {(searchContent.length !== 0 && found.length !== 0
-            ? found.map((friend) => (
-                <FriendThumbnail
-                  groupId={groupId}
-                  key={friend.id}
-                  friend={friend}
-                />
-              ))
-            : null) ||
-            (friendsList.length !== 0 && searchContent.length === 0
-              ? friendsList.map((friend) => (
-                  <FriendThumbnail
-                    groupId={groupId}
-                    key={friend.id}
-                    friend={friend}
-                  />
-                ))
-              : null) || <NoResults>Brak wyników...</NoResults>}
+          {friendsFetchFinished
+            ? (searchContent.length !== 0 && found.length !== 0
+                ? found.map((friend) => (
+                    <FriendThumbnail
+                      groupId={groupId}
+                      key={friend.id}
+                      friend={friend}
+                    />
+                  ))
+                : null) ||
+              (list.length !== 0 && searchContent.length === 0
+                ? list.map((friend) => (
+                    <FriendThumbnail
+                      groupId={groupId}
+                      key={friend.id}
+                      friend={friend}
+                    />
+                  ))
+                : null) || <NoResults>Brak wyników...</NoResults>
+            : null}
         </List>
       </Box>
     </Container>

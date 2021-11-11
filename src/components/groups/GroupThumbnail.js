@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
 import styled from "styled-components";
+import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import openGroupIcon from "./assets/openGroupIcon.svg";
 
 const GroupThumbnail = ({ group, redirectToGroup }) => {
@@ -32,7 +33,11 @@ const GroupThumbnail = ({ group, redirectToGroup }) => {
     <Container>
       <GroupPicture
         alt={"Group " + group.id}
-        src={group.groupPicture}
+        src={
+          group.groupPicture !== undefined
+            ? group.groupPicture
+            : noProfilePictureIcon
+        }
         onClick={redirectToGroup}
       />
       <InnerContainer>
@@ -46,9 +51,13 @@ const GroupThumbnail = ({ group, redirectToGroup }) => {
           >
             <ProfilePicture
               alt={"Profile picture " + group.owner.id}
-              src={group.owner.profilePicture}
+              src={
+                group.owner.photo !== undefined
+                  ? group.owner.photo
+                  : noProfilePictureIcon
+              }
             />
-            <p>{group.owner.name + " " + group.owner.surname}</p>
+            <p>{group.owner.name + " " + group.owner.surName}</p>
           </Owner>
           <MembersAmount>
             {group.members.length > 1
