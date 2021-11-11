@@ -54,7 +54,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
 
   useEffect(() => {
     getHistory();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   function boxOutsideClick(e) {
@@ -228,7 +228,7 @@ const Box = styled.div`
   transform: translate(-50%, -50%);
   background-color: ${({ theme }) => theme.color.lightBackground};
   width: 60%;
-  max-height: 95%;
+  height: 95%;
   border: 5px solid ${({ theme }) => theme.color.dark};
   box-shadow: 5px 5px 10px 0 ${({ theme }) => theme.color.greyFont};
   @media only screen and (max-width: 1140px) {

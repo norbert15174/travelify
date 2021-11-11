@@ -31,7 +31,7 @@ function Map({
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyCE-uXzErQ9sEzMwWb1GLSiPZ8uo890r40",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   });
 
   // eslint-disable-next-line
@@ -137,7 +137,8 @@ function Map({
       }
     >
       <>
-        {markers && (type === "StartPage" || type === "UserPage" || type === "groups")
+        {markers &&
+        (type === "StartPage" || type === "UserPage" || type === "groups")
           ? markers.map((item) => (
               <Marker
                 key={item.id}
@@ -150,7 +151,8 @@ function Map({
               />
             ))
           : null}
-        {selected && (type === "StartPage" || type === "UserPage" || type === "groups") ? (
+        {selected &&
+        (type === "StartPage" || type === "UserPage" || type === "groups") ? (
           <InfoWindow
             position={{
               lat: selected.coordinate.lat + 3,
