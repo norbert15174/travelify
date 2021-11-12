@@ -47,6 +47,7 @@ const Photos = ({ editedAlbumId }) => {
 
     setErrorMessage("");
     setImagePreview([]);
+    setMultipleImages([]);
 
     Array.from(files).every((file) => {
       if (file === undefined) {
@@ -401,7 +402,7 @@ const Photos = ({ editedAlbumId }) => {
               <h3>
                 {operationType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
               </h3>
-              {imagePreview[0].url !== "" ||
+              {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ||
               (mainImage !== "" && operationType === "main") ? (
                 <SingleImageContainer>
                   <SingleImage
@@ -419,7 +420,7 @@ const Photos = ({ editedAlbumId }) => {
             <>
               <h3>Wybrane zdjęcia:</h3>
               <PhotoContainer>
-                {imagePreview[0].url !== "" ? (
+                {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ? (
                   imagePreview.map((preview) => (
                     <MultiImageContainer
                       key={(new Date()).getTime() + preview.url.substr(0)}

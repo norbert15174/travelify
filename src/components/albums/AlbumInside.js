@@ -65,10 +65,8 @@ const AlbumInside = ({ albumId, notifPhoto }) => {
 
   useEffect(() => {
     if (!notifPhoto) {
-      console.log("photo preview cleared");
       setPhotoPreview({ visible: false, index: null });
     } else if (notifPhoto) {
-      console.log("photo preview set");
       setPhotoPreview({ visible: true, index: notifPhoto });
     }
   }, [notifPhoto]);

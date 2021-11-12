@@ -28,7 +28,9 @@ const HistoryBox = ({ setHistory, albumId }) => {
   const [loadingFinished, setLoadingFinished] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
-
+  const [tempDates, setTempDates] = useState([]);
+  const [tempItems, setTempItems] = useState([]);
+  var uniqueDates = [];
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
     id: null,
@@ -82,7 +84,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
       .then(({ data }) => {
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
-        temp = items.map((item) => item);
+        temp = tempItems.map((item) => item);
         for (let i = 0; i < data.length; i++) {
           temp.push({
             hour: data[i].dateTime
@@ -93,8 +95,12 @@ const HistoryBox = ({ setHistory, albumId }) => {
             user: data[i].user,
             title: moment(data[i].dateTime.split(" ")[0]).format("LL"),
           });
+          setTempDates((prevState) => [
+            ...prevState,
+            { id: data[i].id, date: data[i].dateTime.split(" ")[0] },
+          ]);
         }
-        setItems(temp);
+        setTempItems(temp);
         if (hasMore) setPage((prevPageNumber) => prevPageNumber + 1);
         else setLoadingFinished(true);
       })
@@ -102,6 +108,33 @@ const HistoryBox = ({ setHistory, albumId }) => {
         console.error(error);
       });
   }
+
+  useEffect(() => {
+    if (!hasMore) {
+      let prevDate = "";
+      for (let i = 0; i < tempDates.length; i++) {
+        let date = tempDates[i].date;
+        let isUnique = true;
+        for (let j = 0; j < tempDates.length; j++) {
+          if (tempDates[j].date === date) {
+            isUnique = false;
+            break;
+          }
+        }
+        if (isUnique) uniqueDates.push(date.id);
+        else {
+          if (prevDate !== date) uniqueDates.push(tempDates[i].id);
+        }
+        prevDate = date;
+      }
+      for (let i = 0; i < tempItems.length; i++) {
+        if (!uniqueDates.includes(tempItems[i].id)) {
+          tempItems[i].title = "";
+        }
+      }
+      setItems(tempItems);
+    }
+  }, [hasMore]);
 
   if (redirectToProfile.active) {
     return (

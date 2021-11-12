@@ -7,6 +7,7 @@ import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
+import { setNotification } from "../../redux/notificationSlice";
 
 const notificationsMaleVersion = {
   PHOTO_TAG: " oznaczył cię na zdjęciu",
@@ -80,7 +81,6 @@ const UserItem = ({ notification, notificationsDisplay, date }) => {
         push
         to={{
           pathname: `/album/${notification.albumId}`,
-          state: { photoId: notification.photoId },
         }}
       />
     );
@@ -95,6 +95,15 @@ const UserItem = ({ notification, notificationsDisplay, date }) => {
             notification.status === "PHOTO_TAG" ||
             notification.status === "COMMENT"
           ) {
+            dispatch(
+              setNotification({
+                albumId: notification.albumId,
+                photoId:
+                  notification.status !== "ALBUM_SHARE"
+                    ? notification.photoId
+                    : "",
+              })
+            );
             setRedirectToAlbum(true);
           }
         }}

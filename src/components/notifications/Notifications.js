@@ -10,6 +10,7 @@ import GroupNotifications from "./GroupNotifications";
 import "./notificationsScrollbar.css";
 import { endpoints } from "../../url";
 import { setFriendsList } from "../../redux/userDataSlice";
+import { setNotification } from "../../redux/notificationSlice";
 import Toggle from "../trinkets/Toggle";
 import Tooltip from "../trinkets/Tooltip";
 import moment from "moment";
@@ -27,6 +28,7 @@ const Notifications = ({ notificationsDisplay }) => {
 
   useEffect(() => {
     getFriends();
+    setNotification({ albumId: null, photoId: null });
     moment.locale("pl");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -211,6 +213,5 @@ const OptionContainer = styled.div`
     margin: auto 25px;
   }
 `;
-
 
 export default Notifications;

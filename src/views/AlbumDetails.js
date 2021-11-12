@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import UserTemplate from "../templates/UserTemplate";
 import AlbumInside from "../components/albums/AlbumInside";
@@ -7,7 +7,7 @@ import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { errorTypes } from "../miscellanous/Utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setOwner,
   setAlbumPhotos,
@@ -17,17 +17,21 @@ import {
   setRights,
   setAlbumType,
 } from "../redux/albumDetailsSlice";
+import {
+  selectNotification,
+  setNotification,
+} from "../redux/notificationSlice";
 
 const AlbumDetails = () => {
   const [albumId, setAlbumId] = useState(null);
   const [notifPhoto, setNotifPhoto] = useState(null);
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
     useState(false);
+  const [firstRun, setFirstRun] = useState(true);
   const [error, setError] = useState(null);
-  const history = useHistory();
-
   const urlParams = useParams(); // params straight from url
   const dispatch = useDispatch();
+  const notification = useSelector(selectNotification);
 
   useEffect(() => {
     setAlbumDetailsFetchFinished(false);
@@ -36,31 +40,32 @@ const AlbumDetails = () => {
       throw new Error(errorTypes.noAccess);
     } else {
       setAlbumId(urlParams.id);
-      if (
-        history.location.state !== undefined &&
-        history.location.state.photoId
-      ) {
-        console.log("photoId: " + history.location.state.photoId);
-      } else {
-        history.replace({ state: {} });
-        setNotifPhoto(null);
-      }
+      setFirstRun(false);
       getUserAlbum(urlParams.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlParams.id]);
 
+  useEffect(() => {
+    if (notification.albumId && !firstRun) {
+      getUserAlbum(notification.albumId);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notification.photoId, notification.albumId]);
+
   async function getUserAlbum(id) {
+    setAlbumDetailsFetchFinished(false);
+    setError(null);
+    setNotifPhoto(null);
     await axios({
       method: "get",
-      url: endpoints.getAlbumDetails + urlParams.id,
+      url: endpoints.getAlbumDetails + id,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
-        console.log(data);
         let tempPhotos = [];
         let tempTags = [];
         for (let i = 0; i < data.photosDTOS.length; i++) {
@@ -68,12 +73,7 @@ const AlbumDetails = () => {
             index: i + 1,
             photo: data.photosDTOS[i],
           });
-          if (
-            history.location.state !== undefined &&
-            history.location.state.photoId &&
-            data.photosDTOS[i].photoId === history.location.state.photoId
-          ) {
-            console.log("TAK");
+          if (data.photosDTOS[i].photoId === notification.photoId) {
             setNotifPhoto(tempPhotos[i].index);
           }
           tempTags.push({
@@ -115,7 +115,7 @@ const AlbumDetails = () => {
         console.error(error);
       })
       .finally(() => {
-        history.replace({ state: {} });
+        dispatch(setNotification({ albumId: null, photoId: null }));
         setAlbumDetailsFetchFinished(true);
       });
   }

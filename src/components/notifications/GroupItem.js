@@ -32,6 +32,7 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
+  const [redirectToGroup, setRedirectToGroup] = useState(false);
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .
   const notifier =
@@ -72,12 +73,27 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
         to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
       />
     ); */
-  } 
+  }
+
+  if (redirectToGroup) {
+    notificationsDisplay("");
+    return (
+      <Redirect push to={{ pathname: `/group/${notification.groupId}` }} />
+    );
+  }
 
   return (
     <Container>
       <InnerContainer
         onClick={() => {
+          if (
+            (notification.type === "GROUP_REQUEST" &&
+              notification.status === "ACCEPTED") ||
+            (notification.type === "GROUP_REQUEST" && accepted) ||
+            notification.type === "CHANGE_GROUP_OWNER"
+          ) {
+            setRedirectToGroup(true);
+          }
           if (
             notification.type === "PHOTO_COMMENT" ||
             notification.type === "PHOTO_MARKED" ||

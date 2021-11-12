@@ -78,7 +78,7 @@ const SideSection = ({
         console.log(data);
         setTags(data.taggedList);
         dispatch(setPhotoTags(data.taggedList));
-        setComments(sortCommentsByTime(data.photoComments));
+        setComments(data.photoComments.splice(0).reverse());
         setDescription(data.description);
       })
       .catch((error) => {
@@ -95,26 +95,13 @@ const SideSection = ({
             break;
           }
         }
-        setComments(sortCommentsByTime(temp));
+        setComments(temp.splice(0).reverse());
         setDescription(currentPhotoDetail.description);
       })
       .finally(() => {
         setLoading(false);
       });
   }
-
-  const sortCommentsByTime = (input) => {
-    input = input.slice().sort((a, b) => {
-      let a_temp = a.time.split(" "); // ["date", "time"]
-      let b_temp = b.time.split(" ");
-      return a_temp[0] < b_temp[0] && a_temp[1] < b_temp[1]
-        ? -1
-        : a_temp[1] > b_temp[1] && a_temp[0] > b_temp[0]
-        ? 1
-        : 0;
-    });
-    return input.splice(0).reverse();
-  };
 
   async function sendComment(comment) {
     await axios({
@@ -129,7 +116,8 @@ const SideSection = ({
       },
     })
       .then(({ data }) => {
-        setComments(sortCommentsByTime(data));
+        console.log(data);
+        setComments(data.splice(0).reverse());
       })
       .catch((error) => {
         console.error(error);
