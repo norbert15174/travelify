@@ -132,7 +132,7 @@ const SelectValue = ({options, type, isMulti=false, setState=null, formik=false,
             isSearchable 
             isClearable={isMulti ? false : true}
             isMulti={isMulti}
-            placeholder={type === "country" ? "Wybierz kraj..." : "Wybierz..."}
+            placeholder={type === "country" ? "Wybierz kraj..." : "..."}
             noOptionsMessage={() => "No results :("}
             onChange={formik ? handleChange : setValueOnChange}
             onBlur={formik ? handleBlur : null}

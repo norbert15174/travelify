@@ -79,7 +79,6 @@ const GroupAlbumCreator = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         if (
           data.groupOwner.id.toString() ===
             sessionStorage.getItem("loggedUserId") ||
@@ -123,26 +122,17 @@ const GroupAlbumCreator = () => {
     setGroupMembersFetchFinished(false);
     await axios({
       method: "get",
-      url: endpoints.getGroupDetails + location.state.groupId,
+      url: endpoints.getGroupMembers.replace(/:groupId/i, location.state.groupId),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
-        console.log(data);
-        console.log(
-          mapFriendsToSelect(
-            data.members.filter(
-              (item) =>
-                item.id.toString() !== sessionStorage.getItem("loggedUserId")
-            ), "shared"
-          )
-        );
         dispatch(
           setMembers(
             mapFriendsToSelect(
-              data.members.filter(
+              data.filter(
                 (item) =>
                   item.id.toString() !== sessionStorage.getItem("loggedUserId")
               ), "shared"

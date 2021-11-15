@@ -116,7 +116,6 @@ const SideSection = ({
       },
     })
       .then(({ data }) => {
-        console.log(data);
         setComments(data.splice(0).reverse());
       })
       .catch((error) => {

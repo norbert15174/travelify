@@ -14,7 +14,7 @@ const notificationsMaleVersion = {
   DELETE_ALBUM: " usunął album z grupy: ",
   REMOVE_USER: " usunął cię z grupy: ",
   CHANGE_GROUP_OWNER: " mianował cię właścicielem grupy: ",
-  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu: ",
+  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu grupy: ",
 };
 
 const notificationsFemaleVersion = {
@@ -25,7 +25,7 @@ const notificationsFemaleVersion = {
   DELETE_ALBUM: " usunęła album z grupy: ",
   REMOVE_USER: " usunęła cię z grupy: ",
   CHANGE_GROUP_OWNER: " mianowała cię właścicielką grupy: ",
-  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu: ",
+  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu grupy: ",
 };
 
 const GroupItem = ({ notification, date, notificationsDisplay }) => {

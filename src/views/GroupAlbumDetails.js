@@ -69,6 +69,7 @@ const GroupAlbumDetails = () => {
           description: data.description,
           name: data.name,
           albumId: data.id,
+          groupId: data.groupId,
           creationTime: data.time,
         }));
         let tempPhotos = [];

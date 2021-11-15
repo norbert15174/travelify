@@ -269,8 +269,8 @@ const Photos = ({ editedAlbumId }) => {
     setSubmitMessage("Usuwanie....");
     await axios({
       method: "delete",
-      url: endpoints.deletePhotosFromAlbum,
-      data: photosToDelete,
+      url: endpoints.deleteGroupPhoto + photosToDelete[0],
+      /* data: photosToDelete, */
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,

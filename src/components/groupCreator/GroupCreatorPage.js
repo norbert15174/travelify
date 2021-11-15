@@ -196,7 +196,10 @@ const GroupCreatorPage = ({ editedGroupId, friendsList, creatorType }) => {
         setRedirectBackToGroup(true);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
+        setOwnerChangeBox({ active: false, newOwner: null });
+        setRefuse(false);
+        setConfirm(false);
       })
       .finally(() => {
         setConfirm(false);

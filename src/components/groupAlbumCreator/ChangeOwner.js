@@ -18,7 +18,7 @@ const ChangeOwner = ({
       <Container>
         <Text>
           Obecnie jesteś właścicielem tego albumu i masz pełne prawa do
-          zarządzania nim. Zmiana właściciela spowoduje utratę tych praw.
+          zarządzania. Zmiana właściciela spowoduje utratę tych praw.
         </Text>
         <Label>
           Wybierz nowego właściciela
