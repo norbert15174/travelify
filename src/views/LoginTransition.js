@@ -12,7 +12,6 @@ import {
   setFriendsList,
 } from "../redux/userDataSlice";
 import { endpoints } from "../url";
-import { errorTypes } from "../miscellanous/Utils";
 import somethingWentWrongIcon from "../assets/somethingWentWrongIcon.svg";
 import { mapCountriesToSelect } from "../miscellanous/Utils";
 
@@ -31,7 +30,7 @@ const LoginTransition = () => {
   // when all requests will be processed redirection to NewsPage will happen
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setGoBack(true);
     } else {
       dispatch(clearStore());
       getUserData();

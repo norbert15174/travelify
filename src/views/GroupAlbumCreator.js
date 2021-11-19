@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Redirect } from "react-router-dom";
+import { routes } from "../miscellanous/Routes";
 import axios from "axios";
 import GroupAlbumCreatorPage from "../components/groupAlbumCreator/GroupAlbumCreatorPage";
 import UserTemplate from "../templates/UserTemplate";
@@ -36,10 +37,12 @@ const GroupAlbumCreator = () => {
   const [creatorType, setCreatorType] = useState(null);
   const [editedAlbumId, setEditedAlbumId] = useState(null);
   const [groupId, setGroupId] = useState(null);
+  const [notLogged, setNotLogged] = useState(false);
+
 
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setNotLogged(true);
     } else {
       dispatch(clearStore());
       if (location.state === undefined) {
@@ -144,6 +147,10 @@ const GroupAlbumCreator = () => {
         console.error(error);
       });
     setGroupMembersFetchFinished(true);
+  }
+
+  if (notLogged) {
+    return <Redirect to={{ pathname: routes.auth }} />;
   }
 
   return (

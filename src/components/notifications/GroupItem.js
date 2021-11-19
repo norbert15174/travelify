@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
+import { setNotification } from "../../redux/notificationSlice";
 
 const notificationsMaleVersion = {
   GROUP_REQUEST: " zaprosił cię do grupy: ",
@@ -33,6 +35,7 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
   const [redirectToGroup, setRedirectToGroup] = useState(false);
+  const dispatch = useDispatch();
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .
   const notifier =
@@ -67,12 +70,12 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
 
   if (redirectToAlbum) {
     notificationsDisplay("");
-    /* return (
+    return (
       <Redirect
         push
-        to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
+        to={{ pathname: `/groupAlbum/${notification.groupAlbumId}` }}
       />
-    ); */
+    );
   }
 
   if (redirectToGroup) {
@@ -97,8 +100,18 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
           if (
             notification.type === "PHOTO_COMMENT" ||
             notification.type === "PHOTO_MARKED" ||
-            notification.type === "NEW_ALBUM"
+            notification.type === "NEW_ALBUM" ||
+            notification.type === "CHANGE_ALBUM_OWNER"
           ) {
+            dispatch(
+              setNotification({
+                albumId: notification.groupAlbumId,
+                photoId:
+                  notification.type !== "NEW_ALBUM"
+                    ? notification.pictureId
+                    : "",
+              })
+            );
             setRedirectToAlbum(true);
           }
         }}

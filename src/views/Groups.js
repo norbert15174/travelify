@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import UserTemplate from "../templates/UserTemplate";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
+import { routes } from "../miscellanous/Routes";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { errorTypes } from "../miscellanous/Utils";
@@ -10,10 +12,11 @@ const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [error, setError] = useState(null);
   const [loadingFinished, setLoadingFinished] = useState(false);
+  const [notLogged, setNotLogged] = useState(false);
 
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setNotLogged(true);
     } else {
       getUserGroups();
     }
@@ -50,6 +53,10 @@ const Groups = () => {
 
   if (error === 404) {
     throw new Error(errorTypes.notFound);
+  }
+
+  if (notLogged) {
+    return <Redirect to={{ pathname: routes.auth }} />;
   }
 
   return (

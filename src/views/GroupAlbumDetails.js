@@ -7,7 +7,7 @@ import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { endpoints } from "../url";
 import { groupMember } from "../miscellanous/Utils";
 import { errorTypes } from "../miscellanous/Utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setGroupOwner,
   setAlbumOwner,
@@ -16,16 +16,19 @@ import {
   setPhotoTags,
   setRights,
 } from "../redux/groupAlbumSlice";
+import { selectNotification, setNotification } from "../redux/notificationSlice";
 
 const GroupAlbumDetails = () => {
   const [albumId, setAlbumId] = useState(null);
   const [notifPhoto, setNotifPhoto] = useState(null);
+  const [firstRun, setFirstRun] = useState(true);
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
     useState(false);
   const [error, setError] = useState(null);
   const history = useHistory();
   const urlParams = useParams(); // params straight from url
   const dispatch = useDispatch();
+  const notification = useSelector(selectNotification);
 
   useEffect(() => {
     setAlbumDetailsFetchFinished(false);
@@ -34,26 +37,29 @@ const GroupAlbumDetails = () => {
       throw new Error(errorTypes.noAccess);
     } else {
       setAlbumId(urlParams.id);
-      if (
-        history.location.state !== undefined &&
-        history.location.state.photoId
-      ) {
-        console.log("photoId: " + history.location.state.photoId);
-      } else {
-        history.replace({ state: {} });
-        setNotifPhoto(null);
-      }
-      getGroupAlbum();
+      setFirstRun(false);
+      getGroupAlbum(urlParams.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlParams.id]);
+  }, []);
 
-  async function getGroupAlbum() {
+  useEffect(() => {
+    if (notification.albumId && !firstRun) {
+      getGroupAlbum(notification.albumId);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notification.photoId, notification.albumId]);
+
+
+  async function getGroupAlbum(id) {
+    setAlbumDetailsFetchFinished(false);
+    setError(null);
+    setNotifPhoto(null);
     await axios({
       method: "get",
       url: endpoints.getGroupAlbumDetails.replace(
         /:groupAlbumId/i,
-        urlParams.id
+        id
       ),
       headers: {
         "Content-Type": "application/json",
@@ -79,11 +85,7 @@ const GroupAlbumDetails = () => {
             index: i + 1,
             photo: data.photos[i],
           });
-          if (
-            history.location.state !== undefined &&
-            history.location.state.photoId &&
-            data.photos[i].photoId === history.location.state.photoId
-          ) {
+          if ( data.photos[i].photoId === notification.photoId) {
             setNotifPhoto(tempPhotos[i].index);
           }
           tempTags.push({
@@ -111,7 +113,7 @@ const GroupAlbumDetails = () => {
         console.error(error);
       })
       .finally(() => {
-        history.replace({ state: {} });
+        dispatch(setNotification({ albumId: null, photoId: null }));
         setAlbumDetailsFetchFinished(true);
       });
   }

@@ -36,7 +36,7 @@ const GroupDetails = () => {
       getGroupDetails();
       getGroupAlbums();
     }
-  }, []);
+  }, [urlParams.id]);
 
   async function getGroupDetails() {
     setGroupDetailsFetchFinished(false);
@@ -89,7 +89,6 @@ const GroupDetails = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setGroupAlbums(data));
       })
       .catch((error) => {

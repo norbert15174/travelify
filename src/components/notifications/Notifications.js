@@ -23,7 +23,7 @@ const toggle = {
 
 const Notifications = ({ notificationsDisplay }) => {
   const blurState = useSelector((state) => state.blur.value);
-  const [type, setType] = useState(toggle.user);
+  const [type, setType] = useState(toggle.group);
   const dispatch = useDispatch();
 
   useEffect(() => {

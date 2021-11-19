@@ -8,6 +8,8 @@ import { endpoints } from "../url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
 import { errorTypes } from "../miscellanous/Utils";
 import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { routes } from "../miscellanous/Routes";
 import {
   setOwner,
   setAlbumPhotos,
@@ -32,12 +34,13 @@ const AlbumDetails = () => {
   const urlParams = useParams(); // params straight from url
   const dispatch = useDispatch();
   const notification = useSelector(selectNotification);
+  const [notLogged, setNotLogged] = useState(false);
 
   useEffect(() => {
     setAlbumDetailsFetchFinished(false);
     setError(null);
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setNotLogged(true);
     } else {
       setAlbumId(urlParams.id);
       setFirstRun(false);
@@ -52,6 +55,10 @@ const AlbumDetails = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notification.photoId, notification.albumId]);
+
+  if (notLogged) {
+    return <Redirect to={{ pathname: routes.auth }} />;
+  }
 
   async function getUserAlbum(id) {
     setAlbumDetailsFetchFinished(false);
