@@ -96,12 +96,11 @@ const User = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         setPersonalData(data.personalDataDTO);
         setInvidualAlbums(data.individualAlbumDTO);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setError(error);
       })
       .finally(() => {
@@ -174,6 +173,7 @@ const User = () => {
         setFriends(data);
       })
       .catch((error) => {
+        console.error(error);
         setError(error);
       })
       .finally(() => {

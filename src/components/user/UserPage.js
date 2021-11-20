@@ -406,6 +406,8 @@ const UserPage = ({
               visitedCountries={
                 personalData.personalDescription.visitedCountries
               }
+              birthday={personalData.birthday}
+              phoneNumber={personalData.phoneNumber}
             />
           )}
           {albumsActive && (

@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import birthdayIcon from "./assets/birthdayIcon.svg";
 import homeIcon from "./assets/homeIcon.svg";
 import aboutIcon from "./assets/aboutIcon.svg";
 import interestsIcon from "./assets/interestsIcon.svg";
 import visitedIcon from "./assets/visitedIcon.svg";
+import phoneIcon from "./assets/phoneIcon.svg";
 import { getCountryData } from "../../miscellanous/Utils";
+import moment from "moment";
+import "moment/locale/pl";
 
-const InfoSection = ({ nationality, about, interest, visitedCountries }) => {
+const InfoSection = ({
+  nationality,
+  about,
+  interest,
+  visitedCountries,
+  birthday,
+  phoneNumber,
+}) => {
   const [mappedVisitedCountries, setMappedVisitedCountries] = useState(null);
 
   useEffect(() => {
+    moment.locale("pl");
     if (visitedCountries !== undefined) {
       setMappedVisitedCountries(getCountryData(visitedCountries));
     }
@@ -23,6 +35,11 @@ const InfoSection = ({ nationality, about, interest, visitedCountries }) => {
         <Line />
       </Header>
       <Title>
+        <Icon src={birthdayIcon} />
+        <h3>Data urodzenia</h3>
+      </Title>
+      <Text>{moment(birthday).format("LL")}</Text>
+      <Title>
         <Icon src={homeIcon} />
         <h3>Pochodzenie</h3>
       </Title>
@@ -32,6 +49,11 @@ const InfoSection = ({ nationality, about, interest, visitedCountries }) => {
           {nationality.country}
         </Country>
       </Text>
+      <Title>
+        <Icon src={phoneIcon} />
+        <h3>Telefon</h3>
+      </Title>
+      <Text>{phoneNumber !== 0 ? phoneNumber : <p>Brak numeru</p>}</Text>
       <Title>
         <Icon src={aboutIcon} />
         <h3>O mnie</h3>
