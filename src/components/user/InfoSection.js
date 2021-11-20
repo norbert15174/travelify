@@ -38,7 +38,7 @@ const InfoSection = ({
         <Icon src={birthdayIcon} />
         <h3>Data urodzenia</h3>
       </Title>
-      <Text>{moment(birthday).format("LL")}</Text>
+      <Text>{moment().diff(birthday, 'years')} lat, {moment(birthday).format("LL")}</Text>
       <Title>
         <Icon src={homeIcon} />
         <h3>Pochodzenie</h3>
