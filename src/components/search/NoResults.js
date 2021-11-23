@@ -22,8 +22,7 @@ const NoResults = ({ searchType }) => {
 };
 
 const Container = styled.div`
-  height: 100%;
-  //height: calc(100vh - 369px); // 369px - sum of height of the Header, SearchNavigation and all margins between containers
+  margin-bottom: 15px;
   border-radius: 15px;
   background-color: ${({ theme }) => theme.color.lightBackground};
   padding: 20px 25px;

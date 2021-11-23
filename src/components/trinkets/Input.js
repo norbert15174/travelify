@@ -12,7 +12,6 @@ const Input = styled.input`
     font-weight: ${({theme}) => theme.fontWeight.medium};
     
     ::placeholder {
-        //text-transform: capitalize;
         letter-spacing: 1px;
         color: ${({theme}) => theme.greyFont};
     }
