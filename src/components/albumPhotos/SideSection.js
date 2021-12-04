@@ -78,8 +78,7 @@ const SideSection = ({
       .then(({ data }) => {
         setTags(data.taggedList);
         dispatch(setPhotoTags(data.taggedList));
-        let temp = sortCommentsByTime(data.photoComments);
-        setComments(temp);
+        setComments(sortCommentsByTime(data.photoComments));
         setDescription(data.description);
       })
       .catch((error) => {

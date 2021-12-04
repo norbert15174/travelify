@@ -5,9 +5,6 @@ import Register from "./register";
 import styled from "styled-components";
 import BackgroundImage from "./assets/BackgroundImage.jpg";
 
-// no = login
-// yes = register
-
 const Auth = () => {
   const location = useLocation();
   const [registerSuccess, setRegisterSuccess] = useState(false);

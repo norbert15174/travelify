@@ -96,8 +96,7 @@ const GroupAlbumCreatorPage = ({
   useEffect(() => {
     if (ownerChangeBox.active && rights === groupMember.owner) {
       if (confirm) {
-        /* changeOwner(); */
-        console.log(ownerChangeBox.newOwner);
+        changeOwner();
       }
       if (refuse) {
         setOwnerChangeBox({ active: false, newOwner: null });
@@ -185,7 +184,7 @@ const GroupAlbumCreatorPage = ({
   function deleteAlbum() {
     axios({
       method: "delete",
-      url: endpoints.deleteAlbum + editedAlbumId,
+      url: endpoints.deleteGroupAlbum + editedAlbumId,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
@@ -199,6 +198,34 @@ const GroupAlbumCreatorPage = ({
       })
       .finally((error) => {
         setDeleteBox(false);
+        setConfirm(false);
+      });
+  }
+
+  async function changeOwner() {
+    console.log(ownerChangeBox.newOwner.id)
+    await axios({
+      method: "put",
+      url: endpoints.editGroupAlbum + editedAlbumId,
+      data: {
+        newOwnerId: ownerChangeBox.newOwner.id,
+      },
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+        withCredentials: true,
+      },
+    })
+      .then(() => {
+        setRedirectBackToAlbum(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setOwnerChangeBox({ active: false, newOwner: null });
+        setRefuse(false);
         setConfirm(false);
       });
   }
@@ -311,8 +338,6 @@ const GroupAlbumCreatorPage = ({
                   <h1>Zmiana właściciela</h1>
                 </Header>
                 <ChangeOwner
-                  editedAlbumId={editedAlbumId}
-                  setRedirectBackToAlbum={setRedirectBackToAlbum}
                   setOwnerChangeBox={setOwnerChangeBox}
                 />
               </SectionContainer>

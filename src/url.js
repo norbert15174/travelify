@@ -72,4 +72,7 @@ export const endpoints = {
     addSinglePhotoToGroupAlbum: url + "/group/albums/photos/", // +groupAlbumId, POST
     addMultiplePhotosToGroupAlbum: url + "/group/albums/photos/multiple/", // +groupAlbumId, POST
     setGroupAlbumMainPhoto: url + "/group/albums/main/", // + groupAlbumId, PUT
+    getGroupMembers: url + "/group/:groupId/members",
+    deleteGroupAlbum: url + "/group/albums/", // + groupAlbumId, DELETE
+    deleteGroupPhoto: url + "/group/albums/photos/delete", // + groupPhotoId, DELETE
 }

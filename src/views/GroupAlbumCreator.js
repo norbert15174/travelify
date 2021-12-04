@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Redirect } from "react-router-dom";
+import { routes } from "../miscellanous/Routes";
 import axios from "axios";
 import GroupAlbumCreatorPage from "../components/groupAlbumCreator/GroupAlbumCreatorPage";
 import UserTemplate from "../templates/UserTemplate";
@@ -36,10 +37,12 @@ const GroupAlbumCreator = () => {
   const [creatorType, setCreatorType] = useState(null);
   const [editedAlbumId, setEditedAlbumId] = useState(null);
   const [groupId, setGroupId] = useState(null);
+  const [notLogged, setNotLogged] = useState(false);
+
 
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setNotLogged(true);
     } else {
       dispatch(clearStore());
       if (location.state === undefined) {
@@ -79,7 +82,6 @@ const GroupAlbumCreator = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         if (
           data.groupOwner.id.toString() ===
             sessionStorage.getItem("loggedUserId") ||
@@ -123,26 +125,17 @@ const GroupAlbumCreator = () => {
     setGroupMembersFetchFinished(false);
     await axios({
       method: "get",
-      url: endpoints.getGroupDetails + location.state.groupId,
+      url: endpoints.getGroupMembers.replace(/:groupId/i, location.state.groupId),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
-        console.log(data);
-        console.log(
-          mapFriendsToSelect(
-            data.members.filter(
-              (item) =>
-                item.id.toString() !== sessionStorage.getItem("loggedUserId")
-            ), "shared"
-          )
-        );
         dispatch(
           setMembers(
             mapFriendsToSelect(
-              data.members.filter(
+              data.filter(
                 (item) =>
                   item.id.toString() !== sessionStorage.getItem("loggedUserId")
               ), "shared"
@@ -154,6 +147,10 @@ const GroupAlbumCreator = () => {
         console.error(error);
       });
     setGroupMembersFetchFinished(true);
+  }
+
+  if (notLogged) {
+    return <Redirect to={{ pathname: routes.auth }} />;
   }
 
   return (

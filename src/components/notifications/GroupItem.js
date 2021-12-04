@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { endpoints } from "../../url";
+import { setNotification } from "../../redux/notificationSlice";
 
 const notificationsMaleVersion = {
   GROUP_REQUEST: " zaprosił cię do grupy: ",
@@ -14,7 +16,7 @@ const notificationsMaleVersion = {
   DELETE_ALBUM: " usunął album z grupy: ",
   REMOVE_USER: " usunął cię z grupy: ",
   CHANGE_GROUP_OWNER: " mianował cię właścicielem grupy: ",
-  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu: ",
+  CHANGE_ALBUM_OWNER: " mianował cię właścicielem albumu grupy: ",
 };
 
 const notificationsFemaleVersion = {
@@ -25,13 +27,15 @@ const notificationsFemaleVersion = {
   DELETE_ALBUM: " usunęła album z grupy: ",
   REMOVE_USER: " usunęła cię z grupy: ",
   CHANGE_GROUP_OWNER: " mianowała cię właścicielką grupy: ",
-  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu: ",
+  CHANGE_ALBUM_OWNER: " mianowała cię właścicielką albumu grupy: ",
 };
 
 const GroupItem = ({ notification, date, notificationsDisplay }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
+  const [redirectToGroup, setRedirectToGroup] = useState(false);
+  const dispatch = useDispatch();
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .
   const notifier =
@@ -66,23 +70,48 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
 
   if (redirectToAlbum) {
     notificationsDisplay("");
-    /* return (
+    return (
       <Redirect
         push
-        to={{ pathname: `/album/${albumId}`, state: { photoId: photoId } }}
+        to={{ pathname: `/groupAlbum/${notification.groupAlbumId}` }}
       />
-    ); */
-  } 
+    );
+  }
+
+  if (redirectToGroup) {
+    notificationsDisplay("");
+    return (
+      <Redirect push to={{ pathname: `/group/${notification.groupId}` }} />
+    );
+  }
 
   return (
     <Container>
       <InnerContainer
         onClick={() => {
           if (
+            (notification.type === "GROUP_REQUEST" &&
+              notification.status === "ACCEPTED") ||
+            (notification.type === "GROUP_REQUEST" && accepted) ||
+            notification.type === "CHANGE_GROUP_OWNER"
+          ) {
+            setRedirectToGroup(true);
+          }
+          if (
             notification.type === "PHOTO_COMMENT" ||
             notification.type === "PHOTO_MARKED" ||
-            notification.type === "NEW_ALBUM"
+            notification.type === "NEW_ALBUM" ||
+            notification.type === "CHANGE_ALBUM_OWNER"
           ) {
+            dispatch(
+              setNotification({
+                albumId: notification.groupAlbumId,
+                photoId:
+                  notification.type !== "NEW_ALBUM"
+                    ? notification.pictureId
+                    : "",
+              })
+            );
             setRedirectToAlbum(true);
           }
         }}

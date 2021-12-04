@@ -375,7 +375,7 @@ const Photos = ({ editedAlbumId }) => {
               <h3>
                 {addType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
               </h3>
-              {imagePreview[0].url !== "" ||
+              {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ||
               (mainImage !== "" && addType === "main") ? (
                 <SingleImageContainer>
                   <SingleImage
@@ -393,7 +393,7 @@ const Photos = ({ editedAlbumId }) => {
             <>
               <h3>Wybrane zdjęcia:</h3>
               <PhotoContainer>
-                {imagePreview[0].url !== "" ? (
+                {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ? (
                   imagePreview.map((preview) => (
                     <MultiImageContainer
                       key={new Date().getTime() + preview.url.substr()}

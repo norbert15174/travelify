@@ -38,10 +38,22 @@ const section = {
   map: "map",
 };
 
+const exampleFunction = (array) => {
+  let jsxTag;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].name === "item") {
+      jsxTag = <h1>Item with name {array[i].name} has been found!</h1>;
+      break;
+    }
+  }
+  return jsxTag;
+};
+
 const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);
-  const [currentSection, setCurrentSection] = useState(section.info);
+  const [currentSection, setCurrentSection] = useState(section.albums);
+  const [descOn, setDescOn] = useState(true);
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
     id: null,
@@ -322,10 +334,7 @@ const GroupInside = ({ groupId }) => {
             </RowSection>
             <Line />
             <SectionButtons>
-              <Button
-                active={currentSection === section.info ? true : false}
-                onClick={() => setCurrentSection(section.info)}
-              >
+              <Button active={descOn} onClick={() => setDescOn(!descOn)}>
                 <p>Opis</p>
               </Button>
               <Button
@@ -350,7 +359,7 @@ const GroupInside = ({ groupId }) => {
           </InnerContainer>
         </Header>
         <SectionContainer>
-          {currentSection === section.info && <DescriptionSection />}
+          {descOn && <DescriptionSection />}
           {currentSection === section.members && (
             <MembersSection
               setMemberToRemove={setMemberToRemove}
@@ -360,7 +369,9 @@ const GroupInside = ({ groupId }) => {
           {currentSection === section.albums && (
             <GroupAlbumSection groupId={groupId} />
           )}
-          {currentSection === section.map && <MapSection data={groupAlbums} type="groups"/>}
+          {currentSection === section.map && (
+            <MapSection data={groupAlbums} type="groups" />
+          )}
         </SectionContainer>
       </Container>
     </>

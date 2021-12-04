@@ -95,10 +95,9 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
   const addFriend = () => {
     selectedFriends.map((selectedFriend) => {
       setFriendsError("");
-      // for friends we should be checking id's
       if (
         Array.from(sharedFriends).find(
-          (element) => element.name === selectedFriend.value
+          (element) => element.userId === selectedFriend.id
         )
       ) {
         setFriendsError("Jedna z osób została już przez ciebie dodana!");

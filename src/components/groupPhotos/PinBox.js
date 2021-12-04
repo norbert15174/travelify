@@ -5,9 +5,9 @@ import Input from "../trinkets/Input";
 import PinMemberThumbnail from "./PinMemberThumbnail";
 import axios from "axios";
 import "./styles/photosScrollbar.css";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { endpoints } from "../../url";
-import { setMembers } from "../../redux/groupAlbumSlice";
+import { selectGroupId } from "../../redux/groupAlbumSlice";
 
 const PinBox = ({ setClose, heightDelimiter, photoId }) => {
   // search field content
@@ -15,7 +15,7 @@ const PinBox = ({ setClose, heightDelimiter, photoId }) => {
   const [found, setFound] = useState([]);
 
   const ref = useRef(null);
-  const dispatch = useDispatch();
+  const groupId = useSelector(selectGroupId);
 
   const [list, setList] = useState([]);
 
@@ -27,16 +27,15 @@ const PinBox = ({ setClose, heightDelimiter, photoId }) => {
   async function getMembers() {
     await axios({
       method: "get",
-      url: endpoints.getGroupDetails + 46,
+      url: endpoints.getGroupMembers.replace(/:groupId/i, groupId),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
       .then(({ data }) => {
-        dispatch(setMembers(data.members));
         setList(
-          data.members.filter(
+          data.filter(
             (item) =>
               item.id.toString() !== sessionStorage.getItem("loggedUserId")
           )

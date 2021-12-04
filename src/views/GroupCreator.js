@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import UserTemplate from "../templates/UserTemplate";
-import { useLocation } from "react-router-dom";
+import { useLocation, Redirect } from "react-router-dom";
+import { routes } from "../miscellanous/Routes";
 import axios from "axios";
 import { endpoints } from "../url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import {
-  errorTypes,
   groupCreator,
   mapFriendsToSelect,
 } from "../miscellanous/Utils";
@@ -19,6 +19,7 @@ import {
 } from "../redux/groupCreatorSlice";
 
 const GroupCreator = () => {
+  const [notLogged, setNotLogged] = useState(false);
   const [userFriendsFetchFinished, setUserFriendsFetchFinished] =
     useState(false);
   const [groupToEditFetchFinished, setGroupToEditFetchFinished] =
@@ -32,7 +33,7 @@ const GroupCreator = () => {
 
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      setNotLogged(true);
     } else {
       dispatch(clearStore());
       setError(null);
@@ -107,6 +108,10 @@ const GroupCreator = () => {
       .finally(() => {
         setUserFriendsFetchFinished(true);
       });
+  }
+
+  if (notLogged) {
+    return <Redirect to={{ pathname: routes.auth }} />;
   }
 
   return (

@@ -132,10 +132,10 @@ const Menu = () => {
           <NavButton icon={groups} active={currentUrl === "group" ? true : false} data-tip data-for="groupsTip" />
           <Tooltip id="groupsTip" place="bottom" text="Grupy" />
         </Link>
-        {/* <Link to={routes.search}>
+        <Link to={routes.search}>
           <NavButton icon={search} active={currentUrl === routes.search ? true : false} data-tip data-for="searchTip" />
           <Tooltip id="searchTip" place="bottom" text="Wyszukiwarka" />
-        </Link> */}
+        </Link>
         <Logout
           icon={logout}
           onClick={() => setLogoutBox(!logoutBox)}

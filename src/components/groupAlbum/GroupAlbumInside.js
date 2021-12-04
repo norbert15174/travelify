@@ -12,11 +12,10 @@ import Carousel from "../groupPhotos/Carousel";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector } from "react-redux";
-import { groupMember, albumCreator } from "../../miscellanous/Utils";
+import { albumCreator } from "../../miscellanous/Utils";
 import {
   selectAlbumOwner,
   selectInfo,
-  selectRights,
 } from "../../redux/groupAlbumSlice";
 import HistoryBox from "./HistoryBox";
 import moment from "moment";
@@ -53,7 +52,6 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
   const blurState = useSelector((state) => state.blur.value);
   const owner = useSelector(selectAlbumOwner);
   const info = useSelector(selectInfo);
-  const rights = useSelector(selectRights);
 
   useEffect(() => {
     if (!notifPhoto) {
@@ -63,7 +61,6 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
     }
   }, [notifPhoto]);
 
-  // goes to album edit screen
   if (redirectToAlbumsCreator.active) {
     return (
       <Redirect
@@ -72,7 +69,7 @@ const GroupAlbumInside = ({ albumId, notifPhoto }) => {
           state: {
             creatorType: albumCreator.edition,
             albumId: redirectToAlbumsCreator.albumId,
-            groupId: 46,
+            groupId: info.groupId,
           },
         }}
       />

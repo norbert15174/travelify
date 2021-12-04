@@ -14,7 +14,6 @@ const initialState = {
   },
   albumPhotos: [],
   photoTags: [],
-  members: [],
 };
 
 export const groupAlbumDetailsSlice = createSlice({
@@ -39,15 +38,13 @@ export const groupAlbumDetailsSlice = createSlice({
     setAlbumPhotos: (state, action) => {
       state.albumPhotos = action.payload;
     },
-    setMembers: (state, action) => {
-      state.members = action.payload;
-    },
     clearStore: (state) => {
       state.info = {
         coordinate: null,
         description: "",
         name: "",
         albumId: null,
+        groupId: null,
         creationTime: "",
       };
       state.albumPhotos = [];
@@ -67,7 +64,6 @@ export const {
   setAlbumPhotos,
   setInfo,
   clearStore,
-  setMembers,
   setPhotoTags,
 } = groupAlbumDetailsSlice.actions;
 
@@ -78,6 +74,6 @@ export const selectGroupOwner = (state) => state.groupAlbumDetails.groupOwner;
 export const selectAlbumPhotos = (state) => state.groupAlbumDetails.albumPhotos;
 export const selectRights = (state) => state.groupAlbumDetails.rights;
 export const selectPhotoTags = (state) => state.groupAlbumDetails.photoTags;
-export const selectMembers = (state) => state.groupAlbumDetails.members;
+export const selectGroupId = (state) => state.groupAlbumDetails.info.groupId;
 
 export default groupAlbumDetailsSlice.reducer;
