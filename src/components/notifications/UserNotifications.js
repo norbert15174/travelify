@@ -26,7 +26,7 @@ const UserNotifications = ({ notificationsDisplay }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
+
         setUserNotifications(data);
       })
       .catch((error) => {

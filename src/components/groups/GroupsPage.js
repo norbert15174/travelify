@@ -58,7 +58,6 @@ const GroupsPage = ({ groups }) => {
   }
 
   if (groupIdSearch) {
-    console.log(groupIdSearch);
     return (
       <Redirect
         push

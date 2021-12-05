@@ -75,7 +75,6 @@ const SideSection = ({
       },
     })
       .then(({ data }) => {
-        console.log(data);
         setTags(data.taggedList);
         dispatch(setPhotoTags(data.taggedList));
         setComments(data.photoComments.splice(0).reverse());

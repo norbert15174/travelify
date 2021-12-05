@@ -58,7 +58,6 @@ const NewsPage = () => {
         if (data.length === 0) {
           setNoMoreNews(true);
         } else {
-          console.log(data);
           for (let i = 0; i < data.length; i++) {
             let temp = data[i];
             if (temp.public) {

@@ -128,7 +128,6 @@ export function getCountryId(countryName) {
 }
 
 export function getCountryName(countryId) {
-  console.log(countryId);
   let list = JSON.parse(sessionStorage.getItem("countryList"));
   let found = "";
   for (let i = 0; i < list.length; i++) {
@@ -136,7 +135,6 @@ export function getCountryName(countryId) {
       found = list[i].country;
     }
   }
-  console.log(found);
   return found;
 }
 

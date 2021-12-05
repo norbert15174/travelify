@@ -64,7 +64,7 @@ const GroupItem = ({ notification, date, notificationsDisplay }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 

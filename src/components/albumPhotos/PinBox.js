@@ -46,10 +46,9 @@ const PinBox = ({ setClose, heightDelimiter, photoId }) => {
     })
       .then(({ data }) => {
         setList(data);
-        console.log(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 

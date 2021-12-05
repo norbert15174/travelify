@@ -104,7 +104,7 @@ const PersonalInfoForm = ({ personalData }) => {
         })
         .catch((error) => {
           setErrorAtPutting(error);
-          console.log(error);
+          console.error(error);
         });
       //actions.setSubmitting(false); // not needed when onSubmit is async
       actions.resetForm();

@@ -122,7 +122,6 @@ const Localization = ({ editedAlbumId, creatorType, setForm }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         dispatch(
           setCoordinate({
             country: {

@@ -48,7 +48,7 @@ const DescriptionForm = ({ type, data }) => {
       })
       .catch((error) => {
         setErrorAtPutting(error);
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setPutting(false);

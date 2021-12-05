@@ -45,7 +45,6 @@ const SearchPage = () => {
     },
     onSubmit: async (values, actions) => {
       // search
-      console.log(values);
       setSearching(false);
       setSearchFinished(false);
       setFoundItems([]);

@@ -48,7 +48,6 @@ const Messenger = ({
 
   useEffect(() => {
     if (chatUpdate.size > 0 && chatUpdate.has(user.friendId)) {
-      console.log(chatUpdate);
       if (givenMessages) {
         chatUpdate.delete(user.friendId);
         setChatUpdate(chatUpdate);
@@ -96,7 +95,6 @@ const Messenger = ({
       )
       .then((response) => {
         let lastId = new Set(givenMessages.map((e) => e.id));
-        console.log(response.data);
         let responseToSave = [];
         for (let i = 0; i < response.data.length; i++) {
           if (!lastId.has(response.data[i].id)) {
@@ -170,7 +168,6 @@ const Messenger = ({
       )
       .then((response) => {
         let lastId = new Set(givenMessages.map((e) => e.id));
-        console.log(response.data);
         let responseToSave = [];
         for (let i = 0; i < response.data.length; i++) {
           if (!lastId.has(response.data[i].id)) {
@@ -217,7 +214,6 @@ const Messenger = ({
     ref.focus();
     const start = message.substring(0, ref.selectionStart);
     const end = message.substring(ref.selectionStart);
-    //console.log(emojiObject)
     setMessage(start + emojiObject.emoji + end);
     setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
   };
@@ -244,7 +240,6 @@ const Messenger = ({
   const onEnter = (e) => {
     if (e.key === "Enter") {
       if (message !== "") {
-        console.log(message);
         setShowEmoji(false);
         sendMessage();
       }

@@ -26,7 +26,6 @@ const AddComment = ({ add, currentPhotoIndex }) => {
         ref.focus();
         const start = comment.substring(0, ref.selectionStart);
         const end = comment.substring(ref.selectionStart);
-        //console.log(emojiObject)
         setComment(start + emojiObject.emoji + end);
         setCursorPos(start.length + emojiObject.emoji.length); // cursor pos after emoji
     };

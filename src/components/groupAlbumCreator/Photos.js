@@ -230,7 +230,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setMainPhotoRedux(data.mainPhoto));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
@@ -299,7 +299,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setAlbumPhotosRedux(albumImages));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setAlbumImages(photos);
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
@@ -336,7 +336,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setAlbumPhotosRedux(temp));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })

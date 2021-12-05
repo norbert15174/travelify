@@ -9,7 +9,6 @@ class ErrorBoundary extends Component {
   
     // renders error UI
     static getDerivedStateFromError(error) {
-        //console.log(error);
         return { error: error };
     }
   

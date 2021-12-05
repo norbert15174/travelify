@@ -34,11 +34,9 @@ const EditProfilePage = ({ personalData }) => {
   useEffect(() => {
     if (deleteBox) {
       if (confirmDeletingAccount) {
-        console.log("account has been deleted");
         setConfirmDeletingAccount(false);
         setDeleteBox(false);
       } else if (refuseDeletingAccount) {
-        console.log("account hasn't been deleted");
         setRefuseDeletingAccount(false);
         setDeleteBox(false);
       }

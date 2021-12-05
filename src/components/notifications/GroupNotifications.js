@@ -35,7 +35,6 @@ const GroupNotifications = ({ notificationsDisplay }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
         if (groupNotifications && type === "scrollUpdate") {

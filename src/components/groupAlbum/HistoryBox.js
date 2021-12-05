@@ -82,7 +82,6 @@ const HistoryBox = ({ setHistory, albumId }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
         temp = tempItems.map((item) => item);

@@ -92,7 +92,7 @@ const Members = ({ friendsList, setForm, form }) => {
   };
 
   useEffect(() => {
-    console.log(newMembers.length)
+    
   }, [newMembers])
 
   return (

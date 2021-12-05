@@ -31,10 +31,10 @@ const EditProfile = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         setPersonalData(data.personalDataDTO);
       })
       .catch((error) => {
+        console.error(error);
         setError(error);
       })
       .finally(() => {

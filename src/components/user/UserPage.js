@@ -143,11 +143,10 @@ const UserPage = ({
       },
     })
       .then((response) => {
-        console.log(response);
         setInvitationSend(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setErrorAtInvitation(error);
       })
       .finally(() => {
@@ -184,7 +183,7 @@ const UserPage = ({
         setFriends(temp);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         dispatch(setFriendToDeleteId(null));

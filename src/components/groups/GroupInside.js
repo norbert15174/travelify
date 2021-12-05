@@ -131,7 +131,6 @@ const GroupInside = ({ groupId }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         dispatch(setMembers(response.data.members));
       })
       .catch((error) => {

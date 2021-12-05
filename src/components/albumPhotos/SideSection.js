@@ -129,7 +129,7 @@ const SideSection = ({
         setComments(temp);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 

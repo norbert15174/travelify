@@ -98,7 +98,6 @@ const InvitationBox = ({ setClose, groupId }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setRequests(data));
       })
       .catch((error) => {

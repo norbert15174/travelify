@@ -52,7 +52,6 @@ const GroupChat = ({ chatsDisplay }) => {
     client.connect({}, function () {
       client.subscribe("/topic/" + userId, function (message) {
         var friendId = JSON.parse(message.body).friendId;
-        console.log("group: " + friendId);
         setMessageNotifications(
           (prevState) => new Set([...prevState, friendId])
         );

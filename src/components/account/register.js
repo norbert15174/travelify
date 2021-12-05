@@ -105,8 +105,6 @@ const Register = ({
       }
     }
 
-    console.log(errors);
-
     return errors;
   };
 
@@ -164,7 +162,6 @@ const Register = ({
           },
         })
           .then((response) => {
-            console.log(response);
             setRegisterSuccess(true);
             setCurrentScreen("login");
           })

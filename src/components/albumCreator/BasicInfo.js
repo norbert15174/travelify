@@ -211,10 +211,9 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
       },
     })
       .then((response) => {
-        console.log(response);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setError(true);
       })
       .finally(() => {
@@ -240,11 +239,10 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         setShareAddFinished(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setError(true);
       })
       .finally(() => {
@@ -394,7 +392,6 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
                   if (!basicInfo.public) {
                     setIsDirty(true);
                   }
-                  console.log(sharedFriends);
                 }
               }}
             >
@@ -409,7 +406,6 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
                   if (basicInfo.public) {
                     setIsDirty(true);
                   }
-                  console.log(sharedFriends);
                 }
                 if (formSubmitted) {
                   setFormSubmitted(false);

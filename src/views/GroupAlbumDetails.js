@@ -67,7 +67,6 @@ const GroupAlbumDetails = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setAlbumOwner(data.albumOwner));
         dispatch(setGroupOwner(data.groupOwner));
         dispatch(setInfo({

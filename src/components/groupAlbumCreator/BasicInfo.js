@@ -126,7 +126,7 @@ const BasicGroupInfo = ({ creatorType, editedAlbumId, setForm }) => {
         );
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setName(basicInfo.name);
         setDescription(basicInfo.description);
         setError(true);

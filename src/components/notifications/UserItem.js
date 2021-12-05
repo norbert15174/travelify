@@ -69,7 +69,7 @@ const UserItem = ({ notification, notificationsDisplay, date }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 
