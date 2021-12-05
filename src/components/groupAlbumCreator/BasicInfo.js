@@ -174,7 +174,7 @@ const BasicGroupInfo = ({ creatorType, editedAlbumId, setForm }) => {
               if (!isDirty) setIsDirty(true);
             }}
             placeholder="Dodaj opis albumu..."
-            maxLength={500}
+            maxLength={800}
           />
         </Label>
       </Container>

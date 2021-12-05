@@ -17,7 +17,7 @@ import ReactLoading from "react-loading";
 const EVENT_TEXT = {
   NEW_PHOTO: "Dodano nowe zdjęcie do albumu",
   CHANGED_ALBUM: "Wprowadzono zmiany w albumie",
-  NEW_OWNER: "Nowy właściciel albumu",
+  NEW_OWNER: "Nie jest już właścicielem",
   CREATE_ALBUM: "Stworzenie albumu",
   CHANGED_MAIN_PHOTO: "Zmiana zdjęcia głównego",
   NEW_PHOTOS: "Dodano nowe zdjęcia",
@@ -82,6 +82,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
       },
     })
       .then(({ data }) => {
+        console.log(data);
         if (data.length > 0) setHasMore(true);
         else setHasMore(false);
         temp = tempItems.map((item) => item);

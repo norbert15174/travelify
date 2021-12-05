@@ -122,7 +122,7 @@ const Login = ({
             <SubmitSuccess>
               Rejestracja zakończona sukcesem!
               <br />
-              Aktywuj konto klikając w link otrzymany na skrzynkę
+              Aktywuj konto klikając w link otrzymany na skrzynkę pocztową
             </SubmitSuccess>
           ) : null}
         </InputContainer>

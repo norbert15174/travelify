@@ -351,9 +351,13 @@ const SideSection = ({
           ) : (
             <NoCommments>
               Sekcja komentarzy jest pusta...
-              <br />
-              Podziel się zdjęciem, a być może ktoś doceni jego piękno i zostawi
-              miły komentarz &#128522;
+              {rights === groupMember.owner && (
+                <>
+                  <br />
+                  Podziel się zdjęciem, a być może ktoś doceni jego piękno i
+                  zostawi miły komentarz &#128522;
+                </>
+              )}
             </NoCommments>
           )
         ) : (

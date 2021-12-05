@@ -60,8 +60,8 @@ const PhotoChange = ({ type, photo }) => {
       document.getElementById(type).value = null;
       return;
     }
-    if (file.size >= 1000000) {
-      setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+    if (file.size >= 10000000) {
+      setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
       document.getElementById(type).value = null;
       return;
     }

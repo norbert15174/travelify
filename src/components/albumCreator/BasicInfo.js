@@ -372,7 +372,7 @@ const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
               }
             }}
             placeholder="Dodaj opis albumu..."
-            maxLength={500}
+            maxLength={800}
           />
         </Label>
         <Label>

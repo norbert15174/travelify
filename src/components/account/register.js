@@ -62,7 +62,12 @@ const Register = ({
     if (values.surname && /\d/g.test(values.surname)) {
       errors.surname =
         "Naziwsko nie powinno zawierać cyfr/znaków specjalnych !";
-    } else if (values.surname && /[^a-zA-Z\d]/.test(values.surname)) {
+    } else if (
+      values.surname &&
+      /[^a-zA-ZAaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż\s\d]/.test(
+        values.surname
+      )
+    ) {
       errors.surname =
         "Naziwsko nie powinno zawierać cyfr/znaków specjalnych !";
     } else if (values.surname && values.surname.length < 2) {

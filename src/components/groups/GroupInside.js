@@ -52,7 +52,7 @@ const exampleFunction = (array) => {
 const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);
-  const [currentSection, setCurrentSection] = useState(section.albums);
+  const [currentSection, setCurrentSection] = useState(section.members);
   const [descOn, setDescOn] = useState(true);
   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
