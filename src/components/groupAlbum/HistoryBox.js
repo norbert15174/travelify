@@ -134,6 +134,7 @@ const HistoryBox = ({ setHistory, albumId }) => {
       }
       setItems(tempItems);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore]);
 
   if (redirectToProfile.active) {

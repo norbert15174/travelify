@@ -17,6 +17,7 @@ import {
   selectMainPhotoRedux,
   setMainPhotoRedux,
 } from "../../redux/albumCreatorSlice";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 
 const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
@@ -37,11 +38,6 @@ const Photos = ({ editedAlbumId }) => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [photosToDelete, setPhotosToDelete] = useState([]);
 
-  const SIZE_LIMIT = {
-    TOTAL: 50000000,
-    SINGLE: 10000000,
-  };
-
   const multipleFilesHandler = (e) => {
     setIsDirty(true);
 
@@ -61,7 +57,7 @@ const Photos = ({ editedAlbumId }) => {
         return false;
       }
 
-      if (file.size >= SIZE_LIMIT.SINGLE) {
+      if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
         setErrorMessage("Maksymalny rozmiar pojedynczego zdjęcia to 10MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
@@ -72,9 +68,10 @@ const Photos = ({ editedAlbumId }) => {
 
       if (
         !file.type.includes("image/jpeg") &&
-        !file.type.includes("image/png")
+        !file.type.includes("image/png") &&
+        !file.type.includes("image/gif")
       ) {
-        setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+        setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
@@ -84,7 +81,7 @@ const Photos = ({ editedAlbumId }) => {
 
       totalSize += file.size;
 
-      if (totalSize >= SIZE_LIMIT.TOTAL) {
+      if (totalSize >= PHOTO_SIZE_LIMIT.TOTAL) {
         setErrorMessage("Za jednym razem możesz maksymalnie wysłać 50MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
@@ -102,7 +99,6 @@ const Photos = ({ editedAlbumId }) => {
 
       return true;
     });
-
   };
 
   const singleFileHandler = (e) => {
@@ -121,16 +117,20 @@ const Photos = ({ editedAlbumId }) => {
       return;
     }
 
-    if (file.size >= SIZE_LIMIT.SINGLE) {
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
       setErrorMessage("Maksymalny rozmiar pojedynczego zdjęcia to 10MB!");
       setIsDirty(false);
       document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
       setIsDirty(false);
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
       document.getElementById(operationType + "__input").value = null;
       return;
     }
@@ -391,7 +391,9 @@ const Photos = ({ editedAlbumId }) => {
           {operationType === "single" || operationType === "main" ? (
             <>
               <h3>
-                {operationType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
+                {operationType === "main"
+                  ? "Zdjęcie główne:"
+                  : "Wybrane zdjęcie:"}
               </h3>
               {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ||
               (mainImage !== "" && operationType === "main") ? (

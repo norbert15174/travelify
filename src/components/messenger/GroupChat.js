@@ -36,6 +36,7 @@ const GroupChat = ({ chatsDisplay }) => {
     setFound([]);
     setSelectedChat(null);
     getGroups();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /*

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import ReactLoading from "react-loading";
 import axios from "axios";
@@ -72,6 +72,29 @@ const Login = ({
         setLoading(false);
         setLogin("");
         setPassword("");
+      });
+  }
+
+  useEffect(() => {
+    if (sessionStorage.getItem("Bearer")) {
+      checkIfLogged();
+    }
+  }, []);
+
+  async function checkIfLogged() {
+    axios({
+      url: endpoints.checkIfLogged,
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then((response) => {
+        setLogged(true);
+      })
+      .catch((error) => {
+        sessionStorage.clear();
       });
   }
 

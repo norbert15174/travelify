@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import UserTemplate from "../templates/UserTemplate";
 import GroupAlbumInside from "../components/groupAlbum/GroupAlbumInside";
@@ -25,7 +25,6 @@ const GroupAlbumDetails = () => {
   const [albumDetailsFetchFinished, setAlbumDetailsFetchFinished] =
     useState(false);
   const [error, setError] = useState(null);
-  const history = useHistory();
   const urlParams = useParams(); // params straight from url
   const dispatch = useDispatch();
   const notification = useSelector(selectNotification);

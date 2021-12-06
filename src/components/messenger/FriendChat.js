@@ -36,6 +36,7 @@ const FriendChat = ({ chatsDisplay }) => {
     setFound([]);
     setSelectedChat(null);
     getFriends();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

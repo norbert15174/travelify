@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import "./styles/friends.css";
-import Input from "../trinkets/Input";
 import closeIcon from "./assets/closeIcon.svg";
 import groupsIcon from "./assets/groupsIcon.svg";
 import userIcon from "./assets/userIcon.svg";
@@ -171,47 +170,6 @@ const OptionContainer = styled.div`
     height: 20px;
     padding: 5px 20px;
     margin: auto 25px;
-  }
-`;
-
-const ChatList = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden; /* Hide horizontal scrollbar */
-  overflow-y: scroll; /* Add vertical scrollbar */
-  height: 80%;
-  max-height: 100vh;
-  margin: 0px 20px 20px 20px;
-  @media only screen and (max-width: 1000px) {
-    margin: 0px 10px 10px 10px;
-  }
-`;
-
-const SearchContainer = styled.div`
-  margin: 20px auto;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  @media only screen and (max-width: 1000px) {
-    margin: 10px auto;
-  }
-`;
-
-const Search = styled(Input)`
-  width: 75%;
-  font-size: 16px;
-  @media only screen and (max-width: 1000px) {
-    font-size: 12px;
-  }
-`;
-
-const NoItems = styled.h1`
-  display: inline-block;
-  margin: 10px auto;
-  color: ${({ theme }) => theme.color.greyFont};
-  @media only screen and (max-width: 1000px) {
-    font-size: 16px;
   }
 `;
 

@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import noAccessIcon from "../assets/noAccessIcon.svg";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
-import Button from "../components/trinkets/Button";
 import { errorTypes } from "../miscellanous/Utils";
 
 const icons = {
@@ -238,7 +237,7 @@ const InnerInnerContainer = styled.div`
   }
 `;
 
-const GoBackButton = styled(Button)`
+/* const GoBackButton = styled(Button)`
   width: auto;
   height: auto;
   margin-top: 35px;
@@ -260,6 +259,6 @@ const GoBackButton = styled(Button)`
     padding: 10px 25px 10px 25px;
     margin-top: 20px;
   }
-`;
+`; */
 
 export default Error;

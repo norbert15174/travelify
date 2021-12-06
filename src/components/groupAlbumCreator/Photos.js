@@ -11,6 +11,7 @@ import StatusMessage from "../trinkets/StatusMessage";
 import { endpoints } from "../../url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import { groupMember } from "../../miscellanous/Utils";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 import axios from "axios";
 import {
   selectAlbumPhotosRedux,
@@ -20,10 +21,6 @@ import {
   selectRights,
 } from "../../redux/groupAlbumCreatorSlice";
 
-const SIZE_LIMIT = {
-  TOTAL: 50000000,
-  SINGLE: 10000000,
-};
 
 const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
@@ -64,7 +61,7 @@ const Photos = ({ editedAlbumId }) => {
         return false;
       }
 
-      if (file.size >= SIZE_LIMIT.SINGLE) {
+      if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
         setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
@@ -75,9 +72,10 @@ const Photos = ({ editedAlbumId }) => {
 
       if (
         !file.type.includes("image/jpeg") &&
-        !file.type.includes("image/png")
+        !file.type.includes("image/png") &&
+        !file.type.includes("image/gif")
       ) {
-        setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+        setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
@@ -87,7 +85,7 @@ const Photos = ({ editedAlbumId }) => {
 
       totalSize += file.size;
 
-      if (totalSize >= SIZE_LIMIT.TOTAL) {
+      if (totalSize >= PHOTO_SIZE_LIMIT.TOTAL) {
         setErrorMessage("Za jednym razem możesz maksymalnie wysłać 50MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
@@ -123,16 +121,20 @@ const Photos = ({ editedAlbumId }) => {
       return;
     }
 
-    if (file.size >= SIZE_LIMIT.SINGLE) {
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
       setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
       setIsDirty(false);
       document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
       setIsDirty(false);
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
       document.getElementById(operationType + "__input").value = null;
       return;
     }

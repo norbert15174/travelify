@@ -7,15 +7,15 @@ import "./searchScrollbar.css";
 
 const FoundItems = ({ searchType, foundItems }) => {
   return (
-    <Container>
-      <Header>
+    <ResultContainer>
+      <ResultHeader>
         {searchType === "albums" ? (
           <h1>Znalezione albumy</h1>
         ) : (
           <h1>Znalezione osoby</h1>
         )}
-      </Header>
-      <Line />
+      </ResultHeader>
+      <ResultLine />
       {searchType === "albums" ? (
         <AlbumGrid className="scroll">
           {data.list.map((album) => (
@@ -33,11 +33,11 @@ const FoundItems = ({ searchType, foundItems }) => {
           ))}
         </PeopleGrid>
       )}
-    </Container>
+    </ResultContainer>
   );
 };
 
-const Container = styled.div`
+const ResultContainer = styled.div`
   height: 100%;
   border-radius: 15px;
   background-color: ${({ theme }) => theme.color.lightBackground};
@@ -47,7 +47,7 @@ const Container = styled.div`
   }
 `;
 
-const Header = styled.div`
+const ResultHeader = styled.div`
   font-size: 17px;
   color: ${({ theme }) => theme.color.greyFont};
   @media only screen and (max-width: 1100px) {
@@ -58,7 +58,7 @@ const Header = styled.div`
   }
 `;
 
-const Line = styled.div`
+const ResultLine = styled.div`
   margin-top: 10px;
   border-top: 2px solid ${({ theme }) => theme.color.dark};
 `;

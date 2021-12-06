@@ -4,193 +4,65 @@ import styled from "styled-components";
 import axios from "axios";
 import FoundAlbumThumbnail from "./FoundAlbumThumbnail";
 import FoundPersonThumbnail from "./FoundPersonThumbnail";
-import japonia1 from "./assets/Japonia.jpg";
-import japonia2 from "./assets/japonia2.jpg";
 import { endpoints } from "../../url";
-
-const fake = [
-  {
-    id: 1,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Robert Żaak",
-    title: "Czarny",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        bilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/0/0f/Eiffel_Tower_Vertical.JPG",
-  },
-  {
-    id: 2,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Mikołaj Telec",
-    title: "Czerwony",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia2,
-  },
-  {
-    id: 3,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Justyna Socała",
-    title: "Biały",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia1,
-  },
-  {
-    id: 4,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Weronika Kubińska",
-    title: "Kolor",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lor amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia2,
-  },
-  {
-    id: 5,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Natalia Fabia",
-    title: "Zielony",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum um primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia1,
-  },
-  {
-    id: 6,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Michał Czarnik",
-    title: "Czarny",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        orem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia2,
-  },
-
-  {
-    id: 7,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Radosław Sajdak",
-    title: "Różowy",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia1,
-  },
-  {
-    id: 8,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Kamil Faron",
-    title: "Żółty",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia2,
-  },
-  {
-    id: 9,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Łukasz Faron",
-    title: "Turkusowy",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia1,
-  },
-  {
-    id: 10,
-    url: "https://gravatar.com/avatar/9b4540ff93b1f62d9b7641956e2a1180?s=200&d=mp&r=x",
-    name: "Rokowska Maria",
-    title: "Szary",
-    localization: "Japonia, Osaka",
-    description: `Wycieczka z rodziną. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam condimentum mattis erat ac feugiat. 
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Nam condimentum mattis erat ac feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;`,
-    image: japonia2,
-  },
-];
 
 const Filler = ({ searchType }) => {
   const [albumList, setAlbumList] = useState([]);
-  // eslint-disable-next-line no-unused-vars
-  const [peopleList, setPeopleList] = useState(fake);
+  const [peopleList, setPeopleList] = useState([]);
   const [page, setPage] = useState(0); // page number
-  const loader = useRef(null);
+
+  const loaderAlbums = useRef(null);
+  const loaderPeople = useRef(null);
+  const handleObserver = (entities) => {
+    const target = entities[0];
+    if (target.isIntersecting) {
+      if (searchType === "albums") {
+        setPage((prevPage) => prevPage + 1);
+      } else if (searchType === "people") {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+  // when page changes
+  useEffect(() => {
+    setPage(0);
+    setAlbumList([]);
+    setPeopleList([]);
+    const observerAlbums = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "5px",
+      threshold: 0.25,
+    });
+    if (loaderAlbums.current) {
+      observerAlbums.observe(loaderAlbums.current);
+    }
+    const observerPeople = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "5px",
+      threshold: 0.25,
+    });
+    if (loaderPeople.current) {
+      observerPeople.observe(loaderPeople.current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchType]);
+
+  useEffect(() => {
+    if (searchType === "albums") {
+      getAlbums();
+    } else if (searchType === "people") {
+      getPeople();
+    }
+  }, [page]);
 
   const [redirectToAlbum, setRedirectToAlbum] = useState({
     active: false,
     albumId: "",
   });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
-      root: null,
-      rootMargin: "5px",
-      threshold: 0.25,
-    });
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-  }, [searchType]);
-
-  // when page changes
-  useEffect(() => {
-    if (searchType === "albums") {
-      getAlbums();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  const handleObserver = (entities) => {
-    const target = entities[0];
-    if (target.isIntersecting) {
-      setPage((page) => page + 1);
-    }
-  };
-
   async function getAlbums() {
-    axios({
-      url: endpoints.getNews + page,
+    await axios({
+      url: endpoints.searchAlbums + page,
       method: "get",
       headers: {
         "Content-Type": "application/json",
@@ -198,10 +70,34 @@ const Filler = ({ searchType }) => {
       },
     })
       .then(({ data }) => {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].public) {
-            setAlbumList((prevState) => [...prevState, data[i]]);
-          }
+        console.log(data);
+        if (page === 0) {
+          setAlbumList(data);
+        } else {
+          setAlbumList((prevState) => [...prevState, ...data]);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async function getPeople() {
+    console.log(page);
+    axios({
+      url: endpoints.searchUsers + page,
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then(({ data }) => {
+        console.log(data);
+        if (page === 0) {
+          setPeopleList(data);
+        } else {
+          setPeopleList((prevState) => [...prevState, ...data]);
         }
       })
       .catch((error) => {
@@ -225,9 +121,9 @@ const Filler = ({ searchType }) => {
     <Container>
       <Header>
         {searchType === "albums" ? (
-          <h1>Znalezione albumy</h1>
+          <h1>Albumy użytkowników</h1>
         ) : (
-          <h1>Znalezione osoby</h1>
+          <h1>Użytkownicy</h1>
         )}
       </Header>
       <Line />
@@ -246,16 +142,16 @@ const Filler = ({ searchType }) => {
                 }
               />
             ))}
-          <InnerContainer ref={loader} />
+          <InnerContainer ref={loaderAlbums} />
         </AlbumGrid>
       )}
       {searchType === "people" && (
         <PeopleGrid className="scroll">
           {peopleList.length > 0 &&
             peopleList.map((person) => (
-              <FoundPersonThumbnail person={person} />
+              <FoundPersonThumbnail key={person.id} person={person} />
             ))}
-          <InnerContainer ref={loader} />
+          <InnerContainer ref={loaderPeople} />
         </PeopleGrid>
       )}
     </Container>
@@ -263,26 +159,23 @@ const Filler = ({ searchType }) => {
 };
 
 const Container = styled.div`
-  height: 100%;
   border-radius: 15px;
   background-color: ${({ theme }) => theme.color.lightBackground};
   padding: 20px 25px;
   @media only screen and (max-width: 500px) {
     padding: 15px 20px;
   }
+  margin-bottom: 15px;
 `;
 
 const InnerContainer = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.color.lightBackground};
+  padding: 15px 0px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 52%;
-  @media only screen and (max-width: 800px) {
-    margin-left: 0%;
-  }
 `;
 
 const Header = styled.div`

@@ -49,6 +49,11 @@ export const notification = {
   request: "FRIEND_REQUEST",
 };
 
+export const PHOTO_SIZE_LIMIT = {
+  TOTAL: 50000000,
+  SINGLE: 10000000,
+};
+
 /*
     Function for parsing string with country names to array with objects.
 */

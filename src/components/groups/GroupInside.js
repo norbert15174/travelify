@@ -38,17 +38,6 @@ const section = {
   map: "map",
 };
 
-const exampleFunction = (array) => {
-  let jsxTag;
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].name === "item") {
-      jsxTag = <h1>Item with name {array[i].name} has been found!</h1>;
-      break;
-    }
-  }
-  return jsxTag;
-};
-
 const GroupInside = ({ groupId }) => {
   const blurState = useSelector((state) => state.blur.value);
   const [photoZoom, setPhotoZoom] = useState(false);

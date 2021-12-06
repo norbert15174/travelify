@@ -10,6 +10,7 @@ import Cancel from "../trinkets/Cancel";
 import "../trinkets/fileUpload.css";
 import StatusMessage from "../trinkets/StatusMessage";
 import { endpoints } from "../../url";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 
 const PhotoChange = ({ type, photo }) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -55,12 +56,16 @@ const PhotoChange = ({ type, photo }) => {
       document.getElementById(type).value = null;
       return;
     }
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
       document.getElementById(type).value = null;
       return;
     }
-    if (file.size >= 10000000) {
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
       setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
       document.getElementById(type).value = null;
       return;

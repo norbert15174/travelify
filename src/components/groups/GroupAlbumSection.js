@@ -25,6 +25,7 @@ const GroupAlbumSection = ({ groupId }) => {
 
   useEffect(() => {
     getGroupAlbums();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function getGroupAlbums() {

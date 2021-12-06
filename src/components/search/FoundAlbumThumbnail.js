@@ -6,7 +6,7 @@ import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
 const AlbumThumbnail = ({ album, redirectToAlbum }) => {
-  const [redirectToProfile, setRedirectToProfile] = useState({
+/*   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
     userId: null,
   });
@@ -27,7 +27,7 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
         }}
       />
     );
-  }
+  } */
 
   return (
     <Container>
@@ -36,7 +36,7 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
         onClick={redirectToAlbum}
         alt="albumMainPhoto"
       />
-      <Owner
+{/*       <Owner
         onClick={() => {
           setRedirectToProfile({
             active: true,
@@ -61,7 +61,7 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
             " " +
             album.personalInformationDTO.surName}
         </h3>
-      </Owner>
+      </Owner> */}
       <InfoContainer onClick={redirectToAlbum}>
         <Text>
           <Header>
@@ -80,6 +80,7 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
 const Container = styled.div`
   width: 100%;
   position: relative;
+  cursor: pointer;
 `;
 
 const MainPhoto = styled.img`
@@ -108,7 +109,7 @@ const InfoContainer = styled.div`
   }
 `;
 
-const Owner = styled.div`
+/* const Owner = styled.div`
   cursor: pointer;
   padding: 5px 25px 5px 0px;
   border-radius: 50px;
@@ -168,7 +169,7 @@ const ProfilePhoto = styled.img`
     height: 20px;
     margin-right: 5px;
   }
-`;
+`; */
 
 const Text = styled.div`
   padding: 10px 20px;
