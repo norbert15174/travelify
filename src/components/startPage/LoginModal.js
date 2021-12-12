@@ -24,6 +24,7 @@ const LoginModal = ({ setShowLogin }) => {
 
   useEffect(() => {
     document.addEventListener("click", boxOutsideClick, true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function boxOutsideClick(e) {

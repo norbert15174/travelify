@@ -34,7 +34,6 @@ const Groups = () => {
     })
       .then(({ data }) => {
         setGroups(data);
-        console.log(data);
       })
       .catch((error) => {
         if (error.response !== undefined) {

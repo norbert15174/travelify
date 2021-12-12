@@ -56,7 +56,6 @@ const PinFriendThumbnail = ({ friend, photoId }) => {
 
   async function deleteTag() {
     const tagToDelete = tags.find((item) => item.userId === friendId).taggedId;
-    console.log(tagToDelete);
     setUpdating(true);
     await axios({
       method: "delete",
@@ -72,7 +71,6 @@ const PinFriendThumbnail = ({ friend, photoId }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         dispatch(setPhotoTags(response.data));
         setAlreadyChosen(false);
         setButtonText("Wybierz");

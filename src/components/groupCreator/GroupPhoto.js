@@ -9,6 +9,7 @@ import StatusMessage from "../trinkets/StatusMessage";
 import { endpoints } from "../../url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import axios from "axios";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 import {
   setGroupPicture,
   selectGroupPicture,
@@ -38,16 +39,20 @@ const GroupPhoto = ({ editedGroupId }) => {
       return;
     }
 
-    if (file.size >= 5000000) {
-      setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
+      setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
       setIsDirty(false);
       document.getElementById("__input").value = null;
       return;
     }
 
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
       setIsDirty(false);
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
       document.getElementById("__input").value = null;
       return;
     }

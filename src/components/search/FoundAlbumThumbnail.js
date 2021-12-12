@@ -5,8 +5,8 @@ import styled from "styled-components";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 
-const AlbumThumbnail = ({ album, redirectToAlbum }) => {
-  const [redirectToProfile, setRedirectToProfile] = useState({
+const AlbumThumbnail = ({ album }) => {
+  /*   const [redirectToProfile, setRedirectToProfile] = useState({
     active: false,
     userId: null,
   });
@@ -27,16 +27,38 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
         }}
       />
     );
+  } */
+
+  const [redirectToAlbum, setRedirectToAlbum] = useState({
+    active: false,
+    albumId: "",
+  });
+
+  // redirection to chosen album
+  if (redirectToAlbum.active) {
+    return (
+      <Redirect
+        push
+        to={{
+          pathname: `album/${redirectToAlbum.albumId}`,
+        }}
+      />
+    );
   }
 
   return (
     <Container>
       <MainPhoto
         src={album.mainPhoto !== undefined ? album.mainPhoto : noAlbumPhotoIcon}
-        onClick={redirectToAlbum}
+        onClick={() =>
+          setRedirectToAlbum({
+            active: true,
+            albumId: album.id,
+          })
+        }
         alt="albumMainPhoto"
       />
-      <Owner
+      {/*       <Owner
         onClick={() => {
           setRedirectToProfile({
             active: true,
@@ -61,8 +83,15 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
             " " +
             album.personalInformationDTO.surName}
         </h3>
-      </Owner>
-      <InfoContainer onClick={redirectToAlbum}>
+      </Owner> */}
+      <InfoContainer
+        onClick={() =>
+          setRedirectToAlbum({
+            active: true,
+            albumId: album.id,
+          })
+        }
+      >
         <Text>
           <Header>
             <Title>{album.name}</Title>
@@ -80,6 +109,7 @@ const AlbumThumbnail = ({ album, redirectToAlbum }) => {
 const Container = styled.div`
   width: 100%;
   position: relative;
+  cursor: pointer;
 `;
 
 const MainPhoto = styled.img`
@@ -108,7 +138,7 @@ const InfoContainer = styled.div`
   }
 `;
 
-const Owner = styled.div`
+/* const Owner = styled.div`
   cursor: pointer;
   padding: 5px 25px 5px 0px;
   border-radius: 50px;
@@ -168,7 +198,7 @@ const ProfilePhoto = styled.img`
     height: 20px;
     margin-right: 5px;
   }
-`;
+`; */
 
 const Text = styled.div`
   padding: 10px 20px;

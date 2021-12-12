@@ -36,6 +36,7 @@ const FriendChat = ({ chatsDisplay }) => {
     setFound([]);
     setSelectedChat(null);
     getFriends();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -64,7 +65,6 @@ const FriendChat = ({ chatsDisplay }) => {
     client.connect({}, function () {
       client.subscribe("/topic/" + userId, function (message) {
         var friendId = JSON.parse(message.body).friendId;
-        console.log("friend: " + friendId);
         setMessageNotifications(
           (prevState) => new Set([...prevState, friendId])
         );

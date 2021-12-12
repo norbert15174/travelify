@@ -61,7 +61,6 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
     setInfoError("");
     setSubmitMessage("");
     setSubmitError("");
-    console.log(name);
     if (name.length < 5 || !name.trim()) {
       setInfoError("Nazwa grupy powinna składać się z minimum 5 znaków!");
       return;
@@ -124,7 +123,6 @@ const BasicGroupInfo = ({ creatorType, editedGroupId, setForm }) => {
       },
     })
       .then((response) => {
-        console.log(response);
         dispatch(
           setBasicInfo({
             groupName: name,

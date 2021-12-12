@@ -26,7 +26,7 @@ const UserNotifications = ({ notificationsDisplay }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
+
         setUserNotifications(data);
       })
       .catch((error) => {
@@ -55,7 +55,7 @@ const NotificationsList = styled.div`
   flex-direction: column;
   overflow-x: hidden; 
   overflow-y: scroll; 
-  max-height: 100vh;
+  max-height: 80%;
   margin: 20px 10px 20px 10px;
   @media only screen and (max-width: 1000px) {
     margin: 15px 5px 15px 5px;

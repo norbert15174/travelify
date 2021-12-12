@@ -8,8 +8,6 @@ import SelectFriends from "../trinkets/Select";
 import closeIcon from "./assets/closeIcon.svg";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
-import axios from "axios";
 
 const Members = ({ friendsList, setForm, form }) => {
   const [selectedFriends, setSelectedFriends] = useState([]);
@@ -19,7 +17,6 @@ const Members = ({ friendsList, setForm, form }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
-  const [error, setError] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
@@ -44,7 +41,6 @@ const Members = ({ friendsList, setForm, form }) => {
     setSubmitError("");
     setSubmitMessage("");
     setFormSubmitted(false);
-    setError(false);
     setIsDirty(false);    
   };
 
@@ -92,7 +88,7 @@ const Members = ({ friendsList, setForm, form }) => {
   };
 
   useEffect(() => {
-    console.log(newMembers.length)
+    
   }, [newMembers])
 
   return (

@@ -52,7 +52,6 @@ const MembersSection = ({ setMemberToRemove, groupId }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setRequests(data));
       })
       .catch((error) => {

@@ -9,7 +9,6 @@ import { endpoints } from "../../url";
 
 const InviteFriendThumbnail = ({ friend, groupId }) => {
   const requests = useSelector(selectRequests);
-  console.log(requests);
   const dispatch = useDispatch();
   const [updating, setUpdating] = useState(false);
   const [alreadyChosen, setAlreadyChosen] = useState(
@@ -52,7 +51,6 @@ const InviteFriendThumbnail = ({ friend, groupId }) => {
             },
           ])
         );
-        console.log(response);
         setAlreadyChosen(true);
         setButtonText("Zaproszony");
       })

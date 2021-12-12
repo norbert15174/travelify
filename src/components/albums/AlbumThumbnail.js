@@ -77,6 +77,7 @@ const AlbumThumbnail = ({
 const Container = styled.div`
   width: 100%;
   position: relative;
+  cursor: pointer;
 `;
 
 const MainPhoto = styled.img`

@@ -162,8 +162,8 @@ const User = () => {
       },
     })
       .then(({ data }) => {
-        // eslint-disable-next-line eqeqeq
         if (
+          // eslint-disable-next-line eqeqeq
           data.find((item) => item.id == sessionStorage.getItem("loggedUserId"))
         ) {
           setUserType(userTypes.friend);

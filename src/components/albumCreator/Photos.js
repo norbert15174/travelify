@@ -17,13 +17,14 @@ import {
   selectMainPhotoRedux,
   setMainPhotoRedux,
 } from "../../redux/albumCreatorSlice";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 
 const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
   const mainPhoto = useSelector(selectMainPhotoRedux);
   const dispatch = useDispatch();
 
-  const [addType, setAddType] = useState("");
+  const [operationType, setOperationType] = useState("");
   const [description, setDescription] = useState("");
   const [singleImage, setSingleImage] = useState(undefined);
   const [multipleImages, setMultipleImages] = useState([]);
@@ -46,32 +47,46 @@ const Photos = ({ editedAlbumId }) => {
     setImagePreview([]);
     setMultipleImages([]);
 
+    let totalSize = 0;
+
     Array.from(files).every((file) => {
       if (file === undefined) {
         setMultipleImages([]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
-      if (file.size >= 5000000) {
-        setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+      if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
+        setErrorMessage("Maksymalny rozmiar pojedynczego zdjęcia to 10MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
       if (
         !file.type.includes("image/jpeg") &&
-        !file.type.includes("image/png")
+        !file.type.includes("image/png") &&
+        !file.type.includes("image/gif")
       ) {
-        setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+        setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
+        return false;
+      }
+
+      totalSize += file.size;
+
+      if (totalSize >= PHOTO_SIZE_LIMIT.TOTAL) {
+        setErrorMessage("Za jednym razem możesz maksymalnie wysłać 50MB!");
+        setMultipleImages([]);
+        setImagePreview([{ url: "", name: "" }]);
+        setIsDirty(false);
+        document.getElementById(operationType + "__input").value = null;
         return false;
       }
 
@@ -98,27 +113,31 @@ const Photos = ({ editedAlbumId }) => {
       setSingleImage(undefined);
       setMainImage(mainPhoto);
       setIsDirty(false);
-      document.getElementById(addType + "__input").value = null;
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (file.size >= 5000000) {
-      setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
+      setErrorMessage("Maksymalny rozmiar pojedynczego zdjęcia to 10MB!");
       setIsDirty(false);
-      document.getElementById(addType + "__input").value = null;
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
       setIsDirty(false);
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
-      document.getElementById(addType + "__input").value = null;
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
+      document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (addType === "single") {
+    if (operationType === "single") {
       setSingleImage(file);
-    } else if (addType === "main") {
+    } else if (operationType === "main") {
       setMainImage(file);
     }
 
@@ -127,13 +146,13 @@ const Photos = ({ editedAlbumId }) => {
   };
 
   const formHandler = () => {
-    if (addType === "single") {
+    if (operationType === "single") {
       addSinglePhoto();
-    } else if (addType === "multi") {
+    } else if (operationType === "multi") {
       addMultiPhotos();
-    } else if (addType === "main") {
+    } else if (operationType === "main") {
       addAlbumMainPhoto();
-    } else if (addType === "delete") {
+    } else if (operationType === "delete") {
       deletePhotos();
     }
   };
@@ -163,22 +182,22 @@ const Photos = ({ editedAlbumId }) => {
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
         setMultipleImages([]);
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
       }
     } else if (type === "album") {
       // deleting images with specific id from album
       let images = albumImages.filter(
         (photo) => photo.photoId !== imageToDelete
       );
-      setAddType("delete");
+      setOperationType("delete");
       setAlbumImages(images);
       setPhotosToDelete((prevState) => [...prevState, imageToDelete]);
     }
   };
 
   const clearForm = () => {
-    if (document.getElementById(addType + "__input") !== null) {
-      document.getElementById(addType + "__input").value = null;
+    if (document.getElementById(operationType + "__input") !== null) {
+      document.getElementById(operationType + "__input").value = null;
     }
     setSingleImage(undefined);
     setMultipleImages([]);
@@ -204,18 +223,17 @@ const Photos = ({ editedAlbumId }) => {
         },
       })
       .then((response) => {
-        console.log(response);
         setSubmitMessage("Zmiany zostały zapisane!");
         setMainImage(response.data.mainPhoto);
         dispatch(setMainPhotoRedux(response.data.mainPhoto));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setIsDirty(false);
       });
   }
@@ -242,7 +260,7 @@ const Photos = ({ editedAlbumId }) => {
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
         setDescription("");
         setIsDirty(false);
@@ -265,7 +283,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setAlbumPhotosRedux(albumImages));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setAlbumImages(photos);
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
@@ -298,7 +316,7 @@ const Photos = ({ editedAlbumId }) => {
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
       .finally(() => {
-        document.getElementById(addType + "__input").value = null;
+        document.getElementById(operationType + "__input").value = null;
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
       });
@@ -310,7 +328,7 @@ const Photos = ({ editedAlbumId }) => {
         <h3>Co chcesz dodać?</h3>
         <RadioContainer
           onChange={(e) => {
-            setAddType(e.target.value);
+            setOperationType(e.target.value);
             clearForm();
           }}
         >
@@ -333,7 +351,7 @@ const Photos = ({ editedAlbumId }) => {
             label="Wiele zdjęć"
           />
         </RadioContainer>
-        {addType === "single" && (
+        {operationType === "single" && (
           <>
             <h3>Opis zdjęcia (opcjonalny)</h3>
             <Description
@@ -344,20 +362,20 @@ const Photos = ({ editedAlbumId }) => {
             />
           </>
         )}
-        {(addType === "single" ||
-          addType === "multi" ||
-          addType === "main") && (
+        {(operationType === "single" ||
+          operationType === "multi" ||
+          operationType === "main") && (
           <>
             <FileInput>
               <input
                 className="file__upload"
                 type="file"
-                id={addType + "__input"}
-                multiple={addType === "multi" ? true : false}
+                id={operationType + "__input"}
+                multiple={operationType === "multi" ? true : false}
                 onChange={(e) => {
-                  if (addType === "single" || addType === "main") {
+                  if (operationType === "single" || operationType === "main") {
                     singleFileHandler(e);
-                  } else if (addType === "multi") {
+                  } else if (operationType === "multi") {
                     multipleFilesHandler(e);
                   }
                 }}
@@ -370,13 +388,15 @@ const Photos = ({ editedAlbumId }) => {
         )}
         <Line />
         <InnerContainer>
-          {addType === "single" || addType === "main" ? (
+          {operationType === "single" || operationType === "main" ? (
             <>
               <h3>
-                {addType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
+                {operationType === "main"
+                  ? "Zdjęcie główne:"
+                  : "Wybrane zdjęcie:"}
               </h3>
               {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ||
-              (mainImage !== "" && addType === "main") ? (
+              (mainImage !== "" && operationType === "main") ? (
                 <SingleImageContainer>
                   <SingleImage
                     src={
@@ -389,11 +409,11 @@ const Photos = ({ editedAlbumId }) => {
                 <ImageNotFound />
               )}
             </>
-          ) : addType === "multi" ? (
+          ) : operationType === "multi" ? (
             <>
               <h3>Wybrane zdjęcia:</h3>
               <PhotoContainer>
-                {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ? (
+                {imagePreview[0] !== undefined && imagePreview[0].url !== "" ? (
                   imagePreview.map((preview) => (
                     <MultiImageContainer
                       key={new Date().getTime() + preview.url.substr()}

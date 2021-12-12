@@ -37,7 +37,6 @@ const AlbumNotLogged = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem("Bearer")}`,
             },
         }).then(({data}) => {
-            console.log(data);
             let tempPhotos = [];
             let tempTags = [];
             //let tempComments = [];

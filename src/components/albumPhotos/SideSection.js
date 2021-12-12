@@ -129,7 +129,7 @@ const SideSection = ({
         setComments(temp);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -347,9 +347,13 @@ const SideSection = ({
           ) : (
             <NoCommments>
               Sekcja komentarzy jest pusta...
-              <br />
-              Podziel się zdjęciem, a być może ktoś doceni jego piękno i zostawi
-              miły komentarz &#128522;
+              {rights === albumRights.owner && (
+                <>
+                  <br />
+                  Podziel się zdjęciem, a być może ktoś doceni jego piękno i
+                  zostawi miły komentarz &#128522;
+                </>
+              )}
             </NoCommments>
           )
         ) : (

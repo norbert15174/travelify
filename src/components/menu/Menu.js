@@ -54,13 +54,11 @@ const Menu = () => {
   useEffect(() => {
     if (logoutBox) {
       if (confirmLogout) {
-        console.log("confirmLogout: true");
         setConfirmLogout(false);
         setLogoutBox(false);
         setLogoutRedirect(true);
       }
       if (refuseLogout) {
-        console.log("confirmLogout: false");
         setRefuseLogout(false);
         setLogoutBox(false);
       }

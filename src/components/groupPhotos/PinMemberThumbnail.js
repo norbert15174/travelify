@@ -36,7 +36,6 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(setPhotoTags(data.taggedList));
         setAlreadyChosen(true);
         setButtonText("Oznaczony");
@@ -51,7 +50,6 @@ const PinMemberThumbnail = ({ friend, photoId }) => {
 
   async function deleteTag() {
     const tagToDelete = tags.find((item) => item.userId === friendId).userId;
-    console.log(tagToDelete)
     setUpdating(true);
     await axios({
       method: "put",

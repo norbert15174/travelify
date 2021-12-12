@@ -48,7 +48,7 @@ function Map({
   };
 
   const onMarkerLoad = (marker) => {
-    //console.log("Marker placed on map: ", marker);
+    
   };
 
   useEffect(() => {

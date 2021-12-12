@@ -39,7 +39,6 @@ const GroupCreator = () => {
       setError(null);
       getFriends();
       if (location.state !== undefined && location.state.groupId) {
-        console.log(location.state);
         setCreatorType(location.state.creatorType);
         setEditedGroupId(location.state.groupId);
         setCreatorType(groupCreator.edition);
@@ -49,6 +48,7 @@ const GroupCreator = () => {
         setCreatorType(groupCreator.creation);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function getGroupToEdit(id) {
@@ -62,7 +62,6 @@ const GroupCreator = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(
           setBasicInfo({
             groupName: data.groupName,

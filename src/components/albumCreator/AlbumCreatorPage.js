@@ -63,7 +63,6 @@ const AlbumCreatorPage = ({
         deleteAlbum();
       }
       if (refuseDeletingAlbum) {
-        console.log("Album hasn't been deleted!");
         setDeleteBox(false);
         setRefuseDeletingAlbum(false);
       }

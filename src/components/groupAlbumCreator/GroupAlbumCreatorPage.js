@@ -73,7 +73,6 @@ const GroupAlbumCreatorPage = ({
         deleteAlbum();
       }
       if (refuse) {
-        console.log("Album hasn't been deleted!");
         setDeleteBox(false);
         setRefuse(false);
       }
@@ -194,7 +193,7 @@ const GroupAlbumCreatorPage = ({
         setRedirectToGroup(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       })
       .finally((error) => {
         setDeleteBox(false);
@@ -203,7 +202,6 @@ const GroupAlbumCreatorPage = ({
   }
 
   async function changeOwner() {
-    console.log(ownerChangeBox.newOwner.id)
     await axios({
       method: "put",
       url: endpoints.editGroupAlbum + editedAlbumId,
@@ -223,7 +221,7 @@ const GroupAlbumCreatorPage = ({
         setRedirectBackToAlbum(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setOwnerChangeBox({ active: false, newOwner: null });
         setRefuse(false);
         setConfirm(false);

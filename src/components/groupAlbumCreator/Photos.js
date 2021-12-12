@@ -11,6 +11,7 @@ import StatusMessage from "../trinkets/StatusMessage";
 import { endpoints } from "../../url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import { groupMember } from "../../miscellanous/Utils";
+import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 import axios from "axios";
 import {
   selectAlbumPhotosRedux,
@@ -19,6 +20,7 @@ import {
   setMainPhotoRedux,
   selectRights,
 } from "../../redux/groupAlbumCreatorSlice";
+
 
 const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
@@ -49,6 +51,8 @@ const Photos = ({ editedAlbumId }) => {
     setImagePreview([]);
     setMultipleImages([]);
 
+    let totalSize = 0;
+
     Array.from(files).every((file) => {
       if (file === undefined) {
         setMultipleImages([]);
@@ -57,8 +61,8 @@ const Photos = ({ editedAlbumId }) => {
         return false;
       }
 
-      if (file.size >= 5000000) {
-        setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+      if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
+        setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
@@ -68,9 +72,21 @@ const Photos = ({ editedAlbumId }) => {
 
       if (
         !file.type.includes("image/jpeg") &&
-        !file.type.includes("image/png")
+        !file.type.includes("image/png") &&
+        !file.type.includes("image/gif")
       ) {
-        setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+        setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
+        setMultipleImages([]);
+        setImagePreview([{ url: "", name: "" }]);
+        setIsDirty(false);
+        document.getElementById(operationType + "__input").value = null;
+        return false;
+      }
+
+      totalSize += file.size;
+
+      if (totalSize >= PHOTO_SIZE_LIMIT.TOTAL) {
+        setErrorMessage("Za jednym razem możesz maksymalnie wysłać 50MB!");
         setMultipleImages([]);
         setImagePreview([{ url: "", name: "" }]);
         setIsDirty(false);
@@ -105,16 +121,20 @@ const Photos = ({ editedAlbumId }) => {
       return;
     }
 
-    if (file.size >= 5000000) {
-      setErrorMessage("Maksymalny rozmiar zdjęcia to 5MB!");
+    if (file.size >= PHOTO_SIZE_LIMIT.SINGLE) {
+      setErrorMessage("Maksymalny rozmiar zdjęcia to 10MB!");
       setIsDirty(false);
       document.getElementById(operationType + "__input").value = null;
       return;
     }
 
-    if (!file.type.includes("image/jpeg") && !file.type.includes("image/png")) {
+    if (
+      !file.type.includes("image/jpeg") &&
+      !file.type.includes("image/png") &&
+      !file.type.includes("image/gif")
+    ) {
       setIsDirty(false);
-      setErrorMessage("Dozwolone formaty zdjęć to JPEG/JPG i PNG!");
+      setErrorMessage("Dozwolone formaty to JPEG, PNG i GIF!");
       document.getElementById(operationType + "__input").value = null;
       return;
     }
@@ -212,7 +232,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setMainPhotoRedux(data.mainPhoto));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
@@ -281,7 +301,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setAlbumPhotosRedux(albumImages));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setAlbumImages(photos);
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
@@ -318,7 +338,7 @@ const Photos = ({ editedAlbumId }) => {
         dispatch(setAlbumPhotosRedux(temp));
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setSubmitMessage("");
         setSubmitError("Coś poszło nie tak... Spróbuj ponownie!");
       })
@@ -400,7 +420,9 @@ const Photos = ({ editedAlbumId }) => {
           {operationType === "single" || operationType === "main" ? (
             <>
               <h3>
-                {operationType === "main" ? "Zdjęcie główne:" : "Wybrane zdjęcie:"}
+                {operationType === "main"
+                  ? "Zdjęcie główne:"
+                  : "Wybrane zdjęcie:"}
               </h3>
               {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ||
               (mainImage !== "" && operationType === "main") ? (
@@ -420,10 +442,10 @@ const Photos = ({ editedAlbumId }) => {
             <>
               <h3>Wybrane zdjęcia:</h3>
               <PhotoContainer>
-                {(imagePreview[0] !== undefined && imagePreview[0].url !== "") ? (
+                {imagePreview[0] !== undefined && imagePreview[0].url !== "" ? (
                   imagePreview.map((preview) => (
                     <MultiImageContainer
-                      key={(new Date()).getTime() + preview.url.substr(0)}
+                      key={new Date().getTime() + preview.url.substr(0)}
                     >
                       <MultiImage src={preview.url} />
                       <DeleteButton
@@ -440,7 +462,11 @@ const Photos = ({ editedAlbumId }) => {
               </PhotoContainer>
             </>
           ) : null}
-          <h3>{rights === groupMember.owner ? "Zdjęcia w albumie:" : "Zdjęcia, których jesteś właścicielem:"}</h3>
+          <h3>
+            {rights === groupMember.owner
+              ? "Zdjęcia w albumie:"
+              : "Zdjęcia, których jesteś właścicielem:"}
+          </h3>
           <PhotoContainer>
             {albumImages !== undefined && albumImages.length !== 0 ? (
               albumImages.map((photo) => (

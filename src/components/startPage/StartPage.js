@@ -6,6 +6,7 @@ import appLogo from "./assets/Logo.svg";
 import Button from "../trinkets/Button";
 import Map from "../googleMaps/Map";
 import { endpoints } from "../../url";
+import { routes } from "../../miscellanous/Routes";
 import LoginModal from "./LoginModal";
 import doubleArrowRightIcon from "./assets/doubleArrowRightIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
@@ -14,6 +15,7 @@ const StartPage = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [redirectToAuth, setRedirectToAuth] = useState(false);
   const [markers, setMarkers] = useState(null);
+  const [logged, setLogged] = useState(false);
 
   const options = {
     disableDefaultUI: true, // disables little yellow guy and satellite view
@@ -23,6 +25,9 @@ const StartPage = () => {
   };
 
   useEffect(() => {
+    if (sessionStorage.getItem("Bearer")) {
+      checkIfLogged();
+    }
     getMarkers();
   }, []);
 
@@ -42,6 +47,27 @@ const StartPage = () => {
       });
   }
 
+  async function checkIfLogged() {
+    axios({
+      url: endpoints.checkIfLogged,
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
+      },
+    })
+      .then((response) => {
+        setLogged(true);
+      })
+      .catch((error) => {
+        sessionStorage.clear();
+      });
+  }
+
+  if (logged) {
+    return <Redirect to={{ pathname: routes.loginTransition }} />;
+  }
+
   if (redirectToAuth) {
     return <Redirect push to={{ pathname: "/auth" }} />;
   }
@@ -57,7 +83,7 @@ const StartPage = () => {
             icon={doubleArrowRightIcon}
             onClick={() => setRedirectToAuth(true)}
           />
-          <Tooltip id="forwardBtn" place="left" text="Przejdź dalej"/>
+          <Tooltip id="forwardBtn" place="left" text="Przejdź dalej" />
           <LoginButton onClick={() => setShowLogin(true)}>
             Zaloguj się
           </LoginButton>
@@ -207,7 +233,7 @@ const LoginButton = styled(Button)`
 `;
 
 const ForwardButton = styled(Button)`
-  background-image: url(${({icon}) => icon});
+  background-image: url(${({ icon }) => icon});
   background-size: 70%;
   background-position: 50% 50%;
   background-repeat: no-repeat;

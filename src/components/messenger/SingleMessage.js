@@ -14,10 +14,10 @@ const SingleMessage = ({
   side = null,
   friendName = null,
   friendId = null,
-  friendDisplay = null,
   message,
   messageId,
   messageDate,
+  chatsDisplay = null,
 }) => {
   const [redirectToProfile, setRedirectToProfile] = useState(false);
 
@@ -26,7 +26,7 @@ const SingleMessage = ({
   }, []);
 
   if (redirectToProfile) {
-    friendDisplay("");
+    chatsDisplay("");
     return (
       <Redirect
         push

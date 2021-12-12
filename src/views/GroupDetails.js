@@ -36,6 +36,7 @@ const GroupDetails = () => {
       getGroupDetails();
       getGroupAlbums();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlParams.id]);
 
   async function getGroupDetails() {
