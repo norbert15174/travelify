@@ -10,6 +10,7 @@ import "./searchScrollbar.css";
 import ReactLoading from "react-loading";
 import { useFormik } from "formik";
 import FoundPersonThumbnail from "./FoundPersonThumbnail";
+import cleanIcon from "./assets/cleanIcon.svg";
 
 const PeopleSearch = () => {
   const [searching, setSearching] = useState(false);
@@ -42,6 +43,7 @@ const PeopleSearch = () => {
 
   useEffect(() => {
     getPeople("", name, nationality);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const formik = useFormik({
@@ -59,7 +61,7 @@ const PeopleSearch = () => {
       );
       setSearching(false);
       //actions.setSubmitting(false); // not needed when onSubmit is async
-      actions.resetForm();
+      // actions.resetForm();
     },
   });
 
@@ -94,7 +96,7 @@ const PeopleSearch = () => {
     <>
       <SearchNavigation>
         <Line />
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} autoComplete="off">
           <SearchForm>
             <>
               <Label>Imię i nazwisko</Label>
@@ -117,13 +119,29 @@ const PeopleSearch = () => {
                 onBlur={formik.setFieldTouched}
               />
             </>
-            <SearchButton
-              icon={magnifierIcon}
-              type="submit"
-              active={formik.dirty || formik.isSubmitting}
-            >
-              Szukaj
-            </SearchButton>
+            <Buttons>
+              <Button
+                icon={magnifierIcon}
+                type="submit"
+                active={formik.dirty || formik.isSubmitting}
+              >
+                Szukaj
+              </Button>
+              <Button
+                icon={cleanIcon}
+                type="reset"
+                onClick={() => {
+                  formik.resetForm();
+                  setPage(0);
+                  setName("");
+                  setNationality("");
+                  getPeople("", name, nationality);
+                }}
+                active={formik.dirty || formik.isSubmitting}
+              >
+                Wyczyść
+              </Button>{" "}
+            </Buttons>
           </SearchForm>
         </form>
       </SearchNavigation>
@@ -227,14 +245,20 @@ const Label = styled.label`
   }
 `;
 
-const SearchButton = styled(ButtonIcon)`
+const Buttons = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 20px auto 0 auto;
+`;
+
+const Button = styled(ButtonIcon)`
   opacity: ${({ active }) => (active ? "1" : "0.5")};
   cursor: ${({ active }) => (active ? "pointer" : "default")};
   width: 130px;
   height: 35px;
   border-radius: 15px;
   font-size: 18px;
-  margin: 20px auto 0 auto;
+  margin-right: 20px;
   padding-left: 20px;
   color: ${({ theme }) => theme.color.lightBackground};
   background-image: url(${({ icon }) => icon});
