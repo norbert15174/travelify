@@ -8,6 +8,8 @@
 #api_keys
 .env
 
+src/components/test.js
+
 # testing
 /coverage
 
