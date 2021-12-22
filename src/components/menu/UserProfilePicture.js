@@ -4,7 +4,7 @@ import axios from "axios";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { selectProfilePicture, setProfilePicture } from "../../redux/userDataSlice";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const UserProfilePicture = ({active}) => {
 

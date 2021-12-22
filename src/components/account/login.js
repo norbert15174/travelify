@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import Logo from "./assets/logo";
 import { routes } from "../../miscellanous/Routes";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import StatusMessage from "../trinkets/StatusMessage";
 import "./styles/input.css";
 

@@ -6,7 +6,7 @@ import PinMemberThumbnail from "./PinMemberThumbnail";
 import axios from "axios";
 import "./styles/photosScrollbar.css";
 import { useSelector } from "react-redux";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { selectGroupId } from "../../redux/groupAlbumSlice";
 
 const PinBox = ({ setClose, heightDelimiter, photoId }) => {

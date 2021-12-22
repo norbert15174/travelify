@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import UserItem from "./UserItem";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import "./notificationsScrollbar.css";
 import moment from "moment";
 import "moment/locale/pl";

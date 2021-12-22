@@ -10,7 +10,7 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import FormInput from "../trinkets/FormInput";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 import { groupCreator } from "../../miscellanous/Utils";
 

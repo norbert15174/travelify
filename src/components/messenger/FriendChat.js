@@ -6,7 +6,7 @@ import "./styles/friends.css";
 import Input from "../trinkets/Input";
 import FriendItem from "./FriendItem";
 import FriendMessenger from "./FriendMessenger";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
 import { Stomp } from "@stomp/stompjs";
 

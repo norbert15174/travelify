@@ -9,7 +9,7 @@ import "./groupsScrollbar.css";
 import { selectFriendsList, setFriendsList } from "../../redux/userDataSlice";
 import { selectMembers, setRequests } from "../../redux/groupDetailsSlice";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const InvitationBox = ({ setClose, groupId }) => {
   const [friendsFetchFinished, setFriendsFetchFinished] = useState(false);

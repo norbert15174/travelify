@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserTemplate from "../templates/UserTemplate";
 import axios from "axios";
 import { useParams } from "react-router";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { errorTypes } from "../miscellanous/Utils";
 import GroupInside from "../components/groups/GroupInside";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import StatusMessage from "../trinkets/StatusMessage";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";

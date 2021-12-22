@@ -4,7 +4,7 @@ import axios from "axios";
 import { routes } from "../miscellanous/Routes";
 import AlbumCreatorPage from "../components/albumCreator/AlbumCreatorPage";
 import UserTemplate from "../templates/UserTemplate";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { mapFriendsToSelect, albumCreator } from "../miscellanous/Utils";
 import {

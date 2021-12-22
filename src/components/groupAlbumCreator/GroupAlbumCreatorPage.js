@@ -14,7 +14,7 @@ import Photos from "./Photos";
 import axios from "axios";
 import { albumCreator, groupMember } from "../../miscellanous/Utils";
 import { useSelector } from "react-redux";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import ConfirmationBox from "../trinkets/ConfirmationBox";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Tooltip from "../trinkets/Tooltip";

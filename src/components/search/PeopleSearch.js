@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Input from "../trinkets/Input";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import ButtonIcon from "../trinkets/ButtonIcon";
 import magnifierIcon from "./assets/magnifierIcon.svg";
 import CountrySelect from "../trinkets/Select";

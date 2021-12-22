@@ -12,7 +12,7 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import StatusMessage from "../trinkets/StatusMessage";
 import { albumCreator } from "../../miscellanous/Utils";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const Localization = ({ editedAlbumId, creatorType, setForm }) => {
   const coordinate = useSelector(selectCoordinate);

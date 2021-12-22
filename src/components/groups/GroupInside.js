@@ -29,7 +29,7 @@ import {
   setMembers,
   selectGroupAlbums,
 } from "../../redux/groupDetailsSlice";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const section = {
   info: "info",

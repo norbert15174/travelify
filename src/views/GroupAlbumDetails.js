@@ -4,7 +4,7 @@ import axios from "axios";
 import UserTemplate from "../templates/UserTemplate";
 import GroupAlbumInside from "../components/groupAlbum/GroupAlbumInside";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { groupMember } from "../miscellanous/Utils";
 import { errorTypes } from "../miscellanous/Utils";
 import { useDispatch, useSelector } from "react-redux";

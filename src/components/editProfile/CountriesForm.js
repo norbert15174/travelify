@@ -9,7 +9,7 @@ import ButtonIcon from "../trinkets/ButtonIcon";
 import addIcon from "./assets/addIcon.svg";
 import StatusMessage from "../trinkets/StatusMessage";
 import { getCountryData } from "../../miscellanous/Utils";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const CountriesForm = ({visitedCountries}) => {
 

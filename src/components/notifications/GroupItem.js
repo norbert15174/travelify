@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { setNotification } from "../../redux/notificationSlice";
 
 const notificationsMaleVersion = {

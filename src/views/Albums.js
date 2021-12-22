@@ -4,7 +4,7 @@ import AlbumsPage from "../components/albums/AlbumsPage";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 // UserTemplate adds Menu sidebar
 

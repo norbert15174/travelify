@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectPhotoTags, setPhotoTags } from "../../redux/groupAlbumSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 
 const PinMemberThumbnail = ({ friend, photoId }) => {

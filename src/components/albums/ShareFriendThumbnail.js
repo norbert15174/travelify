@@ -8,7 +8,7 @@ import {
 } from "../../redux/albumDetailsSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Button from "../trinkets/Button";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 // FriendThumbnail for SharePinBox
 

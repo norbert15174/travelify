@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import UserTemplate from "../templates/UserTemplate";
 import UserPage from "../components/user/UserPage";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { errorTypes } from "../miscellanous/Utils";

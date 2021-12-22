@@ -8,7 +8,7 @@ import {
 } from "../../redux/albumDetailsSlice";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 import { albumTypes } from "../../miscellanous/Utils";
 

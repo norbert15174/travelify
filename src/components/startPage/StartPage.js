@@ -5,7 +5,7 @@ import styled from "styled-components";
 import appLogo from "./assets/Logo.svg";
 import Button from "../trinkets/Button";
 import Map from "../googleMaps/Map";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { routes } from "../../miscellanous/Routes";
 import LoginModal from "./LoginModal";
 import doubleArrowRightIcon from "./assets/doubleArrowRightIcon.svg";

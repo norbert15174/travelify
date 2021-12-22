@@ -5,7 +5,7 @@ import Login from "./login";
 import Register from "./register";
 import styled from "styled-components";
 import BackgroundImage from "./assets/BackgroundImage.jpg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const Auth = () => {
   const location = useLocation();

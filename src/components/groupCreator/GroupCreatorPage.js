@@ -12,7 +12,7 @@ import crownIcon from "./assets/crownIcon.svg";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";
 import Tooltip from "../trinkets/Tooltip";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { Redirect } from "react-router-dom";
 import { routes } from "../../miscellanous/Routes";
 import { useSelector, useDispatch } from "react-redux";

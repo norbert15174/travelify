@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
 import UserTemplate from "../templates/UserTemplate";
 import NewsPage from "../components/news/NewsPage";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { setFriendsList } from "../redux/userDataSlice";
 import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
