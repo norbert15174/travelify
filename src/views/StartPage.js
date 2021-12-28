@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import appLogo from "./assets/Logo.svg";
-import Button from "../trinkets/Button";
-import Map from "../googleMaps/Map";
-import { endpoints } from "../../miscellanous/url";
-import { routes } from "../../miscellanous/Routes";
-import LoginModal from "./LoginModal";
-import doubleArrowRightIcon from "./assets/doubleArrowRightIcon.svg";
-import Tooltip from "../trinkets/Tooltip";
+import appLogo from "../assets/Logo.svg";
+import Button from "../components/trinkets/Button";
+import Map from "../components/googleMaps/Map";
+import { endpoints } from "../miscellanous/url";
+import { routes } from "../miscellanous/Routes";
+import LoginModal from "../components/startPage/LoginModal";
+import doubleArrowRightIcon from "../assets/doubleArrowRightIcon.svg";
+import Tooltip from "../components/trinkets/Tooltip";
 
 const StartPage = () => {
   const [showLogin, setShowLogin] = useState(false);

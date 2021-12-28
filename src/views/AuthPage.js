@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import Login from "./login";
-import Register from "./register";
+import Login from "../components/account/Login";
+import Register from "../components/account/Register";
 import styled from "styled-components";
-import BackgroundImage from "./assets/BackgroundImage.jpg";
-import { endpoints } from "../../miscellanous/url";
+import BackgroundImage from "../assets/BackgroundImage.jpg";
 
 const Auth = () => {
   const location = useLocation();
@@ -17,8 +15,6 @@ const Auth = () => {
       ? "register"
       : "login"
   );
-
-
 
   return (
     <Container>
