@@ -24,6 +24,7 @@ import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 
 const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
+  
   const dispatch = useDispatch();
   const basicInfo = useSelector(selectBasicInfo);
   const loggedUserFriendsList = useSelector(selectFriendsList);

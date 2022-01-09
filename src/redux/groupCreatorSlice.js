@@ -4,7 +4,7 @@ const initialState = {
   groupName: "",
   groupPicture: undefined,
   description: "",
-  members: [],
+  members: [],  
 };
 
 export const groupCreatorSlice = createSlice({

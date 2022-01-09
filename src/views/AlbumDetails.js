@@ -6,7 +6,7 @@ import AlbumInside from "../components/albums/AlbumInside";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import { endpoints } from "../miscellanous/url";
 import { albumTypes, albumRights } from "../miscellanous/Utils";
-import { errorTypes } from "../miscellanous/Utils";
+import { errors } from "../miscellanous/Utils";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
@@ -53,7 +53,7 @@ const AlbumDetails = () => {
     if (notification.albumId && !firstRun) {
       getUserAlbum(notification.albumId);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notification.photoId, notification.albumId]);
 
   if (notLogged) {
@@ -117,7 +117,11 @@ const AlbumDetails = () => {
       })
       .catch((error) => {
         if (error.response !== undefined) {
-          setError(error.response.status);
+          if (error.response.status === 404 || error.response.status === 403) {
+            setError(error.response.status);
+          } else {
+            setError(error);
+          }
         }
         console.error(error);
       })
@@ -128,11 +132,11 @@ const AlbumDetails = () => {
   }
 
   if (error === 403) {
-    throw new Error(errorTypes.noAccess);
+    throw new Error(errors.noAccess);
   }
 
   if (error === 404) {
-    throw new Error(errorTypes.notFound);
+    throw new Error(errors.notFound);
   }
 
   return (

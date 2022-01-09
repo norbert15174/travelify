@@ -118,7 +118,8 @@ const StartPage = () => {
             Promotor: dr hab. inż. Mikołaj Leszczuk
             <br />
             Wykorzystane technologie: Spring Boot, Hibernate, MySQL, Google
-            Cloud Platform, React, JavaScript, CSS, Google Maps Platform, Figma
+            Cloud Platform, React, Redux, JavaScript, CSS, Styled Components,
+            Google Maps Platform, Figma
             <br />
             <br />
             <a

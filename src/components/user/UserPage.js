@@ -359,7 +359,7 @@ const UserPage = ({
                 <Tooltip
                   id="edit"
                   place="top"
-                  text="Kliknij, by edytować grupę"
+                  text="Kliknij, by edytować profil"
                 />
               </>
             )}

@@ -1,46 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// @ts-nocheck
+
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { useLocation, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import { albumTypes } from "../../miscellanous/Utils";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import AlbumSearch from "../trinkets/DropdownSearch";
 import publicAlbumIcon from "./assets/publicAlbumIcon.svg";
 import privateAlbumIcon from "./assets/privateAlbumIcon.svg";
 import sharedAlbumIcon from "./assets/sharedAlbumIcon.svg";
-import AlbumGrid from "./AlbumGrid";
-
-const albumTypes = {
-  public: "public",
-  private: "private",
-  shared: "shared",
-};
+import AlbumsGrid from "./AlbumsGrid";
 
 const AlbumsPage = ({ privateAlbums, publicAlbums, sharedAlbums }) => {
-  const [albumsType, setAlbumsType] = useState(albumTypes.public);
+  const [selectedType, setSelectedType] = useState(albumTypes.public);
   const [searchList, setSearchList] = useState(null);
   const [albumIdSearch, setAlbumIdSearch] = useState(null);
   const blurState = useSelector((state) => state.blur.value);
-  const location = useLocation();
 
   useEffect(() => {
-    setAlbumIdSearch(null);
-    if (location.state !== undefined && !albumsType) {
-      setAlbumsType(location.state.albumType);
-    }
     if (!searchList) {
       mapAlbumsToSearchCallback();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const mapAlbumsToSearchCallback = useCallback(
-    () => {
-      mapAlbumsToSearch();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [privateAlbums, publicAlbums, sharedAlbums]
-  );
+  const mapAlbumsToSearchCallback = useCallback(() => {
+    mapAlbumsToSearch();
+  }, [privateAlbums, publicAlbums, sharedAlbums]);
 
   const mapAlbumsToSearch = () => {
     let searchList = {
@@ -118,9 +105,9 @@ const AlbumsPage = ({ privateAlbums, publicAlbums, sharedAlbums }) => {
           searchType="albums"
           options={
             searchList !== null
-              ? albumsType === "public"
+              ? selectedType === "public"
                 ? searchList["public"]
-                : albumsType === "private"
+                : selectedType === "private"
                 ? searchList["private"]
                 : searchList["shared"]
               : null
@@ -132,29 +119,29 @@ const AlbumsPage = ({ privateAlbums, publicAlbums, sharedAlbums }) => {
         <AlbumsSwitch>
           <AlbumOption
             icon={publicAlbumIcon}
-            active={albumsType === albumTypes.public ? true : false}
-            onClick={() => setAlbumsType(albumTypes.public)}
+            active={selectedType === albumTypes.public ? true : false}
+            onClick={() => setSelectedType(albumTypes.public)}
           >
             Publiczne
           </AlbumOption>
           <AlbumOption
             icon={privateAlbumIcon}
-            active={albumsType === albumTypes.private ? true : false}
-            onClick={() => setAlbumsType(albumTypes.private)}
+            active={selectedType === albumTypes.private ? true : false}
+            onClick={() => setSelectedType(albumTypes.private)}
           >
             Prywatne
           </AlbumOption>
           <AlbumOption
             icon={sharedAlbumIcon}
-            active={albumsType === albumTypes.shared ? true : false}
-            onClick={() => setAlbumsType(albumTypes.shared)}
+            active={selectedType === albumTypes.shared ? true : false}
+            onClick={() => setSelectedType(albumTypes.shared)}
           >
             Udostępnione
           </AlbumOption>
         </AlbumsSwitch>
       </AlbumsNavigation>
-      <AlbumGrid
-        sectionType={albumsType}
+      <AlbumsGrid
+        sectionType={selectedType}
         privateAlbums={privateAlbums}
         publicAlbums={publicAlbums}
         sharedAlbums={sharedAlbums}

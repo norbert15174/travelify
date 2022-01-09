@@ -328,8 +328,8 @@ const GroupAlbumCreatorPage = ({
           )}
         {creatorType === albumCreator.edition && rights === groupMember.owner && (
           <>
-            {albumOwner.id.toString() ===
-              sessionStorage.getItem("loggedUserId") && (
+            {
+               (
               <SectionContainer>
                 <Header>
                   <Icon src={crownIcon} />

@@ -27,6 +27,7 @@ const UserItem = ({ notification, notificationsDisplay, date }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
+  
   const dispatch = useDispatch();
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .

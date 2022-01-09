@@ -8,7 +8,7 @@ import UserPage from "../components/user/UserPage";
 import { endpoints } from "../miscellanous/url";
 import axios from "axios";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Utils";
+import { errors } from "../miscellanous/Utils";
 import { userTypes } from "../miscellanous/Utils";
 import {
   setFriendsList,
@@ -79,7 +79,7 @@ const User = () => {
         getFriendRequests(urlParams.id);
         getRequestsStatus(urlParams.id);
       } else {
-        throw new Error(errorTypes.notFound);
+        throw new Error(errors.notFound);
       }
       getUserData();
     }
@@ -144,8 +144,14 @@ const User = () => {
         setInvidualAlbums(data.individualAlbumDTO);
       })
       .catch((error) => {
+        if (error.response !== undefined) {
+          if (error.response.status === 400) {
+            setError(error.response.status);
+          } else {
+            setError(error);
+          }
+        }
         console.error(error);
-        setError(error);
       })
       .finally(() => {
         setUserDataFetchFinished(true);
@@ -263,6 +269,11 @@ const User = () => {
       .finally(() => {
         setGetUserDataFinished(true);
       });
+  }
+
+  // when selected user profile is not found
+  if (error === 400) {
+    throw new Error(errors.notFound);
   }
 
   if (notLogged) {

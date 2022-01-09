@@ -1,6 +1,4 @@
 import { Route, BrowserRouter, Switch } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
-import { theme } from "./miscellanous/GlobalTheme";
 import { routes } from "./miscellanous/Routes";
 import "./index.css";
 import StartPage from "./views/StartPage";
@@ -24,9 +22,8 @@ import GroupAlbumCreator from "./views/GroupAlbumCreator";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
       <ErrorBoundary>
-        
+
         <BrowserRouter>
           <Switch>
             <Route exact path={routes.startPage} component={StartPage} />
@@ -48,9 +45,8 @@ function App() {
             <Route path="*" component={ErrorPage} />
           </Switch>
         </BrowserRouter>
-
+        
       </ErrorBoundary>
-    </ThemeProvider>
   );
 }
 

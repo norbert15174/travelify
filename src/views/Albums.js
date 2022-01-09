@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
 import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-// UserTemplate adds Menu sidebar
 
 const Albums = () => {
   const [publicAlbums, setPublicAlbums] = useState(null);
@@ -22,12 +21,9 @@ const Albums = () => {
     if (!sessionStorage.getItem("Login")) {
       setNotLogged(true);
     } else {
-      setUserAlbumsFetchFinished(false);
-      setError(null);
       getAlbums();
       getSharedAlbums();
     }
-    // eslint-disable-next-line
   }, []);
 
   async function getAlbums() {
@@ -44,16 +40,15 @@ const Albums = () => {
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
       },
     })
-      .then((response) => {
-        if (response.data !== "") {
-          response.data.map((album) => {
-            if (album.public) {
-              publAlbums.push(album);
+      .then(({ data }) => {
+        if (data) {
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].public) {
+              publAlbums.push(data[i]);
             } else {
-              privAlbums.push(album);
+              privAlbums.push(data[i]);
             }
-            return "";
-          });
+          }
         }
         setPublicAlbums(publAlbums);
         setPrivateAlbums(privAlbums);
