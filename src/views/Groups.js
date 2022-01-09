@@ -3,9 +3,9 @@ import UserTemplate from "../templates/UserTemplate";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Utils";
+import { errors } from "../miscellanous/Utils";
 import GroupsPage from "../components/groups/GroupsPage";
 
 const Groups = () => {
@@ -36,22 +36,12 @@ const Groups = () => {
         setGroups(data);
       })
       .catch((error) => {
-        if (error.response !== undefined) {
-          setError(error.response.status);
-        }
+        setError(error);
         console.error(error);
       })
       .finally(() => {
         setLoadingFinished(true);
       });
-  }
-
-  if (error === 403) {
-    throw new Error(errorTypes.noAccess);
-  }
-
-  if (error === 404) {
-    throw new Error(errorTypes.notFound);
   }
 
   if (notLogged) {

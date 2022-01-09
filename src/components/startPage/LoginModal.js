@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import StatusMessage from "../trinkets/StatusMessage";
 import { routes } from "../../miscellanous/Routes";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const errors = {
   wrongCredentials:

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import GroupItem from "./GroupItem";
 import "./notificationsScrollbar.css";
 import moment from "moment";

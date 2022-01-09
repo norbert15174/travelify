@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import scrollBackIcon from "../../assets/scrollBackIcon.svg";

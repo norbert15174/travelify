@@ -24,3 +24,4 @@ export default configureStore({
     notification: notificationSlice,
   },
 });
+

@@ -6,7 +6,7 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import imageNotFoundIcon from "./assets/imageNotFoundIcon.svg";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import axios from "axios";
 import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";

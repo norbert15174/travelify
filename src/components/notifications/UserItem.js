@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { setFriendsList } from "../../redux/userDataSlice";
 import { setNotification } from "../../redux/notificationSlice";
 
@@ -14,12 +14,6 @@ const notificationsMaleVersion = {
   FRIEND_REQUEST: " wysłał ci zaproszenie do znajomych",
   COMMENT: " skomentował twoje zdjęcie",
   ALBUM_SHARE: " udostępnił Ci swój album",
-  GROUP_REQUEST: " zaprosił cię do grupy",
-  PHOTO_COMMENT: " skomentował zdjęcie z albumu grupowego",
-  PHOTO_MARKED: " oznaczył cię na zdjęciu z albumu grupowego",
-  NEW_ALBUM: " dodał nowy album grupowy",
-  DELETE_ALBUM: " usunął album grupowy",
-  REMOVE_USER: " usunął cię z grupy",
 };
 
 const notificationsFemaleVersion = {
@@ -27,18 +21,13 @@ const notificationsFemaleVersion = {
   FRIEND_REQUEST: " wysłała ci zaproszenie do znajomych",
   COMMENT: " skomentowała twoje zdjęcie",
   ALBUM_SHARE: " udostępniła Ci swój album",
-  GROUP_REQUEST: " zaprosił cię do grupy",
-  PHOTO_COMMENT: " skomentowała zdjęcie grupowe",
-  PHOTO_MARKED: " oznaczyła cię na zdjęciu z albumu grupowego",
-  NEW_ALBUM: " dodała nowy album grupowy",
-  DELETE_ALBUM: " usunęła album grupowy",
-  REMOVE_USER: " usunęła cię z grupy",
 };
 
 const UserItem = ({ notification, notificationsDisplay, date }) => {
   const [accepted, setAccepted] = useState(false);
   const [notClicked, setNotClicked] = useState(true);
   const [redirectToAlbum, setRedirectToAlbum] = useState(false);
+  
   const dispatch = useDispatch();
 
   // my super detection of users gender. Unfortunately works only for polish names :/ .

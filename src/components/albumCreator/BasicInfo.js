@@ -20,10 +20,11 @@ import addIcon from "./assets/addIcon.svg";
 import closeIcon from "./assets/closeIcon.svg";
 import { albumTypes, mapFriendsToSelect } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 
 const BasicInfo = ({ editedAlbumId, creatorType, setForm }) => {
+  
   const dispatch = useDispatch();
   const basicInfo = useSelector(selectBasicInfo);
   const loggedUserFriendsList = useSelector(selectFriendsList);

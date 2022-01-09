@@ -6,7 +6,7 @@ import "./styles/friends.css";
 import Input from "../trinkets/Input";
 import GroupItem from "./GroupItem";
 import GroupMessenger from "./GroupMessenger";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { selectGroupsList, setGroupsList } from "../../redux/userDataSlice";
 import { Stomp } from "@stomp/stompjs";
 

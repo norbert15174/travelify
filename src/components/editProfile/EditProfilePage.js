@@ -124,7 +124,7 @@ const EditProfilePage = ({ personalData }) => {
         <SectionContainer>
           <Header>
             <Icon src={deleteAccountIcon} />
-            <h1>Usuń konto</h1>
+            <h1>Zablokuj konto</h1>
           </Header>
           <DeleteAccountForm setDeleteBox={setDeleteBox} />
         </SectionContainer>

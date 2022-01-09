@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../trinkets/Button";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { setNotification } from "../../redux/notificationSlice";
 
 const notificationsMaleVersion = {
@@ -20,7 +20,7 @@ const notificationsMaleVersion = {
 };
 
 const notificationsFemaleVersion = {
-  GROUP_REQUEST: " zaprosił cię do grupy: ",
+  GROUP_REQUEST: " zaprosiła cię do grupy: ",
   PHOTO_COMMENT: " skomentowała zdjęcie z grupy: ",
   PHOTO_MARKED: " oznaczyła cię na zdjęciu z grupy: ",
   NEW_ALBUM: " dodała nowy album w grupie: ",

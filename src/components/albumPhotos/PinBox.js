@@ -7,7 +7,7 @@ import axios from "axios";
 import "./styles/photosScrollbar.css";
 import { useSelector } from "react-redux";
 import { albumTypes } from "../../miscellanous/Utils";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import {
   selectAlbumType,
   selectSharedPersonList,

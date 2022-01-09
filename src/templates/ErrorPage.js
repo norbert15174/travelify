@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import noAccessIcon from "../assets/noAccessIcon.svg";
 import pageNotFoundIcon from "../assets/pageNotFoundIcon.svg";
-import { errorTypes } from "../miscellanous/Utils";
+import jsError from "../assets/jsError.svg";
+import { errors } from "../miscellanous/Utils";
 
 const icons = {
   notFound: pageNotFoundIcon,
@@ -22,33 +23,31 @@ const errorMessages = {
   },
 };
 
-const Error = ({ errorType = errorTypes.notFound }) => {
+const Error = ({ errorType = errors.notFound }) => {
   return (
     <Container>
       <InnerContainer>
         <Icon
           icon={
-            errorMessages[errorType] !== undefined
-              ? icons[errorType]
-              : noAccessIcon
+            errorMessages[errorType] !== undefined ? icons[errorType] : jsError
           }
         />
         <InnerInnerContainer>
           <h1>
             {errorMessages[errorType] !== undefined
               ? errorMessages[errorType].h1
-              : "Coś się stało, ale nie wiem co :/"}
+              : "Wystąpił błąd!"}
           </h1>
           <div>
             <h2>
               {errorMessages[errorType] !== undefined
                 ? errorMessages[errorType].h2
-                : "Może internet wywaliło?"}
+                : "Wina kodu JavaScript odpowiadającego za interfejs użytkownika"}
             </h2>
             <h3>
               {errorMessages[errorType] !== undefined
                 ? errorMessages[errorType].h3
-                : "A może prądu nie masz?"}
+                : "Przepraszamy! Wypełnij formularz, to postaramy się go naprawić ;)"}
             </h3>
           </div>
           <a

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import StatusMessage from "../trinkets/StatusMessage";
 import "./styles/pureSelect.css";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import Logo from "./assets/logo";
 import "./styles/input.css";
 

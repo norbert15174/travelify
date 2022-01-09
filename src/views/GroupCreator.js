@@ -3,7 +3,7 @@ import UserTemplate from "../templates/UserTemplate";
 import { useLocation, Redirect } from "react-router-dom";
 import { routes } from "../miscellanous/Routes";
 import axios from "axios";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import {
   groupCreator,

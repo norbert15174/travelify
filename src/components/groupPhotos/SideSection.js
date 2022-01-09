@@ -13,7 +13,7 @@ import { groupMember } from "../../miscellanous/Utils";
 import axios from "axios";
 import Spinner from "../trinkets/Spinner";
 import ReactLoading from "react-loading";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { useSelector, useDispatch } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
 import Tooltip from "../trinkets/Tooltip";

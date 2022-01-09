@@ -5,7 +5,7 @@ import { routes } from "../miscellanous/Routes";
 import EditProfilePage from "../components/editProfile/EditProfilePage";
 import UserTemplate from "../templates/UserTemplate";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 
 const EditProfile = () => {
   const [personalData, setPersonalData] = useState(null);

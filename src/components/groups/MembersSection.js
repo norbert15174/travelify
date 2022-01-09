@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import Input from "../trinkets/Input";
 import "./groupsScrollbar.css";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import MemberThumbnail from "./MemberThumbnail";
 import { useSelector, useDispatch } from "react-redux";
 import Toggle from "../trinkets/Toggle";

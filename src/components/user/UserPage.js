@@ -18,7 +18,7 @@ import {
   selectFriendToDeleteId,
 } from "../../redux/deleteFriendSlice";
 import { userTypes } from "../../miscellanous/Utils";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { toggleBlur } from "../../redux/blurSlice";
 import {
   selectFriendsList,
@@ -359,7 +359,7 @@ const UserPage = ({
                 <Tooltip
                   id="edit"
                   place="top"
-                  text="Kliknij, by edytować grupę"
+                  text="Kliknij, by edytować profil"
                 />
               </>
             )}

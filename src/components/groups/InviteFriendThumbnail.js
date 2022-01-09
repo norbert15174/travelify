@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectRequests, setRequests } from "../../redux/groupDetailsSlice";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import Button from "../trinkets/Button";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const InviteFriendThumbnail = ({ friend, groupId }) => {
   const requests = useSelector(selectRequests);

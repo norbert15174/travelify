@@ -8,10 +8,10 @@ const DeleteAccountForm = ({setDeleteBox}) => {
     return (
         <>
             <WarningMessage>
-                <p>Usuniętego konta nie da się odzyskać !</p>
+                <p>Zablokowanego konta nie da się odzyskać !</p>
                 <p>Profil, albumy i zdjęcia zostaną trwale usunięte.</p>
             </WarningMessage>
-            <DeleteButton onClick={() => setDeleteBox(true)}>Usuń</DeleteButton>
+            <DeleteButton onClick={() => setDeleteBox(true)}>Zablokuj</DeleteButton>
         </> 
     );
 

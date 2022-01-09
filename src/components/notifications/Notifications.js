@@ -8,7 +8,7 @@ import userIcon from "./assets/userIcon.svg";
 import UserNotifications from "./UserNotifications";
 import GroupNotifications from "./GroupNotifications";
 import "./notificationsScrollbar.css";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { setFriendsList } from "../../redux/userDataSlice";
 import { setNotification } from "../../redux/notificationSlice";
 import Toggle from "../trinkets/Toggle";

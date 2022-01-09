@@ -7,7 +7,7 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import CountrySelect from "../trinkets/Select";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const PersonalInfoForm = ({ personalData }) => {
   const [firstname, setFirstname] = useState(personalData.firstName);

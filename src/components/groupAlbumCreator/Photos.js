@@ -8,7 +8,7 @@ import Cancel from "../trinkets/Cancel";
 import deleteWhiteIcon from "./assets/deleteWhiteIcon.svg";
 import imageNotFoundIcon from "./assets/imageNotFoundIcon.svg";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import noAlbumPhotoIcon from "../../assets/noAlbumPhotoIcon.svg";
 import { groupMember } from "../../miscellanous/Utils";
 import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";

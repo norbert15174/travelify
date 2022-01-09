@@ -14,7 +14,7 @@ import JSEMOJI from "emoji-js";
 import ReactLoading from "react-loading";
 import { useSelector } from "react-redux";
 import { routes } from "../../miscellanous/Routes";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import axios from "axios";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 

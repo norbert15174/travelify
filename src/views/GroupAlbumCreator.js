@@ -4,12 +4,12 @@ import { routes } from "../miscellanous/Routes";
 import axios from "axios";
 import GroupAlbumCreatorPage from "../components/groupAlbumCreator/GroupAlbumCreatorPage";
 import UserTemplate from "../templates/UserTemplate";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
 import {
   albumCreator,
   groupMember,
-  errorTypes,
+  errors,
   mapFriendsToSelect,
 } from "../miscellanous/Utils";
 import {
@@ -39,7 +39,6 @@ const GroupAlbumCreator = () => {
   const [groupId, setGroupId] = useState(null);
   const [notLogged, setNotLogged] = useState(false);
 
-
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
       setNotLogged(true);
@@ -48,7 +47,7 @@ const GroupAlbumCreator = () => {
       if (location.state === undefined) {
         /* when someone types url manually, 
         groupAlbumCreator can't be opened without passing state */
-        throw new Error(errorTypes.notFound);
+        throw new Error(errors.notFound);
       }
       if (location.state !== undefined && location.state.groupId) {
         setGroupId(location.state.groupId);
@@ -125,7 +124,10 @@ const GroupAlbumCreator = () => {
     setGroupMembersFetchFinished(false);
     await axios({
       method: "get",
-      url: endpoints.getGroupMembers.replace(/:groupId/i, location.state.groupId),
+      url: endpoints.getGroupMembers.replace(
+        /:groupId/i,
+        location.state.groupId
+      ),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
@@ -138,7 +140,8 @@ const GroupAlbumCreator = () => {
               data.filter(
                 (item) =>
                   item.id.toString() !== sessionStorage.getItem("loggedUserId")
-              ), "shared"
+              ),
+              "shared"
             )
           )
         );

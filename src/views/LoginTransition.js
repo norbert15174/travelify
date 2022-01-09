@@ -11,7 +11,7 @@ import {
   setProfilePicture,
   setFriendsList,
 } from "../redux/userDataSlice";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import somethingWentWrongIcon from "../assets/somethingWentWrongIcon.svg";
 import { mapCountriesToSelect } from "../miscellanous/Utils";
 

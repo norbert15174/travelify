@@ -9,7 +9,7 @@ import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
 import "../trinkets/fileUpload.css";
 import StatusMessage from "../trinkets/StatusMessage";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { PHOTO_SIZE_LIMIT } from "../../miscellanous/Utils";
 
 const PhotoChange = ({ type, photo }) => {

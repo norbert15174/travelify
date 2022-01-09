@@ -1,4 +1,4 @@
-export const errorTypes = {
+export const errors = {
   noAccess: "noAccess",
   notFound: "notFound",
 };

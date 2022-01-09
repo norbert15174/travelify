@@ -14,7 +14,7 @@ import {
   setGroupAlbums,
 } from "../../redux/groupDetailsSlice";
 import axios from "axios";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 const GroupAlbumSection = ({ groupId }) => {
   const [searchContent, setSearchContent] = useState("");

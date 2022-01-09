@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import UserTemplate from "../templates/UserTemplate";
 import axios from "axios";
 import { useParams } from "react-router";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { errorTypes } from "../miscellanous/Utils";
+import { errors } from "../miscellanous/Utils";
 import GroupInside from "../components/groups/GroupInside";
 import { setFriendsList } from "../redux/userDataSlice";
 import { useDispatch } from "react-redux";
@@ -29,14 +29,14 @@ const GroupDetails = () => {
 
   useEffect(() => {
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      throw new Error(errors.noAccess);
     } else {
       setGroupId(urlParams.id);
       getLoggedUserFriendsList();
       getGroupDetails();
       getGroupAlbums();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlParams.id]);
 
   async function getGroupDetails() {
@@ -70,7 +70,11 @@ const GroupDetails = () => {
       })
       .catch((error) => {
         if (error.response !== undefined) {
-          setError(error.response.status);
+          if (error.response.status === 404) {
+            setError(error.response.status);
+          } else {
+            setError(error);
+          }
         }
         console.error(error);
       })
@@ -94,7 +98,11 @@ const GroupDetails = () => {
       })
       .catch((error) => {
         if (error.response !== undefined) {
-          setError(error.response.status);
+          if (error.response.status === 404 || error.response.status === 403) {
+            setError(error.response.status);
+          } else {
+            setError(error);
+          }
         }
         console.error(error);
       })
@@ -125,11 +133,11 @@ const GroupDetails = () => {
   }
 
   if (error === 403) {
-    throw new Error(errorTypes.noAccess);
+    throw new Error(errors.noAccess);
   }
 
   if (error === 404) {
-    throw new Error(errorTypes.notFound);
+    throw new Error(errors.notFound);
   }
 
   return (

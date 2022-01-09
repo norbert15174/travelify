@@ -9,7 +9,7 @@ import { albumTypes } from "../../miscellanous/Utils";
 import { albumCreator } from "../../miscellanous/Utils";
 import "./albumsScrollbar.css";
 
-const AlbumSection = ({
+const AlbumsGrid = ({
   sectionType,
   privateAlbums,
   publicAlbums,
@@ -257,4 +257,4 @@ const AlbumGrid = styled.div`
   }
 `;
 
-export default AlbumSection;
+export default AlbumsGrid;

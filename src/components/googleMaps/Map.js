@@ -47,9 +47,7 @@ function Map({
     setMarker({ lat: place.latLng.lat(), lng: place.latLng.lng() });
   };
 
-  const onMarkerLoad = (marker) => {
-    
-  };
+  const onMarkerLoad = (marker) => {};
 
   useEffect(() => {
     if (marker != null) {
@@ -59,6 +57,7 @@ function Map({
       Geocode.setLanguage("en");
       Geocode.fromLatLng(marker.lat, marker.lng).then(
         (response) => {
+          console.log(response);
           const address = response.results[0].address_components;
           for (let i = 0; i < address.length; i++) {
             for (let j = 0; j < address[i].types.length; j++) {

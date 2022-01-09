@@ -6,7 +6,7 @@ import StatusMessage from "../trinkets/StatusMessage";
 import FormInput from "../trinkets/FormInput";
 import Submit from "../trinkets/Submit";
 import Cancel from "../trinkets/Cancel";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 
 
 const PasswordForm = () => {

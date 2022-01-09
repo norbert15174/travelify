@@ -4,9 +4,9 @@ import axios from "axios";
 import UserTemplate from "../templates/UserTemplate";
 import GroupAlbumInside from "../components/groupAlbum/GroupAlbumInside";
 import { Loading, ErrorAtLoading } from "../templates/LoadingTemplate";
-import { endpoints } from "../url";
+import { endpoints } from "../miscellanous/url";
 import { groupMember } from "../miscellanous/Utils";
-import { errorTypes } from "../miscellanous/Utils";
+import { errors } from "../miscellanous/Utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setGroupOwner,
@@ -16,7 +16,10 @@ import {
   setPhotoTags,
   setRights,
 } from "../redux/groupAlbumSlice";
-import { selectNotification, setNotification } from "../redux/notificationSlice";
+import {
+  selectNotification,
+  setNotification,
+} from "../redux/notificationSlice";
 
 const GroupAlbumDetails = () => {
   const [albumId, setAlbumId] = useState(null);
@@ -33,7 +36,7 @@ const GroupAlbumDetails = () => {
     setAlbumDetailsFetchFinished(false);
     setError(null);
     if (!sessionStorage.getItem("Login")) {
-      throw new Error(errorTypes.noAccess);
+      throw new Error(errors.noAccess);
     } else {
       setAlbumId(urlParams.id);
       setFirstRun(false);
@@ -46,9 +49,8 @@ const GroupAlbumDetails = () => {
     if (notification.albumId && !firstRun) {
       getGroupAlbum(notification.albumId);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notification.photoId, notification.albumId]);
-
 
   async function getGroupAlbum(id) {
     setAlbumDetailsFetchFinished(false);
@@ -56,10 +58,7 @@ const GroupAlbumDetails = () => {
     setNotifPhoto(null);
     await axios({
       method: "get",
-      url: endpoints.getGroupAlbumDetails.replace(
-        /:groupAlbumId/i,
-        id
-      ),
+      url: endpoints.getGroupAlbumDetails.replace(/:groupAlbumId/i, id),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("Bearer")}`,
@@ -68,14 +67,16 @@ const GroupAlbumDetails = () => {
       .then(({ data }) => {
         dispatch(setAlbumOwner(data.albumOwner));
         dispatch(setGroupOwner(data.groupOwner));
-        dispatch(setInfo({
-          coordinate: data.coordinate,
-          description: data.description,
-          name: data.name,
-          albumId: data.id,
-          groupId: data.groupId,
-          creationTime: data.time,
-        }));
+        dispatch(
+          setInfo({
+            coordinate: data.coordinate,
+            description: data.description,
+            name: data.name,
+            albumId: data.id,
+            groupId: data.groupId,
+            creationTime: data.time,
+          })
+        );
         let tempPhotos = [];
         let tempTags = [];
         for (let i = 0; i < data.photos.length; i++) {
@@ -83,7 +84,7 @@ const GroupAlbumDetails = () => {
             index: i + 1,
             photo: data.photos[i],
           });
-          if ( data.photos[i].photoId === notification.photoId) {
+          if (data.photos[i].photoId === notification.photoId) {
             setNotifPhoto(tempPhotos[i].index);
           }
           tempTags.push({
@@ -106,7 +107,13 @@ const GroupAlbumDetails = () => {
       })
       .catch((error) => {
         if (error.response !== undefined) {
-          setError(error.response.status);
+          if (error.response.status === 404 || 
+            error.response.status === 403) 
+          {
+            setError(error.response.status);
+          } else {
+            setError(error);
+          }
         }
         console.error(error);
       })
@@ -117,11 +124,11 @@ const GroupAlbumDetails = () => {
   }
 
   if (error === 403) {
-    throw new Error(errorTypes.noAccess);
+    throw new Error(errors.noAccess);
   }
 
   if (error === 404) {
-    throw new Error(errorTypes.notFound);
+    throw new Error(errors.notFound);
   }
 
   return (

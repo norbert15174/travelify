@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// toggle blur when modal shows up
-
 export const notificationSlice = createSlice({
   name: "notification",
   initialState: {
@@ -16,8 +14,9 @@ export const notificationSlice = createSlice({
   },
 });
 
-// Action creators are generated for each case reducer function
 export const { setNotification } = notificationSlice.actions;
 export const selectNotification = (state) => state.notification;
-
 export default notificationSlice.reducer;
+
+
+

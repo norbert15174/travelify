@@ -16,7 +16,7 @@ import ShareBox from "./ShareBox";
 import Carousel from "../albumPhotos/Carousel";
 import noProfilePictureIcon from "../../assets/noProfilePictureIcon.svg";
 import { routes } from "../../miscellanous/Routes";
-import { endpoints } from "../../url";
+import { endpoints } from "../../miscellanous/url";
 import { useSelector, useDispatch } from "react-redux";
 import {
   albumRights,
