@@ -19,6 +19,7 @@ import ConfirmationBox from "../trinkets/ConfirmationBox";
 import Notifications from "../notifications/Notifications";
 
 const Menu = () => {
+
   const [menuToExpand, setMenuToExpand] = useState("");
   const [currentUrl, setCurrentUrl] = useState("");
   const [isVisible, toggleVisibility] = useState(true);
@@ -27,7 +28,6 @@ const Menu = () => {
   const [refuseLogout, setRefuseLogout] = useState(false);
   const [logoutRedirect, setLogoutRedirect] = useState(false);
   const location = useLocation();
-
   const blurState = useSelector((state) => state.blur.value);
 
   const toggleMenuBar = () => {
