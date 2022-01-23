@@ -59,6 +59,11 @@ const GroupChat = ({ chatsDisplay }) => {
         setChatUpdate((prevState) => new Set([...prevState, friendId]));
       });
     });
+    return function cleanup() {
+      client.deactivate();
+      setMessageNotifications([]);
+      setChatUpdate([]);
+    }
   }, []);
 
   function chatBlockHandler(e) {
@@ -172,8 +177,7 @@ const ChatList = styled.div`
   flex-direction: column;
   overflow-x: hidden; /* Hide horizontal scrollbar */
   overflow-y: scroll; /* Add vertical scrollbar */
-  height: 80%;
-  max-height: 100vh;
+  height: 75%;
   margin: 0px 20px 20px 20px;
   @media only screen and (max-width: 1000px) {
     margin: 0px 10px 10px 10px;
