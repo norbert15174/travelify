@@ -82,8 +82,8 @@ const GroupNotifications = ({ notificationsDisplay }) => {
 const NotificationsList = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-x: hidden; 
+  overflow-y: scroll; 
   max-height: 80%;
   margin: 20px 10px 20px 10px;
   @media only screen and (max-width: 1000px) {

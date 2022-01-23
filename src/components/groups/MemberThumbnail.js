@@ -10,7 +10,12 @@ import Tooltip from "../trinkets/Tooltip";
 import { selectRights, selectOwner } from "../../redux/groupDetailsSlice";
 import { groupMember } from "../../miscellanous/Utils";
 
-const MemberThumbnail = ({ member, type = null, setMemberToRemove = null, date = null }) => {
+const MemberThumbnail = ({
+  member,
+  type = null,
+  setMemberToRemove = null,
+  date = null,
+}) => {
   const [redirectToProfile, setRedirectToProfile] = useState(false);
   const rights = useSelector(selectRights);
   const owner = useSelector(selectOwner);
@@ -156,7 +161,7 @@ const Icon = styled.div`
 const InvitationDate = styled.p`
   font-size: 16px;
   color: ${({ theme }) => theme.color.greyFont};
-  margin: 0 5px 0 auto;
+  margin: 0 5px 0 10px;
   @media only screen and (max-width: 1010px) {
     font-size: 12px;
   }
