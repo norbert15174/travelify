@@ -111,7 +111,7 @@ const StartPage = () => {
             integrację osób zainteresowanych podróżami.
             <br />
             Twórcy: Norbert Faron, Mikołaj Telec - studenci Elektroniki i
-            Telekomunikacji na wydziale Informatyki, Elektroniki i
+            Telekomunikacji na Wydziale Informatyki, Elektroniki i
             Telekomunikacji Akademii Górniczo-Hutniczej im. Stanisława Staszica
             w Krakowie
             <br />
