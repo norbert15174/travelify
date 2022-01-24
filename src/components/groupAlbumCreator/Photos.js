@@ -21,7 +21,6 @@ import {
   selectRights,
 } from "../../redux/groupAlbumCreatorSlice";
 
-
 const Photos = ({ editedAlbumId }) => {
   const photos = useSelector(selectAlbumPhotosRedux);
   const mainPhoto = useSelector(selectMainPhotoRedux);
@@ -165,9 +164,11 @@ const Photos = ({ editedAlbumId }) => {
     setIsDirty(true);
     setErrorMessage("");
     setSubmitMessage("");
+    if (rights === groupMember.owner) {
+      document.getElementById("main").checked = false;
+    }
     document.getElementById("single").checked = false;
     document.getElementById("multi").checked = false;
-    document.getElementById("main").checked = false;
     if (type === "multiPreview") {
       // deleting image with specific url from imagePreview state
       let images = imagePreview.filter(
